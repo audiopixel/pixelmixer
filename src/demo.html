@@ -22,6 +22,11 @@
 		<script src="js/libs/stats.min.js"></script>
 		<script src="js/libs/dat.gui.min.js"></script>
 
+		<!---------------------------------------------------------------------------------------------- -->
+
+		<script>var AP = AP || {};</script>
+		<script src="js/shaders/src/basic.js"></script>
+
 		<script id="vertexShader" type="x-shader/x-vertex">
 
 			varying vec2 v_vUv;
@@ -170,7 +175,6 @@ float mixT(float a, float b, float mix){
 				//float random = rand(vec2(gl_FragCoord[1], v_vUv[0] * u_random) * (u_time * 0.001));
 				//float random = rand(vec2(gl_FragCoord[0], v_vUv[1] * u_random) * (u_time * 0.0001));
 
-
 				//--------------------------------
 				// Water bend
 
@@ -203,23 +207,7 @@ float mixT(float a, float b, float mix){
 				//-----------------------------------------
 				// Cross hatch
 
-				float rtime = abs(u_time);
-				p = (((u_scale2 * 18000.0) + 500.0) * vec2( ap_xyz[0], ap_xyz[2]) - ap_xyz[1] * fract(rtime*0.00007));
-				p[0] += 0.1;
-				vec2 q = vec2( cos(p.x), sin(p.y) );
-				rtime = rtime + q.x * q.y + length( q );
-				vec3 c = vec3( 0.0 );
-				c += vec3(2.0, 2.5, 1.0) * fract( (              p.x - p.y + fract(rtime*0.0017) ) * 5.0 ) ;
-				c -= vec3(1.0, 2.0, 2.3) * fract( (sin(u_time*0.25)*p.x - p.y + fract(rtime*0.0015) ) * 5.0 ) ;
-				c += ( p.x * p.y );
-
-				c = max(c, vec3(0.0));
-				c = min(c, vec3(1.0));
-				vec3 rgb_2 = c * u_mix2; // mix
-
-				hsl = rgb2hsv(rgb_2); // hue knob
-				hsl[0] += u_hue2;
-				if(hsl[0] > 1.0){ hsl[0] =  hsl[0] - floor(hsl[0]); }
+				//#INCLUDESHADERS
 
 				rgb_2 = hsv2rgb(hsl); // output
 				//rgb_2 = vec3(1.0) * u_mix2; // output
@@ -399,6 +387,9 @@ float mixT(float a, float b, float mix){
 
 				//---------------------------
 
+				var mergedShader = document.getElementById( 'fragment_shader_pass_1' ).textContent;
+				mergedShader = mergedShader.replace("//#INCLUDESHADERS", AP.BasicShader.shader);
+
 				material = new THREE.ShaderMaterial( {
 					uniforms: {
 						u_time: { type: "f", value: 0.0 },
@@ -424,7 +415,7 @@ float mixT(float a, float b, float mix){
 						u_wshue:        { type: 'f', value: 0.0 }
 					},
 					vertexShader: document.getElementById( 'vertexShader' ).textContent,
-					fragmentShader: document.getElementById( 'fragment_shader_pass_1' ).textContent
+					fragmentShader: mergedShader
 
 				} );
 
