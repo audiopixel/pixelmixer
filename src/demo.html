@@ -543,8 +543,8 @@ float mixT(float a, float b, float mix){
 				var f1 = gui.addFolder('Blend'); 		f1.open();
 				var f2 = gui.addFolder('Channel 1'); 	f2.open();
 				var f3 = gui.addFolder('Channel 2'); 	f3.open();
-				var f4 = gui.addFolder('Post FX'); 		f4.open();
-				var f5 = gui.addFolder('Settings'); 	f5.open();
+				var f4 = gui.addFolder('Post FX');// 		f4.open();
+				var f5 = gui.addFolder('Settings');// 	f5.open();
 				var guiData  = {
 					mix1:  1,
 					hue1:  0.6,
@@ -635,7 +635,7 @@ float mixT(float a, float b, float mix){
 				var setOffsetX = 0;
 				var setOffsetY = 0;
 				var random = 0; //Math.random() * 90;
-				for ( e = 0; e < 170 + random; e ++ ) {
+				for ( e = 0; e < 112 + random; e ++ ) {
 					for ( i = 0; i < 144; i ++ ) { // ap 2x8 hardware unit, 72x2ports = 144 nodes
 
 						var vertex = new THREE.Vector3();
@@ -644,15 +644,15 @@ float mixT(float a, float b, float mix){
 						vertex.x = (data2x8[i * 2] * scale) + setOffsetX ;
 						vertex.y = ((Math.floor(data2x8[(i * 2) + 1]) + 216) * scale) + setOffsetY + 100; // (-216 lowest int, only want positives)
 
-						vertex.z = Math.random() * (e * 2.25);
+						vertex.z = Math.random() * (e * 3.5);
 
 						geometry.vertices.push( vertex );
 					}
 					setOffsetX += 40;
 
-					if(setOffsetX > 650){
+					if(setOffsetX > 550){
 						setOffsetX = 0;
-						setOffsetY -= 130;
+						setOffsetY -= 150;
 					}
 				}
 
