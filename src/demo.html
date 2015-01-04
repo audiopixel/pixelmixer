@@ -355,6 +355,7 @@ float mixT(float a, float b, float mix){
 			var passIndex = [];
 			var gl, pixels;
 			var gui;
+			var channelState = [];
 
 			var delta = 0.02;
 
@@ -389,6 +390,18 @@ float mixT(float a, float b, float mix){
 
 				var mergedShader = document.getElementById( 'fragment_shader_pass_1' ).textContent;
 				mergedShader = mergedShader.replace("//#INCLUDESHADERS", AP.BasicShader.shader);
+
+
+				// **Main state** - deciding which clips are current active
+				// channelState array is the 'model'
+				// API input and UI changes will eventually be the 'controllers'
+				// for now we are going to fake it since our ui is static atm // TODO
+				channelState.push(1);
+				channelState.push(2); 	// id's of clips 
+				updateMainShader();		// we would call this everytime we detect a real change in the loaded clips
+
+				// TODO: Call init/update for each shader that is loaded
+
 
 				material = new THREE.ShaderMaterial( {
 					uniforms: {
@@ -616,6 +629,33 @@ float mixT(float a, float b, float mix){
 
 		//<!---------------------------------------------------------------------------------------------- -->
 		//<!---------------------------------------------------------------------------------------------- -->
+
+			function updateMainShader() {
+
+				// based on the channelState settings make sure we fetch all needed shaders/clips
+				// merge them and set uniforms from params
+
+				// for each one, 
+					// update uniforms to include params
+					// check if we need to convert rgb<->hsv
+					// pass and blend the value along
+
+					// call init() method
+
+				// mark which shaders are active so we can call update() on them
+
+
+			// for now it's canned data until we have dynamic UI / API input
+			// TODO: Corral the required shaders from <script> tags and/or ajax calls
+			// TODO: Input/output color system to optimize the amount of rgb <-> hsb conversions
+
+			}
+
+			function fetchShader(id) {
+
+			}
+
+			//----
 		
 			function drawNodePoints() {
 				geometry = new THREE.Geometry();

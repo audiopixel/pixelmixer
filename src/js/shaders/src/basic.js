@@ -4,13 +4,22 @@
 
 AP.BasicShader = {
 
+	id: 1, // OSC requires id's to be integers
+
 	input: 		'rgb', // 'rgb' default if not specified, 'hsb/hsv' also excepted. 
 	output: 	'rgb', // 'rgb' default if not specified, 'hsb/hsv' also excepted. 
 
 	params: { // (uniforms)
-
+		// each shader can have upto 6 params that are controlled by it's UI / modulations
 		"p1": { type: "f", value: 0.5, desc: "scale" },
 		"p2": { type: "f", value: 0.0, desc: "hue" }
+
+	},
+	
+	values: { // (uniforms)
+		// these are values that can be referenced from init/update methods, and passed as uniforms
+		"v1": { type: "f", value: 1.0, desc: "testV1" },
+		"v2": { type: "f", value: 1.0, desc: "testV2" }
 
 	},
 
@@ -34,15 +43,10 @@ AP.BasicShader = {
 		"hsl[0] += 0.0;//p2;",
 		"if(hsl[0] > 1.0){ hsl[0] =  hsl[0] - floor(hsl[0]); }"
 
-	].join("\n")
+	].join("\n"),
 
-};
 
-// Optional JS methods that can be defined per shader // TODO implement
-AP.BasicShader.init = function(){
-	console.log("init");
-};
-
-AP.BasicShader.update = function(){
-	console.log("update");
+	// Optional JS methods that can be defined per shader // TODO implement
+	init: function(){console.log("init");},
+	update: function(){console.log("update");}
 };
