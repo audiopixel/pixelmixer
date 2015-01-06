@@ -10,7 +10,6 @@ The goal is for anyone to be able to view online projects using a simplified int
 Private repo for now, with the intention of going public at http://www.github.com/audiopixel
 
 
-_*The below is preliminary and we are still seeking input_
 
 
 ### Main Features ###
@@ -27,6 +26,10 @@ _*The below is preliminary and we are still seeking input_
 * Simulate physical sensor inputs using mouse / keyboard
 * Open Source
 
+---
+
+_*The below is preliminary and we are still seeking input_
+
 ### Differences between AP2 & AP3 ###
 
 |                          AP2  |                                          AP3 |
@@ -42,30 +45,39 @@ These are only design changes, not additional features or code improvements - wh
 
 
 
+* HTML5 Video input
+* Timeline Recorder
+* Sync from online content to offline Native App
+* Text with all system fonts
+* Timeline Recorder
+
+---
+
+#### Basic Roadmap ####
+
+### Phase I ###
+
+* Channels as Static UI
+* GLSL Engine
+* Editor & realtime previz as one
+* Clip harness / load any GLSL Shader
+* Broadcast UDP
+
 ### Phase II ###
 
-HTML5 Video input
-
-MIDI controller and OSC API input
-
-Offline sync version. Sync online content to Native App
-
-Modulation Inputs for all clip settings
-
-Images / Animated Gifs / Text with all system fonts
-
-Configure LED color output (Full RGB by default)
-(Specify output to be white LEDs only as an example)
+* Channels as Dynamic UI
+* Create and save multiple index/position maps
+* Modulation Inputs for all clip settings
+* HTML5 Video input
+* Broadcast OSC, UDP
+* Receive MIDI controller and OSC API input
+* Sync from online content to offline Native App
+* Images / Animated Gifs / Text with all system fonts
 
 
 ### Phase III ###
 
-Write your own clips/shaders with inline text editor
-
-Create user profile(s) and save/share presets/shaders/clips
-
-Mapping selections for projections per channel
-
-Timeline Recorder
-
-Entire program logic driven by bar bones API
+* Write clips/shaders with inline text editor
+* Save user profile(s) and share presets/shaders/clips
+* Timeline Recorder
+* Entire program logic driven by bar bones API
