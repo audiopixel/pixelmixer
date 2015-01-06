@@ -9,8 +9,8 @@ The goal is for anyone to be able to view online projects using a simplified int
 
 Private repo for now, with the intention of going public at http://www.github.com/audiopixel
 
-Basic todo list below (not set in stone)
 
+_*The below is preliminary and we are still seeking input_
 
 
 ### Main Features ###
@@ -28,37 +28,42 @@ Basic todo list below (not set in stone)
 	Open Source
 
 
+### Differences between AP2 & AP3 ###
+
+These are only architecture changes, not additional features, which are listed below separately.
+
+AP2  | AP3
+------------ | -------------
+UI View: edit all channels | UI View: edit one at a time
+Individual pod data | Pod position groups
+Editor separate app | Editor in-play
+ | Move clip content in Editor
+ | Multiple position maps for content
+
 ### Phase II ###
 
+HTML5 Video input
+
+MIDI controller and OSC API input
+
+Offline sync version. Sync online content to Native App
+
+Modulation Inputs for all clip settings
+
+Images / Animated Gifs / Text with all system fonts
 
 Configure LED color output (Full RGB by default)
 (Specify output to be white LEDs only as an example)
 
 
-MIDI controller and OSC API input
-
-Offline sync versionSync online content to Native App
-
-Realtime previsualizer
-
-Modulation Inputs for all clip settings
-Easy way to chain together complex routing
-Centeralized control with Channel knobs
-
-Images / Animated Gifs / Text with all system fonts
-using any dom element / Canvas2D as a texture
-
-
 ### Phase III ###
 
+Write your own clips/shaders with inline text editor
 
-Multi-threaded operations (possibly using html5 workers)
-
-Write your own shaders with text editors
 Create user profile(s) and save/share presets/shaders/clips
+
 Mapping selections for projections per channel
 
-HTML5 Video input
-
 Timeline Recorder
+
 Entire program logic driven by bar bones API
