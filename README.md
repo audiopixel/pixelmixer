@@ -32,6 +32,8 @@ _*The below is preliminary and we are still seeking input_
 
 ### Differences between AP2 & AP3 ###
 
+Design changes:
+
 |                          AP2  |                                          AP3 |
 |------------------------------ | -------------------------------------------- |
 |UI View: edit all channels     | UI View: edit one channel at a time          |
@@ -41,19 +43,20 @@ _*The below is preliminary and we are still seeking input_
 |                               | Clip/Shaders position and scale tools        |
 |                               | Clip/Shaders input includes mouse / keyboard |
 
-These are only design changes, not additional features or code improvements - which are listed below.
-
-
+New features to AP3:
 
 * HTML5 Video input
-* Timeline Recorder
+* Multiple position/index maps for content 
+* Clip/Shaders position and scale tools  
+* Clip/Shaders input includes mouse / keyboard
 * Sync from online content to offline Native App
 * Text with all system fonts
+* Save user profile(s) and share presets/shaders/clips
 * Timeline Recorder
 
 ---
 
-#### Basic Roadmap ####
+## Basic Roadmap ##
 
 ### Phase I ###
 
