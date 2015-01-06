@@ -13,10 +13,25 @@ Private repo for now, with the intention of going public at http://www.github.co
 _*The below is preliminary and we are still seeking input_
 
 
+
+### Differences between AP2 & AP3 ###
+
+AP2  | AP3
+------------ | -------------
+UI View: edit all channels | UI View: edit one channel at a time
+Individual pod position data | Pod position groups
+Hardware Mapping separate app | Unified App
+ | Multiple position/index maps for content
+ | Clip/Shaders position scale tools
+ | Clip/Shaders input includes mouse / keyboard
+
+These are only design changes, not additional features or code improvements - which are listed below.
+
+
 ### Main Features ###
 	
 	3D Editor
-	GPU Accelerated Graphics Engine written in GLSL
+	GPU Accelerated Graphics Engine written in GLSL - Load any GLSL Shaders
 	Audio Input (or any data input)
 	Rendering views: 3D Point Cloud, 3D Directional Lights, 2D Quad pixel shader
 	Broadcast lighting hardware protocols such as UDP, OSC, and DMX
@@ -26,19 +41,6 @@ _*The below is preliminary and we are still seeking input_
 	Hundreds of scripts built in
 	Simulate physical sensor inputs using mouse / keyboard
 	Open Source
-
-
-### Differences between AP2 & AP3 ###
-
-These are only architecture changes, not additional features, which are listed below separately.
-
-AP2  | AP3
------------- | -------------
-UI View: edit all channels | UI View: edit one at a time
-Individual pod data | Pod position groups
-Editor separate app | Editor in-play
- | Move clip content in Editor
- | Multiple position maps for content
 
 ### Phase II ###
 
