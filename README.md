@@ -68,9 +68,9 @@ New features to AP3:
 
 * Channels as Dynamic UI
 * Create and save multiple index/position maps
-* Modulation Inputs for all clip settings
+* Modulation inputs
 * HTML5 Video input
-* Broadcast OSC, UDP
+* Broadcast OSC, DMX
 * Receive MIDI controller and OSC API input
 * Sync from online content to offline Native App
 * Images / Animated Gifs / Text with all system fonts
