@@ -13,6 +13,19 @@ Private repo for now, with the intention of going public at http://www.github.co
 _*The below is preliminary and we are still seeking input_
 
 
+### Main Features ###
+	
+* 3D Editor
+* GPU Accelerated Graphics Engine written in GLSL
+* Upload any GLSL fragment shader
+* Audio Input (or any data input)
+* Rendering views: 3D Point Cloud, 3D Directional Lights, 2D Quad pixel shader
+* Broadcast lighting hardware protocols such as UDP, OSC, and DMX
+* Preview channels in previz while still communicating main mix to hardware
+* Hundreds of scripts built in
+* Write your own shaders with helper methods/values not normally in GLSL
+* Simulate physical sensor inputs using mouse / keyboard
+* Open Source
 
 ### Differences between AP2 & AP3 ###
 
@@ -28,19 +41,6 @@ _*The below is preliminary and we are still seeking input_
 These are only design changes, not additional features or code improvements - which are listed below.
 
 
-### Main Features ###
-	
-	3D Editor
-	GPU Accelerated Graphics Engine written in GLSL
-	Upload any GLSL fragment shader
-	Audio Input (or any data input)
-	Rendering views: 3D Point Cloud, 3D Directional Lights, 2D Quad pixel shader
-	Broadcast lighting hardware protocols such as UDP, OSC, and DMX
-	Preview channels in previz while still communicating main mix to hardware
-	Hundreds of scripts built in
-	Write your own shaders with helper methods/values not normally in GLSL
-	Simulate physical sensor inputs using mouse / keyboard
-	Open Source
 
 ### Phase II ###
 
