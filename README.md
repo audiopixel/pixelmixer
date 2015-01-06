@@ -16,14 +16,14 @@ _*The below is preliminary and we are still seeking input_
 
 ### Differences between AP2 & AP3 ###
 
-AP2  | AP3
------------- | -------------
-UI View: edit all channels | UI View: edit one channel at a time
-Individual pod position data | Pod position groups
-Hardware Mapping separate app | Unified App
- | Multiple position/index maps for content
- | Clip/Shaders position scale tools
- | Clip/Shaders input includes mouse / keyboard
+|                          AP2  |                                          AP3 |
+|------------------------------ | -------------------------------------------- |
+|UI View: edit all channels     | UI View: edit one channel at a time          |
+|Individual pod position data   | Pod position groups                          |
+|Hardware mapping separate app  | Unified App                                  |
+|                               | Multiple position/index maps for content     |
+|                               | Clip/Shaders position and scale tools        |
+|                               | Clip/Shaders input includes mouse / keyboard |
 
 These are only design changes, not additional features or code improvements - which are listed below.
 
