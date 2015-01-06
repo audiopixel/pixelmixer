@@ -39,9 +39,7 @@ Design changes:
 |UI View: edit all channels     | UI View: edit one channel at a time          |
 |Individual pod position data   | Pod position groups                          |
 |Hardware mapping separate app  | Unified App                                  |
-|                               | Multiple position/index maps for content     |
-|                               | Clip/Shaders position and scale tools        |
-|                               | Clip/Shaders input includes mouse / keyboard |
+
 
 New features to AP3:
 
