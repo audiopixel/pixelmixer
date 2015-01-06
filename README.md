@@ -31,12 +31,12 @@ These are only design changes, not additional features or code improvements - wh
 ### Main Features ###
 	
 	3D Editor
-	GPU Accelerated Graphics Engine written in GLSL - Load any GLSL Shaders
+	GPU Accelerated Graphics Engine written in GLSL
+	Upload any GLSL fragment shader
 	Audio Input (or any data input)
 	Rendering views: 3D Point Cloud, 3D Directional Lights, 2D Quad pixel shader
 	Broadcast lighting hardware protocols such as UDP, OSC, and DMX
 	Preview channels in previz while still communicating main mix to hardware
-	Upload any GLSL fragment shader
 	Write your own with helper methods/values not normally in GLSL
 	Hundreds of scripts built in
 	Simulate physical sensor inputs using mouse / keyboard
