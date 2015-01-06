@@ -37,8 +37,8 @@ These are only design changes, not additional features or code improvements - wh
 	Rendering views: 3D Point Cloud, 3D Directional Lights, 2D Quad pixel shader
 	Broadcast lighting hardware protocols such as UDP, OSC, and DMX
 	Preview channels in previz while still communicating main mix to hardware
-	Write your own with helper methods/values not normally in GLSL
 	Hundreds of scripts built in
+	Write your own shaders with helper methods/values not normally in GLSL
 	Simulate physical sensor inputs using mouse / keyboard
 	Open Source
 
