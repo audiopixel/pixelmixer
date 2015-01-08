@@ -301,7 +301,7 @@ Editor.prototype = {
 
 		this.selected = object;
 
-		this.config.setKey( 'selected', uuid );
+		//this.config.setKey( 'selected', uuid );
 		this.signals.objectSelected.dispatch( object );
 
 	},

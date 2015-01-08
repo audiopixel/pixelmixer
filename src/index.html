@@ -34,39 +34,49 @@
 		<script src="js/Viewport.js"></script>
 		<script src="js/Viewport.Info.js"></script>
 
+		<script src="js/managers/AppManager.js"></script>
 		<script src="js/managers/TestManager.js"></script>
 		<script src="js/managers/TestManagerDuce.js"></script>
 
 
 		<script>
 
+		var ap;
+
 		function onLoad(){
 
 
 			// ****** Platform ******
 
-			var ap = {};
+			ap = ap || {};
 
 
 
 			// ****** Editor ******
 
-			var editor = new Editor();
-			ap.editor = editor;
+			ap.editor = new Editor();
 
 
 
 			// ****** Managers ******
 
-			var testManager = new TestManager( ap );
-			ap.testManager = testManager;
+			ap.testManager = new TestManager( ap );
+			ap.testManagerDuce = new TestManagerDuce( ap );
+			ap.app = new AppManager( ap );
 
-			var testManagerDuce = new TestManagerDuce( ap );
-			ap.testManagerDuce = testManagerDuce;
+			ap.testManager.init();
+			ap.testManagerDuce.init();
+			ap.app.init();
 
-
-			testManager.init();
-			testManagerDuce.init();
+			// ap.api.init();
+			// ap.audio.init();	
+			// ap.media.init();		
+			// ap.hardware.init();	
+			// ap.scene.init();	
+			// ap.pod.init();
+			// ap.state.init();
+			// ap.net.init();
+			// ap.file.init();
 
 
 
@@ -91,7 +101,7 @@
 
 			// ****** Config ****** 
 
-			editor.setTheme( editor.config.getKey( 'theme' ) );
+			ap.editor.setTheme( ap.editor.config.getKey( 'theme' ) );
 
 
 
@@ -102,6 +112,7 @@
 				// Update testManagers
 				ap.testManager.update();
 				ap.testManagerDuce.update();
+				ap.app.update();
 
 				// Render next frame // TODO: throttle logic if needed
 				requestAnimationFrame( animate );
@@ -124,7 +135,7 @@
 			document.addEventListener( 'drop', function ( event ) {
 
 				event.preventDefault();
-				editor.loader.loadFile( event.dataTransfer.files[ 0 ] );
+				ap.editor.loader.loadFile( event.dataTransfer.files[ 0 ] );
 
 			}, false );
 
@@ -137,8 +148,8 @@
 						break;
 					case 46: // delete
 						var parent = editor.selected.parent;
-						editor.removeObject( editor.selected );
-						editor.select( parent );
+						ap.editor.removeObject( editor.selected );
+						ap.editor.select( parent );
 						break;
 
 				}
@@ -147,7 +158,7 @@
 
 			var onWindowResize = function ( event ) {
 
-				editor.signals.windowResize.dispatch();
+				ap.editor.signals.windowResize.dispatch();
 
 			};
 

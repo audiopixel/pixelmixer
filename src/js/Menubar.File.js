@@ -24,7 +24,7 @@ Menubar.File = function ( editor ) {
 	option.onClick( function () {
 
 		if ( confirm( 'Are you sure?' ) ) {
-
+/*
 			editor.config.setKey(
 				'camera/position', [ 500, 250, 500 ],
 				'camera/target', [ 0, 0, 0 ]
@@ -35,7 +35,7 @@ Menubar.File = function ( editor ) {
 				location.href = location.pathname;
 
 			} );
-
+*/
 		}
 
 	} );
