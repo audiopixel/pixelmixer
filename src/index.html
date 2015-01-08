@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>AP3.0 Editor Test</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+	<body ontouchstart="" onload="onLoad()">
+		<link href="css/main.css" rel="stylesheet" />
+		<link id="theme" href="css/light.css" rel="stylesheet" />
+
+
+		<script src="js/libs/three/three.min.js"></script>
+		<script src="js/libs/system.min.js"></script>
+		<script src="js/libs/signals.min.js"></script>
+		<script src="js/libs/ui.js"></script>
+		<script src="js/libs/ui.editor.js"></script>
+		<script src="js/libs/ui.three.js"></script>
+
+		<script src="js/libs/three/controls/EditorControls.js"></script>
+		<script src="js/libs/three/controls/TransformControls.js"></script>
+		<script src="js/libs/three/renderers/Projector.js"></script>
+		<script src="js/libs/three/renderers/CanvasRenderer.js"></script>
+
+		<script src="js/Editor.js"></script>
+		<script src="js/Config.js"></script>
+		<script src="js/Loader.js"></script>
+		<script src="js/Menubar.js"></script>
+		<script src="js/Menubar.File.js"></script>
+		<script src="js/Menubar.Edit.js"></script>
+		<script src="js/Menubar.Add.js"></script>
+		<script src="js/Sidebar.js"></script>
+		<script src="js/Toolbar.js"></script>
+		<script src="js/Viewport.js"></script>
+		<script src="js/Viewport.Info.js"></script>
+
+		<script src="js/managers/TestManager.js"></script>
+		<script src="js/managers/TestManagerDuce.js"></script>
+
+
+		<script>
+
+		function onLoad(){
+
+
+			// ****** Platform ******
+
+			var ap = {};
+
+
+
+			// ****** Editor ******
+
+			var editor = new Editor();
+			ap.editor = editor;
+
+
+
+			// ****** Managers ******
+
+			var testManager = new TestManager( ap );
+			ap.testManager = testManager;
+
+			var testManagerDuce = new TestManagerDuce( ap );
+			ap.testManagerDuce = testManagerDuce;
+
+
+			testManager.init();
+			testManagerDuce.init();
+
+
+
+			// ****** UI Modules ******
+
+			var viewport = new Viewport( ap );
+			document.body.appendChild( viewport.dom );
+
+			var toolbar = new Toolbar( ap );
+			document.body.appendChild( toolbar.dom );
+
+			var menubar = new Menubar( ap );
+			document.body.appendChild( menubar.dom );
+
+			var sidebar = new Sidebar( ap );
+			document.body.appendChild( sidebar.dom );
+
+			var dialog = new UI.Dialog();
+			document.body.appendChild( dialog.dom );
+
+
+
+			// ****** Config ****** 
+
+			editor.setTheme( editor.config.getKey( 'theme' ) );
+
+
+
+			// ****** Runtime Loop ****** 
+
+			function animate() {
+				
+				// Update testManagers
+				ap.testManager.update();
+				ap.testManagerDuce.update();
+
+				// Render next frame // TODO: throttle logic if needed
+				requestAnimationFrame( animate );
+
+			}
+
+			animate();
+
+
+
+			// ****** Event Handlers ****** 
+
+			document.addEventListener( 'dragover', function ( event ) {
+
+				event.preventDefault();
+				event.dataTransfer.dropEffect = 'copy';
+
+			}, false );
+
+			document.addEventListener( 'drop', function ( event ) {
+
+				event.preventDefault();
+				editor.loader.loadFile( event.dataTransfer.files[ 0 ] );
+
+			}, false );
+
+			document.addEventListener( 'keydown', function ( event ) {
+
+				switch ( event.keyCode ) {
+
+					case 8: // prevent browser back
+						event.preventDefault();
+						break;
+					case 46: // delete
+						var parent = editor.selected.parent;
+						editor.removeObject( editor.selected );
+						editor.select( parent );
+						break;
+
+				}
+
+			}, false );
+
+			var onWindowResize = function ( event ) {
+
+				editor.signals.windowResize.dispatch();
+
+			};
+
+			window.addEventListener( 'resize', onWindowResize, false );
+
+			setTimeout(onWindowResize, 10);
+
+		}
+
+		</script>
+	</body>
+</html>
