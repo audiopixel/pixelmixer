@@ -529,8 +529,6 @@ var Viewport = function ( ap ) {
 	var renderer = createRenderer( ap.editor.config.getKey( 'renderer' ), ap.editor.config.getKey( 'renderer/antialias' ) );
 	container.dom.appendChild( renderer.domElement );
 
-	animate();
-
 	//
 
 	function updateMaterials() {
@@ -571,9 +569,16 @@ var Viewport = function ( ap ) {
 
 	}
 
-	function animate() {
 
-		requestAnimationFrame( animate );
+	// Update logic triggered through platform
+	ap.signals.moduleUpdate.add( function () {
+
+		//animate(); // not needed to update everyframe since it's updated per operation
+
+	} );
+
+
+	function animate() {
 
 		// animations
 

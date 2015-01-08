@@ -46,9 +46,19 @@
 		function onLoad(){
 
 
+
+
+
 			// ****** Platform ******
 
 			ap = ap || {};
+
+			var SIGNALS = signals;
+			ap.signals = {
+
+				moduleUpdate: new SIGNALS.Signal()
+
+			};
 
 
 
@@ -77,7 +87,6 @@
 			// ap.state.init();
 			// ap.net.init();
 			// ap.file.init();
-
 
 
 			// ****** UI Modules ******
@@ -109,10 +118,14 @@
 
 			function animate() {
 				
-				// Update testManagers
+				// ** Update Managers
 				ap.testManager.update();
 				ap.testManagerDuce.update();
 				ap.app.update();
+
+				// ** Update Modules
+				ap.signals.moduleUpdate.dispatch();
+
 
 				// Render next frame // TODO: throttle logic if needed
 				requestAnimationFrame( animate );
