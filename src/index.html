@@ -9,14 +9,17 @@
 		<link href="css/main.css" rel="stylesheet" />
 		<link id="theme" href="css/light.css" rel="stylesheet" />
 
+		<div id="container"></div>
 
-		<script src="js/libs/three/three.min.js"></script>
+		<script src="js/libs/Detector.js"></script>
+		<script src="js/libs/stats.min.js"></script>
 		<script src="js/libs/system.min.js"></script>
 		<script src="js/libs/signals.min.js"></script>
 		<script src="js/libs/ui.js"></script>
 		<script src="js/libs/ui.editor.js"></script>
 		<script src="js/libs/ui.three.js"></script>
 
+		<script src="js/libs/three/three.min.js"></script>
 		<script src="js/libs/three/controls/EditorControls.js"></script>
 		<script src="js/libs/three/controls/TransformControls.js"></script>
 		<script src="js/libs/three/renderers/Projector.js"></script>
@@ -35,28 +38,27 @@
 		<script src="js/Viewport.Info.js"></script>
 
 		<script src="js/managers/AppManager.js"></script>
+		<script src="js/managers/StateManager.js"></script>
+		<script src="js/managers/HardwareManager.js"></script>
 		<script src="js/managers/TestManager.js"></script>
 		<script src="js/managers/TestManagerDuce.js"></script>
 
 
 		<script>
 
+		if ( ! Detector.webgl ) { Detector.addGetWebGLMessage(); }
+
 		var ap;
 
 		function onLoad(){
 
 
-
-
-
 			// ****** Platform ******
 
 			ap = ap || {};
-
-			var SIGNALS = signals;
 			ap.signals = {
 
-				moduleUpdate: new SIGNALS.Signal()
+				moduleUpdate: new signals.Signal()
 
 			};
 
@@ -73,10 +75,16 @@
 			ap.testManager = new TestManager( ap );
 			ap.testManagerDuce = new TestManagerDuce( ap );
 			ap.app = new AppManager( ap );
+			ap.state = new StateManager( ap );
+			ap.hardware = new HardwareManager( ap );
 
 			ap.testManager.init();
 			ap.testManagerDuce.init();
 			ap.app.init();
+			ap.state.init();
+			ap.hardware.init();
+
+			ap.app.setContainer( document.getElementById( 'container' ) );
 
 			// ap.api.init();
 			// ap.audio.init();	
@@ -122,6 +130,8 @@
 				ap.testManager.update();
 				ap.testManagerDuce.update();
 				ap.app.update();
+				ap.state.update();
+				ap.hardware.update();
 
 				// ** Update Modules
 				ap.signals.moduleUpdate.dispatch();
