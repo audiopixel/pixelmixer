@@ -114,6 +114,15 @@
 			ap.editor = new Editor();
 			ap.editorController = new EditorController( ap );
 
+			
+			setTimeout(function(){
+
+				// TODO create custom view for editor controller instead of faking it with this timeout
+				// Use this for now as testing view input: adding AP nodes/planes to Editor through controller
+				ap.editorController.addTestPlane();
+
+			}, 1000);
+
 
 
 			// ****** Managers ******
@@ -194,6 +203,13 @@
 
 
 			// ****** Event Handlers ****** 
+
+			document.addEventListener( 'click', function ( event ) {
+
+				
+
+			}, false );
+
 
 			document.addEventListener( 'dragover', function ( event ) {
 
