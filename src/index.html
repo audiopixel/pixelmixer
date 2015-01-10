@@ -26,6 +26,7 @@
 		<script src="js/libs/three/renderers/CanvasRenderer.js"></script>
 
 		<script src="js/Editor.js"></script>
+		<script src="js/EditorController.js"></script>
 		<script src="js/Config.js"></script>
 		<script src="js/Loader.js"></script>
 		<script src="js/Menubar.js"></script>
@@ -111,6 +112,7 @@
 			// ****** Editor ******
 
 			ap.editor = new Editor();
+			ap.editorController = new EditorController( ap );
 
 
 
@@ -121,7 +123,7 @@
 			ap.app = new AppManager( ap );
 			ap.state = new StateManager( ap );
 			ap.hardware = new HardwareManager( ap );
-			
+
 			ap.app.setContainer( document.getElementById( 'container' ) );
 
 			ap.testManager.init();
