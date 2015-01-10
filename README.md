@@ -82,3 +82,14 @@ New features to AP3:
 * Save user profile(s) and share presets/shaders/clips
 * Timeline Recorder
 * Entire program logic driven by bar bones API
+
+--
+
+### How to Contribute ###
+
+Jump right in. If you have access to this repo I would feel honored to have you as a contributor on this project.
+
+The next few weeks are more core construction, but after that it's going to be quite easy to add in modules, managers, shaders, clips, presets, ...
+
+For now feel free to push to master branch for all small changes.
+Large changes are best as pull requests.
