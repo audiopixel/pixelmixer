@@ -30,7 +30,6 @@ var Editor = function () {
 		transformModeChanged: new SIGNALS.Signal(),
 		snapChanged: new SIGNALS.Signal(),
 		spaceChanged: new SIGNALS.Signal(),
-		rendererChanged: new SIGNALS.Signal(),
 
 		sceneGraphChanged: new SIGNALS.Signal(),
 
@@ -47,11 +46,7 @@ var Editor = function () {
 
 		helperAdded: new SIGNALS.Signal(),
 		helperRemoved: new SIGNALS.Signal(),
-
-		materialChanged: new SIGNALS.Signal(),
-		fogTypeChanged: new SIGNALS.Signal(),
-		fogColorChanged: new SIGNALS.Signal(),
-		fogParametersChanged: new SIGNALS.Signal(),
+		
 		windowResize: new SIGNALS.Signal(),
 
 		showGridChanged: new SIGNALS.Signal()

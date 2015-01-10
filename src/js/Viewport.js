@@ -1,5 +1,10 @@
 /**
- * @author mrdoob / http://mrdoob.com/
+ * @author mrdoob / http://mrdoob.com/ (original author)
+ * @author hepp / http://audiopixel.com/ (refactored by)
+ *
+ * Based on the Three.js Editor's Viewport
+ * Additional logic and viewing capabilities added for AudioPixel
+ *
  */
 
 var Viewport = function ( ap ) {
@@ -68,13 +73,6 @@ var Viewport = function ( ap ) {
 
 	sceneHelpers.add( transformControls );
 
-	// fog
-
-	var oldFogType = "None";
-	var oldFogColor = 0xaaaaaa;
-	var oldFogNear = 1;
-	var oldFogFar = 5000;
-	var oldFogDensity = 0.00025;
 
 	// object picking
 
@@ -265,20 +263,6 @@ var Viewport = function ( ap ) {
 
 	} );
 
-	signals.rendererChanged.add( function ( type, antialias ) {
-
-		container.dom.removeChild( renderer.domElement );
-
-		renderer = createRenderer( type, antialias );
-		renderer.setClearColor( clearColor );
-		renderer.setSize( container.dom.offsetWidth, container.dom.offsetHeight );
-
-		container.dom.appendChild( renderer.domElement );
-
-		render();
-
-	} );
-
 	signals.sceneGraphChanged.add( function () {
 
 		render();
@@ -357,8 +341,6 @@ var Viewport = function ( ap ) {
 
 		} );
 
-		if ( materialsNeedUpdate === true ) updateMaterials();
-
 	} );
 
 	signals.objectChanged.add( function ( object ) {
@@ -397,8 +379,6 @@ var Viewport = function ( ap ) {
 
 		} );
 
-		if ( materialsNeedUpdate === true ) updateMaterials();
-
 	} );
 
 	signals.helperAdded.add( function ( object ) {
@@ -410,62 +390,6 @@ var Viewport = function ( ap ) {
 	signals.helperRemoved.add( function ( object ) {
 
 		objects.splice( objects.indexOf( object.getObjectByName( 'picker' ) ), 1 );
-
-	} );
-
-	signals.materialChanged.add( function ( material ) {
-
-		render();
-
-	} );
-
-	signals.fogTypeChanged.add( function ( fogType ) {
-
-		if ( fogType !== oldFogType ) {
-
-			if ( fogType === "None" ) {
-
-				scene.fog = null;
-
-			} else if ( fogType === "Fog" ) {
-
-				scene.fog = new THREE.Fog( oldFogColor, oldFogNear, oldFogFar );
-
-			} else if ( fogType === "FogExp2" ) {
-
-				scene.fog = new THREE.FogExp2( oldFogColor, oldFogDensity );
-
-			}
-
-			updateMaterials();
-
-			oldFogType = fogType;
-
-		}
-
-		render();
-
-	} );
-
-	signals.fogColorChanged.add( function ( fogColor ) {
-
-		oldFogColor = fogColor;
-
-		updateFog( scene );
-
-		render();
-
-	} );
-
-	signals.fogParametersChanged.add( function ( near, far, density ) {
-
-		oldFogNear = near;
-		oldFogFar = far;
-		oldFogDensity = density;
-
-		updateFog( scene );
-
-		render();
 
 	} );
 
@@ -530,44 +454,6 @@ var Viewport = function ( ap ) {
 	container.dom.appendChild( renderer.domElement );
 
 	//
-
-	function updateMaterials() {
-
-		ap.editor.scene.traverse( function ( node ) {
-
-			if ( node.material ) {
-
-				node.material.needsUpdate = true;
-
-				if ( node.material instanceof THREE.MeshFaceMaterial ) {
-
-					for ( var i = 0; i < node.material.materials.length; i ++ ) {
-
-						node.material.materials[ i ].needsUpdate = true;
-
-					}
-
-				}
-
-			}
-
-		} );
-
-	}
-
-	function updateFog( root ) {
-
-		if ( root.fog ) {
-
-			root.fog.color.setHex( oldFogColor );
-
-			if ( root.fog.near !== undefined ) root.fog.near = oldFogNear;
-			if ( root.fog.far !== undefined ) root.fog.far = oldFogFar;
-			if ( root.fog.density !== undefined ) root.fog.density = oldFogDensity;
-
-		}
-
-	}
 
 
 	// Update logic triggered through platform
