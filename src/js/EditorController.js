@@ -13,6 +13,10 @@ var EditorController = function ( ap ) {
 
 	this.meshCount = 0;
 
+
+
+
+	
 };
 
 EditorController.prototype = {
@@ -32,6 +36,53 @@ EditorController.prototype = {
 
 		this.editor.addObject( mesh );
 		this.editor.select( mesh );
+
+	},
+
+	addTestNode: function () {
+
+
+		nodeShaderMaterial = new THREE.ShaderMaterial( {
+
+			//uniforms:       uniforms,
+			//attributes:     attributes,
+			vertexShader:   document.getElementById( 'vertexShader' ).textContent,
+			fragmentShader: document.getElementById( 'fragment_shader_pass_1' ).textContent,
+
+			depthTest:      false,
+			transparent:    true
+
+		});
+
+
+		this.nodeGeo = new THREE.Geometry();
+
+		for ( e = 0; e < 12; e ++ ) {
+			for ( i = 0; i < 12; i ++ ) { 
+
+				var vertex = new THREE.Vector3();
+
+				vertex.x = e * 2;
+				vertex.y = i * 2; 
+
+				this.nodeGeo.vertices.push( vertex );
+			}
+		}
+
+		var vertex = new THREE.Vector3();
+		this.nodeGeo.vertices.push( vertex );
+
+
+		this.nodeMesh = new THREE.PointCloud( this.nodeGeo, nodeShaderMaterial );
+		this.nodeMesh.sortParticles = true;
+		this.nodeMesh.name = 'ApNodes';
+
+
+		//this.nodeGeo.vertices.push( vertex );
+		//this.nodeMesh.geometry.verticesNeedUpdate = true;
+
+		this.editor.addObject( this.nodeMesh );
+		this.editor.select( this.nodeMesh );
 
 	}
 

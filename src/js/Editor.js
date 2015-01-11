@@ -46,7 +46,6 @@ var Editor = function () {
 
 		helperAdded: new SIGNALS.Signal(),
 		helperRemoved: new SIGNALS.Signal(),
-		
 		windowResize: new SIGNALS.Signal(),
 
 		showGridChanged: new SIGNALS.Signal()
