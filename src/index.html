@@ -68,6 +68,42 @@
 
 		</script>
 
+		<script type="x-shader/x-vertex" id="node_vertexshader">
+			uniform float u_pointSize;
+			attribute float a_geoX;
+			attribute float a_geoY;
+			attribute float a_index;
+			varying float v_geoX;
+			varying float v_geoY;
+			varying float v_index;
+
+			void main() {
+				v_geoX = a_geoX;
+				v_geoY = a_geoY;
+				v_index = a_index;
+
+				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+				gl_PointSize = u_pointSize * ( 300.0 / length( mvPosition.xyz ) );
+				gl_Position = projectionMatrix * mvPosition;
+			}
+
+		</script>
+
+		<script type="x-shader/x-fragment" id="node_fragmentshader">
+
+			uniform sampler2D u_texture;
+			//uniform sampler2D u_colorMap;
+
+			//varying float v_geoX;
+			//varying float v_geoY;
+			//varying float v_index;
+
+			void main() {
+
+				gl_FragColor = /*texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * */ texture2D( u_texture, gl_PointCoord);
+			}
+		</script>
+
 
 		<script>
 

@@ -5,6 +5,20 @@ var TestManager = function (ap) {
 
 	this.tick = 0;
 
+	/*
+	ap.signals.moduleInit.add( function () {
+
+
+	} );
+
+	ap.signals.moduleUpdate.add( function () {
+
+
+		controls.update();
+		renderer.render( scene, camera );
+	} );
+	*/
+
 };
 
 TestManager.prototype = {
