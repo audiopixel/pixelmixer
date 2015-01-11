@@ -13,13 +13,14 @@ var AppManager = function (ap) {
 	this.cameraRTT, this.sceneRTT, this.renderer;
 
 	this.rtTexture;
+
+	this.scene;
+	this.controls;
+	this.camera;
+
+
+
 	this.time;
-
-
-	// temporary for testing
-	this.sceneScreen;
-
-
 
 	// TODO
 	/*
@@ -46,7 +47,16 @@ AppManager.prototype = {
 
 		this.rtTexture = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } );
 
-		this.sceneScreen = new THREE.Scene(); // temporary for testing
+
+		this.renderer = new THREE.WebGLRenderer();
+		this.renderer.setSize( window.innerWidth, window.innerHeight );
+		this.renderer.autoClear = false;
+		this.container.appendChild( this.renderer.domElement ); 
+
+		this.scene = new THREE.Scene();
+		this.camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
+		this.camera.position.z = 1700;
+		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement);
 
 
 		material = new THREE.ShaderMaterial( {
@@ -75,19 +85,19 @@ AppManager.prototype = {
 
 		quad = new THREE.Mesh( plane, materialScreen );
 		quad.position.z = -100;
-		this.sceneScreen.add( quad );
-
-		// temporary for testing
-		this.renderer = new THREE.WebGLRenderer();
-		this.renderer.setSize( window.innerWidth, window.innerHeight );
-		this.renderer.autoClear = false;
-		this.container.appendChild( this.renderer.domElement ); // temporary for testing
+		this.scene.add( quad );
 
 	},
 
 	update: function () {
 
 		this.time = Date.now() * 0.0015;
+
+
+		//this.camera.position.x += ( mouseX - this.camera.position.x ) * 0.05;
+		//this.camera.position.y += ( - mouseY - this.camera.position.y ) * 0.05;
+		//this.camera.lookAt( this.scene.position );
+		this.controls.update();
 
 		
 
@@ -99,9 +109,15 @@ AppManager.prototype = {
 
 		// Render full screen quad with generated texture
 
-		this.renderer.render( this.sceneScreen, this.cameraRTT );
+		// TODO turn this on when we need to capture for broadcast
+			//this.renderer.render( this.scene, this.cameraRTT );
+			//gl = renderer.getContext();
+			//gl.readPixels(0, 0, 12, 12, gl.RGBA, gl.UNSIGNED_BYTE, pixels); //TODO update size
+			//this.renderer.clear();
 
-		//this.renderer.clear();
+
+		this.renderer.render( this.scene, this.camera );
+		
 	},
 
 	// temporary for testing

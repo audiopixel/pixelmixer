@@ -13,30 +13,10 @@
 
 		<script src="js/libs/Detector.js"></script>
 		<script src="js/libs/stats.min.js"></script>
-		<script src="js/libs/system.min.js"></script>
 		<script src="js/libs/signals.min.js"></script>
-		<script src="js/libs/ui.js"></script>
-		<script src="js/libs/ui.editor.js"></script>
-		<script src="js/libs/ui.three.js"></script>
 
 		<script src="js/libs/three/three.min.js"></script>
-		<script src="js/libs/three/controls/EditorControls.js"></script>
-		<script src="js/libs/three/controls/TransformControls.js"></script>
-		<script src="js/libs/three/renderers/Projector.js"></script>
-		<script src="js/libs/three/renderers/CanvasRenderer.js"></script>
-
-		<script src="js/Editor.js"></script>
-		<script src="js/EditorController.js"></script>
-		<script src="js/Config.js"></script>
-		<script src="js/Loader.js"></script>
-		<script src="js/Menubar.js"></script>
-		<script src="js/Menubar.File.js"></script>
-		<script src="js/Menubar.Edit.js"></script>
-		<script src="js/Menubar.Add.js"></script>
-		<script src="js/Sidebar.js"></script>
-		<script src="js/Toolbar.js"></script>
-		<script src="js/Viewport.js"></script>
-		<script src="js/Viewport.Info.js"></script>
+		<script src="js/libs/three/controls/TrackballControls.js"></script>
 
 		<script src="js/managers/AppManager.js"></script>
 		<script src="js/managers/StateManager.js"></script>
@@ -103,27 +83,10 @@
 			ap = ap || {};
 			ap.signals = {
 
+				moduleInit: new signals.Signal(),
 				moduleUpdate: new signals.Signal()
 
 			};
-
-
-
-			// ****** Editor ******
-
-			ap.editor = new Editor();
-			ap.editorController = new EditorController( ap );
-
-
-			setTimeout(function(){
-
-				// TODO create custom view for editor controller instead of faking it with this timeout
-				// Use this for now as testing view input: adding AP nodes/planes to Editor through controller
-				ap.editorController.addTestNode();
-
-			}, 1000);
-
-
 
 			// ****** Managers ******
 
@@ -153,11 +116,9 @@
 			// ap.file.init();
 
 
-			// ****** UI Modules ******
+			// ****** Modules ******
 
-			var viewport = new Viewport( ap );
-			document.body.appendChild( viewport.dom );
-
+/*
 			var toolbar = new Toolbar( ap );
 			document.body.appendChild( toolbar.dom );
 
@@ -169,14 +130,10 @@
 
 			var dialog = new UI.Dialog();
 			document.body.appendChild( dialog.dom );
+*/
 
-
-
-			// ****** Config ****** 
-
-			ap.editor.setTheme( ap.editor.config.getKey( 'theme' ) );
-
-
+			// ** Init Modules
+			ap.signals.moduleInit.dispatch();
 
 			// ****** Runtime Loop ****** 
 
@@ -206,22 +163,13 @@
 
 			document.addEventListener( 'click', function ( event ) {
 
-				
-
 			}, false );
 
-
 			document.addEventListener( 'dragover', function ( event ) {
-
-				event.preventDefault();
-				event.dataTransfer.dropEffect = 'copy';
 
 			}, false );
 
 			document.addEventListener( 'drop', function ( event ) {
-
-				event.preventDefault();
-				ap.editor.loader.loadFile( event.dataTransfer.files[ 0 ] );
 
 			}, false );
 
@@ -233,9 +181,6 @@
 						event.preventDefault();
 						break;
 					case 46: // delete
-						var parent = editor.selected.parent;
-						ap.editor.removeObject( editor.selected );
-						ap.editor.select( parent );
 						break;
 
 				}
@@ -243,8 +188,6 @@
 			}, false );
 
 			var onWindowResize = function ( event ) {
-
-				ap.editor.signals.windowResize.dispatch();
 
 			};
 
