@@ -5,18 +5,18 @@
 *
 */
 
-var AppManager = function (ap) {
+var AppManager = function (ap, container) {
 
 	this.ap = ap;
 	this.stats = new Stats();
 	this.stats.domElement.style.position = 'absolute';
 	this.stats.domElement.style.top = '0px';
 
-	this.container;
+	this.container = container;
 	this.renderer;
 
-	this.cameraRTT
-	this.sceneRTT
+	this.cameraRTT;
+	this.sceneRTT;
 	this.rtTexture;
 
 	this.scene;
@@ -27,14 +27,14 @@ var AppManager = function (ap) {
 	this.geometry;
 
 	this.time;
+	this.simSize = 256;
 
-	// TODO preload this
-	this.nodeTexture = THREE.ImageUtils.loadTexture( "images/nodeflare1.png" );
+	this.nodeTexture = THREE.ImageUtils.loadTexture( "images/nodeflare1.png" );  // TODO preload this
+	
 
 	// TODO
 	/*
 	this.rtTextureA, this.rtTextureB, this.coordsMap, this.portsMap;
-	this.simSize = 0;
 	this.base = 10000000;
 	this.rtToggle = true;
 
@@ -52,11 +52,11 @@ AppManager.prototype = {
 		var windowHalfX = window.innerWidth / 2;
 		var windowHalfY = window.innerHeight / 2;
 
-		this.cameraRTT = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -10000, 10000 );
+		this.cameraRTT = new THREE.OrthographicCamera( this.simSize / - 2, this.simSize / 2, this.simSize / 2, this.simSize / - 2, -10000, 10000 );
 		this.sceneRTT = new THREE.Scene();
 
-		this.rtTexture = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } );
-
+		this.rtTexture = new THREE.WebGLRenderTarget( this.simSize, this.simSize, {minFilter: THREE.NearestMipMapNearestFilter,magFilter: THREE.NearestFilter,format: THREE.RGBFormat});
+				
 
 		this.renderer = new THREE.WebGLRenderer();
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
@@ -97,8 +97,48 @@ AppManager.prototype = {
 		quad = new THREE.Mesh( plane, materialScreen );
 		quad.position.z = -100;
 		this.scene.add( quad );
-		
 
+
+		this.geometry = new THREE.Geometry();
+
+		//---------------
+		// TODO - addNodes() function triggered by HardwareManager()
+		// Add basic test nodes right here for now
+		var geoX = [];
+		var geoY = [];
+		var passIndex = [];
+
+		for ( e = 0; e < 12; e ++ ) { // Simulate a node grid for now
+			for ( i = 0; i < 14; i ++ ) { 
+
+				var vertex = new THREE.Vector3();
+				vertex.x = (e * 30) - 155;
+				vertex.y = (i * 30) - 155;
+				this.geometry.vertices.push( vertex );
+			}
+		}
+		for ( i = 1; i <= this.geometry.vertices.length; i ++ ) {
+			// for each point push along x, y values to reference correct pixel in u_colorMaps
+			var imageSize = this.simSize; 
+			var tx = (i) % imageSize;
+			if(tx == 0){
+				tx = imageSize;
+			}
+			var ty = ((i+1) - tx) / imageSize;
+
+			geoX.push(tx / imageSize - 0.5 / imageSize);
+			geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
+			passIndex.push(i-1);
+		}//---------------
+
+
+		// Setup the shaders for the nodes that use the rendered texture as a colorMap
+
+		var attributes = { // For each node we pass along it's index value and x, y in relation to the colorMaps
+			a_geoX:        { type: 'f', value: geoX },
+			a_geoY:        { type: 'f', value: geoY },
+			a_index:        { type: 'f', value: passIndex }
+		};
 		uniforms = {
 			u_colorMap:   { type: "t", value: this.rtTexture },
 			u_pointSize:        { type: 'f', value: 60.0 },
@@ -108,28 +148,13 @@ AppManager.prototype = {
 		nodeShaderMaterial = new THREE.ShaderMaterial( {
 
 			uniforms:       uniforms,
-			//attributes:     attributes,
+			attributes:     attributes,
 			vertexShader:   document.getElementById( 'node_vertexshader' ).textContent,
 			fragmentShader: document.getElementById( 'node_fragmentshader' ).textContent,
 
 			depthTest:      false,
 			transparent:    true
-
 		});
-
-
-		this.geometry = new THREE.Geometry();
-
-		// TODO - addNodes() function handled by HardwareManager()
-		// Add basic test nodes right here for now
-		for ( e = 0; e < 12; e ++ ) {
-			for ( i = 0; i < 14; i ++ ) { 
-				var vertex = new THREE.Vector3();
-				vertex.x = (e * 30) - 155;
-				vertex.y = (i * 30) - 155;
-				this.geometry.vertices.push( vertex );
-			}
-		}
 
 		this.particleSystem = new THREE.PointCloud( this.geometry, nodeShaderMaterial );
 		this.particleSystem.sortParticles = true;
@@ -156,7 +181,7 @@ AppManager.prototype = {
 
 		// Render full screen quad with generated texture
 		// TODO turn this on when we need to capture for broadcast
-			//this.renderer.render( this.scene, this.cameraRTT );
+			//this.renderer.render( this.sceneRTT, this.cameraRTT );
 			//gl = renderer.getContext();
 			//gl.readPixels(0, 0, 12, 12, gl.RGBA, gl.UNSIGNED_BYTE, pixels); //TODO update size
 			//this.renderer.clear();
@@ -164,12 +189,6 @@ AppManager.prototype = {
 		// Render the node and plane scene using the generated texture
 		this.renderer.render( this.scene, this.camera );
 		
-	},
-
-	// temporary for testing
-	setContainer: function ( _container ) {
-
-		this.container = _container;
 	}
 
 }

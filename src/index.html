@@ -92,16 +92,16 @@
 		<script type="x-shader/x-fragment" id="node_fragmentshader">
 
 			uniform sampler2D u_texture;
-			//uniform sampler2D u_colorMap;
+			uniform sampler2D u_colorMap;
 
-			//varying float v_geoX;
-			//varying float v_geoY;
-			//varying float v_index;
+			varying float v_geoX;
+			varying float v_geoY;
+			varying float v_index;
 
 			void main() {
-
-				gl_FragColor = /*texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * */ texture2D( u_texture, gl_PointCoord);
+				gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture, gl_PointCoord);
 			}
+			
 		</script>
 
 
@@ -128,11 +128,9 @@
 
 			ap.testManager = new TestManager( ap );
 			ap.testManagerDuce = new TestManagerDuce( ap );
-			ap.app = new AppManager( ap );
 			ap.state = new StateManager( ap );
 			ap.hardware = new HardwareManager( ap );
-
-			ap.app.setContainer( document.getElementById( 'container' ) );
+			ap.app = new AppManager( ap, document.getElementById( 'container' ) );
 
 			ap.testManager.init();
 			ap.testManagerDuce.init();
