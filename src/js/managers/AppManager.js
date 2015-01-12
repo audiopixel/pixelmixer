@@ -28,10 +28,10 @@ var AppManager = function (ap, container) {
 	this.geoY;
 	this.passIndex;
 
-	this.particleSystem;
+	this.pointCloud;
 	this.geometry;
 
-	this.time;
+	this.time = 0;
 	this.simSize = 128;
 
 	this.nodeTexture = THREE.ImageUtils.loadTexture( "images/nodeflare1.png" );  // TODO preload this
@@ -81,18 +81,35 @@ AppManager.prototype = {
 		 // TODO allow these to be changed and update on the fly
 		this.addNodesAsTestGrid();
 		this.generateCoordsMap();
-
 		//---------------
 
-		this.addMainSourceShader();
-		this.addNodeShader();
+		this.updateMainSourceShader();
+		this.updateNodePointCloud();
 
 		//this.addTestPlane(); // testing
+
+/*
+		// Example of updating the nodes on the fly:
+		var that = this;
+		setTimeout(function(){
+			that.addNodesAsTestGrid(); // Change or add more nodes
+			that.updateNodes();
+		}, 2000);
+*/
+
+/*
+		// Example of updating the main shader on the fly:
+		var that = this;
+		setTimeout(function(){
+			that.updateMainSourceShader();
+		}, 2000);
+*/
+
 	},
 
 	update: function () {
 
-		this.time = Date.now() * 0.0015;
+		this.time += .05;
 		this.stats.update();
 
 
@@ -121,13 +138,15 @@ AppManager.prototype = {
 
 		// Update uniforms
 
-		this.material.uniforms.u_time.value += .05;
+		this.material.uniforms.u_time.value = this.time;
 		
 	},
 
 	///////////////// test
 
 	addNodesAsTestGrid: function () {
+		this.geometry = new THREE.Geometry();
+
 		// TODO - addNodes() function triggered by HardwareManager()
 		// Add basic test nodes right here for now
 		this.geoX = [];
@@ -138,8 +157,8 @@ AppManager.prototype = {
 			for ( i = 0; i < 14; i ++ ) { 
 
 				var vertex = new THREE.Vector3();
-				vertex.x = (e * 30) - 370;
-				vertex.y = (i * 30) - 200;
+				vertex.x = (e * 30) - 370;// + (Math.random() * 100);
+				vertex.y = (i * 30) - 200;// + (Math.random() * 100);
 				this.geometry.vertices.push( vertex );
 			}
 		}
@@ -178,6 +197,14 @@ AppManager.prototype = {
 
 	/////////////////
 
+	updateNodes: function () {
+
+			this.generateCoordsMap();
+			this.material.uniforms.u_coordsMap.value = this.coordsMap;
+			this.updateNodePointCloud();
+
+	},
+
 	generateCoordsMap: function () {
 
 		// Generate coordsMap data texture for all the nodes x,y,z
@@ -211,7 +238,7 @@ AppManager.prototype = {
 		this.coordsMap.flipY = true;
 	},
 
-	addNodeShader: function(){
+	updateNodePointCloud: function(){
 
 		var attributes = ap.shaders.NodeShader.attributes;
 		attributes.a_geoX.value = this.geoX;
@@ -233,17 +260,25 @@ AppManager.prototype = {
 			transparent:    true
 		});
 
-		this.particleSystem = new THREE.PointCloud( this.geometry, nodeShaderMaterial );
-		this.particleSystem.sortParticles = true;
-		this.scene.add( this.particleSystem );
+		var name = "AP Nodes";
+		if(this.scene.getObjectByName(name)){
+			// If the pointCloud has already been added remove it so we can add it fresh
+			this.scene.remove( this.pointCloud );
+		}
+		this.pointCloud = new THREE.PointCloud( this.geometry, nodeShaderMaterial );
+		this.pointCloud.sortParticles = true;
+		this.pointCloud.name = name;
+
+		this.scene.add( this.pointCloud );
 	},
 
-	addMainSourceShader: function(){
+	updateMainSourceShader: function(){
 		// TODO generate this as the master merged shader from all the pods output
 		// Main quad and texture that gets rendered as the source shader
+
 		this.material = new THREE.ShaderMaterial( {
 			uniforms: {
-				u_time: { type: "f", value: 0.0 },
+				u_time: { type: "f", value: this.time },
 				u_coordsMap: { type: "t", value: this.coordsMap },
 				u_mapSize: { type: "f", value: this.simSize }
 			},
