@@ -25,7 +25,7 @@
 		<script src="js/managers/HardwareManager.js"></script>
 		<script src="js/managers/TestManager.js"></script>
 		<script src="js/managers/TestManagerDuce.js"></script>
-		
+
 		<script src="js/audiopixel.js"></script>
 
 		<script>
@@ -124,6 +124,8 @@
 
 		<script id="fragment_shader_pass_1" type="x-shader/x-fragment">
 
+			//#INCLUDESHADERUTILS
+
 			precision mediump float;
 			float ap_index;
 			vec4  ap_xyz;
@@ -166,6 +168,8 @@
 				ap_rgb = vec3(c2,c3,c1);
 
 				gl_FragColor = vec4(ap_rgb, 1.0);
+
+				//#INCLUDESHADERS
 
 			}
 

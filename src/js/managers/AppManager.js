@@ -7,7 +7,6 @@
 
 var AppManager = function (ap, container) {
 
-	this.ap = ap;
 	this.stats = new Stats();
 	this.stats.domElement.style.position = 'absolute';
 	this.stats.domElement.style.top = '0px';
@@ -30,6 +29,7 @@ var AppManager = function (ap, container) {
 
 	this.pointCloud;
 	this.geometry;
+	this.fragmentShader;
 
 	this.time = 0;
 	this.simSize = 128;
@@ -38,6 +38,8 @@ var AppManager = function (ap, container) {
 
 	this.coordsMap;
 	this.base = 10000000;
+
+	this.plane = new THREE.PlaneBufferGeometry( this.simSize, this.simSize );
 
 	// TODO
 	/*
@@ -86,7 +88,11 @@ AppManager.prototype = {
 		this.updateMainSourceShader();
 		this.updateNodePointCloud();
 
-		//this.addTestPlane(); // testing
+
+		//---------------
+		// testing
+
+		//this.addTestPlane(); 
 
 /*
 		// Example of updating the nodes on the fly:
@@ -105,6 +111,7 @@ AppManager.prototype = {
 		}, 2000);
 */
 
+		//---------------
 	},
 
 	update: function () {
@@ -175,24 +182,23 @@ AppManager.prototype = {
 			this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
 			this.passIndex.push(i-1);
 		}
+
 	},
 
 	addTestPlane: function(){
-		var plane = new THREE.PlaneBufferGeometry( this.simSize, this.simSize );
 		var materialScreen = new THREE.ShaderMaterial( {
 
-			uniforms: 		ap.shaders.SimpleTextureShader.uniforms,
+			uniforms: 		{"u_texture":   { type: "t", value: this.rtTexture }},
 			vertexShader: 	ap.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: ap.shaders.SimpleTextureShader.fragmentShader,
 			depthWrite: false
 
 		} );
 
-		materialScreen.uniforms.u_texture.value = this.rtTexture; // set the texture as uniform
-
-		quad = new THREE.Mesh( plane, materialScreen );
+		var quad = new THREE.Mesh( this.plane, materialScreen );
 		quad.position.z = -100;
 		this.scene.add( quad );
+
 	},
 
 	/////////////////
@@ -236,6 +242,7 @@ AppManager.prototype = {
 		this.coordsMap.magFilter = THREE.NearestFilter;
 		this.coordsMap.needsUpdate = true;
 		this.coordsMap.flipY = true;
+
 	},
 
 	updateNodePointCloud: function(){
@@ -262,7 +269,7 @@ AppManager.prototype = {
 
 		var name = "AP Nodes";
 		if(this.scene.getObjectByName(name)){
-			// If the pointCloud has already been added remove it so we can add it fresh
+			// If the pointCloud has already been added, remove it so we can add it fresh
 			this.scene.remove( this.pointCloud );
 		}
 		this.pointCloud = new THREE.PointCloud( this.geometry, nodeShaderMaterial );
@@ -270,11 +277,22 @@ AppManager.prototype = {
 		this.pointCloud.name = name;
 
 		this.scene.add( this.pointCloud );
+
 	},
 
 	updateMainSourceShader: function(){
-		// TODO generate this as the master merged shader from all the pods output
 		// Main quad and texture that gets rendered as the source shader
+
+		this.fragmentShader = document.getElementById( 'fragment_shader_pass_1' ).textContent;
+
+		// TODO - Add shaders based on the loaded clips
+		//this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERS", "");
+
+		// TODO - update uniforms based on the loaded clips
+
+
+		// Add ShaderUtils 
+		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERUTILS", ap.shaders.ShaderUtils);
 
 		this.material = new THREE.ShaderMaterial( {
 			uniforms: {
@@ -283,13 +301,21 @@ AppManager.prototype = {
 				u_mapSize: { type: "f", value: this.simSize }
 			},
 			vertexShader: ap.shaders.SimpleTextureShader.vertexShader,
-			fragmentShader: document.getElementById( 'fragment_shader_pass_1' ).textContent
+			fragmentShader: this.fragmentShader
 		} );
 
-		var plane = new THREE.PlaneBufferGeometry( this.simSize, this.simSize );
-		quad = new THREE.Mesh( plane, this.material );
+		var name = "SourceQuad";
+		var lookupObj = this.sceneRTT.getObjectByName(name);
+		if(lookupObj){
+			// If the quad has already been added, remove it so we can add it fresh
+			this.sceneRTT.remove(lookupObj);
+		}
+
+		var quad = new THREE.Mesh( this.plane, this.material );
 		quad.position.z = -100;
+		quad.name = name;
 		this.sceneRTT.add( quad );
+
 	}
 
 }
