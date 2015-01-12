@@ -5,7 +5,9 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	</head>
+	
 	<body ontouchstart="" onload="onLoad()">
+
 		<link href="css/main.css" rel="stylesheet" />
 		<link id="theme" href="css/light.css" rel="stylesheet" />
 
@@ -24,133 +26,14 @@
 		<script src="js/managers/TestManager.js"></script>
 		<script src="js/managers/TestManagerDuce.js"></script>
 
-		<script id="fragment_shader_screen" type="x-shader/x-fragment">
-
-			varying vec2 v_vUv;
-			uniform sampler2D tDiffuse;
-
-			void main() {
-
-				gl_FragColor = texture2D( tDiffuse, v_vUv );
-
-			}
-
-		</script>
-
-		<script id="fragment_shader_pass_1" type="x-shader/x-fragment">
-
-			precision mediump float;
-			float ap_index;
-			vec4  ap_xyz;
-			//vec3  ap_lastRgb;
-			vec3  ap_rgb;
-
-			varying vec2 v_vUv;
-			uniform float u_time;
-			//uniform float u_random;
-			uniform float u_mapSize;
-			uniform sampler2D u_coordsMap;
-			//uniform sampler2D u_prevCMap;
-			//uniform sampler2D u_portsMap;
-
-
-			void main() {
-
-				//********************************************
-				ap_xyz = texture2D( u_coordsMap, v_vUv);
-				if(ap_xyz[3] == 0.0){ discard; }
-
-				ap_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);
-				//ap_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));
-
-				//********************************************
-
-				//-----------------------------------------
-				vec2 p = (((0.5 * 110000.) + 10000.) * vec2( ap_xyz[0] +  (ap_xyz[2] * 0.25), ap_xyz[1]) ) + 6.;
-
-				float x = p.x;
-				float y = p.y;
-				float mov0 = x+y+cos(sin(u_time)*2.0)*100.+sin(x/100.)*1000.;
-				float mov1 = y;
-				float mov2 = x;
-				float c1 = abs(sin(mov1+u_time)/2.+mov2/2.-mov1-mov2+u_time);
-				float c2 = abs(sin(c1+sin(mov0/1000.+u_time)+sin(y/40.+u_time)+sin((x+y)/100.)*3.));
-				float c3 = abs(sin(c2+cos(mov1+mov2+c2)+cos(mov2)+sin(x/1000.)));
-
-				c1 = c1 * 0.25;
-
-				ap_rgb = vec3(c2,c3,c1);
-
-
-				gl_FragColor = vec4(ap_rgb, 1.0);
-
-			}
-
-		</script>
-
-		<script id="vertexShader" type="x-shader/x-vertex">
-
-			varying vec2 v_vUv;
-
-			void main() {
-
-				v_vUv = uv;
-				gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-
-			}
-
-		</script>
-
-		<script type="x-shader/x-vertex" id="node_vertexshader">
-			uniform float u_pointSize;
-			attribute float a_geoX;
-			attribute float a_geoY;
-			attribute float a_index;
-			varying float v_geoX;
-			varying float v_geoY;
-			varying float v_index;
-
-			void main() {
-				v_geoX = a_geoX;
-				v_geoY = a_geoY;
-				v_index = a_index;
-
-				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-				gl_PointSize = u_pointSize * ( 300.0 / length( mvPosition.xyz ) );
-				gl_Position = projectionMatrix * mvPosition;
-			}
-
-		</script>
-
-		<script type="x-shader/x-fragment" id="node_fragmentshader">
-
-			uniform sampler2D u_texture;
-			uniform sampler2D u_colorMap;
-
-			varying float v_geoX;
-			varying float v_geoY;
-			varying float v_index;
-
-			void main() {
-				gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture, gl_PointCoord);
-			}
-			
-		</script>
-
 
 		<script>
 
 		if ( ! Detector.webgl ) { Detector.addGetWebGLMessage(); }
 
-		var ap;
+		var ap = ap || {};
 
 		function onLoad(){
-
-
-			// ****** Platform ******
-
-			ap = ap || {};
-			
 
 			// ****** Managers ******
 
@@ -238,5 +121,58 @@
 		}
 
 		</script>
+
+		<script id="fragment_shader_pass_1" type="x-shader/x-fragment">
+
+			precision mediump float;
+			float ap_index;
+			vec4  ap_xyz;
+			//vec3  ap_lastRgb;
+			vec3  ap_rgb;
+
+			varying vec2 v_vUv;
+			uniform float u_time;
+			//uniform float u_random;
+			uniform float u_mapSize;
+			uniform sampler2D u_coordsMap;
+			//uniform sampler2D u_prevCMap;
+			//uniform sampler2D u_portsMap;
+
+
+			void main() {
+
+				//********************************************
+				ap_xyz = texture2D( u_coordsMap, v_vUv);
+				if(ap_xyz[3] == 0.0){ discard; }
+
+				ap_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);
+				//ap_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));
+
+				//********************************************
+
+				//-----------------------------------------
+				vec2 p = (((0.5 * 110000.) + 10000.) * vec2( ap_xyz[0] +  (ap_xyz[2] * 0.25), ap_xyz[1]) ) + 6.;
+
+				float x = p.x;
+				float y = p.y;
+				float mov0 = x+y+cos(sin(u_time)*2.0)*100.+sin(x/100.)*1000.;
+				float mov1 = y;
+				float mov2 = x;
+				float c1 = abs(sin(mov1+u_time)/2.+mov2/2.-mov1-mov2+u_time);
+				float c2 = abs(sin(c1+sin(mov0/1000.+u_time)+sin(y/40.+u_time)+sin((x+y)/100.)*3.));
+				float c3 = abs(sin(c2+cos(mov1+mov2+c2)+cos(mov2)+sin(x/1000.)));
+
+				c1 = c1 * 0.25;
+				ap_rgb = vec3(c2,c3,c1);
+
+				gl_FragColor = vec4(ap_rgb, 1.0);
+
+			}
+
+		</script>
+
+		<script src="js/shaders/core/ShaderUtils.js"></script>
+		<script src="js/shaders/core/SimpleTextureShader.js"></script>
+		<script src="js/shaders/core/NodeShader.js"></script>
 	</body>
 </html>

@@ -162,13 +162,15 @@ AppManager.prototype = {
 		var plane = new THREE.PlaneBufferGeometry( this.simSize, this.simSize );
 		var materialScreen = new THREE.ShaderMaterial( {
 
-			uniforms: { tDiffuse: { type: "t", value: this.rtTexture } },
-			vertexShader: document.getElementById( 'vertexShader' ).textContent,
-			fragmentShader: document.getElementById( 'fragment_shader_screen' ).textContent,
-
+			uniforms: 		ap.SimpleTextureShader.uniforms,
+			vertexShader: 	ap.SimpleTextureShader.vertexShader,
+			fragmentShader: ap.SimpleTextureShader.fragmentShader,
 			depthWrite: false
 
 		} );
+
+		materialScreen.uniforms.u_texture.value = this.rtTexture; // set the texture as uniform
+
 		quad = new THREE.Mesh( plane, materialScreen );
 		quad.position.z = -100;
 		this.scene.add( quad );
@@ -210,23 +212,22 @@ AppManager.prototype = {
 	},
 
 	addNodeShader: function(){
-		var attributes = { // For each node we pass along it's index value and x, y in relation to the colorMaps
-			a_geoX:        { type: 'f', value: this.geoX },
-			a_geoY:        { type: 'f', value: this.geoY },
-			a_index:        { type: 'f', value: this.passIndex }
-		};
-		uniforms = {
-			u_colorMap:   { type: "t", value: this.rtTexture },
-			u_pointSize:        { type: 'f', value: 60.0 },
-			u_texture:   { type: "t", value: this.nodeTexture }
-		};
+		
+		var attributes = ap.NodeShader.attributes;
+		attributes.a_geoX.value = this.geoX;
+		attributes.a_geoY.value = this.geoY;
+		attributes.a_index.value = this.passIndex;
+
+		var uniforms = ap.NodeShader.uniforms;
+		uniforms.u_colorMap.value = this.rtTexture;
+		uniforms.u_texture.value = this.nodeTexture;
 
 		nodeShaderMaterial = new THREE.ShaderMaterial( {
 
 			uniforms:       uniforms,
 			attributes:     attributes,
-			vertexShader:   document.getElementById( 'node_vertexshader' ).textContent,
-			fragmentShader: document.getElementById( 'node_fragmentshader' ).textContent,
+			vertexShader:   ap.NodeShader.vertexShader,
+			fragmentShader: ap.NodeShader.fragmentShader,
 
 			depthTest:      false,
 			transparent:    true
@@ -246,7 +247,7 @@ AppManager.prototype = {
 				u_coordsMap: { type: "t", value: this.coordsMap },
 				u_mapSize: { type: "f", value: this.simSize }
 			},
-			vertexShader: document.getElementById( 'vertexShader' ).textContent,
+			vertexShader: ap.SimpleTextureShader.vertexShader,
 			fragmentShader: document.getElementById( 'fragment_shader_pass_1' ).textContent
 		} );
 
