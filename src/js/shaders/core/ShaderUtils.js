@@ -2,8 +2,9 @@
  * Shader Utils
  * TODO - minimize
  */
+ 
 
-ap.ShaderUtils = {
+ap.shaders.ShaderUtils = {
 
 	utils: [
 

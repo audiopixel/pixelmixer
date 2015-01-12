@@ -2,8 +2,9 @@
  * Simple shader for displaying a texture
  * TODO - minimize
  */
+ 
 
-ap.SimpleTextureShader = {
+ap.shaders.SimpleTextureShader = {
 
 	uniforms: {
 

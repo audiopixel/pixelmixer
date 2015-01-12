@@ -161,10 +161,10 @@ AppManager.prototype = {
 	addTestPlane: function(){
 		var plane = new THREE.PlaneBufferGeometry( this.simSize, this.simSize );
 		var materialScreen = new THREE.ShaderMaterial( {
-
-			uniforms: 		ap.SimpleTextureShader.uniforms,
-			vertexShader: 	ap.SimpleTextureShader.vertexShader,
-			fragmentShader: ap.SimpleTextureShader.fragmentShader,
+			
+			uniforms: 		ap.shaders.SimpleTextureShader.uniforms,
+			vertexShader: 	ap.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: ap.shaders.SimpleTextureShader.fragmentShader,
 			depthWrite: false
 
 		} );
@@ -212,13 +212,13 @@ AppManager.prototype = {
 	},
 
 	addNodeShader: function(){
-		
-		var attributes = ap.NodeShader.attributes;
+
+		var attributes = ap.shaders.NodeShader.attributes;
 		attributes.a_geoX.value = this.geoX;
 		attributes.a_geoY.value = this.geoY;
 		attributes.a_index.value = this.passIndex;
 
-		var uniforms = ap.NodeShader.uniforms;
+		var uniforms = ap.shaders.NodeShader.uniforms;
 		uniforms.u_colorMap.value = this.rtTexture;
 		uniforms.u_texture.value = this.nodeTexture;
 
@@ -226,8 +226,8 @@ AppManager.prototype = {
 
 			uniforms:       uniforms,
 			attributes:     attributes,
-			vertexShader:   ap.NodeShader.vertexShader,
-			fragmentShader: ap.NodeShader.fragmentShader,
+			vertexShader:   ap.shaders.NodeShader.vertexShader,
+			fragmentShader: ap.shaders.NodeShader.fragmentShader,
 
 			depthTest:      false,
 			transparent:    true
@@ -247,7 +247,7 @@ AppManager.prototype = {
 				u_coordsMap: { type: "t", value: this.coordsMap },
 				u_mapSize: { type: "f", value: this.simSize }
 			},
-			vertexShader: ap.SimpleTextureShader.vertexShader,
+			vertexShader: ap.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: document.getElementById( 'fragment_shader_pass_1' ).textContent
 		} );
 

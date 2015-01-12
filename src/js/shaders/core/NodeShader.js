@@ -2,8 +2,9 @@
  * Simple node shader for displaying on ap nodes
  * TODO - minimize
  */
+ 
 
-ap.NodeShader = {
+ap.shaders.NodeShader = {
 
 	uniforms: {
 		u_colorMap:   { type: "t", value: null },
