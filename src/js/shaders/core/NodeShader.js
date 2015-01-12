@@ -2,13 +2,13 @@
  * Simple node shader for displaying on ap nodes
  * TODO - minimize
  */
- 
+
 
 ap.shaders.NodeShader = {
 
 	uniforms: {
 		u_colorMap:   { type: "t", value: null },
-		u_pointSize:  { type: 'f', value: 60.0 },
+		u_pointSize:  { type: 'f', value: 90.0 },
 		u_texture:    { type: "t", value: null }
 	},
 

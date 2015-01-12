@@ -138,8 +138,8 @@ AppManager.prototype = {
 			for ( i = 0; i < 14; i ++ ) { 
 
 				var vertex = new THREE.Vector3();
-				vertex.x = (e * 30) - 155;
-				vertex.y = (i * 30) - 155;
+				vertex.x = (e * 30) - 370;
+				vertex.y = (i * 30) - 200;
 				this.geometry.vertices.push( vertex );
 			}
 		}
@@ -161,7 +161,7 @@ AppManager.prototype = {
 	addTestPlane: function(){
 		var plane = new THREE.PlaneBufferGeometry( this.simSize, this.simSize );
 		var materialScreen = new THREE.ShaderMaterial( {
-			
+
 			uniforms: 		ap.shaders.SimpleTextureShader.uniforms,
 			vertexShader: 	ap.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: ap.shaders.SimpleTextureShader.fragmentShader,

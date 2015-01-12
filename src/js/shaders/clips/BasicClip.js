@@ -1,7 +1,7 @@
 /**
  * Basic test shader in ap clip harness
  */
- 
+
 
 ap.clips.BasicClip = {
 
@@ -25,6 +25,47 @@ ap.clips.BasicClip = {
 	},
 
 	fragmentShader: [ // Note we only need the Fragment shader and not the Vertex shader as well
+
+		/**
+		*
+		* ****** Helper Properties:
+		* 
+		* float ap_index;								// Current node: index value (integer)
+		* vec4 ap_xyz;									// Current node: xyz coordinates (or other values to map to)
+		* vec3 ap_lastRgb;								// Current node: rgb value last frame. 4th value discard slot
+		* vec3 ap_rgb;									// Current node: rgb ouput value
+		* 
+		* float u_time;									// Uniform: Animation speed, movement should be tied to this other inputs
+		* float u_random;								// Uniform: Random value (0-1)
+		* float u_mapSize;								// Uniform: The pixelmap size of all nodes
+		* sampler2D u_coordsMap;						// Uniform: The xyz coordinates of all nodes stored in a texture
+		* sampler2D u_prevCMap;							// Uniform: The previous rgb colors of all nodes stored in a texture
+		*
+		*
+		* ****** Helper Methods:
+		*
+		* vec3 rgb2hsv(vec3 c); 						// Convert RGB to HSV
+		* vec3 hsv2rgb(vec3 c); 						// Convert HSV to RGB
+		* vec3 blend(vec3 c1, vec3 c2, float type);		// Blend Modes (1-17)
+		* float rand(vec2 co);							// Random Generator	(vec2)
+		* float mixT(float a, float b, float mix);		// Mix two floats
+		* 
+		**/
+
+		/**
+		* 
+		* ****** Still to come: (work in progress) // TODO
+		*
+		* sampler2D u_portsMap		
+		* Clip position data: scale and offset
+		* PortId data
+		* HardwareGroup Id's
+		* Pod's positiond data: x y z width height depth
+		*
+		* Loader harness to bootstrap these values to any GLSL fragment shader
+		* 
+		**/
+
 
 		"float rtime = abs(u_time);",
 		"p = (((0.5/*p1*/ * 18000.0) + 500.0) * vec2( ap_xyz[0], ap_xyz[2]) - ap_xyz[1] * fract(rtime*0.00007));",
