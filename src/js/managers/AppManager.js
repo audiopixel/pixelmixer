@@ -22,20 +22,26 @@ var AppManager = function (ap, container) {
 	this.scene;
 	this.controls;
 	this.camera;
+	this.material;
+
+	this.geoX;
+	this.geoY;
+	this.passIndex;
 
 	this.particleSystem;
 	this.geometry;
 
 	this.time;
-	this.simSize = 256;
+	this.simSize = 128;
 
 	this.nodeTexture = THREE.ImageUtils.loadTexture( "images/nodeflare1.png" );  // TODO preload this
-	
+
+	this.coordsMap;
+	this.base = 10000000;
 
 	// TODO
 	/*
-	this.rtTextureA, this.rtTextureB, this.coordsMap, this.portsMap;
-	this.base = 10000000;
+	this.rtTextureA, this.rtTextureB, this.portsMap;
 	this.rtToggle = true;
 
 	this.nodeShaderMaterial;
@@ -57,7 +63,6 @@ AppManager.prototype = {
 
 		this.rtTexture = new THREE.WebGLRenderTarget( this.simSize, this.simSize, {minFilter: THREE.NearestMipMapNearestFilter,magFilter: THREE.NearestFilter,format: THREE.RGBFormat});
 				
-
 		this.renderer = new THREE.WebGLRenderer();
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 		this.renderer.autoClear = false;
@@ -69,46 +74,67 @@ AppManager.prototype = {
 		this.camera.position.z = 1700;
 		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement);
 
-
-		material = new THREE.ShaderMaterial( {
-
-			uniforms: { time: { type: "f", value: 0.0 } },
-			vertexShader: document.getElementById( 'vertexShader' ).textContent,
-			fragmentShader: document.getElementById( 'fragment_shader_pass_1' ).textContent
-
-		} );
-
-		var materialScreen = new THREE.ShaderMaterial( {
-
-			uniforms: { tDiffuse: { type: "t", value: this.rtTexture } },
-			vertexShader: document.getElementById( 'vertexShader' ).textContent,
-			fragmentShader: document.getElementById( 'fragment_shader_screen' ).textContent,
-
-			depthWrite: false
-
-		} );
-
-		var plane = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight );
-
-		quad = new THREE.Mesh( plane, material );
-		quad.position.z = -100;
-		this.sceneRTT.add( quad );
-
-		quad = new THREE.Mesh( plane, materialScreen );
-		quad.position.z = -100;
-		this.scene.add( quad );
-
-
 		this.geometry = new THREE.Geometry();
 
 		//---------------
+
+		 // TODO allow these to be changed and update on the fly
+		this.addNodesAsTestGrid();
+		this.generateCoordsMap();
+
+		//---------------
+
+		this.addMainSourceShader();
+		this.addNodeShader();
+
+		//this.addTestPlane(); // testing
+	},
+
+	update: function () {
+
+		this.time = Date.now() * 0.0015;
+		this.stats.update();
+
+
+		//this.camera.position.x += ( mouseX - this.camera.position.x ) * 0.05;
+		//this.camera.position.y += ( - mouseY - this.camera.position.y ) * 0.05;
+		//this.camera.lookAt( this.scene.position );
+		this.controls.update();
+		
+
+		//this.renderer.clear();
+
+		// Render first scene into texture
+		this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTexture, true );
+
+/*		// TODO turn this on when we need to capture for broadcast
+			// Render full screen quad with generated texture
+			this.renderer.render( this.sceneRTT, this.cameraRTT );
+			gl = renderer.getContext();
+			gl.readPixels(0, 0, 12, 12, gl.RGBA, gl.UNSIGNED_BYTE, pixels); //TODO update size
+			this.renderer.clear();
+*/
+
+		// Render the node and plane scene using the generated texture
+		this.renderer.render( this.scene, this.camera );
+
+
+		// Update uniforms
+
+		this.material.uniforms.u_time.value += .05;
+		
+	},
+
+	///////////////// test
+
+	addNodesAsTestGrid: function () {
 		// TODO - addNodes() function triggered by HardwareManager()
 		// Add basic test nodes right here for now
-		var geoX = [];
-		var geoY = [];
-		var passIndex = [];
+		this.geoX = [];
+		this.geoY = [];
+		this.passIndex = [];
 
-		for ( e = 0; e < 12; e ++ ) { // Simulate a node grid for now
+		for ( e = 0; e < 24; e ++ ) { // Simulate a simple node grid for now
 			for ( i = 0; i < 14; i ++ ) { 
 
 				var vertex = new THREE.Vector3();
@@ -126,18 +152,68 @@ AppManager.prototype = {
 			}
 			var ty = ((i+1) - tx) / imageSize;
 
-			geoX.push(tx / imageSize - 0.5 / imageSize);
-			geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
-			passIndex.push(i-1);
-		}//---------------
+			this.geoX.push(tx / imageSize - 0.5 / imageSize);
+			this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
+			this.passIndex.push(i-1);
+		}
+	},
 
+	addTestPlane: function(){
+		var plane = new THREE.PlaneBufferGeometry( this.simSize, this.simSize );
+		var materialScreen = new THREE.ShaderMaterial( {
 
-		// Setup the shaders for the nodes that use the rendered texture as a colorMap
+			uniforms: { tDiffuse: { type: "t", value: this.rtTexture } },
+			vertexShader: document.getElementById( 'vertexShader' ).textContent,
+			fragmentShader: document.getElementById( 'fragment_shader_screen' ).textContent,
 
+			depthWrite: false
+
+		} );
+		quad = new THREE.Mesh( plane, materialScreen );
+		quad.position.z = -100;
+		this.scene.add( quad );
+	},
+
+	/////////////////
+
+	generateCoordsMap: function () {
+
+		// Generate coordsMap data texture for all the nodes x,y,z
+		var a = new Float32Array( Math.pow(this.simSize, 2) * 4 );
+		var t = 0;
+		for ( var k = 0, kl = a.length; k < kl; k += 4 ) {
+			var x = 0;
+			var y = 0;
+			var z = 0;
+
+			if(this.geometry.vertices[t]){
+				x = this.geometry.vertices[t].x / this.base;
+				y = this.geometry.vertices[t].y / this.base;
+				z = this.geometry.vertices[t].z / this.base;
+				a[ k + 3 ] = 1;
+			}else{
+				a[ k + 3 ] = 0;
+			}
+
+			a[ k + 0 ] = x;
+			a[ k + 1 ] = y;
+			a[ k + 2 ] = z;
+			t++;
+
+		}
+
+		this.coordsMap = new THREE.DataTexture( a, this.simSize, this.simSize, THREE.RGBAFormat, THREE.FloatType );
+		this.coordsMap.minFilter = THREE.NearestFilter;
+		this.coordsMap.magFilter = THREE.NearestFilter;
+		this.coordsMap.needsUpdate = true;
+		this.coordsMap.flipY = true;
+	},
+
+	addNodeShader: function(){
 		var attributes = { // For each node we pass along it's index value and x, y in relation to the colorMaps
-			a_geoX:        { type: 'f', value: geoX },
-			a_geoY:        { type: 'f', value: geoY },
-			a_index:        { type: 'f', value: passIndex }
+			a_geoX:        { type: 'f', value: this.geoX },
+			a_geoY:        { type: 'f', value: this.geoY },
+			a_index:        { type: 'f', value: this.passIndex }
 		};
 		uniforms = {
 			u_colorMap:   { type: "t", value: this.rtTexture },
@@ -159,36 +235,25 @@ AppManager.prototype = {
 		this.particleSystem = new THREE.PointCloud( this.geometry, nodeShaderMaterial );
 		this.particleSystem.sortParticles = true;
 		this.scene.add( this.particleSystem );
-
 	},
 
-	update: function () {
+	addMainSourceShader: function(){
+		// TODO generate this as the master merged shader from all the pods output
+		// Main quad and texture that gets rendered as the source shader
+		this.material = new THREE.ShaderMaterial( {
+			uniforms: {
+				u_time: { type: "f", value: 0.0 },
+				u_coordsMap: { type: "t", value: this.coordsMap },
+				u_mapSize: { type: "f", value: this.simSize }
+			},
+			vertexShader: document.getElementById( 'vertexShader' ).textContent,
+			fragmentShader: document.getElementById( 'fragment_shader_pass_1' ).textContent
+		} );
 
-		this.time = Date.now() * 0.0015;
-		this.stats.update();
-
-
-		//this.camera.position.x += ( mouseX - this.camera.position.x ) * 0.05;
-		//this.camera.position.y += ( - mouseY - this.camera.position.y ) * 0.05;
-		//this.camera.lookAt( this.scene.position );
-		this.controls.update();
-		
-
-		this.renderer.clear();
-
-		// Render first scene into texture
-		this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTexture, true );
-
-		// Render full screen quad with generated texture
-		// TODO turn this on when we need to capture for broadcast
-			//this.renderer.render( this.sceneRTT, this.cameraRTT );
-			//gl = renderer.getContext();
-			//gl.readPixels(0, 0, 12, 12, gl.RGBA, gl.UNSIGNED_BYTE, pixels); //TODO update size
-			//this.renderer.clear();
-
-		// Render the node and plane scene using the generated texture
-		this.renderer.render( this.scene, this.camera );
-		
+		var plane = new THREE.PlaneBufferGeometry( this.simSize, this.simSize );
+		quad = new THREE.Mesh( plane, this.material );
+		quad.position.z = -100;
+		this.sceneRTT.add( quad );
 	}
 
 }
