@@ -79,17 +79,6 @@ AppManager.prototype = {
 		this.geometry = new THREE.Geometry();
 
 		//---------------
-
-		 // TODO allow these to be changed and update on the fly
-		this.addNodesAsTestGrid();
-		this.generateCoordsMap();
-		//---------------
-
-		this.updateMainSourceShader();
-		this.updateNodePointCloud();
-
-
-		//---------------
 		// testing
 
 		//this.addTestPlane(); 
@@ -145,30 +134,30 @@ AppManager.prototype = {
 
 		// Update uniforms
 
-		this.material.uniforms.u_time.value = this.time;
+		if(this.material){
+			this.material.uniforms.u_time.value = this.time;
+		}
 		
 	},
 
-	///////////////// test
 
-	addNodesAsTestGrid: function () {
+	// array of nodes objects with x,y,z values
+	addNodes: function (nodes) {
 		this.geometry = new THREE.Geometry();
 
-		// TODO - addNodes() function triggered by HardwareManager()
-		// Add basic test nodes right here for now
 		this.geoX = [];
 		this.geoY = [];
 		this.passIndex = [];
 
-		for ( e = 0; e < 24; e ++ ) { // Simulate a simple node grid for now
-			for ( i = 0; i < 14; i ++ ) { 
+		for ( i = 0; i < nodes.length; i ++ ) { 
 
-				var vertex = new THREE.Vector3();
-				vertex.x = (e * 30) - 370;// + (Math.random() * 100);
-				vertex.y = (i * 30) - 200;// + (Math.random() * 100);
-				this.geometry.vertices.push( vertex );
-			}
+			var vertex = new THREE.Vector3();
+			vertex.x = nodes[i].x;
+			vertex.y = nodes[i].y;
+			vertex.z = nodes[i].z;
+			this.geometry.vertices.push( vertex );
 		}
+
 		for ( i = 1; i <= this.geometry.vertices.length; i ++ ) {
 			// for each point push along x, y values to reference correct pixel in u_colorMaps
 			var imageSize = this.simSize; 
@@ -183,7 +172,11 @@ AppManager.prototype = {
 			this.passIndex.push(i-1);
 		}
 
+		this.updateNodes();
+
 	},
+
+	///////////////// test
 
 	addTestPlane: function(){
 		var materialScreen = new THREE.ShaderMaterial( {
@@ -205,6 +198,7 @@ AppManager.prototype = {
 
 	updateNodes: function () {
 
+			this.updateMainSourceShader();
 			this.generateCoordsMap();
 			this.material.uniforms.u_coordsMap.value = this.coordsMap;
 			this.updateNodePointCloud();
