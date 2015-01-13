@@ -8,7 +8,6 @@
 var StateManager = function (ap) {
 
 	this.ports = [];
-	
 
 };
 
@@ -26,15 +25,15 @@ StateManager.prototype = {
 
 	// ************* Ports ***********************
 
-	//setPortState(int port, int hardwarePort, String name, int type, int nodeCount, String address) 
-	setPortState: function (port, hardwarePort, name, type, nodeCount, address) {
+	//setPortState(int port, int hardwarePort, String name, int type, String address, Array nodes (optional)) 
+	setPortState: function (port, hardwarePort, name, type, address, nodes) {
 		var portData = {};
 		portData.portId = port;
 		portData.hardwarePort = hardwarePort;
 		portData.name = name;
 		portData.type = type;
-		portData.nodeCount = nodeCount;
 		portData.address = address;
+		portData.nodes = nodes;
 		this.ports[port-1] = portData;
 	},
 
@@ -48,6 +47,13 @@ StateManager.prototype = {
 
 	clearAllPorts: function () {
 		this.ports = [];
+	},
+
+	// ************* Ports ***********************
+
+	addNodes: function (port, nodes) {
+		this.ports[port-1].nodes = nodes;
+		ap.app.addNodes(nodes);
 	}
 
 }

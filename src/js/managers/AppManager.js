@@ -23,12 +23,12 @@ var AppManager = function (ap, container) {
 	this.camera;
 	this.material;
 
-	this.geoX;
-	this.geoY;
-	this.passIndex;
+	this.geoX = [];
+	this.geoY = [];
+	this.passIndex = [];
 
+	this.geometry = new THREE.Geometry();
 	this.pointCloud;
-	this.geometry;
 	this.fragmentShader;
 
 	this.time = 0;
@@ -77,6 +77,8 @@ AppManager.prototype = {
 		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement);
 
 		this.geometry = new THREE.Geometry();
+
+		this.updateMainSourceShader();
 
 		//---------------
 		// testing
@@ -143,11 +145,6 @@ AppManager.prototype = {
 
 	// array of nodes objects with x,y,z values
 	addNodes: function (nodes) {
-		this.geometry = new THREE.Geometry();
-
-		this.geoX = [];
-		this.geoY = [];
-		this.passIndex = [];
 
 		for ( i = 0; i < nodes.length; i ++ ) { 
 
@@ -156,20 +153,18 @@ AppManager.prototype = {
 			vertex.y = nodes[i].y;
 			vertex.z = nodes[i].z;
 			this.geometry.vertices.push( vertex );
-		}
 
-		for ( i = 1; i <= this.geometry.vertices.length; i ++ ) {
 			// for each point push along x, y values to reference correct pixel in u_colorMaps
 			var imageSize = this.simSize; 
-			var tx = (i) % imageSize;
+			var tx = (i+1) % imageSize;
 			if(tx == 0){
 				tx = imageSize;
 			}
-			var ty = ((i+1) - tx) / imageSize;
+			var ty = ((i+2) - tx) / imageSize;
 
 			this.geoX.push(tx / imageSize - 0.5 / imageSize);
 			this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
-			this.passIndex.push(i-1);
+			this.passIndex.push(i);
 		}
 
 		this.updateNodes();
@@ -198,7 +193,6 @@ AppManager.prototype = {
 
 	updateNodes: function () {
 
-			this.updateMainSourceShader();
 			this.generateCoordsMap();
 			this.material.uniforms.u_coordsMap.value = this.coordsMap;
 			this.updateNodePointCloud();
