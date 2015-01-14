@@ -15,23 +15,17 @@ HardwareManager.prototype = {
 
 		ap.state.setPortState(1, 2, "port name 01", ap.PORT_TYPE_KINET_1, "10.0.0.20");
 		this.addNodeTestGrid(1, 0);
-		
+
 		ap.state.setPortState(2, 2, "port name 02", ap.PORT_TYPE_KINET_1, "10.0.0.21");
 		this.addNodeTestGrid(2, -440);
+		
+		ap.app.updateNodes();
 
-/*
-		// testing
-		var that = this;
-		setTimeout(function(){
-			ap.state.setPortState(2, 2, "port name 02", ap.PORT_TYPE_KINET_1, "10.0.0.21");
-			that.addNodeTestGrid(2, -440);
-		}, 1000);
-*/
 	},
 
 	update: function () {
 
-		//console.log('update ' + this.tick);
+		//console.log('update ' + this.tick);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 	},
 
 	addNodeTestGrid: function (port, yOffset) {

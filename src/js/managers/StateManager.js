@@ -53,7 +53,6 @@ StateManager.prototype = {
 
 	addNodes: function (port, nodes) {
 		this.ports[port-1].nodes = nodes;
-		ap.app.addNodes(nodes);
 	}
 
 }

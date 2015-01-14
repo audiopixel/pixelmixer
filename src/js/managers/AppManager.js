@@ -142,35 +142,6 @@ AppManager.prototype = {
 		
 	},
 
-
-	// array of nodes objects with x,y,z values
-	addNodes: function (nodes) {
-
-		for ( i = 0; i < nodes.length; i ++ ) { 
-
-			var vertex = new THREE.Vector3();
-			vertex.x = nodes[i].x;
-			vertex.y = nodes[i].y;
-			vertex.z = nodes[i].z;
-			this.geometry.vertices.push( vertex );
-
-			// for each point push along x, y values to reference correct pixel in u_colorMaps
-			var imageSize = this.simSize; 
-			var tx = (i+1) % imageSize;
-			if(tx == 0){
-				tx = imageSize;
-			}
-			var ty = ((i+2) - tx) / imageSize;
-
-			this.geoX.push(tx / imageSize - 0.5 / imageSize);
-			this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
-			this.passIndex.push(i);
-		}
-
-		this.updateNodes();
-
-	},
-
 	///////////////// test
 
 	addTestPlane: function(){
@@ -191,11 +162,48 @@ AppManager.prototype = {
 
 	/////////////////
 
+	// Should get called whenever there are any changes on StateManager
+	// (This is the main view that should reflect state)
 	updateNodes: function () {
 
-			this.generateCoordsMap();
-			this.material.uniforms.u_coordsMap.value = this.coordsMap;
-			this.updateNodePointCloud();
+		// Reset values and grab entire state fresh
+		this.geoX = [];
+		this.geoY = [];
+		this.passIndex = [];
+		this.geometry = new THREE.Geometry();
+
+		// Update 'this.geometry' with all the known nodes on state
+		// Create attributes for each one to pass to the shader
+		var t = 0;
+		for ( e = 0; e < ap.state.ports.length; e ++ ) { 
+
+			var port = ap.state.ports[e];
+			for ( i = 0; i < port.nodes.length; i ++ ) { 
+
+				var vertex = new THREE.Vector3();
+				vertex.x = port.nodes[i].x;
+				vertex.y = port.nodes[i].y;
+				vertex.z = port.nodes[i].z;
+				this.geometry.vertices.push( vertex );
+
+				// for each point push along x, y values to reference correct pixel in u_colorMaps
+				var imageSize = this.simSize; 
+				var tx = (t+1) % imageSize;
+				if(tx == 0){
+					tx = imageSize;
+				}
+				var ty = ((t+2) - tx) / imageSize;
+
+				this.geoX.push(tx / imageSize - 0.5 / imageSize);
+				this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
+				this.passIndex.push(t);
+				t++;
+			}
+		}
+
+		this.generateCoordsMap();
+		this.material.uniforms.u_coordsMap.value = this.coordsMap;
+		this.updateNodePointCloud();
 
 	},
 
@@ -260,6 +268,7 @@ AppManager.prototype = {
 			// If the pointCloud has already been added, remove it so we can add it fresh
 			this.scene.remove( this.pointCloud );
 		}
+
 		this.pointCloud = new THREE.PointCloud( this.geometry, nodeShaderMaterial );
 		this.pointCloud.sortParticles = true;
 		this.pointCloud.name = name;
