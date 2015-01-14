@@ -15,11 +15,13 @@ HardwareManager.prototype = {
 
 		ap.state.setPortState(1, 2, "port name 01", ap.PORT_TYPE_KINET_1, "10.0.0.20");
 		this.addNodeTestGrid(1, 0);
+		
+		ap.app.updateNodePoints();
 
 		ap.state.setPortState(2, 2, "port name 02", ap.PORT_TYPE_KINET_1, "10.0.0.21");
 		this.addNodeTestGrid(2, -440);
 		
-		ap.app.updateNodes();
+		ap.app.updateNodePoints();
 
 	},
 

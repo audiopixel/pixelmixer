@@ -164,7 +164,7 @@ AppManager.prototype = {
 
 	// Should get called whenever there are any changes on StateManager
 	// (This is the main view that should reflect state)
-	updateNodes: function () {
+	updateNodePoints: function () {
 
 		// Reset values and grab entire state fresh
 		this.geoX = [];
@@ -203,7 +203,7 @@ AppManager.prototype = {
 
 		this.generateCoordsMap();
 		this.material.uniforms.u_coordsMap.value = this.coordsMap;
-		this.updateNodePointCloud();
+		this.createNodePointCloud();
 
 	},
 
@@ -241,7 +241,7 @@ AppManager.prototype = {
 
 	},
 
-	updateNodePointCloud: function(){
+	createNodePointCloud: function(){
 
 		var attributes = ap.shaders.NodeShader.attributes;
 		attributes.a_geoX.value = this.geoX;
