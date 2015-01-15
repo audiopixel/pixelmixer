@@ -23,6 +23,7 @@
 		<script src="js/managers/AppManager.js"></script>
 		<script src="js/managers/StateManager.js"></script>
 		<script src="js/managers/HardwareManager.js"></script>
+		<script src="js/managers/PodManager.js"></script>
 		<script src="js/managers/TestManager.js"></script>
 		<script src="js/managers/TestManagerDuce.js"></script>
 
@@ -41,6 +42,7 @@
 			ap.testManagerDuce = new TestManagerDuce( ap );
 			ap.state = new StateManager( ap );
 			ap.hardware = new HardwareManager( ap );
+			ap.pod = new PodManager( ap );
 			ap.app = new AppManager( ap, document.getElementById( 'container' ) );
 
 			ap.testManager.init();
@@ -48,6 +50,7 @@
 			ap.app.init();
 			ap.state.init();
 			ap.hardware.init();
+			ap.pod.init();
 
 
 			// ap.api.init();
@@ -74,6 +77,7 @@
 				ap.app.update();
 				ap.state.update();
 				ap.hardware.update();
+				ap.pod.update();
 
 
 				// Render next frame // TODO: throttle logic if needed
