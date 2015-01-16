@@ -7,6 +7,8 @@
 
 var ChannelManager = function () {
 
+	this.channels = [];
+
 	/*
 
 	// TODO
@@ -64,7 +66,7 @@ var ChannelManager = function () {
 			a pod changes which position group it references
 			a position group's coordinates change (if actively referenced by a pod)
 
-	define shader uniforms (to be used as clip params and values)
+	define shader uniforms (to be used as clip params and properties)
 
 
 	when in editor mode, show all the pod position groups, record any coordinate changes
@@ -84,6 +86,29 @@ ChannelManager.prototype = {
 	update: function () {
 
 
+	},
+
+
+	// ************* Channels ***********************
+
+	setChannel: function (channelId, channelObject) {
+		this.channels[channelId-1] = channelObject;
+	},
+
+	getChannel: function (channelId) {
+		return this.channels[channelId-1];
+	},
+
+	getChannels: function () {
+		return this.channels;
+	},
+
+	clearChannel: function (channelId) {
+		delete this.channels[channelId-1]; // TODO optimize: most likely better to not use 'delete'
+	},
+
+	clearAllChannels: function () {
+		this.channels = [];
 	}
 
 }

@@ -8,8 +8,13 @@ ap.clips = {}; 					// Loaded shaders as clips
 
 
 
-ap.BLEND = {}; 					// Blend Constants
 
+// ****** Constants ******
+
+
+// Blend Constants
+ap.BLEND = {}; 					
+ap.BLEND.FX = 0;
 ap.BLEND.Add = 1;
 ap.BLEND.Subtract = 2;
 ap.BLEND.Darkest = 3;
@@ -28,6 +33,8 @@ ap.BLEND.LinearLight = 15;
 ap.BLEND.VividLight = 16;
 ap.BLEND.PinLight = 17;
 
+
+// Port Type Constants
 ap.PORT_TYPE_OFF = 0;
 ap.PORT_TYPE_KINET_1 = 1; // strands
 ap.PORT_TYPE_KINET_2 = 2; // tiles
@@ -37,3 +44,10 @@ ap.PORT_TYPE_DMX_1 = 5; // Movers, for testing
 ap.PORT_TYPE_DMX_2 = 6;
 ap.PORT_TYPE_DMX_3 = 7;
 ap.PORT_TYPE_LASER_1 = 8;
+
+
+
+// Pod Hardware Group Modes
+ap.HARDWAREGROUP_OFF = 0;
+ap.HARDWAREGROUP_SOLO = 1;
+ap.HARDWAREGROUP_EXCLUDE = 2;

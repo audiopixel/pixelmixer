@@ -11,14 +11,17 @@ ap.clips.BasicClip = {
 	output: 	'rgb', // 'rgb' default if not specified, 'hsb/hsv' also excepted. 
 
 	params: { // (uniforms)
-		// each shader can have upto 6 params that are controlled by it's UI / modulations
+
+		// Each shader can have upto 6 params that are controlled by it's UI / modulations
+		// TODO: define display ranges that will be shown in UI (percentage of param value)
 		"p1": { type: "f", value: 0.5, desc: "scale" },
 		"p2": { type: "f", value: 0.0, desc: "hue" }
 
 	},
 	
-	values: { // (uniforms)
-		// these are values that can be referenced from init/update methods, and passed as uniforms
+	property: { // (uniforms)
+
+		// These are internal property that can be referenced from init/update methods, and passed as uniforms
 		"v1": { type: "f", value: 1.0, desc: "testV1" },
 		"v2": { type: "f", value: 1.0, desc: "testV2" }
 

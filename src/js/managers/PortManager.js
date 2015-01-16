@@ -32,18 +32,16 @@ PortManager.prototype = {
 		return this.ports[portId-1];
 	},
 
+	getPorts: function () {
+		return this.ports;
+	},
+
 	clearPort: function (portId) {
 		delete this.ports[portId-1]; // TODO optimize: most likely better to not use 'delete'
 	},
 
 	clearAllPorts: function () {
 		this.ports = [];
-	},
-
-	// ************* Ports ***********************
-
-	addNodes: function (portId, nodes) {
-		this.ports[portId-1].nodes = nodes;
 	}
 
 }

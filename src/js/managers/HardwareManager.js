@@ -48,7 +48,7 @@ HardwareManager.prototype = {
 			}
 		}
 
-		ap.ports.addNodes(port, nodes);
+		ap.ports.getPort(port).nodes = nodes;
 	}
 
 }

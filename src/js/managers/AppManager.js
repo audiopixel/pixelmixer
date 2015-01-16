@@ -175,7 +175,7 @@ AppManager.prototype = {
 		// Update 'this.geometry' with all the known nodes on state
 		// Create attributes for each one to pass to the shader
 		var t = 0;
-		for ( e = 0; e < ap.ports.ports.length; e ++ ) { 
+		for ( e = 0; e < ap.ports.getPorts().length; e ++ ) { 
 
 			var port = ap.ports.getPort(e + 1);
 			if(port){
