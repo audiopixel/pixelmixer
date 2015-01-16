@@ -4,14 +4,6 @@
 		<title>AP3.0 Editor Test</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	</head>
-
-	<body ontouchstart="" onload="onLoad()">
-
-		<link href="css/main.css" rel="stylesheet" />
-		<link id="theme" href="css/light.css" rel="stylesheet" />
-
-		<div id="container"></div>
 
 		<script src="js/libs/Detector.js"></script>
 		<script src="js/libs/stats.min.js"></script>
@@ -20,14 +12,24 @@
 		<script src="js/libs/three/three.min.js"></script>
 		<script src="js/libs/three/controls/TrackballControls.js"></script>
 
-		<script src="js/managers/AppManager.js"></script>
-		<script src="js/managers/StateManager.js"></script>
-		<script src="js/managers/HardwareManager.js"></script>
-		<script src="js/managers/PodManager.js"></script>
-		<script src="js/managers/TestManager.js"></script>
-		<script src="js/managers/TestManagerDuce.js"></script>
-
 		<script src="js/audiopixel.js"></script>
+		<script src="js/managers/AppManager.js"></script>
+		<script src="js/managers/PortManager.js"></script>
+		<script src="js/managers/HardwareManager.js"></script>
+		<script src="js/managers/ChannelManager.js"></script>
+		<script src="js/objects/Port.js"></script>
+		<script src="js/objects/Channel.js"></script>
+		<script src="js/shaders/core/ShaderUtils.js"></script>
+		<script src="js/shaders/core/SimpleTextureShader.js"></script>
+		<script src="js/shaders/core/NodeShader.js"></script>
+	</head>
+
+	<body ontouchstart="" onload="onLoad()">
+
+		<link href="css/main.css" rel="stylesheet" />
+		<link id="theme" href="css/light.css" rel="stylesheet" />
+
+		<div id="container"></div>
 
 		<script>
 
@@ -38,33 +40,15 @@
 
 			// ****** Managers ******
 
-			ap.testManager = new TestManager( ap );
-			ap.testManagerDuce = new TestManagerDuce( ap );
-			ap.state = new StateManager( ap );
-			ap.hardware = new HardwareManager( ap );
-			ap.pod = new PodManager( ap );
-			ap.app = new AppManager( ap, document.getElementById( 'container' ) );
+			ap.app = new AppManager(document.getElementById( 'container' ));
+			ap.ports = new PortManager();
+			ap.hardware = new HardwareManager();
+			ap.channels = new ChannelManager();
 
-			ap.testManager.init();
-			ap.testManagerDuce.init();
 			ap.app.init();
-			ap.state.init();
+			ap.ports.init();
 			ap.hardware.init();
-			ap.pod.init();
-
-
-			// ap.api.init();
-			// ap.audio.init();	
-			// ap.media.init();		
-			// ap.hardware.init();	
-			// ap.scene.init();	
-			// ap.pod.init();
-			// ap.state.init();
-			// ap.net.init();
-			// ap.file.init();
-
-
-
+			ap.channels.init();
 
 
 			// ****** Runtime Loop ****** 
@@ -72,17 +56,14 @@
 			function animate() {
 				
 				// ** Update 
-				ap.testManager.update();
-				ap.testManagerDuce.update();
 				ap.app.update();
-				ap.state.update();
+				ap.ports.update();
 				ap.hardware.update();
-				ap.pod.update();
+				ap.channels.update();
 
 
 				// Render next frame // TODO: throttle logic if needed
 				requestAnimationFrame( animate );
-
 			}
 
 			animate();
@@ -181,9 +162,5 @@
 			}
 
 		</script>
-
-		<script src="js/shaders/core/ShaderUtils.js"></script>
-		<script src="js/shaders/core/SimpleTextureShader.js"></script>
-		<script src="js/shaders/core/NodeShader.js"></script>
 	</body>
 </html>

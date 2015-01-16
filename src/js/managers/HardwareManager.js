@@ -5,7 +5,7 @@
 *
 */
 
-var HardwareManager = function (ap) {
+var HardwareManager = function () {
 
 };
 
@@ -13,13 +13,17 @@ HardwareManager.prototype = {
 
 	init: function () {
 
-		ap.state.setPortState(1, 2, "port name 01", ap.PORT_TYPE_KINET_1, "10.0.0.20");
-		this.addNodeTestGrid(1, 0);
+		// Testing: lets simulate using the editor to create two initial test grids 
+
+		var port1 = new Port(1, 2, "port name 01", ap.PORT_TYPE_KINET_1, "10.0.0.20");
+		ap.ports.setPort(1, port1);
+		this.addTestGrid(1, 0);
 		
 		ap.app.updateNodePoints();
 
-		ap.state.setPortState(2, 2, "port name 02", ap.PORT_TYPE_KINET_1, "10.0.0.21");
-		this.addNodeTestGrid(2, -440);
+		var port2 = new Port(2, 2, "port name 02", ap.PORT_TYPE_KINET_1, "10.0.0.21");
+		ap.ports.setPort(2, port2);
+		this.addTestGrid(2, -440);
 		
 		ap.app.updateNodePoints();
 
@@ -30,7 +34,7 @@ HardwareManager.prototype = {
 		//console.log('update ' + this.tick);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 	},
 
-	addNodeTestGrid: function (port, yOffset) {
+	addTestGrid: function (port, yOffset) {
 
 		var nodes = [];
 		for ( e = 0; e < 24; e ++ ) { // Simulate a simple node grid for now
@@ -44,7 +48,7 @@ HardwareManager.prototype = {
 			}
 		}
 
-		ap.state.addNodes(port, nodes);
+		ap.ports.addNodes(port, nodes);
 	}
 
 }

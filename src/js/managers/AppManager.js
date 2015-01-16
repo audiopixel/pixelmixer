@@ -5,7 +5,7 @@
 *
 */
 
-var AppManager = function (ap, container) {
+var AppManager = function (container) {
 
 	this.stats = new Stats();
 	this.stats.domElement.style.position = 'absolute';
@@ -166,7 +166,7 @@ AppManager.prototype = {
 	// (This is the main view that should reflect state)
 	updateNodePoints: function () {
 
-		// Reset values and grab entire state fresh
+		// Reset values and grab entire state fresh. Note this is only called once when hardware is added or removed
 		this.geoX = [];
 		this.geoY = [];
 		this.passIndex = [];
@@ -175,29 +175,31 @@ AppManager.prototype = {
 		// Update 'this.geometry' with all the known nodes on state
 		// Create attributes for each one to pass to the shader
 		var t = 0;
-		for ( e = 0; e < ap.state.ports.length; e ++ ) { 
+		for ( e = 0; e < ap.ports.ports.length; e ++ ) { 
 
-			var port = ap.state.ports[e];
-			for ( i = 0; i < port.nodes.length; i ++ ) { 
+			var port = ap.ports.getPort(e + 1);
+			if(port){
+				for ( i = 0; i < port.nodes.length; i ++ ) { 
 
-				var vertex = new THREE.Vector3();
-				vertex.x = port.nodes[i].x;
-				vertex.y = port.nodes[i].y;
-				vertex.z = port.nodes[i].z;
-				this.geometry.vertices.push( vertex );
+					var vertex = new THREE.Vector3();
+					vertex.x = port.nodes[i].x;
+					vertex.y = port.nodes[i].y;
+					vertex.z = port.nodes[i].z;
+					this.geometry.vertices.push( vertex );
 
-				// for each point push along x, y values to reference correct pixel in u_colorMaps
-				var imageSize = this.simSize; 
-				var tx = (t+1) % imageSize;
-				if(tx == 0){
-					tx = imageSize;
+					// for each point push along x, y values to reference correct pixel in u_colorMaps
+					var imageSize = this.simSize; 
+					var tx = (t+1) % imageSize;
+					if(tx == 0){
+						tx = imageSize;
+					}
+					var ty = ((t+2) - tx) / imageSize;
+
+					this.geoX.push(tx / imageSize - 0.5 / imageSize);
+					this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
+					this.passIndex.push(t);
+					t++;
 				}
-				var ty = ((t+2) - tx) / imageSize;
-
-				this.geoX.push(tx / imageSize - 0.5 / imageSize);
-				this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
-				this.passIndex.push(t);
-				t++;
 			}
 		}
 
