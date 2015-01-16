@@ -19,6 +19,8 @@
 		<script src="js/managers/ChannelManager.js"></script>
 		<script src="js/objects/Port.js"></script>
 		<script src="js/objects/Channel.js"></script>
+		<script src="js/objects/Pod.js"></script>
+		<script src="js/objects/Clip.js"></script>
 		<script src="js/shaders/core/ShaderUtils.js"></script>
 		<script src="js/shaders/core/SimpleTextureShader.js"></script>
 		<script src="js/shaders/core/NodeShader.js"></script>
@@ -34,6 +36,8 @@
 		<script>
 
 		if ( ! Detector.webgl ) { Detector.addGetWebGLMessage(); }
+
+		var frameCount = 0;
 
 
 		function onLoad(){
@@ -54,6 +58,8 @@
 			// ****** Runtime Loop ****** 
 
 			function animate() {
+
+				//if(frameCount % 30 == 1){ // Slow framerate testing
 				
 				// ** Update 
 				ap.app.update();
@@ -64,6 +70,8 @@
 
 				// Render next frame // TODO: throttle logic if needed
 				requestAnimationFrame( animate );
+
+				frameCount++;
 			}
 
 			animate();
@@ -125,7 +133,7 @@
 			//uniform float u_random;
 			uniform float u_mapSize;
 			uniform sampler2D u_coordsMap;
-			//uniform sampler2D u_prevCMap;
+			uniform sampler2D u_prevCMap;
 			//uniform sampler2D u_portsMap;
 
 

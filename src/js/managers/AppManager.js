@@ -1,7 +1,7 @@
 /*
 * ************* APPLICATION MANAGER *************** 
 *
-* Handles application model state and gl rendering responsibilities.
+* Handles GL state and rendering responsibilities.
 *
 */
 
@@ -16,7 +16,11 @@ var AppManager = function (container) {
 
 	this.cameraRTT;
 	this.sceneRTT;
-	this.rtTexture;
+	this.rtTextureA;
+	this.rtTextureB;
+	this.rtToggle = true;
+	
+	this.nodeShaderMaterial;
 
 	this.scene;
 	this.controls;
@@ -42,13 +46,7 @@ var AppManager = function (container) {
 	this.plane = new THREE.PlaneBufferGeometry( this.simSize, this.simSize );
 
 	// TODO
-	/*
-	this.rtTextureA, this.rtTextureB, this.portsMap;
-	this.rtToggle = true;
-
-	this.nodeShaderMaterial;
-	*/
-
+	//this.portsMap;
 };
 
 
@@ -57,14 +55,13 @@ AppManager.prototype = {
 
 	init: function () {
 
-		var windowHalfX = window.innerWidth / 2;
-		var windowHalfY = window.innerHeight / 2;
+		// We create two source textures and swap between them every frame, so we can always reference the last frame values
+		this.rtTextureA = new THREE.WebGLRenderTarget( this.simSize, this.simSize, {minFilter: THREE.NearestMipMapNearestFilter,magFilter: THREE.NearestFilter,format: THREE.RGBFormat});
+		this.rtTextureB = this.rtTextureA.clone();
 
 		this.cameraRTT = new THREE.OrthographicCamera( this.simSize / - 2, this.simSize / 2, this.simSize / 2, this.simSize / - 2, -10000, 10000 );
 		this.sceneRTT = new THREE.Scene();
 
-		this.rtTexture = new THREE.WebGLRenderTarget( this.simSize, this.simSize, {minFilter: THREE.NearestMipMapNearestFilter,magFilter: THREE.NearestFilter,format: THREE.RGBFormat});
-				
 		this.renderer = new THREE.WebGLRenderer();
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 		this.renderer.autoClear = false;
@@ -83,7 +80,7 @@ AppManager.prototype = {
 		//---------------
 		// testing
 
-		//this.addTestPlane(); 
+		//this.addPlanesForTesting(); 
 
 /*
 		// Example of updating the nodes on the fly:
@@ -91,14 +88,6 @@ AppManager.prototype = {
 		setTimeout(function(){
 			that.addNodesAsTestGrid(); // Change or add more nodes
 			that.updateNodes();
-		}, 2000);
-*/
-
-/*
-		// Example of updating the main shader on the fly:
-		var that = this;
-		setTimeout(function(){
-			that.updateMainSourceShader();
 		}, 2000);
 */
 
@@ -120,7 +109,18 @@ AppManager.prototype = {
 		//this.renderer.clear();
 
 		// Render first scene into texture
-		this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTexture, true );
+		this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureA, true );
+
+		if(this.rtToggle){
+			this.material.uniforms.u_prevCMap.value = this.rtTextureB;
+			this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureA, true );
+			this.nodeShaderMaterial.uniforms.u_colorMap.value = this.rtTextureA;
+		}else{
+			this.material.uniforms.u_prevCMap.value = this.rtTextureA;
+			this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureB, true );
+			this.nodeShaderMaterial.uniforms.u_colorMap.value = this.rtTextureB;
+		}
+		this.rtToggle = !this.rtToggle;
 
 /*		// TODO turn this on when we need to capture for broadcast
 			// Render full screen quad with generated texture
@@ -144,10 +144,10 @@ AppManager.prototype = {
 
 	///////////////// test
 
-	addTestPlane: function(){
+	addPlanesForTesting: function(){
 		var materialScreen = new THREE.ShaderMaterial( {
 
-			uniforms: 		{"u_texture":   { type: "t", value: this.rtTexture }},
+			uniforms: 		{"u_texture":   { type: "t", value: this.rtTextureA }},
 			vertexShader: 	ap.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: ap.shaders.SimpleTextureShader.fragmentShader,
 			depthWrite: false
@@ -155,6 +155,20 @@ AppManager.prototype = {
 		} );
 
 		var quad = new THREE.Mesh( this.plane, materialScreen );
+		quad.position.z = -100;
+		this.scene.add( quad );
+
+		materialScreen = new THREE.ShaderMaterial( {
+
+			uniforms: 		{"u_texture":   { type: "t", value: this.rtTextureB }},
+			vertexShader: 	ap.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: ap.shaders.SimpleTextureShader.fragmentShader,
+			depthWrite: false
+
+		} );
+
+		var quad = new THREE.Mesh( this.plane, materialScreen );
+		quad.position.x = -200;
 		quad.position.z = -100;
 		this.scene.add( quad );
 
@@ -178,6 +192,7 @@ AppManager.prototype = {
 		for ( e = 0; e < ap.ports.getPorts().length; e ++ ) { 
 
 			var port = ap.ports.getPort(e + 1);
+
 			if(port){
 				for ( i = 0; i < port.nodes.length; i ++ ) { 
 
@@ -214,6 +229,7 @@ AppManager.prototype = {
 		// Generate coordsMap data texture for all the nodes x,y,z
 		var a = new Float32Array( Math.pow(this.simSize, 2) * 4 );
 		var t = 0;
+
 		for ( var k = 0, kl = a.length; k < kl; k += 4 ) {
 			var x = 0;
 			var y = 0;
@@ -251,10 +267,10 @@ AppManager.prototype = {
 		attributes.a_index.value = this.passIndex;
 
 		var uniforms = ap.shaders.NodeShader.uniforms;
-		uniforms.u_colorMap.value = this.rtTexture;
+		uniforms.u_colorMap.value = this.rtTextureA;
 		uniforms.u_texture.value = this.nodeTexture;
 
-		nodeShaderMaterial = new THREE.ShaderMaterial( {
+		this.nodeShaderMaterial = new THREE.ShaderMaterial( {
 
 			uniforms:       uniforms,
 			attributes:     attributes,
@@ -266,12 +282,13 @@ AppManager.prototype = {
 		});
 
 		var name = "AP Nodes";
+
 		if(this.scene.getObjectByName(name)){
 			// If the pointCloud has already been added, remove it so we can add it fresh
 			this.scene.remove( this.pointCloud );
 		}
 
-		this.pointCloud = new THREE.PointCloud( this.geometry, nodeShaderMaterial );
+		this.pointCloud = new THREE.PointCloud( this.geometry, this.nodeShaderMaterial );
 		this.pointCloud.sortParticles = true;
 		this.pointCloud.name = name;
 
@@ -297,6 +314,7 @@ AppManager.prototype = {
 			uniforms: {
 				u_time: { type: "f", value: this.time },
 				u_coordsMap: { type: "t", value: this.coordsMap },
+				u_prevCMap: { type: "t", value: this.rtTextureB },
 				u_mapSize: { type: "f", value: this.simSize }
 			},
 			vertexShader: ap.shaders.SimpleTextureShader.vertexShader,
@@ -304,6 +322,7 @@ AppManager.prototype = {
 		} );
 
 		var name = "SourceQuad";
+
 		var lookupObj = this.sceneRTT.getObjectByName(name);
 		if(lookupObj){
 			// If the quad has already been added, remove it so we can add it fresh

@@ -80,6 +80,16 @@ ChannelManager.prototype = {
 
 	init: function () {
 
+		var mix = 1;
+
+		// Let's create some test clips and for now (TODO: this should be loaded from current project settings or channel preset)
+		var clips = [new Clip(1, mix, ap.BLEND.Add)];
+
+		// Let's create some test pods for now (TODO: this should be loaded from current project settings or channel preset)
+		var pods = [new Pod(1, mix, ap.BLEND.Add, clips)];
+
+		// Let's create some test channels for now (TODO: this should be loaded from current project settings)
+		this.channels[0] = new Channel("TestChannel", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods);
 
 	},
 
