@@ -91,10 +91,55 @@ ChannelManager.prototype = {
 		// Let's create some test channels for now (TODO: this should be loaded from current project settings)
 		this.channels[0] = new Channel("TestChannel", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods);
 
+
+		//console.log(this.generateSourceShader());
+
 	},
 
 	update: function () {
 
+
+	},
+
+	generateSourceShader: function () {
+
+		var shader = "";
+
+		/*
+		// TODO
+
+		-for each channel
+				
+			*uniforms: mix, blend (i.e, -1_mix)
+
+			-for each pod
+				
+				*uniforms: mix, blend (i.e, -1-1_mix)
+				snippets: pod position data from position group
+
+				-for each clip
+
+					*uniforms: params, properties, mix, blend, clip pos offset/scale
+					grab shader snippet
+					replace '__p1' with '-1-1-1_p1' (address data)
+
+		*/
+
+		/*
+		// TODO regenerate Metamap data: (if any of this changed)
+
+			port id
+			node id
+			index
+			hardware group 1
+			hardware group 2
+			hardware group 3
+			hardware group mode: off, exclude, or solo
+
+		*/
+
+
+		return shader;
 
 	},
 
