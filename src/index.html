@@ -49,9 +49,6 @@
 
 		function onLoad(){
 
-			var updateShader;
-
-
 
 			// Register all clips by their id's for easy lookup later
 			for (var property in ap.clips) {
@@ -80,11 +77,17 @@
 
 			// ****** Runtime Loop ****** 
 
+			var updateShader;
+			var updateShaderLimiter = 10;
+			// Allow limiter to be modified based on system capabilities, if we detect lag we can increase it
+
 			function animate() {
 
 				//if(frameCount % 30 == 1){ // Slow framerate testing
 
-				if(!updateShader){
+
+				// Update everything else if we don't have to update the shader this frame
+				if(!updateShader || frameCount % updateShaderLimiter != 1){
 
 					// ** Main loop update 
 					ap.app.update();
@@ -96,6 +99,7 @@
 
 					// We detected the shader needs an update, only do that this frame
 					ap.app.updateMainSourceShader();
+					ap.app.update();
 					updateShader = false;
 				}
 
