@@ -8,6 +8,7 @@
 		<script src="js/libs/Detector.js"></script>
 		<script src="js/libs/stats.min.js"></script>
 		<script src="js/libs/signals.min.js"></script>
+		<script src="js/libs/dat.gui.min.js"></script>
 
 		<script src="js/libs/three/three.min.js"></script>
 		<script src="js/libs/three/controls/TrackballControls.js"></script>
@@ -21,6 +22,7 @@
 		<script src="js/objects/Channel.js"></script>
 		<script src="js/objects/Pod.js"></script>
 		<script src="js/objects/Clip.js"></script>
+		<script src="js/objects/Shader.js"></script>
 		<script src="js/shaders/core/ShaderUtils.js"></script>
 		<script src="js/shaders/core/SimpleTextureShader.js"></script>
 		<script src="js/shaders/core/NodeShader.js"></script>
@@ -36,12 +38,18 @@
 
 		<script>
 
+
 		if ( ! Detector.webgl ) { Detector.addGetWebGLMessage(); }
 
+
 		var frameCount = 0;
+		var gui = new dat.GUI();
+
 
 
 		function onLoad(){
+
+
 
 			// Register all clips by their id's for easy lookup later
 			for (var property in ap.clips) {
@@ -49,6 +57,7 @@
 					ap.register[ap.clips[property].id] = property;
 				}
 			}
+
 
 
 
@@ -63,6 +72,7 @@
 			ap.hardware.init();
 			ap.channels.init();
 			ap.app.init();
+
 
 
 
@@ -89,19 +99,21 @@
 
 
 
+
+			// ****** UI ******
+
+			// TODO replace dat.gui with dynamic react components (or similar) that reflect model: ap.channels 
+
+			var f1 = gui.addFolder('Channel 1'); 		f1.open();
+			var guiData  = {
+				mix:  1
+			}
+			f1.add( guiData, "mix", 0.0, 1.0, 1.0 ).onChange(function () { ap.app.material.uniforms._1_mix.value = guiData.mix; });
+
+			
+
+
 			// ****** Event Handlers ****** 
-
-			document.addEventListener( 'click', function ( event ) {
-
-			}, false );
-
-			document.addEventListener( 'dragover', function ( event ) {
-
-			}, false );
-
-			document.addEventListener( 'drop', function ( event ) {
-
-			}, false );
 
 			document.addEventListener( 'keydown', function ( event ) {
 

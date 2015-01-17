@@ -87,8 +87,10 @@ AppManager.prototype = {
 		// Example of updating the nodes on the fly:
 		var that = this;
 		setTimeout(function(){
-			that.addNodesAsTestGrid(); // Change or add more nodes
-			that.updateNodes();
+			//that.addNodesAsTestGrid(); // Change or add more nodes
+			//that.updateNodes();
+			
+			//that.updateMainSourceShader();
 		}, 2000);
 */
 
@@ -298,41 +300,57 @@ AppManager.prototype = {
 	},
 
 	updateMainSourceShader: function(){
-		// Main quad and texture that gets rendered as the source shader
 
-		this.fragmentShader = document.getElementById( 'fragment_shader_pass_1' ).textContent;
+		// Internal core uniforms
+		var uniforms = {
+			u_time: { type: "f", value: this.time },
+			u_coordsMap: { type: "t", value: this.coordsMap },
+			u_prevCMap: { type: "t", value: this.rtTextureB },
+			u_mapSize: { type: "f", value: this.simSize }
+		}
 
+		// Generate the source shader from the current loaded channels
 		var sourceShader = ap.channels.generateSourceShader();
+		var sourceUniforms = "";
 
-		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERS", sourceShader.output);
+		// Add the uniforms from the current loaded channels
+		for (var uniform in sourceShader.uniforms) {
 
-		// TODO - update uniforms based on the loaded clips
+			var type;
+			switch ( sourceShader.uniforms[uniform].type ) {
+				case "f": type = "float"; break;
+				case "t": type = "sampler2D"; break;
+				case "i": type = "bool"; break;
+				case "v2": type = "vec2"; break;
+				case "v3": type = "vec3"; break;
+				case "v4": type = "vec4"; break;
+			}
 
-		//console.log(this.fragmentShader );
+			sourceUniforms += "uniform " + type + " " + uniform + ";\n";
+			uniforms[uniform] = sourceShader.uniforms[uniform];
+		}
 
+		// Internal core shader is merged with the loaded shaders
+		this.fragmentShader = document.getElementById( 'fragment_shader_pass_1' ).textContent;
+		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERS", sourceShader.fragmentShader);
 
-		// Add ShaderUtils 
-		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERUTILS", ap.shaders.ShaderUtils);
+		// Add ShaderUtils and uniforms at the top
+		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERUTILS", ap.shaders.ShaderUtils + sourceUniforms);
 
+		// The main material object has uniforms that can be referenced and updated directly by the UI
 		this.material = new THREE.ShaderMaterial( {
-			uniforms: {
-				u_time: { type: "f", value: this.time },
-				u_coordsMap: { type: "t", value: this.coordsMap },
-				u_prevCMap: { type: "t", value: this.rtTextureB },
-				u_mapSize: { type: "f", value: this.simSize }
-			},
+			uniforms: uniforms,
 			vertexShader: ap.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: this.fragmentShader
 		} );
 
+		// Main quad that gets rendered as the source shader
 		var name = "SourceQuad";
-
 		var lookupObj = this.sceneRTT.getObjectByName(name);
 		if(lookupObj){
 			// If the quad has already been added, remove it so we can add it fresh
 			this.sceneRTT.remove(lookupObj);
 		}
-
 		var quad = new THREE.Mesh( this.plane, this.material );
 		quad.position.z = -100;
 		quad.name = name;

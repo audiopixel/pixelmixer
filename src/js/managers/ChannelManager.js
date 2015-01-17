@@ -102,37 +102,36 @@ ChannelManager.prototype = {
 
 	generateSourceShader: function () {
 
-		var shader = {};
-		shader.uniforms = {};
-		shader.output = "";
+		uniforms = {};
+		output = "";
 
 		var address;
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
-			channel.address = "-" + (i+1);
+			channel.address = "_" + (i+1);
 
 			// uniform 'mix' for the channel
-			shader.uniforms[channel.address + "_mix"] = { type: "f", value: channel.mix }; // TODO modulation uniforms 
+			uniforms[channel.address + "_mix"] = { type: "f", value: channel.mix }; // TODO modulation uniforms 
 
 
 			for (var e = 0; e < channel.pods.length; e++) {
 				var pod = channel.pods[e];
-				pod.address = channel.address + "-" + (e+1);
+				pod.address = channel.address + "_" + (e+1);
 
 				// uniforms 'mix' & 'blend' for the pod
-				shader.uniforms[pod.address + "_mix"] = { type: "f", value: pod.mix }; // TODO modulation uniforms 
-				shader.uniforms[pod.address + "_blend"] = { type: "f", value: pod.blend };
+				uniforms[pod.address + "_mix"] = { type: "f", value: pod.mix }; // TODO modulation uniforms 
+				uniforms[pod.address + "_blend"] = { type: "f", value: pod.blend };
 
 				// TODO pull pod position data and add as baked in snippets
 				
 
 				for (var u = 0; u < pod.clips.length; u++) {
 					var clip = pod.clips[u];
-					clip.address = pod.address + "-" + (u+1);
+					clip.address = pod.address + "_" + (u+1);
 
 					// uniforms 'mix' & 'blend' for the clip
-					shader.uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
-					shader.uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
+					uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
+					uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
 
 					// TODO 'clip params as well as xyz offset/scale ', as well as modulation values for each
 					// TODO add conversion logic for rgb/hsv for each clip (if needed)
@@ -145,10 +144,12 @@ ChannelManager.prototype = {
 					fragOutput = fragOutput.replace("__", clip.address + "_");
 
 					// Merge the clip fragment shaders as we move along
-					shader.output += fragOutput;
+					output += fragOutput;
 				};
 			};
 		};
+
+
 
 
 
@@ -186,7 +187,7 @@ ChannelManager.prototype = {
 		*/
 
 
-		return shader;
+		return new Shader(uniforms, output);
 
 	},
 
