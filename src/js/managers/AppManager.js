@@ -76,6 +76,7 @@ AppManager.prototype = {
 		this.geometry = new THREE.Geometry();
 
 		this.updateMainSourceShader();
+		this.updateNodePoints();
 
 		//---------------
 		// testing
@@ -301,10 +302,13 @@ AppManager.prototype = {
 
 		this.fragmentShader = document.getElementById( 'fragment_shader_pass_1' ).textContent;
 
-		// TODO - Add shaders based on the loaded clips
-		//this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERS", "");
+		var sourceShader = ap.channels.generateSourceShader();
+
+		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERS", sourceShader.output);
 
 		// TODO - update uniforms based on the loaded clips
+
+		//console.log(this.fragmentShader );
 
 
 		// Add ShaderUtils 

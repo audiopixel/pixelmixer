@@ -54,15 +54,15 @@
 
 			// ****** Managers ******
 
-			ap.app = new AppManager(document.getElementById( 'container' ));
 			ap.ports = new PortManager();
 			ap.hardware = new HardwareManager();
 			ap.channels = new ChannelManager();
+			ap.app = new AppManager(document.getElementById( 'container' ));
 
-			ap.app.init();
 			ap.ports.init();
 			ap.hardware.init();
 			ap.channels.init();
+			ap.app.init();
 
 
 
@@ -128,58 +128,46 @@
 		}
 
 		</script>
-
-		<script id="fragment_shader_pass_1" type="x-shader/x-fragment">
-
-			//#INCLUDESHADERUTILS
-
-			precision mediump float;
-			float ap_index;
-			vec4  ap_xyz;
-			//vec3  ap_lastRgb;
-			vec3  ap_rgb;
-
-			varying vec2 v_vUv;
-			uniform float u_time;
-			//uniform float u_random;
-			uniform float u_mapSize;
-			uniform sampler2D u_coordsMap;
-			uniform sampler2D u_prevCMap;
-			//uniform sampler2D u_portsMap;
-
-
-			void main() {
-
-				//********************************************
-				ap_xyz = texture2D( u_coordsMap, v_vUv);
-				if(ap_xyz[3] == 0.0){ discard; }
-
-				ap_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);
-				//ap_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));
-
-				//********************************************
-
-				//-----------------------------------------
-				vec2 p = (((0.5 * 110000.) + 10000.) * vec2( ap_xyz[0] +  (ap_xyz[2] * 0.25), ap_xyz[1]) ) + 6.;
-
-				float x = p.x;
-				float y = p.y;
-				float mov0 = x+y+cos(sin(u_time)*2.0)*100.+sin(x/100.)*1000.;
-				float mov1 = y;
-				float mov2 = x;
-				float c1 = abs(sin(mov1+u_time)/2.+mov2/2.-mov1-mov2+u_time);
-				float c2 = abs(sin(c1+sin(mov0/1000.+u_time)+sin(y/40.+u_time)+sin((x+y)/100.)*3.));
-				float c3 = abs(sin(c2+cos(mov1+mov2+c2)+cos(mov2)+sin(x/1000.)));
-
-				c1 = c1 * 0.25;
-				ap_rgb = vec3(c2,c3,c1);
-
-				gl_FragColor = vec4(ap_rgb, 1.0);
-
-				//#INCLUDESHADERS
-
-			}
-
-		</script>
 	</body>
 </html>
+
+
+<script id="fragment_shader_pass_1" type="x-shader/x-fragment">
+
+//#INCLUDESHADERUTILS
+
+precision mediump float;
+float ap_index;
+vec4  ap_xyz;
+//vec3  ap_lastRgb;
+vec3  ap_rgb;
+
+varying vec2 v_vUv;
+uniform float u_time;
+//uniform float u_random;
+uniform float u_mapSize;
+uniform sampler2D u_coordsMap;
+uniform sampler2D u_prevCMap;
+//uniform sampler2D u_portsMap;
+
+
+void main() {
+
+	//********************************************
+	ap_xyz = texture2D( u_coordsMap, v_vUv);
+	if(ap_xyz[3] == 0.0){ discard; }
+
+	ap_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);
+	//ap_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));
+
+	vec2 p;
+
+	//********************************************
+
+	//#INCLUDESHADERS
+
+	gl_FragColor = vec4(ap_rgb, 1.0);
+
+}
+
+</script>

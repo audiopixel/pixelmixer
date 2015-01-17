@@ -18,14 +18,12 @@ HardwareManager.prototype = {
 		var port1 = new Port(1, 2, "port name 01", ap.PORT_TYPE_KINET_1, "10.0.0.20");
 		ap.ports.setPort(1, port1);
 		this.addTestGrid(1, 0);
-		
-		ap.app.updateNodePoints();
 
 		var port2 = new Port(2, 2, "port name 02", ap.PORT_TYPE_KINET_1, "10.0.0.21");
 		ap.ports.setPort(2, port2);
 		this.addTestGrid(2, -440);
 		
-		ap.app.updateNodePoints();
+		//ap.app.updateNodePoints(); // only need to call this when we add nodes after init
 
 	},
 

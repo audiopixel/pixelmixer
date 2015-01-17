@@ -70,27 +70,21 @@ ap.clips.BasicClip = {
 		**/
 
 
-		"float rtime = abs(u_time);",
-		"p = (((0.5/*p1*/ * 18000.0) + 500.0) * vec2( ap_xyz[0], ap_xyz[2]) - ap_xyz[1] * fract(rtime*0.00007));",
-		"p[0] += 0.1;",
-		"vec2 q = vec2( cos(p.x), sin(p.y) );",
-		"rtime = rtime + q.x * q.y + length( q );",
-		"vec3 c = vec3( 0.0 );",
-		"c += vec3(2.0, 2.5, 1.0) * fract( (              p.x - p.y + fract(rtime*0.0017) ) * 5.0 ) ;",
-		"c -= vec3(1.0, 2.0, 2.3) * fract( (sin(u_time*0.25)*p.x - p.y + fract(rtime*0.0015) ) * 5.0 ) ;",
-		"c += ( p.x * p.y );",
+		"p = (((0.5 * 110000.) + 10000.) * vec2( ap_xyz[0] +  (ap_xyz[2] * 0.25), ap_xyz[1]) ) + 6.;",
 
-		"c = max(c, vec3(0.0));",
-		"c = min(c, vec3(1.0));",
-		"vec3 rgb_2 = c * u_mix2; // mix",
+		"float x = p.x;",
+		"float y = p.y;",
+		"float mov0 = x+y+cos(sin(u_time)*2.0)*100.+sin(x/100.)*1000.;",
+		"float mov1 = y;",
+		"float mov2 = x;",
+		"float c1 = abs(sin(mov1+u_time)/2.+mov2/2.-mov1-mov2+u_time);",
+		"float c2 = abs(sin(c1+sin(mov0/1000.+u_time)+sin(y/40.+u_time)+sin((x+y)/100.)*3.));",
+		"float c3 = abs(sin(c2+cos(mov1+mov2+c2)+cos(mov2)+sin(x/1000.)));",
 
-		"hsl = rgb2hsv(rgb_2); // hue knob",
-		"hsl[0] += 0.0;//p2;",
-		"if(hsl[0] > 1.0){ hsl[0] =  hsl[0] - floor(hsl[0]); }",
+		"c1 = c1 * 0.25;",
+		"ap_rgb = vec3(c2,c3,c1);",
 
-		"__p" // test addressing
-
-	].join("\n"),
+		].join("\n"),
 
 
 	// Optional JS methods that can be defined per shader // TODO implement

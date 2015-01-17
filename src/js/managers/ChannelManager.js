@@ -91,8 +91,7 @@ ChannelManager.prototype = {
 		// Let's create some test channels for now (TODO: this should be loaded from current project settings)
 		this.channels[0] = new Channel("TestChannel", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods);
 
-
-		console.log(this.generateSourceShader());
+		//console.log(this.generateSourceShader());
 
 	},
 
@@ -136,20 +135,19 @@ ChannelManager.prototype = {
 					shader.uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
 
 					// TODO 'clip params as well as xyz offset/scale ', as well as modulation values for each
-
 					// TODO add conversion logic for rgb/hsv for each clip (if needed)
 
+
+					// Lookup the correct imported clip based on the id stored on the clip object
 					var fragOutput = ap.clips[ap.register[clip.clipId]].fragmentShader;
 
+					// Inject addressing for uniforms that are flagged with "__". (i.e. replace with "-1-1-1_")
 					fragOutput = fragOutput.replace("__", clip.address + "_");
 
-
+					// Merge the clip fragment shaders as we move along
 					shader.output += fragOutput;
-
 				};
-
 			};
-
 		};
 
 
