@@ -49,6 +49,8 @@
 
 		function onLoad(){
 
+			var updateShader;
+
 
 
 			// Register all clips by their id's for easy lookup later
@@ -81,17 +83,25 @@
 			function animate() {
 
 				//if(frameCount % 30 == 1){ // Slow framerate testing
-				
-				// ** Update 
-				ap.app.update();
-				ap.ports.update();
-				ap.hardware.update();
-				ap.channels.update();
+
+				if(!updateShader){
+
+					// ** Main loop update 
+					ap.app.update();
+					ap.ports.update();
+					ap.hardware.update();
+					ap.channels.update();
+
+				}else{
+
+					// We detected the shader needs an update, only do that this frame
+					ap.app.updateMainSourceShader();
+					updateShader = false;
+				}
 
 
 				// Render next frame // TODO: throttle logic if needed
 				requestAnimationFrame( animate );
-
 				frameCount++;
 			}
 
@@ -102,7 +112,7 @@
 
 			// ****** UI ******
 
-			// TODO replace dat.gui with dynamic react components (or similar) that reflect model: ap.channels 
+			// TODO replace dat.gui with react components (or similar) that reflect model: ap.channels 
 
 			var f1 = gui.addFolder('Channel 1'); 		f1.open();
 			var guiData  = {
@@ -113,9 +123,12 @@
 			
 
 
+
 			// ****** Event Handlers ****** 
 
 			document.addEventListener( 'keydown', function ( event ) {
+
+				//console.log(event.keyCode);
 
 				switch ( event.keyCode ) {
 
@@ -124,7 +137,9 @@
 						break;
 					case 46: // delete
 						break;
-
+					case 17: // ctrl
+						updateShader = true;
+						break;
 				}
 
 			}, false );
@@ -177,6 +192,9 @@ void main() {
 	//********************************************
 
 	//#INCLUDESHADERS
+
+	ap_rgb = max(ap_rgb, vec3(0.0));
+	ap_rgb = min(ap_rgb, vec3(1.0));
 
 	gl_FragColor = vec4(ap_rgb, 1.0);
 

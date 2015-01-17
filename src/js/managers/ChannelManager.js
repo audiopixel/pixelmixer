@@ -140,17 +140,16 @@ ChannelManager.prototype = {
 					// Lookup the correct imported clip based on the id stored on the clip object
 					var fragOutput = ap.clips[ap.register[clip.clipId]].fragmentShader;
 
-					// Inject addressing for uniforms that are flagged with "__". (i.e. replace with "-1-1-1_")
-					fragOutput = fragOutput.replace("__", clip.address + "_");
+					// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
+					fragOutput = fragOutput.replace("_channel_", channel.address + "_");
+					fragOutput = fragOutput.replace("_pod_", pod.address + "_");
+					fragOutput = fragOutput.replace("_clip_", clip.address + "_");
 
 					// Merge the clip fragment shaders as we move along
 					output += fragOutput;
 				};
 			};
 		};
-
-
-
 
 
 		/*

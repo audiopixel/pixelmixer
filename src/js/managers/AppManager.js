@@ -34,6 +34,7 @@ var AppManager = function (container) {
 	this.geometry = new THREE.Geometry();
 	this.pointCloud;
 	this.fragmentShader;
+	this.material;
 
 	this.time = 0;
 	this.simSize = 128;
@@ -76,6 +77,8 @@ AppManager.prototype = {
 		this.geometry = new THREE.Geometry();
 
 		this.updateMainSourceShader();
+
+
 		this.updateNodePoints();
 
 		//---------------
@@ -89,8 +92,8 @@ AppManager.prototype = {
 		setTimeout(function(){
 			//that.addNodesAsTestGrid(); // Change or add more nodes
 			//that.updateNodes();
-			
-			//that.updateMainSourceShader();
+
+			that.updateMainSourceShader();
 		}, 2000);
 */
 
@@ -330,6 +333,9 @@ AppManager.prototype = {
 			uniforms[uniform] = sourceShader.uniforms[uniform];
 		}
 
+// Testing - remove 
+sourceShader.fragmentShader = sourceShader.fragmentShader.replace("110000", "" + Math.floor((Math.random() * 200000)));
+
 		// Internal core shader is merged with the loaded shaders
 		this.fragmentShader = document.getElementById( 'fragment_shader_pass_1' ).textContent;
 		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERS", sourceShader.fragmentShader);
@@ -344,6 +350,7 @@ AppManager.prototype = {
 			fragmentShader: this.fragmentShader
 		} );
 
+
 		// Main quad that gets rendered as the source shader
 		var name = "SourceQuad";
 		var lookupObj = this.sceneRTT.getObjectByName(name);
@@ -356,6 +363,9 @@ AppManager.prototype = {
 		quad.name = name;
 		this.sceneRTT.add( quad );
 
+		// TODO possible optimize : seems this would be faster to update and not create new quad each time, but looks slower actually
+		//this.material.uniforms = uniforms;
+		//this.material.needsUpdate = true;
 	}
 
 }
