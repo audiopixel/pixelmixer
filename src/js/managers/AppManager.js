@@ -333,6 +333,15 @@ AppManager.prototype = {
 			uniforms[uniform] = sourceShader.uniforms[uniform];
 		}
 
+		// If the material already exists, transfer over the value of any uniforms that have remained
+		if(this.material){
+			for (var uniform in uniforms) {
+				if(this.material.uniforms[uniform]){
+					uniforms[uniform].value = this.material.uniforms[uniform].value;
+				}
+			}
+		}
+
 // Testing - remove 
 sourceShader.fragmentShader = sourceShader.fragmentShader.replace("110000", "" + Math.floor((Math.random() * 200000)));
 

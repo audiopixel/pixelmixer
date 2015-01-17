@@ -82,6 +82,9 @@ ap.clips.BasicClip = {
 		"float c3 = abs(sin(c2+cos(mov1+mov2+c2)+cos(mov2)+sin(x/1000.)));",
 
 		"c1 = c1 * 0.25;",
+
+		// TODO clip values and add channel mix should not be done here, instead in ChannelManager
+		"c1 = min(c1, 1.0);",
 		"ap_rgb = vec3(c2,c3,c1) * _channel_mix;  // mix"
 
 		].join("\n"),
