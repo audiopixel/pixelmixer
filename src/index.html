@@ -24,6 +24,7 @@
 		<script src="js/shaders/core/ShaderUtils.js"></script>
 		<script src="js/shaders/core/SimpleTextureShader.js"></script>
 		<script src="js/shaders/core/NodeShader.js"></script>
+		<script src="js/shaders/clips/BasicClip.js"></script>
 	</head>
 
 	<body ontouchstart="" onload="onLoad()">
@@ -42,6 +43,15 @@
 
 		function onLoad(){
 
+			// Register all clips by their id's for easy lookup later
+			for (var property in ap.clips) {
+				if (ap.clips.hasOwnProperty(property)) {
+					ap.register[ap.clips[property].id] = property;
+				}
+			}
+
+
+
 			// ****** Managers ******
 
 			ap.app = new AppManager(document.getElementById( 'container' ));
@@ -53,6 +63,7 @@
 			ap.ports.init();
 			ap.hardware.init();
 			ap.channels.init();
+
 
 
 			// ****** Runtime Loop ****** 

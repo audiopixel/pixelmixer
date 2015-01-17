@@ -147,7 +147,7 @@ AppManager.prototype = {
 	addPlanesForTesting: function(){
 		var materialScreen = new THREE.ShaderMaterial( {
 
-			uniforms: 		{"u_texture":   { type: "t", value: this.rtTextureA }},
+			uniforms: 		{u_texture:   { type: "t", value: this.rtTextureA }},
 			vertexShader: 	ap.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: ap.shaders.SimpleTextureShader.fragmentShader,
 			depthWrite: false
@@ -160,7 +160,7 @@ AppManager.prototype = {
 
 		materialScreen = new THREE.ShaderMaterial( {
 
-			uniforms: 		{"u_texture":   { type: "t", value: this.rtTextureB }},
+			uniforms: 		{u_texture:   { type: "t", value: this.rtTextureB }},
 			vertexShader: 	ap.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: ap.shaders.SimpleTextureShader.fragmentShader,
 			depthWrite: false

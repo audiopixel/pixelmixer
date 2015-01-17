@@ -86,7 +86,9 @@ ap.clips.BasicClip = {
 
 		"hsl = rgb2hsv(rgb_2); // hue knob",
 		"hsl[0] += 0.0;//p2;",
-		"if(hsl[0] > 1.0){ hsl[0] =  hsl[0] - floor(hsl[0]); }"
+		"if(hsl[0] > 1.0){ hsl[0] =  hsl[0] - floor(hsl[0]); }",
+
+		"__p" // test addressing
 
 	].join("\n"),
 
