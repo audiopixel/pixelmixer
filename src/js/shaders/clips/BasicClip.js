@@ -83,9 +83,6 @@ ap.clips.BasicClip = {
 
 		"c1 = c1 * 0.25;",
 
-		// TODO clip values and add channel mix should not be done here, instead in ChannelManager
-		"c1 = min(c1, 1.0);",
-
 		"gl_FragColor = vec4(c2,c3,c1, 1.0); // end shader"
 
 		].join("\n"),

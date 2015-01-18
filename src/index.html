@@ -205,9 +205,6 @@ void main() {
 
 	//#INCLUDESHADERS
 
-	ap_rgb = max(ap_rgb, vec3(0.0));
-	ap_rgb = min(ap_rgb, vec3(1.0));
-
 	gl_FragColor = vec4(ap_rgb, 1.0);
 
 }
