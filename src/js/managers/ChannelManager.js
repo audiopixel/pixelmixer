@@ -80,8 +80,9 @@ ChannelManager.prototype = {
 
 		var mix = 1;
 
-		// Let's create some test clips and for now (TODO: this should be loaded from current project settings or channel preset)
-		var clips = [new Clip(2, mix, ap.BLEND.Add)];
+		// Let's create some test clips for now (TODO: this should be loaded from current project settings or channel preset)
+		var clips = [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)];
+		//var clips = [new Clip(1, mix, ap.BLEND.Add)];
 
 		// Let's create some test pods for now (TODO: this should be loaded from current project settings or channel preset)
 		var pods = [new Pod(1, mix, ap.BLEND.Add, clips)];
@@ -103,6 +104,7 @@ ChannelManager.prototype = {
 		uniforms = {};
 		output = "";
 		var fragOutput = ""
+		var firstMix = true;
 
 		var address;
 		for (var i = 0; i < this.channels.length; i++) {
@@ -138,24 +140,41 @@ ChannelManager.prototype = {
 
 					// Lookup the correct imported clip based on the id stored on the clip object
 					fragOutput = ap.clips[ap.register[clip.clipId]].fragmentShader + "\n";
+					console.log("--ID: " + clip.clipId);
 
-					// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard
-					fragOutput = fragOutput.replace(/gl_FragColor/g, "ap_rgb");
+					// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
+					fragOutput = fragOutput.replace(/gl_FragColor/g, "ap_rgbV4");
+					fragOutput += "ap_rgb2 = vec3(ap_rgbV4.r, ap_rgbV4.g, ap_rgbV4.b); \n"; // vec4 -> vec3
+
+					var rgbTarget = "ap_rgb";
+					if(firstMix){
+						fragOutput += "ap_rgb = ap_rgb2; \n";
+					}else{
+						rgbTarget = "ap_rgb2";
+					}
 
 					// Channel / Pod / Clip mix for this shader
-					fragOutput += "ap_rgb = ap_rgb * (_channel_mix); \n";
-					fragOutput += "ap_rgb = ap_rgb * (_pod_mix); \n";
-					fragOutput += "ap_rgb = ap_rgb * (_clip_mix); \n";
+					fragOutput += rgbTarget + " = " + rgbTarget + " * (_channel_mix); \n";
+					fragOutput += rgbTarget + " = " + rgbTarget + " * (_pod_mix); \n";
+					fragOutput += rgbTarget + " = " + rgbTarget + " * (_clip_mix); \n";
 
 					// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
 					fragOutput = fragOutput.replace(/_channel_/g, channel.address + "_");
 					fragOutput = fragOutput.replace(/_pod_/g, pod.address + "_");
 					fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
 
+					if(firstMix){
+						firstMix = false;
+					}else{
+						// Blend in the shader with ongoing mix
+						fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, 1.0); \n";
+					}
+					
+
 					// Merge the clip fragment shaders as we move along
 					output += fragOutput;
 
-					//console.log(fragOutput);
+					console.log(fragOutput);
 				};
 			};
 		};

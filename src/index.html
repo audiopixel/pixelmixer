@@ -123,11 +123,13 @@
 			var guiData  = {
 				Channel1Mix:  1,
 				Pod1Mix:  1,
-				Shader1Mix:  1
+				Shader1Mix:  1,
+				Shader2Mix:  1
 			}
 			f1.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_mix.value = guiData.Channel1Mix; });
-			f1.add( guiData, "Pod1Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_1_mix.value = guiData.Pod1Mix; });
+			//f1.add( guiData, "Pod1Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_1_mix.value = guiData.Pod1Mix; });
 			f1.add( guiData, "Shader1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_1_mix.value = guiData.Shader1Mix; });
+			f1.add( guiData, "Shader2Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_2_mix.value = guiData.Shader2Mix; });
 
 
 
@@ -175,7 +177,9 @@ precision mediump float;
 float ap_index;
 vec4 ap_xyz;
 //vec3  ap_lastRgb;
-vec4 ap_rgb;
+vec3 ap_rgb;
+vec3 ap_rgb2;
+vec4 ap_rgbV4;
 
 varying vec2 v_vUv;
 uniform float u_time;
@@ -201,10 +205,10 @@ void main() {
 
 	//#INCLUDESHADERS
 
-	ap_rgb = max(ap_rgb, vec4(0.0));
-	ap_rgb = min(ap_rgb, vec4(1.0));
+	ap_rgb = max(ap_rgb, vec3(0.0));
+	ap_rgb = min(ap_rgb, vec3(1.0));
 
-	gl_FragColor = ap_rgb;
+	gl_FragColor = vec4(ap_rgb, 1.0);
 
 }
 
