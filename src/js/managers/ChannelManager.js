@@ -11,8 +11,6 @@ var ChannelManager = function () {
 
 	/*
 
-	// TODO
-
 	--hold state:
 	---------------------------------------
 
@@ -83,7 +81,7 @@ ChannelManager.prototype = {
 		var mix = 1;
 
 		// Let's create some test clips and for now (TODO: this should be loaded from current project settings or channel preset)
-		var clips = [new Clip(1, mix, ap.BLEND.Add)];
+		var clips = [new Clip(2, mix, ap.BLEND.Add)];
 
 		// Let's create some test pods for now (TODO: this should be loaded from current project settings or channel preset)
 		var pods = [new Pod(1, mix, ap.BLEND.Add, clips)];
@@ -104,6 +102,7 @@ ChannelManager.prototype = {
 
 		uniforms = {};
 		output = "";
+		var fragOutput = ""
 
 		var address;
 		for (var i = 0; i < this.channels.length; i++) {
@@ -138,39 +137,28 @@ ChannelManager.prototype = {
 
 
 					// Lookup the correct imported clip based on the id stored on the clip object
-					var fragOutput = ap.clips[ap.register[clip.clipId]].fragmentShader;
+					fragOutput = ap.clips[ap.register[clip.clipId]].fragmentShader + "\n";
+
+					// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard
+					fragOutput = fragOutput.replace(/gl_FragColor/g, "ap_rgb");
+
+					// Channel / Pod / Clip mix for this shader
+					fragOutput += "ap_rgb = ap_rgb * (_channel_mix); \n";
+					fragOutput += "ap_rgb = ap_rgb * (_pod_mix); \n";
+					fragOutput += "ap_rgb = ap_rgb * (_clip_mix); \n";
 
 					// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
-					fragOutput = fragOutput.replace("_channel_", channel.address + "_");
-					fragOutput = fragOutput.replace("_pod_", pod.address + "_");
-					fragOutput = fragOutput.replace("_clip_", clip.address + "_");
+					fragOutput = fragOutput.replace(/_channel_/g, channel.address + "_");
+					fragOutput = fragOutput.replace(/_pod_/g, pod.address + "_");
+					fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
 
 					// Merge the clip fragment shaders as we move along
 					output += fragOutput;
+
+					//console.log(fragOutput);
 				};
 			};
 		};
-
-
-		/*
-		// TODO
-
-		-for each channel
-				
-			*uniforms: mix, blend (i.e, -1_mix)
-
-			-for each pod
-				
-				*uniforms: mix, blend (i.e, -1-1_mix)
-				snippets: pod position data from position group
-
-				-for each clip
-
-					*uniforms: params, properties, mix, blend, clip pos offset/scale
-					grab shader snippet
-					replace '__p1' with '-1-1-1_p1' (address data)
-
-		*/
 
 		/*
 		// TODO regenerate Metamap data: (if any of this changed)
@@ -186,7 +174,7 @@ ChannelManager.prototype = {
 		*/
 
 
-		return new Shader(uniforms, output);
+		return new Shader(uniforms, output + "\n");
 
 	},
 

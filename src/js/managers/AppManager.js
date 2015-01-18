@@ -182,7 +182,7 @@ AppManager.prototype = {
 
 	/////////////////
 
-	// Should get called whenever there are any changes on StateManager
+	// Should get called whenever there are any changes on PortManager
 	// (This is the main view that should reflect state)
 	updateNodePoints: function () {
 
@@ -207,6 +207,8 @@ AppManager.prototype = {
 					vertex.y = port.nodes[i].y;
 					vertex.z = port.nodes[i].z;
 					this.geometry.vertices.push( vertex );
+
+					// TODO check port render type, if it's a directional light, or if it's a node (or plane eventually)
 
 					// for each point push along x, y values to reference correct pixel in u_colorMaps
 					var imageSize = this.simSize; 
@@ -344,6 +346,7 @@ AppManager.prototype = {
 
 // Testing - remove 
 sourceShader.fragmentShader = sourceShader.fragmentShader.replace("110000", "" + Math.floor((Math.random() * 200000)));
+		
 
 		// Internal core shader is merged with the loaded shaders
 		this.fragmentShader = document.getElementById( 'fragment_shader_pass_1' ).textContent;

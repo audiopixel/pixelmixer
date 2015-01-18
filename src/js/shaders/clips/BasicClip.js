@@ -5,7 +5,7 @@
 
 ap.clips.BasicClip = {
 
-	id: 1, // OSC requires id's to be integers
+	id: 2, // OSC requires id's to be integers
 
 	input: 		'rgb', // 'rgb' default if not specified, 'hsb/hsv' also excepted. 
 	output: 	'rgb', // 'rgb' default if not specified, 'hsb/hsv' also excepted. 
@@ -36,7 +36,7 @@ ap.clips.BasicClip = {
 		* float ap_index;								// Current node: index value (integer)
 		* vec4 ap_xyz;									// Current node: xyz coordinates (or other values to map to)
 		* vec3 ap_lastRgb;								// Current node: rgb value last frame. 4th value discard slot
-		* vec3 ap_rgb;									// Current node: rgb ouput value
+		* vec4 ap_rgb;									// Current node: rgb ouput value
 		* 
 		* float u_time;									// Uniform: Animation speed, movement should be tied to this other inputs
 		* float u_random;								// Uniform: Random value (0-1)
@@ -85,7 +85,9 @@ ap.clips.BasicClip = {
 
 		// TODO clip values and add channel mix should not be done here, instead in ChannelManager
 		"c1 = min(c1, 1.0);",
-		"ap_rgb = vec3(c2,c3,c1) * _channel_mix;  // mix"
+		"//ap_rgb = vec3(c2,c3,c1);// * _channel_mix;  // mix",
+
+		"gl_FragColor = vec4(c2,c3,c1, 1.0);"
 
 		].join("\n"),
 
