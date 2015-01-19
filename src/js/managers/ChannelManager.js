@@ -82,16 +82,15 @@ ChannelManager.prototype = {
 
 		// Let's create some test clips for now (TODO: this should be loaded from current project settings or channel preset)
 		//var clips = [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)];
-		//var clips = [new Clip(1, mix, ap.BLEND.Add)];
 
 		// Let's create some test pods for now (TODO: this should be loaded from current project settings or channel preset)
 		
-		var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add),new Clip(3, mix, ap.BLEND.Add)]), new Pod(1, mix, ap.BLEND.Add, [new Clip(3, mix, ap.BLEND.Add)])];
-		var pods2 = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add)]), new Pod(1, mix, ap.BLEND.Add, [new Clip(3, mix, ap.BLEND.Add)])];
+		var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add)]), new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)])];
+
 		
 		// Let's create some test channels for now (TODO: this should be loaded from current project settings)
 		this.channels[0] = new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods);
-		this.channels[1] = new Channel("TestChannel2", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods2);
+		//this.channels[1] = new Channel("TestChannel2", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods2);
 
 		//console.log(this.generateSourceShader());
 
@@ -173,7 +172,7 @@ ChannelManager.prototype = {
 						firstMix = false;
 					}else{
 						// Blend in the shader with ongoing mix
-						fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, 1.0); \n"; // TODO set blends from clip settings
+						fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, " + Math.floor(clip.blend) + ".); \n"; // TODO set blends from clip settings
 					}
 
 					// ----------------------
@@ -198,7 +197,7 @@ ChannelManager.prototype = {
 
 				}else{
 					// Blend in last pod with current pod, if it's not the first pod in this channel
-					output += "ap_p = blend(ap_p, ap_rgb, 1.0); \n"; // TODO set blends from pod settings
+					output += "ap_p = blend(ap_p, ap_rgb, " + Math.floor(pod.blend) + ".); \n";
 				}
 
 				output = output.replace(/_pod_/g, pod.address + "_") + "\n";
@@ -221,7 +220,7 @@ ChannelManager.prototype = {
 			output = output.replace(/_channel_/g, channel.address + "_") + "\n";
 		};
 
-		console.log(output);
+		//console.log(output);
 
 		/*
 		// TODO regenerate Metamap data: (if any of this changed)
