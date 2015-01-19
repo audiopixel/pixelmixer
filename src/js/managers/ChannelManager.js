@@ -85,7 +85,8 @@ ChannelManager.prototype = {
 
 		// Let's create some test pods for now (TODO: this should be loaded from current project settings or channel preset)
 		
-		var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add)]), new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)])];
+		//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)])];
+		var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)])];
 
 		
 		// Let's create some test channels for now (TODO: this should be loaded from current project settings)
@@ -104,10 +105,10 @@ ChannelManager.prototype = {
 	generateSourceShader: function () {
 
 		var uniforms = {};
+		var variables = {};
 		var output = "";
 		var fragOutput = ""
 		var rgbTarget;
-
 		var address;
 
 		var firstMixChannel = true;
@@ -133,19 +134,33 @@ ChannelManager.prototype = {
 
 				var firstMix = true;
 				for (var u = 0; u < pod.clips.length; u++) {
+
 					var clip = pod.clips[u];
 					clip.address = pod.address + "_" + (u+1);
+					var sourceShader = ap.clips[ap.register[clip.clipId]];
 
 					// uniforms 'mix' & 'blend' for the clip
 					uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
 					uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
+
+					// Declare each clips variables, but we can't do it more than once so record which ones we have declared already
+					for (var variable in sourceShader.variables) {
+
+						if(!variables[variable]){ // If we don't already have the variable mark it as in use.
+							variables[variable] = 1; 
+							var type = getVariableTypeFromShorthand(sourceShader.variables[variable].type);
+							output += type + " " + variable + ";";
+						}
+					}
+					output += "\n";
+
 
 					// TODO 'clip params as well as xyz offset/scale ', as well as modulation values for each
 					// TODO add conversion logic for rgb/hsv for each clip (if needed)
 
 
 					// Lookup the correct imported clip based on the id stored on the clip object
-					fragOutput = ap.clips[ap.register[clip.clipId]].fragmentShader + "\n";
+					fragOutput = sourceShader.fragmentMain + "\n";
 
 					// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
 					fragOutput = fragOutput.replace(/gl_FragColor/g, "ap_rgbV4");
@@ -172,7 +187,7 @@ ChannelManager.prototype = {
 						firstMix = false;
 					}else{
 						// Blend in the shader with ongoing mix
-						fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, " + Math.floor(clip.blend) + ".); \n"; // TODO set blends from clip settings
+						fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, " + Math.floor(clip.blend) + ".); \n";
 					}
 
 					// ----------------------

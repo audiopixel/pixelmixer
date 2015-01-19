@@ -321,15 +321,7 @@ AppManager.prototype = {
 		// Add the uniforms from the current loaded channels
 		for (var uniform in sourceShader.uniforms) {
 
-			var type;
-			switch ( sourceShader.uniforms[uniform].type ) {
-				case "f": type = "float"; break;
-				case "t": type = "sampler2D"; break;
-				case "i": type = "bool"; break;
-				case "v2": type = "vec2"; break;
-				case "v3": type = "vec3"; break;
-				case "v4": type = "vec4"; break;
-			}
+			var type = getVariableTypeFromShorthand(sourceShader.uniforms[uniform].type);
 
 			sourceUniforms += "uniform " + type + " " + uniform + ";\n";
 			uniforms[uniform] = sourceShader.uniforms[uniform];
@@ -345,12 +337,12 @@ AppManager.prototype = {
 		}
 
 // Testing - remove 
-sourceShader.fragmentShader = sourceShader.fragmentShader.replace("110000", "" + Math.floor((Math.random() * 200000)));
-		
+sourceShader.fragmentMain = sourceShader.fragmentMain.replace("110000", "" + Math.floor((Math.random() * 200000)));
+
 
 		// Internal core shader is merged with the loaded shaders
 		this.fragmentShader = document.getElementById( 'fragment_shader_pass_1' ).textContent;
-		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERS", sourceShader.fragmentShader);
+		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERS", sourceShader.fragmentMain);
 
 		// Add ShaderUtils and uniforms at the top
 		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERUTILS", ap.shaders.ShaderUtils + sourceUniforms);

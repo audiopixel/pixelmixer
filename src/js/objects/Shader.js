@@ -1,8 +1,8 @@
 
-var Shader = function (uniforms, fragmentShader) {
+var Shader = function (uniforms, fragmentMain) {
 
 	this.uniforms = uniforms || {};
-	this.fragmentShader = fragmentShader || "";
+	this.fragmentMain = fragmentMain || "";
 
 };
 

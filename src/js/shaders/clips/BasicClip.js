@@ -10,7 +10,7 @@ ap.clips.BasicClip = {
 	input: 		'rgb', // 'rgb' default if not specified, 'hsb/hsv' also excepted. 
 	output: 	'rgb', // 'rgb' default if not specified, 'hsb/hsv' also excepted. 
 
-	params: { // (uniforms)
+	params: { // (optional uniforms)
 
 		// Each shader can have upto 6 params that are controlled by it's UI / modulations
 		// TODO: define display ranges that will be shown in UI (percentage of param value)
@@ -19,15 +19,42 @@ ap.clips.BasicClip = {
 
 	},
 	
-	property: { // (uniforms)
+	property: { // (optional uniforms)
 
-		// These are internal property that can be referenced from init/update methods, and passed as uniforms
-		"v1": { type: "f", value: 1.0, desc: "testV1" },
-		"v2": { type: "f", value: 1.0, desc: "testV2" }
+		// These are internal properties that can be referenced from init/update methods, and passed as uniforms
+		"v1": { type: "f", value: 1.0 },
+		"v2": { type: "f", value: 1.0 }
+
+	},
+	
+	variables: { // (optional internal variables)
+
+		// These are internal variables that are used inside fragmentMain // TODO implement - to be defined with the shader importer
+		"mov0": { type: "f" },
+		"mov1": { type: "f" },
+		"mov2": { type: "f" },
+		"c1": { type: "f" },
+		"c2": { type: "f" },
+		"c3": { type: "f" }
 
 	},
 
-	fragmentShader: [ // Note we only need the Fragment shader and not the Vertex shader as well
+	// Optional helper functions used inside fragmentMain // TODO implement - to be defined with the shader importer
+
+	fragmentFunctions: {
+
+		"testFunction": [
+
+			"vec3 red() {",
+			"	return vec3(1.0, 0.0, 0.0);",
+			"}"
+
+			].join("\n"),
+
+	},
+
+
+	fragmentMain: [ // Note we only need the Fragment shader and not the Vertex shader as well
 
 		/**
 		*
@@ -70,16 +97,15 @@ ap.clips.BasicClip = {
 		**/
 
 
+		// TODO position data comes from Pod/Clip coordinates
 		"p = (((0.5 * 110000.) + 10000.) * vec2( ap_xyz[0] +  (ap_xyz[2] * 0.25), ap_xyz[1]) ) + 6.;",
 
-		"float x = p.x;",
-		"float y = p.y;",
-		"float mov0 = x+y+cos(sin(u_time)*2.0)*100.+sin(x/100.)*1000.;",
-		"float mov1 = y;",
-		"float mov2 = x;",
-		"float c1 = abs(sin(mov1+u_time)/2.+mov2/2.-mov1-mov2+u_time);",
-		"float c2 = abs(sin(c1+sin(mov0/1000.+u_time)+sin(y/40.+u_time)+sin((x+y)/100.)*3.));",
-		"float c3 = abs(sin(c2+cos(mov1+mov2+c2)+cos(mov2)+sin(x/1000.)));",
+		"mov0 = p.x+p.y+cos(sin(u_time)*2.0)*100.+sin(p.x/100.)*1000.;",
+		"mov1 = p.y;",
+		"mov2 = p.x;",
+		"c1 = abs(sin(mov1+u_time)/2.+mov2/2.-mov1-mov2+u_time);",
+		"c2 = abs(sin(c1+sin(mov0/1000.+u_time)+sin(p.y/40.+u_time)+sin((p.x+p.y)/100.)*3.));",
+		"c3 = abs(sin(c2+cos(mov1+mov2+c2)+cos(mov2)+sin(p.x/1000.)));",
 
 		"c1 = c1 * 0.25;",
 
