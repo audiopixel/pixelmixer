@@ -81,14 +81,17 @@ ChannelManager.prototype = {
 		var mix = 1;
 
 		// Let's create some test clips for now (TODO: this should be loaded from current project settings or channel preset)
-		var clips = [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)];
+		//var clips = [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)];
 		//var clips = [new Clip(1, mix, ap.BLEND.Add)];
 
 		// Let's create some test pods for now (TODO: this should be loaded from current project settings or channel preset)
-		var pods = [new Pod(1, mix, ap.BLEND.Add, clips)];
-
+		
+		var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add),new Clip(3, mix, ap.BLEND.Add)]), new Pod(1, mix, ap.BLEND.Add, [new Clip(3, mix, ap.BLEND.Add)])];
+		var pods2 = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add)]), new Pod(1, mix, ap.BLEND.Add, [new Clip(3, mix, ap.BLEND.Add)])];
+		
 		// Let's create some test channels for now (TODO: this should be loaded from current project settings)
-		this.channels[0] = new Channel("TestChannel", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods);
+		this.channels[0] = new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods);
+		this.channels[1] = new Channel("TestChannel2", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods2);
 
 		//console.log(this.generateSourceShader());
 
@@ -101,12 +104,14 @@ ChannelManager.prototype = {
 
 	generateSourceShader: function () {
 
-		uniforms = {};
-		output = "";
+		var uniforms = {};
+		var output = "";
 		var fragOutput = ""
-		var firstMix = true;
+		var rgbTarget;
 
 		var address;
+
+		var firstMixChannel = true;
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
 			channel.address = "_" + (i+1);
@@ -115,6 +120,7 @@ ChannelManager.prototype = {
 			uniforms[channel.address + "_mix"] = { type: "f", value: channel.mix }; // TODO modulation uniforms 
 
 
+			var firstMixPod = true;
 			for (var e = 0; e < channel.pods.length; e++) {
 				var pod = channel.pods[e];
 				pod.address = channel.address + "_" + (e+1);
@@ -126,6 +132,7 @@ ChannelManager.prototype = {
 				// TODO pull pod position data and add as baked in snippets
 				
 
+				var firstMix = true;
 				for (var u = 0; u < pod.clips.length; u++) {
 					var clip = pod.clips[u];
 					clip.address = pod.address + "_" + (u+1);
@@ -148,42 +155,73 @@ ChannelManager.prototype = {
 					fragOutput += "ap_rgb2 = vec3(ap_rgbV4.r, ap_rgbV4.g, ap_rgbV4.b); \n"; // vec4 -> vec3
 					fragOutput += "ap_rgb2 = max(min(ap_rgb2, vec3(1.0)), vec3(0.0)); \n";
 
-					// -----------------
-					// -- Mix & Blend -- 
 
-					var rgbTarget = "ap_rgb";
+					// ----------------------
+					// -- Clip Mix & Blend -- 
+
+					rgbTarget = "ap_rgb";
 					if(firstMix){
 						fragOutput += "ap_rgb = ap_rgb2; \n";
 					}else{
 						rgbTarget = "ap_rgb2";
 					}
 
-					// Channel / Pod / Clip mix for this shader
-					fragOutput += rgbTarget + " = " + rgbTarget + " * (_channel_mix); \n";
-					fragOutput += rgbTarget + " = " + rgbTarget + " * (_pod_mix); \n";
+					// Clip mix for this shader
 					fragOutput += rgbTarget + " = " + rgbTarget + " * (_clip_mix); \n";
 
 					if(firstMix){
 						firstMix = false;
 					}else{
 						// Blend in the shader with ongoing mix
-						fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, 1.0); \n";
+						fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, 1.0); \n"; // TODO set blends from clip settings
 					}
 
-					// -----------------
+					// ----------------------
+
 
 					// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
-					fragOutput = fragOutput.replace(/_channel_/g, channel.address + "_");
-					fragOutput = fragOutput.replace(/_pod_/g, pod.address + "_");
 					fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
 
 					// Merge the clip fragment shaders as we move along
 					output += fragOutput;
-
-					console.log(fragOutput);
 				};
+
+
+				
+				//  -------------- Pod Mix --------------
+
+				output += "ap_rgb = ap_rgb * (_pod_mix); \n";
+
+				if(firstMixPod){
+					firstMixPod = false;
+					output += "ap_p = ap_rgb; \n";
+
+				}else{
+					// Blend in last pod with current pod, if it's not the first pod in this channel
+					output += "ap_p = blend(ap_p, ap_rgb, 1.0); \n"; // TODO set blends from pod settings
+				}
+
+				output = output.replace(/_pod_/g, pod.address + "_") + "\n";
 			};
+
+
+				
+			//  -------------- Channel Mix --------------
+
+			output += "ap_p = ap_p * (_channel_mix); \n";
+
+			if(firstMixChannel){
+				firstMixChannel = false;
+				output += "ap_c = ap_p; \n";
+
+			}else{
+				output += "ap_c = blend(ap_c, ap_p, 1.0); \n"; // Channels always blend using 'add'
+			}
+
+			output = output.replace(/_channel_/g, channel.address + "_") + "\n";
 		};
+
+		console.log(output);
 
 		/*
 		// TODO regenerate Metamap data: (if any of this changed)
