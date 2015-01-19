@@ -81,8 +81,8 @@ AppManager.prototype = {
 
 		this.geometry = new THREE.Geometry();
 
-		this.updateMainSourceShader();
 		this.updateNodePoints();
+		this.updateMainSourceShader();
 
 		if(this.readPixels){
 			this.pixels = new Uint8Array(4 * this.glWidth * this.glHeight);
@@ -245,7 +245,6 @@ AppManager.prototype = {
 		}
 
 		this.generateCoordsMap();
-		this.material.uniforms.u_coordsMap.value = this.coordsMap;
 		this.createNodePointCloud();
 
 	},
@@ -256,15 +255,26 @@ AppManager.prototype = {
 		var a = new Float32Array( Math.pow(this.simSize, 2) * 4 );
 		var t = 0;
 
+		var minx = 0;
+		var maxx = 0;
+		var miny = 0;
+		var maxy = 0;
+
 		for ( var k = 0, kl = a.length; k < kl; k += 4 ) {
 			var x = 0;
 			var y = 0;
 			var z = 0;
 
 			if(this.geometry.vertices[t]){
-				x = this.geometry.vertices[t].x / this.base;
-				y = this.geometry.vertices[t].y / this.base;
-				z = this.geometry.vertices[t].z / this.base;
+				x = this.geometry.vertices[t].x ;// / this.base;
+				y = this.geometry.vertices[t].y ;// / this.base;
+				z = this.geometry.vertices[t].z ;// / this.base;
+
+				minx = Math.min(minx, x);
+				maxx = Math.max(maxx, x);
+				miny = Math.min(miny, y);
+				maxy = Math.max(maxy, y);
+
 				a[ k + 3 ] = 1;
 			}else{
 				a[ k + 3 ] = 0;
@@ -274,8 +284,11 @@ AppManager.prototype = {
 			a[ k + 1 ] = y;
 			a[ k + 2 ] = z;
 			t++;
-
 		}
+
+		// We always set the first Pod Position as the bounding box that fits all nodes
+		// TODO add z depth
+		ap.channels.setPodPos(1, new PodPosition(minx, miny, 0, maxx, maxy, 1));
 
 		this.coordsMap = new THREE.DataTexture( a, this.simSize, this.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.coordsMap.minFilter = THREE.NearestFilter;
@@ -317,6 +330,10 @@ AppManager.prototype = {
 		this.pointCloud = new THREE.PointCloud( this.geometry, this.nodeShaderMaterial );
 		this.pointCloud.sortParticles = true;
 		this.pointCloud.name = name;
+
+		// Center // TODO offset coords based on window size
+		this.pointCloud.position.x = -400;
+		this.pointCloud.position.y = -400;
 
 		this.scene.add( this.pointCloud );
 

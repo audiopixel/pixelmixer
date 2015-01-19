@@ -24,6 +24,7 @@
 		<script src="js/objects/Pod.js"></script>
 		<script src="js/objects/Clip.js"></script>
 		<script src="js/objects/Shader.js"></script>
+		<script src="js/objects/PodPosition.js"></script>
 		<script src="js/shaders/core/ShaderUtils.js"></script>
 		<script src="js/shaders/core/SimpleTextureShader.js"></script>
 		<script src="js/shaders/core/NodeShader.js"></script>
@@ -78,7 +79,6 @@
 
 
 			// ****** Runtime Loop ****** 
-
 
 			var updateShader;
 			var updateShaderLimiter = 10;
@@ -198,6 +198,7 @@ vec3 ap_rgb2;
 vec4 ap_rgbV4;
 vec3 ap_c;
 vec3 ap_p;
+vec2 resolution;
 
 varying vec2 v_vUv;
 uniform float u_time;
@@ -211,6 +212,7 @@ uniform sampler2D u_prevCMap;
 void main() {
 	
 	//********************************************
+	
 	ap_xyz = texture2D( u_coordsMap, v_vUv);
 	if(ap_xyz[3] == 0.0){ discard; }
 

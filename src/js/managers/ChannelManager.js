@@ -8,6 +8,7 @@
 var ChannelManager = function () {
 
 	this.channels = [];
+	this.podpositions = [];
 
 	/*
 
@@ -78,6 +79,8 @@ ChannelManager.prototype = {
 
 	init: function () {
 
+		// -------Temporary channel contents for testing----------
+
 		var mix = 1;
 
 		// Let's create some test clips for now (TODO: this should be loaded from current project settings or channel preset)
@@ -85,8 +88,8 @@ ChannelManager.prototype = {
 
 		// Let's create some test pods for now (TODO: this should be loaded from current project settings or channel preset)
 		
-		//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)])];
-		var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)])];
+		var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)])];
+		//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)])];
 
 		
 		// Let's create some test channels for now (TODO: this should be loaded from current project settings)
@@ -129,8 +132,18 @@ ChannelManager.prototype = {
 				uniforms[pod.address + "_mix"] = { type: "f", value: pod.mix }; // TODO modulation uniforms 
 				uniforms[pod.address + "_blend"] = { type: "f", value: pod.blend };
 
-				// TODO pull pod position data and add as baked in snippets
-				
+
+				// Set pod position data for use by all the clips in this pod
+				if(pod.clips.length){
+					// TODO account for resolution to not just be 2d axis of w and h (3D setup might use depth also)
+					var podPos = this.getPodPos(pod.positionId);
+					output += "resolution = vec2(" + podPos.w + ", " + podPos.h + "); \n"
+
+
+					output += "ap_xyz.x += " + podPos.x + ".0; \n"
+					output += "ap_xyz.y += " + podPos.y + ".0; \n"
+
+				}
 
 				var firstMix = true;
 				for (var u = 0; u < pod.clips.length; u++) {
@@ -192,7 +205,6 @@ ChannelManager.prototype = {
 
 					// ----------------------
 
-
 					// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
 					fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
 
@@ -235,7 +247,7 @@ ChannelManager.prototype = {
 			output = output.replace(/_channel_/g, channel.address + "_") + "\n";
 		};
 
-		//console.log(output);
+		// console.log(output);
 
 		/*
 		// TODO regenerate Metamap data: (if any of this changed)
@@ -276,6 +288,24 @@ ChannelManager.prototype = {
 
 	clearAllChannels: function () {
 		this.channels = [];
+	},
+
+	// ************* Pod Positions ***********************
+
+	setPodPos: function (podPositionId, podPositionObject) {
+		this.podpositions[podPositionId-1] = podPositionObject;
+	},
+
+	getPodPos: function (podPositionId) {
+		return this.podpositions[podPositionId-1];
+	},
+
+	clearPodPos: function (podPositionId) {
+		delete this.podpositions[podPositionId-1]; // TODO optimize: most likely better to not use 'delete'
+	},
+
+	clearAllPodPos: function () {
+		this.podpositions = [];
 	}
 
 }

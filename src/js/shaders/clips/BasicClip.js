@@ -35,7 +35,8 @@ ap.clips.BasicClip = {
 		"mov2": { type: "f" },
 		"c1": { type: "f" },
 		"c2": { type: "f" },
-		"c3": { type: "f" }
+		"c3": { type: "f" },
+		"blue": { type: "f" }
 
 	},
 
@@ -96,9 +97,9 @@ ap.clips.BasicClip = {
 		* 
 		**/
 
-
+/*
 		// TODO position data comes from Pod/Clip coordinates
-		"p = (((0.5 * 110000.) + 10000.) * vec2( ap_xyz[0] +  (ap_xyz[2] * 0.25), ap_xyz[1]) ) + 6.;",
+		"p = ((0.01) * vec2( ap_xyz[0] +  (ap_xyz[2] * 0.25), ap_xyz[1]) ) + 6.;",
 
 		"mov0 = p.x+p.y+cos(sin(u_time)*2.0)*100.+sin(p.x/100.)*1000.;",
 		"mov1 = p.y;",
@@ -110,6 +111,21 @@ ap.clips.BasicClip = {
 		"c1 = c1 * 0.25;",
 
 		"gl_FragColor = vec4(c2,c3,c1, 1.0); // end shader"
+
+*/
+
+		"blue = 0.0;",
+		
+		// Create a blue border
+		"if(ap_xyz.y / resolution.y < 0.02 || ap_xyz.y / resolution.y > 0.98){",
+		"	blue = 1.0;",
+		"}else if(ap_xyz.x / resolution.x < 0.02 || ap_xyz.x / resolution.x > 0.98){",
+		"	blue = 1.0;",
+		"}",
+
+		"gl_FragColor = vec4( ap_xyz.y / resolution.y, ap_xyz.x / resolution.x, blue, 1.0 );"
+
+
 
 		].join("\n"),
 
