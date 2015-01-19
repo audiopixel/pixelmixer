@@ -7,6 +7,9 @@
 
 var AppManager = function (container) {
 
+	this.glWidth = window.innerWidth; // TODO update to just the needed div
+	this.glHeight = window.innerHeight;
+
 	this.stats = new Stats();
 	this.stats.domElement.style.position = 'absolute';
 	this.stats.domElement.style.top = '0px';
@@ -38,6 +41,8 @@ var AppManager = function (container) {
 
 	this.time = 0;
 	this.simSize = 128;
+	this.pixels;
+	this.readPixels = false;
 
 	this.nodeTexture = THREE.ImageUtils.loadTexture( "images/nodeflare1.png" );  // TODO preload this
 
@@ -63,23 +68,25 @@ AppManager.prototype = {
 		this.cameraRTT = new THREE.OrthographicCamera( this.simSize / - 2, this.simSize / 2, this.simSize / 2, this.simSize / - 2, -10000, 10000 );
 		this.sceneRTT = new THREE.Scene();
 
-		this.renderer = new THREE.WebGLRenderer();
-		this.renderer.setSize( window.innerWidth, window.innerHeight );
+		this.renderer = new THREE.WebGLRenderer( /*{ preserveDrawingBuffer: this.readPixels } */); // Some browsers might need preserveDrawingBuffer to readPixels
+		this.renderer.setSize( this.glWidth, this.glHeight );
 		this.renderer.autoClear = false;
 		this.container.appendChild( this.renderer.domElement ); 
 		this.container.appendChild( this.stats.domElement );
 
 		this.scene = new THREE.Scene();
-		this.camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
+		this.camera = new THREE.PerspectiveCamera( 30, this.glWidth / this.glHeight, 1, 10000 );
 		this.camera.position.z = 1700;
 		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement);
 
 		this.geometry = new THREE.Geometry();
 
 		this.updateMainSourceShader();
-
-
 		this.updateNodePoints();
+
+		if(this.readPixels){
+			this.pixels = new Uint8Array(4 * this.glWidth * this.glHeight);
+		}
 
 		//---------------
 		// testing
@@ -110,13 +117,11 @@ AppManager.prototype = {
 		//this.camera.position.y += ( - mouseY - this.camera.position.y ) * 0.05;
 		//this.camera.lookAt( this.scene.position );
 		this.controls.update();
-		
+
 
 		//this.renderer.clear();
 
 		// Render first scene into texture
-		this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureA, true );
-
 		if(this.rtToggle){
 			this.material.uniforms.u_prevCMap.value = this.rtTextureB;
 			this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureA, true );
@@ -128,25 +133,38 @@ AppManager.prototype = {
 		}
 		this.rtToggle = !this.rtToggle;
 
-/*		// TODO turn this on when we need to capture for broadcast
+
+		// Capture colormap for broadcast output
+		if(this.readPixels){
+
 			// Render full screen quad with generated texture
 			this.renderer.render( this.sceneRTT, this.cameraRTT );
-			gl = renderer.getContext();
-			gl.readPixels(0, 0, 12, 12, gl.RGBA, gl.UNSIGNED_BYTE, pixels); //TODO update size
+			var gl = this.renderer.getContext();
+			gl.readPixels(0, 0, this.glWidth, this.glHeight, gl.RGBA, gl.UNSIGNED_BYTE, this.pixels);
 			this.renderer.clear();
-*/
+
+			/*
+			// Test if we are receiving colors
+			var receiving = false;
+			for (var i = 0; i < this.pixels.length; i++) {
+				if(this.pixels[i] > 0 && this.pixels[i] < 255){ receiving = true; }
+			};
+			if(receiving){ console.log(receiving); };
+			*/
+		}
+
 
 		// Render the node and plane scene using the generated texture
 		this.renderer.render( this.scene, this.camera );
-
+		
 
 		// Update uniforms
-
 		if(this.material){
 			this.material.uniforms.u_time.value = this.time;
 		}
 		
 	},
+
 
 	///////////////// test
 
