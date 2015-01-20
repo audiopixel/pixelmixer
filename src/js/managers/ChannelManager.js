@@ -137,11 +137,16 @@ ChannelManager.prototype = {
 				if(pod.clips.length){
 					// TODO account for resolution to not just be 2d axis of w and h (3D setup might use depth also)
 					var podPos = this.getPodPos(pod.positionId);
+
+					// Set the resolution for the next set of nodes to be the current pods position bounding box
 					output += "resolution = vec2(" + podPos.w + ", " + podPos.h + "); \n"
 
+					// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
+					output += "ap_xyz.x -= " + podPos.x.toFixed(1) + "; \n"
+					output += "ap_xyz.y -= " + podPos.y.toFixed(1) + "; \n"
 
-					output += "ap_xyz.x += " + podPos.x + ".0; \n"
-					output += "ap_xyz.y += " + podPos.y + ".0; \n"
+					// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
+					output += "if(ap_xyz2.x >= " + podPos.x.toFixed(1) + " && ap_xyz2.y >= " + podPos.y.toFixed(1) + " && ap_xyz2.x <= " + (podPos.w + podPos.x).toFixed(1) + " && ap_xyz2.y <= " + (podPos.h + podPos.y).toFixed(1) + ") { \n";
 
 				}
 
@@ -177,6 +182,7 @@ ChannelManager.prototype = {
 
 					// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
 					fragOutput = fragOutput.replace(/gl_FragColor/g, "ap_rgbV4");
+					fragOutput = fragOutput.replace(/gl_FragCoord/g, "ap_xyz");
 
 					// Normalize into Vector3
 					fragOutput += "ap_rgb2 = vec3(ap_rgbV4.r, ap_rgbV4.g, ap_rgbV4.b); \n"; // vec4 -> vec3
@@ -212,7 +218,8 @@ ChannelManager.prototype = {
 					output += fragOutput;
 				};
 
-
+				
+				output += "}; \n"; // If the clips are not in this pod closing bracket }
 				
 				//  -------------- Pod Mix --------------
 
@@ -247,7 +254,7 @@ ChannelManager.prototype = {
 			output = output.replace(/_channel_/g, channel.address + "_") + "\n";
 		};
 
-		// console.log(output);
+		//console.log(output);
 
 		/*
 		// TODO regenerate Metamap data: (if any of this changed)

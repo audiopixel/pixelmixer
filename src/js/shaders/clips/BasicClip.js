@@ -117,13 +117,13 @@ ap.clips.BasicClip = {
 		"blue = 0.0;",
 		
 		// Create a blue border
-		"if(ap_xyz.y / resolution.y < 0.02 || ap_xyz.y / resolution.y > 0.98){",
+		"if(gl_FragCoord.y / resolution.y < 0.05 || gl_FragCoord.y / resolution.y > 0.95){",
 		"	blue = 1.0;",
-		"}else if(ap_xyz.x / resolution.x < 0.02 || ap_xyz.x / resolution.x > 0.98){",
+		"}else if(gl_FragCoord.x / resolution.x < 0.05 || gl_FragCoord.x / resolution.x > 0.95){",
 		"	blue = 1.0;",
 		"}",
 
-		"gl_FragColor = vec4( ap_xyz.y / resolution.y, ap_xyz.x / resolution.x, blue, 1.0 );"
+		"gl_FragColor = vec4( gl_FragCoord.y / resolution.y, gl_FragCoord.x / resolution.x, blue, 1.0 );"
 
 
 

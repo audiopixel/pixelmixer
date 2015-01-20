@@ -255,9 +255,9 @@ AppManager.prototype = {
 		var a = new Float32Array( Math.pow(this.simSize, 2) * 4 );
 		var t = 0;
 
-		var minx = 0;
+		var minx = 100000000000;
 		var maxx = 0;
-		var miny = 0;
+		var miny = 100000000000;
 		var maxy = 0;
 
 		for ( var k = 0, kl = a.length; k < kl; k += 4 ) {
@@ -288,7 +288,7 @@ AppManager.prototype = {
 
 		// We always set the first Pod Position as the bounding box that fits all nodes
 		// TODO add z depth
-		ap.channels.setPodPos(1, new PodPosition(minx, miny, 0, maxx, maxy, 1));
+		ap.channels.setPodPos(1, new PodPosition(minx, miny, 0, maxx - minx, maxy - miny, 1));
 
 		this.coordsMap = new THREE.DataTexture( a, this.simSize, this.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.coordsMap.minFilter = THREE.NearestFilter;

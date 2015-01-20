@@ -1,7 +1,7 @@
 
 var Pod = function (positionId, mix, blend, clips, hardwareGroupMode, hardwareGroupIds) {
 
-	this.positionId = positionId;
+	this.positionId = positionId || 1;
 	this.mix = mix || 1;
 	this.blend = blend || ap.BLEND.Add;
 	this.clips = clips || [];
