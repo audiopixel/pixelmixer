@@ -88,7 +88,7 @@ ChannelManager.prototype = {
 
 		// Let's create some test pods for now (TODO: this should be loaded from current project settings or channel preset)
 		
-		var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)]), new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)])];
+		var pods = [new Pod(2, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)]), new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(3, mix, ap.BLEND.Add)])];
 		//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)])];
 
 		
@@ -142,8 +142,8 @@ ChannelManager.prototype = {
 					output += "resolution = vec2(" + podPos.w + ", " + podPos.h + "); \n"
 
 					// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
-					output += "ap_xyz.x -= " + podPos.x.toFixed(1) + "; \n"
-					output += "ap_xyz.y -= " + podPos.y.toFixed(1) + "; \n"
+					output += "ap_xyz.x = ap_xyz2.x - " + podPos.x.toFixed(1) + "; \n"
+					output += "ap_xyz.y = ap_xyz2.y - " + podPos.y.toFixed(1) + "; \n"
 
 					// Declare each clips variables, but we can't declare them more than once so record which ones we have declared already
 					for (var u = 0; u < pod.clips.length; u++) {
@@ -218,9 +218,10 @@ ChannelManager.prototype = {
 					// Merge the clip fragment shaders as we move along
 					output += fragOutput;
 				};
-
 				
-				output += "}; \n"; // If the clips are not in this pod closing bracket }
+				output += "}else{ ap_rgb = vec3(0.0); }; \n"; // If the clips are not in this pod set color value to 0 }
+
+
 				
 				//  -------------- Pod Mix --------------
 
