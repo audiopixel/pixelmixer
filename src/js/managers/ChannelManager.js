@@ -88,7 +88,7 @@ ChannelManager.prototype = {
 
 		// Let's create some test pods for now (TODO: this should be loaded from current project settings or channel preset)
 		
-		var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)])];
+		var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)]), new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)])];
 		//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)])];
 
 		
@@ -145,6 +145,19 @@ ChannelManager.prototype = {
 					output += "ap_xyz.x -= " + podPos.x.toFixed(1) + "; \n"
 					output += "ap_xyz.y -= " + podPos.y.toFixed(1) + "; \n"
 
+					// Declare each clips variables, but we can't declare them more than once so record which ones we have declared already
+					for (var u = 0; u < pod.clips.length; u++) {
+						var sourceShader = ap.clips[ap.register[pod.clips[u].clipId]];
+						for (var variable in sourceShader.variables) {
+
+							if(!variables[variable]){ // If we don't already have the variable mark it as in use.
+								variables[variable] = 1; 
+								var type = getVariableTypeFromShorthand(sourceShader.variables[variable].type);
+								output += type + " " + variable + ";";
+							}
+						}
+					}output += "\n";
+
 					// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
 					output += "if(ap_xyz2.x >= " + podPos.x.toFixed(1) + " && ap_xyz2.y >= " + podPos.y.toFixed(1) + " && ap_xyz2.x <= " + (podPos.w + podPos.x).toFixed(1) + " && ap_xyz2.y <= " + (podPos.h + podPos.y).toFixed(1) + ") { \n";
 
@@ -155,22 +168,10 @@ ChannelManager.prototype = {
 
 					var clip = pod.clips[u];
 					clip.address = pod.address + "_" + (u+1);
-					var sourceShader = ap.clips[ap.register[clip.clipId]];
 
 					// uniforms 'mix' & 'blend' for the clip
 					uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
 					uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
-
-					// Declare each clips variables, but we can't do it more than once so record which ones we have declared already
-					for (var variable in sourceShader.variables) {
-
-						if(!variables[variable]){ // If we don't already have the variable mark it as in use.
-							variables[variable] = 1; 
-							var type = getVariableTypeFromShorthand(sourceShader.variables[variable].type);
-							output += type + " " + variable + ";";
-						}
-					}
-					output += "\n";
 
 
 					// TODO 'clip params as well as xyz offset/scale ', as well as modulation values for each
@@ -178,7 +179,7 @@ ChannelManager.prototype = {
 
 
 					// Lookup the correct imported clip based on the id stored on the clip object
-					fragOutput = sourceShader.fragmentMain + "\n";
+					fragOutput = ap.clips[ap.register[clip.clipId]].fragmentMain + "\n";
 
 					// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
 					fragOutput = fragOutput.replace(/gl_FragColor/g, "ap_rgbV4");
