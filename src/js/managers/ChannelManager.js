@@ -112,7 +112,6 @@ ChannelManager.prototype = {
 		var output = "";
 		var fragOutput = ""
 		var rgbTarget;
-		var address;
 
 		var firstMixChannel = true;
 		for (var i = 0; i < this.channels.length; i++) {
@@ -135,6 +134,7 @@ ChannelManager.prototype = {
 
 				// Set pod position data for use by all the clips in this pod
 				if(pod.clips.length){
+					
 					// TODO account for resolution to not just be 2d axis of w and h (3D setup might use depth also)
 					var podPos = this.getPodPos(pod.positionId);
 
@@ -161,67 +161,69 @@ ChannelManager.prototype = {
 					// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
 					output += "if(ap_xyz2.x >= " + podPos.x.toFixed(1) + " && ap_xyz2.y >= " + podPos.y.toFixed(1) + " && ap_xyz2.x <= " + (podPos.w + podPos.x).toFixed(1) + " && ap_xyz2.y <= " + (podPos.h + podPos.y).toFixed(1) + ") { \n";
 
-				}
-
-				var firstMix = true;
-				for (var u = 0; u < pod.clips.length; u++) {
-
-					var clip = pod.clips[u];
-					clip.address = pod.address + "_" + (u+1);
-
-					// uniforms 'mix' & 'blend' for the clip
-					uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
-					uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
-
-
-					// TODO 'clip params as well as xyz offset/scale ', as well as modulation values for each
-					// TODO add conversion logic for rgb/hsv for each clip (if needed)
-
-
-					// Lookup the correct imported clip based on the id stored on the clip object
-					fragOutput = ap.clips[ap.register[clip.clipId]].fragmentMain + "\n";
-
-					// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
-					fragOutput = fragOutput.replace(/gl_FragColor/g, "ap_rgbV4");
-					fragOutput = fragOutput.replace(/gl_FragCoord/g, "ap_xyz");
-
-					// Normalize into Vector3
-					fragOutput += "ap_rgb2 = vec3(ap_rgbV4.r, ap_rgbV4.g, ap_rgbV4.b); \n"; // vec4 -> vec3
-					fragOutput += "ap_rgb2 = max(min(ap_rgb2, vec3(1.0)), vec3(0.0)); \n";
-
-
-					// ----------------------
-					// -- Clip Mix & Blend -- 
-
-					rgbTarget = "ap_rgb";
-					if(firstMix){
-						fragOutput += "ap_rgb = ap_rgb2; \n";
-					}else{
-						rgbTarget = "ap_rgb2";
-					}
-
-					// Clip mix for this shader
-					fragOutput += rgbTarget + " = " + rgbTarget + " * (_clip_mix); \n";
-
-					if(firstMix){
-						firstMix = false;
-					}else{
-						// Blend in the shader with ongoing mix
-						fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, " + Math.floor(clip.blend) + ".); \n";
-					}
-
-					// ----------------------
-
-					// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
-					fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
-
-					// Merge the clip fragment shaders as we move along
-					output += fragOutput;
-				};
 				
-				output += "}else{ ap_rgb = vec3(0.0); }; \n"; // If the clips are not in this pod set color value to 0 }
+
+					var firstMix = true;
+					for (var u = 0; u < pod.clips.length; u++) {
+
+						var clip = pod.clips[u];
+						clip.address = pod.address + "_" + (u+1);
+
+						// uniforms 'mix' & 'blend' for the clip
+						uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
+						uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
 
 
+						//output += "ap_xyz.x -= 80.0; \n" // offset without tiling
+
+						// TODO 'clip params as well as xyz offset/scale ', as well as modulation values for each
+						// TODO add conversion logic for rgb/hsv for each clip (if needed)
+
+
+						// Lookup the correct imported clip based on the id stored on the clip object
+						fragOutput = ap.clips[ap.register[clip.clipId]].fragmentMain + "\n";
+
+						// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
+						fragOutput = fragOutput.replace(/gl_FragColor/g, "ap_rgbV4");
+						fragOutput = fragOutput.replace(/gl_FragCoord/g, "ap_xyz");
+
+						// Normalize into Vector3
+						fragOutput += "ap_rgb2 = vec3(ap_rgbV4.r, ap_rgbV4.g, ap_rgbV4.b); \n"; // vec4 -> vec3
+						fragOutput += "ap_rgb2 = max(min(ap_rgb2, vec3(1.0)), vec3(0.0)); \n";
+
+
+						// ----------------------
+						// -- Clip Mix & Blend -- 
+
+						rgbTarget = "ap_rgb";
+						if(firstMix){
+							fragOutput += "ap_rgb = ap_rgb2; \n";
+						}else{
+							rgbTarget = "ap_rgb2";
+						}
+
+						// Clip mix for this shader
+						fragOutput += rgbTarget + " = " + rgbTarget + " * (_clip_mix); \n";
+
+						if(firstMix){
+							firstMix = false;
+						}else{
+							// Blend in the shader with ongoing mix
+							fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, " + Math.floor(clip.blend) + ".); \n";
+						}
+
+						// ----------------------
+
+						// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
+						fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
+
+						// Merge the clip fragment shaders as we move along
+						output += fragOutput;
+					};
+					
+					output += "}else{ ap_rgb = vec3(0.0); }; \n"; // If the clips are not in this pod set color value to 0 }
+
+				}
 				
 				//  -------------- Pod Mix --------------
 

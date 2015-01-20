@@ -47,7 +47,6 @@ var AppManager = function (container) {
 	this.nodeTexture = THREE.ImageUtils.loadTexture( "images/nodeflare1.png" );  // TODO preload this
 
 	this.coordsMap;
-	this.base = 10000000;
 
 	this.plane = new THREE.PlaneBufferGeometry( this.simSize, this.simSize );
 
