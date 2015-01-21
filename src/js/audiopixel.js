@@ -33,7 +33,7 @@ ap.BLEND.LinearBurn = 14;
 ap.BLEND.LinearLight = 15;
 ap.BLEND.VividLight = 16;
 ap.BLEND.PinLight = 17;
-ap.BLEND.FX = 18;
+ap.BLEND.Fx = 18;
 
 
 // Port Type Constants

@@ -35,6 +35,7 @@ ap.shaders.ShaderUtils = [
 
 	"vec3 blend(vec3 c1, vec3 c2, float type)",
 	"{",
+		"if(type == 0.0){ return c1; }else						// Off",
 		"if(type == 1.0){ return c1 + c2; }else					// Add",
 		"if(type == 2.0){ return c1 - c2; }else					// Subtract",
 		"if(type == 3.0){ return min(c1, c2); }else				// Darkest",
@@ -72,8 +73,8 @@ ap.shaders.ShaderUtils = [
 	  "  return fract(sin(sn) * c);",
 	"}",
 
-	"float mixT(float a, float b, float mix){",
-	"	return ((a*(mix)+b*mix));",
+	"vec3 mixT(vec3 a, vec3 b, float mix){",
+	"	return( 1.0 - mix )* a + mix * b;",
 	"}"
 
 ].join("\n")

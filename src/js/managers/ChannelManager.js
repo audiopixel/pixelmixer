@@ -88,8 +88,8 @@ ChannelManager.prototype = {
 
 		// Let's create some test pods for now (TODO: this should be loaded from current project settings or channel preset)
 		
-		var pods = [new Pod(2, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)]), new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(3, mix, ap.BLEND.Add)])];
-		//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)])];
+		//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(4, mix, ap.BLEND.Fx)])];
+		var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)]), new Pod(2, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Fx)])];
 
 		
 		// Let's create some test channels for now (TODO: this should be loaded from current project settings)
@@ -134,7 +134,7 @@ ChannelManager.prototype = {
 
 				// Set pod position data for use by all the clips in this pod
 				if(pod.clips.length){
-					
+
 					// TODO account for resolution to not just be 2d axis of w and h (3D setup might use depth also)
 					var podPos = this.getPodPos(pod.positionId);
 
@@ -192,24 +192,27 @@ ChannelManager.prototype = {
 						fragOutput += "ap_rgb2 = max(min(ap_rgb2, vec3(1.0)), vec3(0.0)); \n";
 
 
-						// ----------------------
-						// -- Clip Mix & Blend -- 
+						// ---------------------------
 
-						rgbTarget = "ap_rgb";
+						// -- Clip mix & Fx / blend -- 
+
 						if(firstMix){
 							fragOutput += "ap_rgb = ap_rgb2; \n";
+							firstMix = false;
+							fragOutput += "ap_rgb = ap_rgb * (_clip_mix); \n";  // Clip mix for this shader
+
 						}else{
 							rgbTarget = "ap_rgb2";
-						}
 
-						// Clip mix for this shader
-						fragOutput += rgbTarget + " = " + rgbTarget + " * (_clip_mix); \n";
+							if(ap.clips[ap.register[clip.clipId]].fx){
+								// Fx clip: mix the original with the result of fx
+								fragOutput += "ap_rgb = mixT(ap_rgb, ap_rgb2, _clip_mix); \n";
+							}else{
+								// Blend in the shader with ongoing mix
+								fragOutput += "ap_rgb2 = ap_rgb2 * (_clip_mix); \n";
+								fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, " + Math.floor(clip.blend) + ".); \n"; // Clip mix for this shader
+							}
 
-						if(firstMix){
-							firstMix = false;
-						}else{
-							// Blend in the shader with ongoing mix
-							fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, " + Math.floor(clip.blend) + ".); \n";
 						}
 
 						// ----------------------
