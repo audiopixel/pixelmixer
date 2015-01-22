@@ -80,8 +80,8 @@ AppManager.prototype = {
 
 		this.geometry = new THREE.Geometry();
 
-		this.updateNodePoints();
-		this.updateMainSourceShader();
+		//this.updateNodePoints();
+		//this.updateMainSourceShader();
 
 		if(this.readPixels){
 			this.pixels = new Uint8Array(4 * this.glWidth * this.glHeight);
@@ -119,47 +119,46 @@ AppManager.prototype = {
 
 
 		//this.renderer.clear();
-
-		// Render first scene into texture
-		if(this.rtToggle){
-			this.material.uniforms.u_prevCMap.value = this.rtTextureB;
-			this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureA, true );
-			this.nodeShaderMaterial.uniforms.u_colorMap.value = this.rtTextureA;
-		}else{
-			this.material.uniforms.u_prevCMap.value = this.rtTextureA;
-			this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureB, true );
-			this.nodeShaderMaterial.uniforms.u_colorMap.value = this.rtTextureB;
-		}
-		this.rtToggle = !this.rtToggle;
-
-
-		// Capture colormap for broadcast output
-		if(this.readPixels){
-
-			// Render full screen quad with generated texture
-			this.renderer.render( this.sceneRTT, this.cameraRTT );
-			var gl = this.renderer.getContext();
-			gl.readPixels(0, 0, this.glWidth, this.glHeight, gl.RGBA, gl.UNSIGNED_BYTE, this.pixels);
-			this.renderer.clear();
-
-			/*
-			// Test if we are receiving colors
-			var receiving = false;
-			for (var i = 0; i < this.pixels.length; i++) {
-				if(this.pixels[i] > 0 && this.pixels[i] < 255){ receiving = true; }
-			};
-			if(receiving){ console.log(receiving); };
-			*/
-		}
-
-
-		// Render the node and plane scene using the generated texture
-		this.renderer.render( this.scene, this.camera );
 		
 
 		// Update uniforms
 		if(this.material){
 			this.material.uniforms.u_time.value = this.time;
+
+			// Render first scene into texture
+			if(this.rtToggle){
+				this.material.uniforms.u_prevCMap.value = this.rtTextureB;
+				this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureA, true );
+				this.nodeShaderMaterial.uniforms.u_colorMap.value = this.rtTextureA;
+			}else{
+				this.material.uniforms.u_prevCMap.value = this.rtTextureA;
+				this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureB, true );
+				this.nodeShaderMaterial.uniforms.u_colorMap.value = this.rtTextureB;
+			}
+			this.rtToggle = !this.rtToggle;
+
+
+			// Capture colormap for broadcast output
+			if(this.readPixels){
+
+				// Render full screen quad with generated texture
+				this.renderer.render( this.sceneRTT, this.cameraRTT );
+				var gl = this.renderer.getContext();
+				gl.readPixels(0, 0, this.glWidth, this.glHeight, gl.RGBA, gl.UNSIGNED_BYTE, this.pixels);
+				this.renderer.clear();
+
+				/*
+				// Test if we are receiving colors
+				var receiving = false;
+				for (var i = 0; i < this.pixels.length; i++) {
+					if(this.pixels[i] > 0 && this.pixels[i] < 255){ receiving = true; }
+				};
+				if(receiving){ console.log(receiving); };
+				*/
+			}
+
+			// Render the node and plane scene using the generated texture
+			this.renderer.render( this.scene, this.camera );
 		}
 		
 	},
@@ -321,7 +320,6 @@ AppManager.prototype = {
 		});
 
 		var name = "AP Nodes";
-
 		if(this.scene.getObjectByName(name)){
 			// If the pointCloud has already been added, remove it so we can add it fresh
 			this.scene.remove( this.pointCloud );
@@ -380,7 +378,9 @@ sourceShader.fragmentMain = sourceShader.fragmentMain.replace("110000", "" + Mat
 		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERS", sourceShader.fragmentMain);
 
 		// Add ShaderUtils and uniforms at the top
+		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERFUNCTIONS", sourceShader.fragmentFunctions);
 		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERUTILS", ap.shaders.ShaderUtils + sourceUniforms);
+		
 
 		// The main material object has uniforms that can be referenced and updated directly by the UI
 		this.material = new THREE.ShaderMaterial( {
@@ -388,6 +388,8 @@ sourceShader.fragmentMain = sourceShader.fragmentMain.replace("110000", "" + Mat
 			vertexShader: ap.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: this.fragmentShader
 		} );
+
+		//console.log(sourceShader);
 
 
 		// Main quad that gets rendered as the source shader

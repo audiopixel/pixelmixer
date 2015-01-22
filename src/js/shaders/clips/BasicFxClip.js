@@ -11,13 +11,16 @@ ap.clips.BasicFxClip = {
 
 	fragmentMain: [
 
-		//"gl_FragColor", // use this (or ap_xyz) to capture the incoming color value
+		//"ap_fxIn", // use this to capture the incoming color value, and do something with it
 
-		//"gl_FragColor", // Do something with it
+		//"ap_fxOut", // use this to send the outgoing color value after the fx is complete
+
+		//"ap_temp", // use this as a temporary color value without having to declare a new one
+
 
 		// In this case we are switching the r and b channels:
 
-		"gl_FragColor = vec4(ap_rgb.r, ap_rgb.r, ap_rgb.r, 1.0);" 
+		"ap_fxOut = vec4(ap_fxIn.b, ap_fxIn.g, ap_fxIn.r, 1.0);" 
 
 		].join("\n")
 

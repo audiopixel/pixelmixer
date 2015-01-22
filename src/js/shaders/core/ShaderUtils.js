@@ -7,9 +7,6 @@
  * vec3 hsv2rgb(vec3 c); 						// Convert HSV to RGB
  * vec3 blend(vec3 c1, vec3 c2, float type);	// Blend Modes (1-17)
  * float rand(vec2 co);							// Random Generator	(vec2)
- * float mixT(float a, float b, float mix);		// Mix two floats
- *
- * TODO - minimize
  *
  */
 
@@ -71,10 +68,6 @@ ap.shaders.ShaderUtils = [
 	  "  highp float dt= dot(co.xy ,vec2(a,b));",
 	  "  highp float sn= mod(dt,3.14);",
 	  "  return fract(sin(sn) * c);",
-	"}",
-
-	"vec3 mixT(vec3 a, vec3 b, float mix){",
-	"	return( 1.0 - mix )* a + mix * b;",
 	"}"
 
 ].join("\n")

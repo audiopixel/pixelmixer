@@ -33,7 +33,7 @@ ap.BLEND.LinearBurn = 14;
 ap.BLEND.LinearLight = 15;
 ap.BLEND.VividLight = 16;
 ap.BLEND.PinLight = 17;
-ap.BLEND.Fx = 18;
+ap.BLEND.Fx = 1; // Use 'add' if this happens to get passed, all fx 'blending' happens outside blend()
 
 
 // Port Type Constants

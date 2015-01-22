@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>AP3.0 Editor Test</title>
+		<title>AP3.0 Engine Demo</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
@@ -32,6 +32,7 @@
 		<script src="js/shaders/clips/BasicClip.js"></script>
 		<script src="js/shaders/clips/BasicHsvClip.js"></script>
 		<script src="js/shaders/clips/BasicFxClip.js"></script>
+		<script src="js/shaders/clips/GreyscaleFx.js"></script>
 	</head>
 
 	<body ontouchstart="" onload="onLoad()">
@@ -78,6 +79,27 @@
 
 
 
+			// -------Temporary: Create some Channels/Pods/Clips for testing----------
+
+			var mix = 1;
+
+			// Let's create some test clips for now (TODO: this should be loaded from current project settings or channel preset)
+
+			var clips = [new Clip(2, mix, ap.BLEND.Add), new Clip(4, mix, ap.BLEND.Add)];
+
+			var pods = [new Pod(1, mix, ap.BLEND.Add, clips)];
+			//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)]), new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add)]), new Pod(2, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Add)])];
+			//var pods2 = [new Pod(2, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Fx), new Clip(5, mix, ap.BLEND.Fx)])];
+			
+			
+			// Let's create some test channels for now (TODO: this should be loaded from current project settings)
+			ap.channels.channels[0] = new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods);
+			//ap.channels.channels[1] = new Channel("TestChannel2", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Fx, pods2);
+
+			ap.app.updateNodePoints();
+			ap.app.updateMainSourceShader();
+
+
 
 			// ****** Runtime Loop ****** 
 
@@ -115,9 +137,6 @@
 
 			animate();
 
-
-
-
 			// ****** UI ******
 
 			// TODO replace dat.gui with react components (or similar) that reflect model: ap.channels 
@@ -137,16 +156,16 @@
 				Shader2_2Mix:  1
 			}
 			f1.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_mix.value = guiData.Channel1Mix; });
-			//f1.add( guiData, "Pod1Mix", 0.0, 1.0, 1.0 )			.onChange(function () { ap.app.material.uniforms._1_1_mix.value = guiData.Pod1Mix; });
+			f1.add( guiData, "Pod1Mix", 0.0, 1.0, 1.0 )			.onChange(function () { ap.app.material.uniforms._1_1_mix.value = guiData.Pod1Mix; });
 			f1.add( guiData, "Shader1Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_1_1_mix.value = guiData.Shader1Mix; });
-			//f1.add( guiData, "Pod2Mix", 0.0, 1.0, 1.0 )			.onChange(function () { ap.app.material.uniforms._1_2_mix.value = guiData.Pod2Mix; });
-			//f1.add( guiData, "Shader2Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_1_2_mix.value = guiData.Shader2Mix; });
+			f1.add( guiData, "Shader2_1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_2_mix.value = guiData.Shader2_1Mix; });
+			//f1.add( guiData, "Pod2Mix", 0.0, 1.0, 1.0 )			.onChange(function () { ap.app.material.uniforms._1_3_1_mix.value = guiData.Pod2Mix; });
+			//f1.add( guiData, "Shader2Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_3_2_mix.value = guiData.Shader2Mix; });
 
 			//f1.add( guiData, "Channe2_1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._2_mix.value = guiData.Channe2_1Mix; });
-			//f1.add( guiData, "Pod2_1Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_2_mix.value = guiData.Pod2_1Mix; });
-			f1.add( guiData, "Shader2_1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_1_mix.value = guiData.Shader2_1Mix; });
-			//f1.add( guiData, "Pod2_2Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._2_2_mix.value = guiData.Pod2_2Mix; });
-			//f1.add( guiData, "Shader2_2Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_2_mix.value = guiData.Shader2_2Mix; });
+			//f1.add( guiData, "Pod2_1Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._2_1_1_mix.value = guiData.Pod2_1Mix; });
+			//f1.add( guiData, "Pod2_2Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._2_1_2_mix.value = guiData.Pod2_2Mix; });
+			//f1.add( guiData, "Shader2_2Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_1_p1.value = guiData.Shader2_2Mix; });
 
 
 
@@ -162,11 +181,36 @@
 					case 8: // prevent browser back
 						event.preventDefault();
 						break;
+
+
+		// TESTING
+		/*
 					case 46: // delete
+
+					console.log('delete');
+
+					ap.app.pointCloud.parent.remove( ap.app.pointCloud );
+
+						break;
+					case 16: // shift
+						ap.app.updateNodePoints(); // only need to call this when we add nodes after init
+						ap.app.updateMainSourceShader();
 						break;
 					case 17: // ctrl
-						updateShader = true;
+						//updateShader = true;
+						var port3 = new Port(3, 1, "port name 03", ap.PORT_TYPE_KINET_1, "10.0.0.21");
+						ap.ports.setPort(3, port3);
+						ap.hardware.addTestGrid(3, 880);
+						
+						ap.app.updateNodePoints(); // only need to call this when we add nodes after init
+						ap.app.updateMainSourceShader();
+
+						console.log("doit");
+						
+						//ap.app.updateNodePoints(); // only need to call this when we add nodes after init
 						break;
+
+		*/
 				}
 
 			}, false );
@@ -196,10 +240,12 @@ vec4 ap_xyz;
 vec4 ap_xyz2;
 //vec3  ap_lastRgb;
 vec3 ap_rgb;
+vec3 ap_hsv;
 vec3 ap_rgb2;
 vec4 ap_rgbV4;
 vec3 ap_c;
 vec3 ap_p;
+vec3 ap_temp;
 vec2 resolution;
 
 varying vec2 v_vUv;
@@ -210,11 +256,15 @@ uniform sampler2D u_coordsMap;
 uniform sampler2D u_prevCMap;
 //uniform sampler2D u_portsMap;
 
+//#INCLUDESHADERFUNCTIONS
+
 
 void main() {
 
 	// Black is default
 	ap_rgb = vec3(0.0);
+
+
 	
 	//********************************************
 	

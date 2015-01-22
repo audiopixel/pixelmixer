@@ -6,16 +6,13 @@
 ap.clips.BasicClip = {
 
 	id: 2, // OSC requires id's to be integers
-
-	input: 		'rgb', // 'rgb' default if not specified, 'hsb/hsv' also excepted. 
-	output: 	'rgb', // 'rgb' default if not specified, 'hsb/hsv' also excepted. 
-
+	
 	params: { // (optional uniforms)
 
 		// Each shader can have upto 6 params that are controlled by it's UI / modulations
 		// TODO: define display ranges that will be shown in UI (percentage of param value)
-		"p1": { type: "f", value: 0.5, desc: "scale" },
-		"p2": { type: "f", value: 0.0, desc: "hue" }
+		"p1": { value: 0.5, desc: "scale" },
+		"p2": { value: 0.0, desc: "hue" }
 
 	},
 	
@@ -30,12 +27,12 @@ ap.clips.BasicClip = {
 	variables: { // (optional internal variables)
 
 		// These are internal variables that are used inside fragmentMain // TODO implement - to be defined with the shader importer
-		"mov0": { type: "f" },
-		"mov1": { type: "f" },
-		"mov2": { type: "f" },
-		"c1": { type: "f" },
-		"c2": { type: "f" },
-		"c3": { type: "f" },
+		//"mov0": { type: "f" },
+		//"mov1": { type: "f" },
+		//"mov2": { type: "f" },
+		//"c1": { type: "f" },
+		//"c2": { type: "f" },
+		//"c3": { type: "f" },
 		"blue": { type: "f" }
 
 	},
@@ -44,13 +41,19 @@ ap.clips.BasicClip = {
 
 	fragmentFunctions: {
 
-		"testFunction": [
-
-			"vec3 red() {",
+		"red": [ "vec3 red() {",
 			"	return vec3(1.0, 0.0, 0.0);",
 			"}"
 
 			].join("\n"),
+
+		"red2": [
+
+			"vec4 red(float bright) {",
+			"	return vec4(bright, 0.0, 0.0, 1.0);",
+			"}"
+
+			].join("\n")
 
 	},
 
@@ -79,7 +82,7 @@ ap.clips.BasicClip = {
 		* vec3 hsv2rgb(vec3 c); 						// Convert HSV to RGB
 		* vec3 blend(vec3 c1, vec3 c2, float type);		// Blend Modes (1-17)
 		* float rand(vec2 co);							// Random Generator	(vec2)
-		* float mixT(float a, float b, float mix);		// Mix two floats
+		* float mix(float a, float b, float mix);		// Mix two floats
 		* 
 		**/
 
@@ -114,7 +117,7 @@ ap.clips.BasicClip = {
 
 */
 
-		"blue = 0.0;",
+		"blue = red(0.0).r;", // Example of using a helper function
 		
 		// Create a blue border
 		"if(gl_FragCoord.y / resolution.y < 0.05 || gl_FragCoord.y / resolution.y > 0.95){",

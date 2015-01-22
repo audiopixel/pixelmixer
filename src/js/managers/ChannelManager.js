@@ -79,25 +79,6 @@ ChannelManager.prototype = {
 
 	init: function () {
 
-		// -------Temporary channel contents for testing----------
-
-		var mix = 1;
-
-		// Let's create some test clips for now (TODO: this should be loaded from current project settings or channel preset)
-		//var clips = [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)];
-
-		// Let's create some test pods for now (TODO: this should be loaded from current project settings or channel preset)
-		
-		//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(4, mix, ap.BLEND.Fx)])];
-		var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)]), new Pod(2, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Fx)])];
-
-		
-		// Let's create some test channels for now (TODO: this should be loaded from current project settings)
-		this.channels[0] = new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods);
-		//this.channels[1] = new Channel("TestChannel2", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods2);
-
-		//console.log(this.generateSourceShader());
-
 	},
 
 	update: function () {
@@ -109,20 +90,25 @@ ChannelManager.prototype = {
 
 		var uniforms = {};
 		var variables = {};
+		var fragmentFunctions = {};
+		var fragmentFunctionOutput = "";
 		var output = "";
 		var fragOutput = ""
-		var rgbTarget;
 
-		var firstMixChannel = true;
+		var lastKnownPos = {};
+
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
 			channel.address = "_" + (i+1);
 
+			var fxChannel = false;
+			if(channel.type === ap.CHANNEL_TYPE_FX){
+				fxChannel = true;
+			}
+
 			// uniform 'mix' for the channel
 			uniforms[channel.address + "_mix"] = { type: "f", value: channel.mix }; // TODO modulation uniforms 
 
-
-			var firstMixPod = true;
 			for (var e = 0; e < channel.pods.length; e++) {
 				var pod = channel.pods[e];
 				pod.address = channel.address + "_" + (e+1);
@@ -138,22 +124,31 @@ ChannelManager.prototype = {
 					// TODO account for resolution to not just be 2d axis of w and h (3D setup might use depth also)
 					var podPos = this.getPodPos(pod.positionId);
 
-					// Set the resolution for the next set of nodes to be the current pods position bounding box
-					output += "resolution = vec2(" + podPos.w + ", " + podPos.h + "); \n"
+					// Set the resolution (if it's changed) for the next set of nodes to be the current pods position bounding box
+					if(lastKnownPos !== podPos){
+						output += "resolution = vec2(" + podPos.w + ", " + podPos.h + "); \n"
+						lastKnownPos = podPos;
 
-					// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
-					output += "ap_xyz.x = ap_xyz2.x - " + podPos.x.toFixed(1) + "; \n"
-					output += "ap_xyz.y = ap_xyz2.y - " + podPos.y.toFixed(1) + "; \n"
+						// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
+						
+					} output += "ap_xyz.x = ap_xyz2.x - " + podPos.x.toFixed(1) + "; \n"
+						output += "ap_xyz.y = ap_xyz2.y - " + podPos.y.toFixed(1) + "; \n"
 
 					// Declare each clips variables, but we can't declare them more than once so record which ones we have declared already
 					for (var u = 0; u < pod.clips.length; u++) {
 						var sourceShader = ap.clips[ap.register[pod.clips[u].clipId]];
 						for (var variable in sourceShader.variables) {
 
-							if(!variables[variable]){ // If we don't already have the variable mark it as in use.
+							if(!variables[variable]){ // If we don't already have the variable mark it as in use and include it.
 								variables[variable] = 1; 
 								var type = getVariableTypeFromShorthand(sourceShader.variables[variable].type);
 								output += type + " " + variable + ";";
+							}
+						}output += "\n";
+						for (var fragmentFunction in sourceShader.fragmentFunctions) {
+							if(!fragmentFunctions[fragmentFunction]){ // If we don't already have the function mark it as in use and include it.
+								fragmentFunctions[fragmentFunction] = 1; 
+								fragmentFunctionOutput += sourceShader.fragmentFunctions[fragmentFunction] + " \n";
 							}
 						}
 					}output += "\n";
@@ -161,30 +156,32 @@ ChannelManager.prototype = {
 					// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
 					output += "if(ap_xyz2.x >= " + podPos.x.toFixed(1) + " && ap_xyz2.y >= " + podPos.y.toFixed(1) + " && ap_xyz2.x <= " + (podPos.w + podPos.x).toFixed(1) + " && ap_xyz2.y <= " + (podPos.h + podPos.y).toFixed(1) + ") { \n";
 
-				
 
-					var firstMix = true;
+					var fxPod = true; // If the only clips that are in this pod are fx's then treat pod as a fx output and don't blend
 					for (var u = 0; u < pod.clips.length; u++) {
 
 						var clip = pod.clips[u];
-						clip.address = pod.address + "_" + (u+1);
+						var srcClip = ap.clips[ap.register[clip.clipId]];
+						clip.address = pod.address +"_" + (u+1);
+
+						// Create params with default values
+						for (var param in srcClip.params) {
+							uniforms[clip.address + "_" + param] = { type: "f", value: srcClip.params[param].valued };
+						}
+
 
 						// uniforms 'mix' & 'blend' for the clip
 						uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
 						uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
-
-
-						//output += "ap_xyz.x -= 80.0; \n" // offset without tiling
-
-						// TODO 'clip params as well as xyz offset/scale ', as well as modulation values for each
-						// TODO add conversion logic for rgb/hsv for each clip (if needed)
+						uniforms[clip.address + "_p"];
 
 
 						// Lookup the correct imported clip based on the id stored on the clip object
-						fragOutput = ap.clips[ap.register[clip.clipId]].fragmentMain + "\n";
+						fragOutput = srcClip.fragmentMain + "\n";
 
 						// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
 						fragOutput = fragOutput.replace(/gl_FragColor/g, "ap_rgbV4");
+						fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
 						fragOutput = fragOutput.replace(/gl_FragCoord/g, "ap_xyz");
 
 						// Normalize into Vector3
@@ -192,53 +189,76 @@ ChannelManager.prototype = {
 						fragOutput += "ap_rgb2 = max(min(ap_rgb2, vec3(1.0)), vec3(0.0)); \n";
 
 
-						// ---------------------------
 
-						// -- Clip mix & Fx / blend -- 
+						// ------------ Clip Mix Blend & Fx --------------
 
-						if(firstMix){
+						var fx = ap.clips[ap.register[clip.clipId]].fx;
+						if(u === 0){
 							fragOutput += "ap_rgb = ap_rgb2; \n";
-							firstMix = false;
-							fragOutput += "ap_rgb = ap_rgb * (_clip_mix); \n";  // Clip mix for this shader
+							if(!fx && !fxChannel){
+								fxPod = fxChannel;
+								fragOutput += "ap_rgb = ap_rgb * (_clip_mix); \n";  // Clip mix for this shader
+							}else{
+								fragOutput += "ap_rgb = mix(ap_p, ap_rgb2, _clip_mix); \n";
+							}
 
 						}else{
-							rgbTarget = "ap_rgb2";
 
-							if(ap.clips[ap.register[clip.clipId]].fx){
+							if(fx || fxChannel){
 								// Fx clip: mix the original with the result of fx
-								fragOutput += "ap_rgb = mixT(ap_rgb, ap_rgb2, _clip_mix); \n";
+								fragOutput += "ap_rgb = mix(ap_rgb, ap_rgb2, _clip_mix); \n";
+
 							}else{
 								// Blend in the shader with ongoing mix
 								fragOutput += "ap_rgb2 = ap_rgb2 * (_clip_mix); \n";
 								fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, " + Math.floor(clip.blend) + ".); \n"; // Clip mix for this shader
+								fxPod = fxChannel;
 							}
 
 						}
 
-						// ----------------------
-
 						// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
 						fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
+						
+						if(fx){
+							if(u === 0){
+								fragOutput = fragOutput.replace(/ap_fxIn/g, "ap_p");
+							}else{
+								fragOutput = fragOutput.replace(/ap_fxIn/g, "ap_rgb");
+							}
+						}
 
 						// Merge the clip fragment shaders as we move along
 						output += fragOutput;
 					};
 					
-					output += "}else{ ap_rgb = vec3(0.0); }; \n"; // If the clips are not in this pod set color value to 0 }
+					// If the clips are not in this pod set color value to 0 unless it's a fx and let the value pass }
+					output += "}";
+					if(fxPod){
+						output += " else{ ap_rgb = ap_p; } \n";
+					}
 
 				}
 				
-				//  -------------- Pod Mix --------------
+				//  -------------- Pod Mix Blend & Fx --------------
 
-				output += "ap_rgb = ap_rgb * (_pod_mix); \n";
 
-				if(firstMixPod){
-					firstMixPod = false;
+				if(e === 0){
+					output += "ap_rgb = ap_rgb * (_pod_mix); \n";
 					output += "ap_p = ap_rgb; \n";
 
 				}else{
-					// Blend in last pod with current pod, if it's not the first pod in this channel
-					output += "ap_p = blend(ap_p, ap_rgb, " + Math.floor(pod.blend) + ".); \n";
+					if(fxPod){
+						// Fx pod: mix the original with the result of fx
+
+						//output += "ap_p = ap_rgb; \n";
+						output += "ap_p = mix(ap_p, ap_rgb, _pod_mix); \n";
+
+					}else{
+						// Blend in last pod with current pod, if it's not the first pod in this channel
+						output += "ap_rgb = ap_rgb * (_pod_mix); \n";
+						output += "ap_p = blend(ap_p, ap_rgb, " + Math.floor(pod.blend) + ".); \n";
+					}
 				}
 
 				output = output.replace(/_pod_/g, pod.address + "_") + "\n";
@@ -246,16 +266,20 @@ ChannelManager.prototype = {
 
 
 				
-			//  -------------- Channel Mix --------------
+			//  -------------- Channel Mix & Fx --------------
 
-			output += "ap_p = ap_p * (_channel_mix); \n";
 
-			if(firstMixChannel){
-				firstMixChannel = false;
+			if(i === 0){
+				output += "ap_p = ap_p * (_channel_mix); \n";
 				output += "ap_c = ap_p; \n";
-
 			}else{
-				output += "ap_c = blend(ap_c, ap_p, 1.0); \n"; // Channels always blend using 'add'
+
+				if(fxChannel){
+					output += "ap_c = mix(ap_c, ap_p, _channel_mix); \n";
+				}else{
+					output += "ap_p = ap_p * (_channel_mix); \n";
+					output += "ap_c = blend(ap_c, ap_p, 1.0); \n"; // Channels always blend using 'add'
+				}
 			}
 
 			output = output.replace(/_channel_/g, channel.address + "_") + "\n";
@@ -277,7 +301,7 @@ ChannelManager.prototype = {
 		*/
 
 
-		return new Shader(uniforms, output + "\n");
+		return new Shader(uniforms, fragmentFunctionOutput, output + "\n");
 
 	},
 
