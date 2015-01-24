@@ -83,7 +83,26 @@ ChannelManager.prototype = {
 
 	update: function () {
 
+		for (var i = 0; i < this.channels.length; i++) {
+			var channel = this.channels[i];
 
+			for (var e = 0; e < channel.pods.length; e++) {
+				var pod = channel.pods[e];
+
+				for (var u = 0; u < pod.clips.length; u++) {
+					var clip = pod.clips[u];
+					var srcClip = ap.clips[ap.register[clip.clipId]];
+
+					// If the clip defined an update method go ahead and call it
+					if(srcClip.update){
+
+						// TODO pass in addressing info and material.uniforms
+						//srcClip.update();
+
+					}
+				}
+			}
+		}
 	},
 
 	generateSourceShader: function () {
@@ -163,6 +182,11 @@ ChannelManager.prototype = {
 						var clip = pod.clips[u];
 						var srcClip = ap.clips[ap.register[clip.clipId]];
 						clip.address = pod.address +"_" + (u+1);
+
+						if(srcClip.init){
+							// TODO pass in addressing info and material.uniforms
+							//srcClip.init();
+						}
 
 						// Create params with default values
 						for (var param in srcClip.params) {

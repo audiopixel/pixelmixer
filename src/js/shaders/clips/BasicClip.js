@@ -16,10 +16,10 @@ ap.clips.BasicClip = {
 
 	},
 	
-	property: { // (optional uniforms)
+	properties: { // (optional uniforms)
 
 		// These are internal properties that can be referenced from init/update methods, and passed as uniforms
-		"v1": { type: "f", value: 1.0 },
+		"v1": { type: "f", value: 0.7 },
 		"v2": { type: "f", value: 1.0 }
 
 	},
@@ -33,7 +33,9 @@ ap.clips.BasicClip = {
 		//"c1": { type: "f" },
 		//"c2": { type: "f" },
 		//"c3": { type: "f" },
-		"blue": { type: "f" }
+		"blue": { type: "f" },
+		"rx": { type: "f" },
+		"ry": { type: "f" }
 
 	},
 
@@ -117,16 +119,20 @@ ap.clips.BasicClip = {
 
 */
 
-		"blue = red(0.0).r;", // Example of using a helper function
+		"rx = gl_FragCoord.x / resolution.x;", // Example of using variables
+		"ry = gl_FragCoord.y / resolution.y;",
+
+		"blue = red(0.0).r;", // Example of using a helper method
+		
 		
 		// Create a blue border
-		"if(gl_FragCoord.y / resolution.y < 0.05 || gl_FragCoord.y / resolution.y > 0.95){",
+		"if(ry < 0.05 || ry > 0.95){",
 		"	blue = 1.0;",
-		"}else if(gl_FragCoord.x / resolution.x < 0.05 || gl_FragCoord.x / resolution.x > 0.95){",
+		"}else if(rx < 0.05 || rx > 0.95){",
 		"	blue = 1.0;",
 		"}",
 
-		"gl_FragColor = vec4( gl_FragCoord.y / resolution.y, gl_FragCoord.x / resolution.x, blue, 1.0 );"
+		"gl_FragColor = vec4( ry, rx, blue, 1.0 );"
 
 
 
@@ -138,6 +144,7 @@ ap.clips.BasicClip = {
 	init: function(){
 
 		console.log("init");
+
 	},
 
 	update: function(){
@@ -145,3 +152,19 @@ ap.clips.BasicClip = {
 		console.log("update");
 	}
 };
+
+/*
+
+// TODO - WIP
+
+	Init/update methods
+
+	when we generate the shader grab each clips 'properties' and pass them with addressing as 'uniforms'
+
+	init/update js methods get passed a reference to 'this.material.uniforms'
+	as well as getting passed a string containing the address for the clip
+
+	mehthods reference the properties (now uniforms) directly on the referenced 'this.material.uniforms' object like :
+		uniforms[address + 'v1'] 
+
+*/
