@@ -37,7 +37,6 @@ var AppManager = function (container) {
 	this.geometry = new THREE.Geometry();
 	this.pointCloud;
 	this.fragmentShader;
-	this.material;
 
 	this.time = 0;
 	this.simSize = 128;

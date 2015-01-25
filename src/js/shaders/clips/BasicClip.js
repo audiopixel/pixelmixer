@@ -19,8 +19,7 @@ ap.clips.BasicClip = {
 	properties: { // (optional uniforms)
 
 		// These are internal properties that can be referenced from init/update methods, and passed as uniforms
-		"v1": { type: "f", value: 0.7 },
-		"v2": { type: "f", value: 1.0 }
+		"v1": { type: "f", value: 0.0 }
 
 	},
 	
@@ -121,9 +120,10 @@ ap.clips.BasicClip = {
 
 		"rx = gl_FragCoord.x / resolution.x;", // Example of using variables
 		"ry = gl_FragCoord.y / resolution.y;",
+		//"ry = gl_FragCoord.y / resolution.y * __p1;", // Example of using a param
 
-		"blue = red(0.0).r;", // Example of using a helper method
-		
+		//"blue = red(0.0).r;", // Example of using a helper method
+		"blue = __v1;", // Example of using a property
 		
 		// Create a blue border
 		"if(ry < 0.05 || ry > 0.95){",
@@ -132,39 +132,22 @@ ap.clips.BasicClip = {
 		"	blue = 1.0;",
 		"}",
 
-		"gl_FragColor = vec4( ry, rx, blue, 1.0 );"
+		"gl_FragColor = vec4( rx, ry, blue, 1.0 );"
 
 
 
 		].join("\n"),
 
 
-	// Optional JS methods that can be defined per shader // TODO implement
+	// Optional JS methods that can be defined per shader 
 
-	init: function(){
+	init: function(address, uniforms){
 
-		console.log("init");
-
+		//uniforms[address + "_v1"].value = Math.random(); // Example of using properties
 	},
 
-	update: function(){
+	update: function(address, uniforms){
 
-		console.log("update");
+		//uniforms[address + "_v1"].value = Math.random(); // Example of using properties
 	}
 };
-
-/*
-
-// TODO - WIP
-
-	Init/update methods
-
-	when we generate the shader grab each clips 'properties' and pass them with addressing as 'uniforms'
-
-	init/update js methods get passed a reference to 'this.material.uniforms'
-	as well as getting passed a string containing the address for the clip
-
-	mehthods reference the properties (now uniforms) directly on the referenced 'this.material.uniforms' object like :
-		uniforms[address + 'v1'] 
-
-*/

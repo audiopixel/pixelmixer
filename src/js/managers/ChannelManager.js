@@ -93,12 +93,9 @@ ChannelManager.prototype = {
 					var clip = pod.clips[u];
 					var srcClip = ap.clips[ap.register[clip.clipId]];
 
-					// If the clip defined an update method go ahead and call it
+					// If the clip defined an update method call it with proper clip addressing
 					if(srcClip.update){
-
-						// TODO pass in addressing info and material.uniforms
-						//srcClip.update();
-
+						srcClip.update("_" + (i+1) + "_" + (e+1) + "_" + (u+1), ap.app.material.uniforms);
 					}
 				}
 			}
@@ -183,9 +180,14 @@ ChannelManager.prototype = {
 						var srcClip = ap.clips[ap.register[clip.clipId]];
 						clip.address = pod.address +"_" + (u+1);
 
+						// If the Clip defined properties define them as addressed uniforms
+						for (var property in srcClip.properties) {
+							uniforms[clip.address + "_" + property] = srcClip.properties[property];
+						}
+
+						// If the clip defined a optional init() method call it with addressing
 						if(srcClip.init){
-							// TODO pass in addressing info and material.uniforms
-							//srcClip.init();
+							srcClip.init(clip.address, uniforms);
 						}
 
 						// Create params with default values
@@ -197,7 +199,6 @@ ChannelManager.prototype = {
 						// uniforms 'mix' & 'blend' for the clip
 						uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
 						uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
-						uniforms[clip.address + "_p"];
 
 
 						// Lookup the correct imported clip based on the id stored on the clip object
@@ -243,6 +244,7 @@ ChannelManager.prototype = {
 
 						// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
 						fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
+						fragOutput = fragOutput.replace(/__/g, clip.address + "_"); // Also detect the clip shorthand '__'
 						
 						if(fx){
 							if(u === 0){
@@ -310,6 +312,7 @@ ChannelManager.prototype = {
 		};
 
 		//console.log(output);
+		//console.log(uniforms);
 
 		/*
 		// TODO regenerate Metamap data: (if any of this changed)
