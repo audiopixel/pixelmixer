@@ -220,6 +220,7 @@ ChannelManager.prototype = {
 
 						var fx = ap.clips[ap.register[clip.clipId]].fx;
 						if(u === 0){
+							
 							fragOutput += "ap_rgb = ap_rgb2; \n";
 							if(!fx && !fxChannel){
 								fxPod = fxChannel;
@@ -248,6 +249,7 @@ ChannelManager.prototype = {
 						fragOutput = fragOutput.replace(/__/g, clip.address + "_"); // Also detect the clip shorthand '__'
 						
 						if(fx){
+							// If we are an effects clip set the incoming value from the last clip, or the last pod if we are the first clip
 							if(u === 0){
 								fragOutput = fragOutput.replace(/ap_fxIn/g, "ap_p");
 							}else{
@@ -261,15 +263,20 @@ ChannelManager.prototype = {
 					
 					// If the clips are not in this pod set color value to 0 unless it's a fx and let the value pass }
 					output += "}";
-					if(fxPod){
-						output += " else{ ap_rgb = ap_p; } \n";
-					}
 
+					if(fxPod){
+						// If this is an effects pod don't change values for anything outside the bounding box
+						output += " else{ ap_rgb = ap_p; } \n";
+					}else{
+						// Otherwise clear any values that are outside the bounding box
+						output += " else{ ap_rgb = vec3(0.0);} \n";
+					}
 				}
+
 				
 				//  -------------- Pod Mix Blend & Fx --------------
 
-
+				// If we are the very first pod mix output value, don't blend from previous pod
 				if(e === 0){
 					output += "ap_rgb = ap_rgb * (_pod_mix); \n";
 					output += "ap_p = ap_rgb; \n";
@@ -291,10 +298,8 @@ ChannelManager.prototype = {
 				output = output.replace(/_pod_/g, pod.address + "_") + "\n";
 			};
 
-
 				
 			//  -------------- Channel Mix & Fx --------------
-
 
 			if(i === 0){
 				output += "ap_p = ap_p * (_channel_mix); \n";

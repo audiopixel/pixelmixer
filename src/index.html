@@ -37,9 +37,6 @@
 
 	<body ontouchstart="" onload="onLoad()">
 
-		<link href="css/main.css" rel="stylesheet" />
-		<link id="theme" href="css/light.css" rel="stylesheet" />
-
 		<div id="container"></div>
 
 		<script>
@@ -64,7 +61,6 @@
 			}
 
 
-
 			// ****** Managers ******
 
 			ap.ports = new PortManager();
@@ -85,9 +81,9 @@
 
 			// Let's create some test clips for now (TODO: this should be loaded from current project settings or channel preset)
 
-			var clips = [new Clip(2, mix, ap.BLEND.Add), new Clip(4, mix, ap.BLEND.Add)];
+			//var clips = [new Clip(2, mix, ap.BLEND.Add), new Clip(4, mix, ap.BLEND.Add)];
 
-			var pods = [new Pod(1, mix, ap.BLEND.Add, clips)];
+			var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)]), new Pod(2, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add)])];
 			//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)]), new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add)]), new Pod(2, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Add)])];
 			//var pods2 = [new Pod(2, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Fx), new Clip(5, mix, ap.BLEND.Fx)])];
 			
@@ -156,10 +152,10 @@
 				Shader2_2Mix:  1
 			}
 			f1.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_mix.value = guiData.Channel1Mix; });
-			f1.add( guiData, "Pod1Mix", 0.0, 1.0, 1.0 )			.onChange(function () { ap.app.material.uniforms._1_1_mix.value = guiData.Pod1Mix; });
+			//f1.add( guiData, "Pod1Mix", 0.0, 1.0, 1.0 )			.onChange(function () { ap.app.material.uniforms._1_1_mix.value = guiData.Pod1Mix; });
 			f1.add( guiData, "Shader1Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_1_1_mix.value = guiData.Shader1Mix; });
-			f1.add( guiData, "Shader2_1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_2_mix.value = guiData.Shader2_1Mix; });
-			//f1.add( guiData, "Pod2Mix", 0.0, 1.0, 1.0 )			.onChange(function () { ap.app.material.uniforms._1_3_1_mix.value = guiData.Pod2Mix; });
+			f1.add( guiData, "Shader2_1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_mix.value = guiData.Shader2_1Mix; });
+			//f1.add( guiData, "Pod2Mix", 0.0, 1.0, 1.0 )			.onChange(function () { ap.app.material.uniforms._1_2_1_mix.value = guiData.Pod2Mix; });
 			//f1.add( guiData, "Shader2Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_3_2_mix.value = guiData.Shader2Mix; });
 
 			//f1.add( guiData, "Channe2_1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._2_mix.value = guiData.Channe2_1Mix; });
@@ -204,7 +200,7 @@
 						console.log("doitshift");
 
 						break;
-
+*/
 					case 17: // ctrl
 					
 						updateShader = true;
@@ -213,7 +209,27 @@
 						
 						var port3 = new Port(3, 1, "port name 03", ap.PORT_TYPE_KINET_1, "10.0.0.21");
 						ap.ports.setPort(3, port3);
-						ap.hardware.addTestGrid(3, 880);
+						ap.hardware.addTestGrid(3, 0, 880);
+
+						var port3 = new Port(4, 1, "port name 04", ap.PORT_TYPE_KINET_1, "10.0.0.21");
+						ap.ports.setPort(4, port3);
+						ap.hardware.addTestGrid(4, 0, 1320);
+
+						var port3 = new Port(5, 1, "port name 03", ap.PORT_TYPE_KINET_1, "10.0.0.21");
+						ap.ports.setPort(5, port3);
+						ap.hardware.addTestGrid(5, 800, 0);
+
+						var port3 = new Port(6, 1, "port name 04", ap.PORT_TYPE_KINET_1, "10.0.0.21");
+						ap.ports.setPort(6, port3);
+						ap.hardware.addTestGrid(6, 800, 440);
+
+						var port3 = new Port(7, 1, "port name 05", ap.PORT_TYPE_KINET_1, "10.0.0.21");
+						ap.ports.setPort(7, port3);
+						ap.hardware.addTestGrid(7, 800, 880);
+
+						var port3 = new Port(8, 1, "port name 06", ap.PORT_TYPE_KINET_1, "10.0.0.21");
+						ap.ports.setPort(8, port3);
+						ap.hardware.addTestGrid(8, 800, 1320);
 						
 						ap.app.updateNodePoints(); // only need to call this when we add nodes after init
 						ap.app.updateMainSourceShader();
@@ -223,7 +239,7 @@
 						//ap.app.updateNodePoints(); // only need to call this when we add nodes after init
 
 						break;
-		*/
+		
 		
 				}
 

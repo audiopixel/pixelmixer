@@ -229,7 +229,7 @@ AppManager.prototype = {
 
 			var port = ap.ports.getPort(e + 1);
 
-			if(port){
+			if(port && port.nodes){
 				for ( i = 0; i < port.nodes.length; i ++ ) { 
 
 					var vertex = new THREE.Vector3();
@@ -406,7 +406,7 @@ sourceShader.fragmentMain = sourceShader.fragmentMain.replace("110000", "" + Mat
 			vertexShader: ap.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: this.fragmentShader
 		} );
-		
+
 		// Update uniforms directly
 		this.material.uniforms.u_coordsMap.value = this.coordsMap;
 		this.material.uniforms.u_prevCMap.value = this.rtTextureB;
