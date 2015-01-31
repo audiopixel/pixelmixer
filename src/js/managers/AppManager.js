@@ -121,7 +121,7 @@ AppManager.prototype = {
 		
 
 		// Update uniforms
-		if(this.material){
+		if(this.material && this.nodeShaderMaterial){
 			this.material.uniforms.u_time.value = this.time;
 
 			// Render first scene into texture
@@ -166,6 +166,9 @@ AppManager.prototype = {
 	///////////////// test
 
 	addPlanesForTesting: function(){
+
+		testPlane = new THREE.PlaneBufferGeometry( this.simSize * 2, this.simSize * 2 );
+		
 		var materialScreen = new THREE.ShaderMaterial( {
 
 			uniforms: 		{u_texture:   { type: "t", value: this.rtTextureA }},
@@ -175,8 +178,8 @@ AppManager.prototype = {
 
 		} );
 
-		var quad = new THREE.Mesh( this.plane, materialScreen );
-		quad.position.z = -100;
+		var quad = new THREE.Mesh( testPlane, materialScreen );
+		quad.position.x = -600;
 		this.scene.add( quad );
 
 		materialScreen = new THREE.ShaderMaterial( {
@@ -188,9 +191,21 @@ AppManager.prototype = {
 
 		} );
 
-		var quad = new THREE.Mesh( this.plane, materialScreen );
-		quad.position.x = -200;
-		quad.position.z = -100;
+		var quad = new THREE.Mesh( testPlane, materialScreen );
+		quad.position.x = -900;
+		this.scene.add( quad );
+
+		materialScreen = new THREE.ShaderMaterial( {
+
+			uniforms: 		{u_texture:   { type: "t", value: this.coordsMap }},
+			vertexShader: 	ap.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: ap.shaders.SimpleTextureShader.fragmentShader,
+			depthWrite: false
+
+		} );
+
+		var quad = new THREE.Mesh( testPlane, materialScreen );
+		quad.position.x = -1200;
 		this.scene.add( quad );
 
 	},
@@ -273,6 +288,7 @@ AppManager.prototype = {
 				maxy = Math.max(maxy, y);
 
 				a[ k + 3 ] = 1;
+				t++;
 			}else{
 				a[ k + 3 ] = 0;
 			}
@@ -280,7 +296,6 @@ AppManager.prototype = {
 			a[ k + 0 ] = x;
 			a[ k + 1 ] = y;
 			a[ k + 2 ] = z;
-			t++;
 		}
 
 		// We always set the first Pod Position as the bounding box that fits all nodes
@@ -294,18 +309,22 @@ AppManager.prototype = {
 		this.coordsMap.needsUpdate = true;
 		this.coordsMap.flipY = true;
 
+
 	},
 
 	createNodePointCloud: function(){
+		
+		var attributes = { // For each node we pass along it's index value and x, y in relation to the colorMaps
+			a_geoX:        { type: 'f', value: this.geoX },
+			a_geoY:        { type: 'f', value: this.geoY },
+			a_index:        { type: 'f', value: this.passIndex }
+		};
 
-		var attributes = ap.shaders.NodeShader.attributes;
-		attributes.a_geoX.value = this.geoX;
-		attributes.a_geoY.value = this.geoY;
-		attributes.a_index.value = this.passIndex;
-
-		var uniforms = ap.shaders.NodeShader.uniforms;
-		uniforms.u_colorMap.value = this.rtTextureA;
-		uniforms.u_texture.value = this.nodeTexture;
+		var uniforms = {
+			u_colorMap:   { type: "t", value: this.rtTextureA },
+			u_pointSize:  { type: 'f', value: ap.shaders.NodeShader.uniforms.u_pointSize.value },
+			u_texture:    { type: "t", value: this.nodeTexture }
+		};
 
 		this.nodeShaderMaterial = new THREE.ShaderMaterial( {
 
@@ -387,6 +406,11 @@ sourceShader.fragmentMain = sourceShader.fragmentMain.replace("110000", "" + Mat
 			vertexShader: ap.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: this.fragmentShader
 		} );
+		
+		// Update uniforms directly
+		this.material.uniforms.u_coordsMap.value = this.coordsMap;
+		this.material.uniforms.u_prevCMap.value = this.rtTextureB;
+
 
 		//console.log(sourceShader);
 
@@ -406,6 +430,7 @@ sourceShader.fragmentMain = sourceShader.fragmentMain.replace("110000", "" + Mat
 		// TODO possible optimize : seems this would be faster to update and not create new quad each time, but looks slower actually
 		//this.material.uniforms = uniforms;
 		//this.material.needsUpdate = true;
+
 	}
 
 }

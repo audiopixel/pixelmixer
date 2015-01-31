@@ -83,6 +83,7 @@ ChannelManager.prototype = {
 
 	update: function () {
 
+		// For every clip in each pods channel, we call it's update function if it's defined
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
 
@@ -93,8 +94,8 @@ ChannelManager.prototype = {
 					var clip = pod.clips[u];
 					var srcClip = ap.clips[ap.register[clip.clipId]];
 
-					// If the clip defined an update method call it with proper clip addressing
-					if(srcClip.update){
+					// If the clip defined an update function call it with proper clip addressing
+					if(srcClip.update && ap.app.material){
 						srcClip.update("_" + (i+1) + "_" + (e+1) + "_" + (u+1), ap.app.material.uniforms);
 					}
 				}
@@ -185,7 +186,7 @@ ChannelManager.prototype = {
 							uniforms[clip.address + "_" + property] = srcClip.properties[property];
 						}
 
-						// If the clip defined a optional init() method call it with addressing
+						// If the clip defined optional init() method call it with addressing
 						if(srcClip.init){
 							srcClip.init(clip.address, uniforms);
 						}

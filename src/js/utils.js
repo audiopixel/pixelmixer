@@ -12,3 +12,17 @@ function getVariableTypeFromShorthand(shorthand){
 	}
 	return type;
 }
+
+/*
+* Returns a cloned an object.
+* @param	The object to clone.
+* http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
+*/
+function clone(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+}

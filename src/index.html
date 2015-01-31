@@ -187,17 +187,30 @@
 		/*
 					case 46: // delete
 
-					console.log('delete');
+						ap.app.pointCloud.parent.remove( ap.app.pointCloud );
 
-					ap.app.pointCloud.parent.remove( ap.app.pointCloud );
+						console.log('delete');
 
 						break;
+
 					case 16: // shift
+
 						ap.app.updateNodePoints(); // only need to call this when we add nodes after init
 						ap.app.updateMainSourceShader();
+
+
+						//ap.app.addPlanesForTesting(); 
+
+						console.log("doitshift");
+
 						break;
+
 					case 17: // ctrl
-						//updateShader = true;
+					
+						updateShader = true;
+
+						//ap.ports.clearAllPorts();
+						
 						var port3 = new Port(3, 1, "port name 03", ap.PORT_TYPE_KINET_1, "10.0.0.21");
 						ap.ports.setPort(3, port3);
 						ap.hardware.addTestGrid(3, 880);
@@ -208,9 +221,10 @@
 						console.log("doit");
 						
 						//ap.app.updateNodePoints(); // only need to call this when we add nodes after init
-						break;
 
+						break;
 		*/
+		
 				}
 
 			}, false );
