@@ -33,6 +33,8 @@
 		<script src="js/shaders/clips/BasicHsvClip.js"></script>
 		<script src="js/shaders/clips/BasicFxClip.js"></script>
 		<script src="js/shaders/clips/GreyscaleFx.js"></script>
+
+		<script src="import/nodes/test.js"></script>
 	</head>
 
 	<body ontouchstart="" onload="onLoad()">
@@ -207,27 +209,27 @@
 
 						//ap.ports.clearAllPorts();
 						
-						var port3 = new Port(3, 1, "port name 03", ap.PORT_TYPE_KINET_1, "10.0.0.21");
+						var port3 = new Port("port name 03", ap.PORT_TYPE_KINET_1, "10.0.0.21");
 						ap.ports.setPort(3, port3);
 						ap.hardware.addTestGrid(3, 0, 880);
 
-						var port3 = new Port(4, 1, "port name 04", ap.PORT_TYPE_KINET_1, "10.0.0.21");
+						var port3 = new Port("port name 04", ap.PORT_TYPE_KINET_1, "10.0.0.21");
 						ap.ports.setPort(4, port3);
 						ap.hardware.addTestGrid(4, 0, 1320);
 
-						var port3 = new Port(5, 1, "port name 03", ap.PORT_TYPE_KINET_1, "10.0.0.21");
+						var port3 = new Port("port name 03", ap.PORT_TYPE_KINET_1, "10.0.0.21");
 						ap.ports.setPort(5, port3);
 						ap.hardware.addTestGrid(5, 800, 0);
 
-						var port3 = new Port(6, 1, "port name 04", ap.PORT_TYPE_KINET_1, "10.0.0.21");
+						var port3 = new Port("port name 04", ap.PORT_TYPE_KINET_1, "10.0.0.21");
 						ap.ports.setPort(6, port3);
 						ap.hardware.addTestGrid(6, 800, 440);
 
-						var port3 = new Port(7, 1, "port name 05", ap.PORT_TYPE_KINET_1, "10.0.0.21");
+						var port3 = new Port("port name 05", ap.PORT_TYPE_KINET_1, "10.0.0.21");
 						ap.ports.setPort(7, port3);
 						ap.hardware.addTestGrid(7, 800, 880);
 
-						var port3 = new Port(8, 1, "port name 06", ap.PORT_TYPE_KINET_1, "10.0.0.21");
+						var port3 = new Port("port name 06", ap.PORT_TYPE_KINET_1, "10.0.0.21");
 						ap.ports.setPort(8, port3);
 						ap.hardware.addTestGrid(8, 800, 1320);
 						

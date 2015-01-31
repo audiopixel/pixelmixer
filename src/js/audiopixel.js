@@ -6,6 +6,7 @@ var ap = { REVISION: '1' };		// Global object
 ap.shaders = {};				// Internal shaders 
 ap.clips = {}; 					// Loaded shaders as clips
 ap.register = {}; 				// Loaded shaders get referenced here internally for quick lookup
+ap.imported = {}; 				// Currently imported port (and possibly node) data
 
 
 

@@ -233,9 +233,9 @@ AppManager.prototype = {
 				for ( i = 0; i < port.nodes.length; i ++ ) { 
 
 					var vertex = new THREE.Vector3();
-					vertex.x = port.nodes[i].x;
-					vertex.y = port.nodes[i].y;
-					vertex.z = port.nodes[i].z;
+					vertex.x = port.nodes[i].x || 0;
+					vertex.y = port.nodes[i].y || 0;
+					vertex.z = port.nodes[i].z || 0;
 					this.geometry.vertices.push( vertex );
 
 					// TODO check port render type, if it's a directional light, or if it's a node (or plane eventually)
