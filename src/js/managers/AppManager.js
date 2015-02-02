@@ -7,8 +7,8 @@
 
 var AppManager = function (container) {
 
-	this.glWidth = window.innerWidth; // TODO update to just the needed div
-	this.glHeight = window.innerHeight;
+	this.glWidth;
+	this.glHeight;
 
 	this.stats = new Stats();
 	this.stats.domElement.style.position = 'absolute';
@@ -160,6 +160,11 @@ AppManager.prototype = {
 			this.renderer.render( this.scene, this.camera );
 		}
 		
+	},
+
+	setSize: function(width, height){
+		this.glWidth = width;
+		this.glHeight = height;
 	},
 
 
@@ -386,9 +391,6 @@ AppManager.prototype = {
 				}
 			}
 		}
-
-// Testing - remove 
-sourceShader.fragmentMain = sourceShader.fragmentMain.replace("110000", "" + Math.floor((Math.random() * 200000)));
 
 
 		// Internal core shader is merged with the loaded shaders

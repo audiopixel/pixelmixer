@@ -4,14 +4,15 @@
 		<title>AP3.0 Engine Demo</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href="css/main.css" rel="stylesheet" />
 
-		<script src="js/libs/Detector.js"></script>
-		<script src="js/libs/stats.min.js"></script>
-		<script src="js/libs/signals.min.js"></script>
-		<script src="js/libs/dat.gui.min.js"></script>
+		<script src="../libs/Detector.js"></script>
+		<script src="../libs/stats.min.js"></script>
+		<script src="../libs/signals.min.js"></script>
+		<script src="../libs/dat.gui.min.js"></script>
 
-		<script src="js/libs/three/three.min.js"></script>
-		<script src="js/libs/three/controls/TrackballControls.js"></script>
+		<script src="../libs/three/three.min.js"></script>
+		<script src="../libs/three/controls/TrackballControls.js"></script>
 
 		<script src="js/audiopixel.js"></script>
 		<script src="js/utils.js"></script>
@@ -69,6 +70,7 @@
 			ap.hardware = new HardwareManager();
 			ap.channels = new ChannelManager();
 			ap.app = new AppManager(document.getElementById( 'container' ));
+			ap.app.setSize(window.innerWidth, window.innerHeight);
 
 			ap.ports.init();
 			ap.hardware.init();
@@ -245,13 +247,27 @@
 
 			}, false );
 
-			var onWindowResize = function ( event ) {
 
-			};
+			function onWindowResize() {
+
+				// TODO - allow to be set in page and not always use fullscreen of window res
+				ap.app.glWidth = window.innerWidth;
+				ap.app.glHeight = window.innerHeight;
+
+				if(ap.app.readPixels){
+					ap.app.pixels = new Uint8Array(4 * ap.app.glWidth * ap.app.glHeight);
+				}
+
+				ap.app.camera.aspect = ap.app.glWidth / ap.app.glHeight;
+				ap.app.camera.updateProjectionMatrix();
+
+				ap.app.renderer.setSize( ap.app.glWidth, ap.app.glHeight );
+
+			}
 
 			window.addEventListener( 'resize', onWindowResize, false );
 
-			setTimeout(onWindowResize, 10);
+			setTimeout(onWindowResize, 1);
 
 		}
 
