@@ -59,6 +59,7 @@ HardwareManager.prototype = {
 
 		// Simulate Importing nodes from external file
 		this.importNodes(ap.imported, 18, 0, 0, -100);
+		//this.importNodes(ap.imported, 18, 400, 300, -100);
 
 	},
 
@@ -89,28 +90,33 @@ HardwareManager.prototype = {
 		var _scale = scale || imported.scale; 
 
 		// Add node values to 'ap.ports' for each defined port
-		for(port in imported.ports){
+		for(unit in imported.hardwareunit){
 
-			var _port = imported.ports[port];
+			var _unit = imported.hardwareunit[unit];
 
-			for(node in _port.nodes){
+			for(port in _unit.ports){
 
-				var _node = _port.nodes[node];
+				var _port = _unit.ports[port];
 
-				_node.x = _node.x || 0;
-				_node.y = _node.y || 0;
-				_node.z = _node.z || 0;
+				for(node in _port.nodes){
 
-				_node.x *= _scale;
-				_node.y *= _scale;
-				_node.z *= _scale;
+					var _node = _port.nodes[node];
 
-				_node.x += xOffset;
-				_node.y += yOffset;
-				_node.z += zOffset;
+					_node.x = _node.x || 0;
+					_node.y = _node.y || 0;
+					_node.z = _node.z || 0;
 
-			}
-			ap.ports.setNodes(_port.portid + portOffset, _port.nodes);
+					_node.x *= _scale;
+					_node.y *= _scale;
+					_node.z *= _scale;
+
+					_node.x += xOffset;
+					_node.y += yOffset;
+					_node.z += zOffset;
+
+				}
+				ap.ports.setNodes(_port.portid + portOffset, _port.nodes);
+			}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 		}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 	},
 

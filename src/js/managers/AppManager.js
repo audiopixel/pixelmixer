@@ -74,7 +74,7 @@ AppManager.prototype = {
 
 		this.scene = new THREE.Scene();
 		this.camera = new THREE.PerspectiveCamera( 30, this.glWidth / this.glHeight, 1, 10000 );
-		this.camera.position.z = 1700;
+		this.camera.position.z = 2400;
 		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement);
 
 		this.geometry = new THREE.Geometry();
