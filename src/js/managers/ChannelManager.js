@@ -193,7 +193,7 @@ ChannelManager.prototype = {
 
 						// Create params with default values
 						for (var param in srcClip.params) {
-							uniforms[clip.address + "_" + param] = { type: "f", value: srcClip.params[param].valued };
+							uniforms[clip.address + "_" + param] = { type: "f", value: srcClip.params[param].value };
 						}
 
 
@@ -243,6 +243,14 @@ ChannelManager.prototype = {
 							}
 
 						}
+
+						// Param shorthand 'p1' to '__p1'
+						fragOutput = fragOutput.replace(/p1/g, "__p1");
+						fragOutput = fragOutput.replace(/p2/g, "__p2");
+						fragOutput = fragOutput.replace(/p3/g, "__p3");
+						fragOutput = fragOutput.replace(/p4/g, "__p4");
+						fragOutput = fragOutput.replace(/p5/g, "__p5");
+						fragOutput = fragOutput.replace(/p6/g, "__p6");
 
 						// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
 						fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
@@ -317,8 +325,8 @@ ChannelManager.prototype = {
 			output = output.replace(/_channel_/g, channel.address + "_") + "\n";
 		};
 
-		//console.log(output);
 		//console.log(uniforms);
+		//console.log(output);
 
 		/*
 		// TODO regenerate Metamap data: (if any of this changed)

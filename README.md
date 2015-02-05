@@ -107,6 +107,7 @@ The AudioPixel platform extends the standard GLSL fragment shader capabilities s
 | All previous color values | | x |
 | Random values | | x |
 | Resized & blended in 3D space | | x |
+| Multiple instances of shaders | | x |
 | Accompanying init & update methods | | x |
 | Hardware port / light unit info | | x |
 

@@ -74,7 +74,7 @@ AppManager.prototype = {
 
 		this.scene = new THREE.Scene();
 		this.camera = new THREE.PerspectiveCamera( 30, this.glWidth / this.glHeight, 1, 10000 );
-		this.camera.position.z = 2400;
+		this.camera.position.z = 5000;
 		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement);
 
 		this.geometry = new THREE.Geometry();
@@ -107,7 +107,7 @@ AppManager.prototype = {
 
 	update: function () {
 
-		this.time += .05;
+		this.time += .1;
 		this.stats.update();
 
 
@@ -358,6 +358,8 @@ AppManager.prototype = {
 
 		this.scene.add( this.pointCloud );
 
+		console.log("AP Nodes: " + this.geometry.vertices.length);
+
 	},
 
 	updateMainSourceShader: function(){
@@ -415,6 +417,8 @@ AppManager.prototype = {
 
 
 		//console.log(sourceShader);
+		//console.log(this.material.uniforms);
+		//console.log(this.fragmentShader);
 
 
 		// Main quad that gets rendered as the source shader

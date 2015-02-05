@@ -26,14 +26,16 @@
 		<script src="js/objects/Clip.js"></script>
 		<script src="js/objects/Shader.js"></script>
 		<script src="js/objects/PodPosition.js"></script>
-		<script src="js/shaders/core/ShaderUtils.js"></script>
-		<script src="js/shaders/core/SimpleTextureShader.js"></script>
-		<script src="js/shaders/core/NodeShader.js"></script>
-		<script src="js/shaders/clips/BareBonesClip.js"></script>
-		<script src="js/shaders/clips/BasicClip.js"></script>
-		<script src="js/shaders/clips/BasicHsvClip.js"></script>
-		<script src="js/shaders/clips/BasicFxClip.js"></script>
-		<script src="js/shaders/clips/GreyscaleFx.js"></script>
+
+		<script src="import/shaders/core/ShaderUtils.js"></script>
+		<script src="import/shaders/core/SimpleTextureShader.js"></script>
+		<script src="import/shaders/core/NodeShader.js"></script>
+
+		<script src="import/shaders/clips/BasicTestClip.js"></script>
+		<script src="import/shaders/clips/BareBonesClip.js"></script>
+		<script src="import/shaders/clips/BasicClip.js"></script>
+		<script src="import/shaders/clips/BasicFxClip.js"></script>
+		<script src="import/shaders/clips/GreyscaleFx.js"></script>
 
 		<script src="import/nodes/test.js"></script>
 	</head>
@@ -81,20 +83,12 @@
 
 			// -------Temporary: Create some Channels/Pods/Clips for testing----------
 
-			var mix = 1;
-
-			// Let's create some test clips for now (TODO: this should be loaded from current project settings or channel preset)
-
-			//var clips = [new Clip(2, mix, ap.BLEND.Add), new Clip(4, mix, ap.BLEND.Add)];
-
-			var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)]), new Pod(2, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add)])];
-			//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add)]), new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add)]), new Pod(2, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Add)])];
-			//var pods2 = [new Pod(2, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Fx), new Clip(5, mix, ap.BLEND.Fx)])];
-			
 			
 			// Let's create some test channels for now (TODO: this should be loaded from current project settings)
+			var mix = 1;
+			var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Add), new Clip(4, mix, ap.BLEND.Add)])];
+			//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Add)])];
 			ap.channels.channels[0] = new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods);
-			//ap.channels.channels[1] = new Channel("TestChannel2", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Fx, pods2);
 
 			ap.app.updateNodePoints();
 			ap.app.updateMainSourceShader();
@@ -158,7 +152,7 @@
 			f1.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_mix.value = guiData.Channel1Mix; });
 			//f1.add( guiData, "Pod1Mix", 0.0, 1.0, 1.0 )			.onChange(function () { ap.app.material.uniforms._1_1_mix.value = guiData.Pod1Mix; });
 			f1.add( guiData, "Shader1Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_1_1_mix.value = guiData.Shader1Mix; });
-			f1.add( guiData, "Shader2_1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_mix.value = guiData.Shader2_1Mix; });
+			f1.add( guiData, "Shader2_1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_2_p1.value = guiData.Shader2_1Mix; });
 			//f1.add( guiData, "Pod2Mix", 0.0, 1.0, 1.0 )			.onChange(function () { ap.app.material.uniforms._1_2_1_mix.value = guiData.Pod2Mix; });
 			//f1.add( guiData, "Shader2Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_3_2_mix.value = guiData.Shader2Mix; });
 
@@ -206,42 +200,17 @@
 						break;
 */
 					case 17: // ctrl
-					
-						updateShader = true;
 
-						//ap.ports.clearAllPorts();
-						
-						var port3 = new Port("port name 03", ap.PORT_TYPE_KINET_1, "10.0.0.21");
-						ap.ports.setPort(3, port3);
-						ap.hardware.addTestGrid(3, 0, 880);
-
-						var port3 = new Port("port name 04", ap.PORT_TYPE_KINET_1, "10.0.0.21");
-						ap.ports.setPort(4, port3);
-						ap.hardware.addTestGrid(4, 0, 1320);
-
-						var port3 = new Port("port name 03", ap.PORT_TYPE_KINET_1, "10.0.0.21");
-						ap.ports.setPort(5, port3);
-						ap.hardware.addTestGrid(5, 800, 0);
-
-						var port3 = new Port("port name 04", ap.PORT_TYPE_KINET_1, "10.0.0.21");
-						ap.ports.setPort(6, port3);
-						ap.hardware.addTestGrid(6, 800, 440);
-
-						var port3 = new Port("port name 05", ap.PORT_TYPE_KINET_1, "10.0.0.21");
-						ap.ports.setPort(7, port3);
-						ap.hardware.addTestGrid(7, 800, 880);
-
-						var port3 = new Port("port name 06", ap.PORT_TYPE_KINET_1, "10.0.0.21");
-						ap.ports.setPort(8, port3);
-						ap.hardware.addTestGrid(8, 800, 1320);
-						
-						ap.app.updateNodePoints(); // only need to call this when we add nodes after init
-						ap.app.updateMainSourceShader();
+					// lets test changing the clips in a channel at run time
+						var mix = 1;
+						var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)])];
+						//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Add)])];
+						ap.channels.channels[0] = new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods);
 
 						console.log("doit");
+						updateShader = true;
 
 						break;
-		
 		
 				}
 
@@ -302,8 +271,28 @@ uniform sampler2D u_coordsMap;
 uniform sampler2D u_prevCMap;
 //uniform sampler2D u_portsMap;
 
-//#INCLUDESHADERFUNCTIONS
+// TODO optimize this list to only include what we need each regeneration
+#define ptpi 1385.4557313670110891409199368797 //powten(pi)
+#define pipi  36.462159607207911770990826022692 //pi pied, pi^pi
+#define picu  31.006276680299820175476315067101 //pi cubed, pi^3
+#define pepi  23.140692632779269005729086367949 //powe(pi);
+#define chpi  11.59195327552152062775175205256  //cosh(pi)
+#define shpi  11.548739357257748377977334315388 //sinh(pi)
+#define pisq  9.8696044010893586188344909998762 //pi squared, pi^2
+#define twpi  6.283185307179586476925286766559  //two pi, 2*pi 
+#define pi    3.1415926535897932384626433832795 //pi
+#define sqpi  1.7724538509055160272981674833411 //square root of pi 
+#define hfpi  1.5707963267948966192313216916398 //half pi, 1/pi
+#define cupi  1.4645918875615232630201425272638 //cube root of pi
+#define prpi  1.4396194958475906883364908049738 //pi root of pi
+#define lnpi  1.1447298858494001741434273513531 //logn(pi); 
+#define trpi  1.0471975511965977461542144610932 //one third of pi, pi/3
+#define thpi  0.99627207622074994426469058001254//tanh(pi)
+#define lgpi  0.4971498726941338543512682882909 //log(pi)       
+#define rcpi  0.31830988618379067153776752674503// reciprocal of pi  , 1/pi  
+#define rcpipi  0.0274256931232981061195562708591 // reciprocal of pipi  , 1/pipi 
 
+//#INCLUDESHADERFUNCTIONS
 
 void main() {
 
@@ -321,7 +310,10 @@ void main() {
 	ap_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);
 	//ap_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));
 
-	vec2 p;
+	vec2 p = vec2(0.0);
+	vec3 c = vec3(0.0);
+	float cf = 0.;
+	float t = 0.;
 
 	//********************************************
 
