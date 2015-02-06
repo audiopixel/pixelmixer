@@ -36,6 +36,9 @@ ap.BLEND.VividLight = 16;
 ap.BLEND.PinLight = 17;
 ap.BLEND.Fx = 1; // Use 'add' if this happens to get passed, all fx 'blending' happens outside blend()
 
+ap.BLENDS = [ 'Add', 'Substract', 'Darkest', 'Lightest', 'Difference', 'Exclusion', 'Multiply', 'Screen','Overlay', 
+			'HardLight', 'SoftLight', 'Dodge', 'Burn', 'LinearBurn', 'LinearLight', 'VividLight', 'PinLight'];
+
 
 // Port Type Constants
 ap.PORT_TYPE_OFF = 0;
@@ -60,3 +63,8 @@ ap.CHANNEL_TYPE_SCENE = 3;
 ap.HARDWAREGROUP_OFF = 0;
 ap.HARDWAREGROUP_SOLO = 1;
 ap.HARDWAREGROUP_EXCLUDE = 2;
+
+
+// Temporary Preset Management
+
+ap.demoPresets = [0,1,2,5];

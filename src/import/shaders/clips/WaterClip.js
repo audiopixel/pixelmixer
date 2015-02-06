@@ -21,7 +21,7 @@ ap.clips.WaterClip = {
 
 	fragmentMain: [
 
-		"p = vec2(gl_FragCoord.x / resolution.x, gl_FragCoord.y / resolution.y) * (p1);",
+		"p = vec2(gl_FragCoord.x / resolution.x, gl_FragCoord.y / resolution.y) * (__p1);",
 		"p = p*8.0- vec2(30.0);",
 		"iv2 = p;",
 		"cf = 1.0;",

@@ -58,7 +58,7 @@ ap.clips.LineSinSpiral = {
 
 	fragmentMain: [
 
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (p1 * 4.);",
+		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 4.);",
 		
 		//"look = (mouse-0.5)*2.0*pi;", // TODO add in mouse support
 		"look = vec2(.5,.5);",

@@ -15,7 +15,7 @@ HardwareManager.prototype = {
 
 		// Test using a simple grid of ports (containing nodes): 
 		var xOffset = 570;
-		var yOffset = 730;
+		var yOffset = 740;
 		var xS = 0;
 		var yS = 0;
 		for ( u = 0; u < 15; u ++ ) { 

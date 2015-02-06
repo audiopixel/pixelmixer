@@ -52,7 +52,7 @@ ap.clips.ColorSwirlsClip = {
 	fragmentMain: [
 
 
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (p1 * 2.);",
+		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 2.);",
 		"p = p*pi;",
 
 		"t = (rcpi*(u_time/pi+picu))+pi;",

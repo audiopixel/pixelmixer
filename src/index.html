@@ -52,6 +52,7 @@
 
 		var frameCount = 0;
 		var gui = new dat.GUI();
+		var updateShader;
 
 
 
@@ -86,9 +87,14 @@
 			
 			// Let's create some test channels for now (TODO: this should be loaded from current project settings)
 			var mix = 1;
-			var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Add), new Clip(4, mix, ap.BLEND.Add)])];
-			//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Add)])];
-			ap.channels.channels[0] = new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods);
+			var pods = [];
+
+			//pods[3] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Fx)])
+			pods[2] = new Pod(3, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Add), new Clip(3, 1, ap.BLEND.Fx)]);
+			pods[1] = new Pod(2, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(3, 1, ap.BLEND.Fx)]);
+			pods[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add), new Clip(3, 1, ap.BLEND.Fx)]);
+
+			ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
 
 			ap.app.updateNodePoints();
 			ap.app.updateMainSourceShader();
@@ -97,8 +103,7 @@
 
 			// ****** Runtime Loop ****** 
 
-			var updateShader;
-			var updateShaderLimiter = 10;
+			var updateShaderLimiter = 0;
 			// Allow limiter to be modified based on system capabilities, if we detect lag we can increase it
 
 			function animate() {
@@ -107,22 +112,23 @@
 
 
 				// Update everything else if we don't have to update the shader this frame
-				if(!updateShader || frameCount % updateShaderLimiter != 1){
+				if(!updateShader || updateShaderLimiter < 4){
 
 					// ** Main loop update 
 					ap.app.update();
 					ap.ports.update();
 					ap.hardware.update();
 					ap.channels.update();
+					updateShaderLimiter++;
 
 				}else{
 
 					// We detected the shader needs an update, only do that this frame
 					ap.app.updateMainSourceShader();
 					ap.app.update();
+					updateShaderLimiter = 0;
 					updateShader = false;
 				}
-
 
 				// Render next frame // TODO: throttle logic if needed
 				requestAnimationFrame( animate );
@@ -135,34 +141,60 @@
 
 			// TODO replace dat.gui with react components (or similar) that reflect model: ap.channels 
 
-			var f1 = gui.addFolder('Channel 1'); 		f1.open();
 			var guiData  = {
 				Channel1Mix:  1,
-				Pod1Mix:  1,
-				Pod2Mix:  1,
-				Shader1Mix:  1,
-				Shader2Mix:  1,
 
-				Channe2_1Mix:  1,
-				Pod2_1Mix:  1,
-				Pod2_2Mix:  1,
-				Shader2_1Mix:  1,
-				Shader2_2Mix:  1
+				S3Blend:  'Add',
+				S3ClipId:  0,
+				S3Mix:  1,
+				S3Scale:  1,
+				Hue3Mix:  1,
+
+				S2Blend:  'Add',
+				S2ClipId:  0,
+				S2Mix:  1,
+				S2Scale:  1,
+				Hue2Mix:  1,
+
+				S1Mix:  1,
+				S1ClipId:  0,
+				S1Scale:  1,
+				Hue1Mix:  1
 			}
-			f1.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_mix.value = guiData.Channel1Mix; });
-			//f1.add( guiData, "Pod1Mix", 0.0, 1.0, 1.0 )			.onChange(function () { ap.app.material.uniforms._1_1_mix.value = guiData.Pod1Mix; });
-			f1.add( guiData, "Shader1Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_1_1_mix.value = guiData.Shader1Mix; });
-			f1.add( guiData, "Shader2_1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_2_p1.value = guiData.Shader2_1Mix; });
-			//f1.add( guiData, "Pod2Mix", 0.0, 1.0, 1.0 )			.onChange(function () { ap.app.material.uniforms._1_2_1_mix.value = guiData.Pod2Mix; });
-			//f1.add( guiData, "Shader2Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._1_3_2_mix.value = guiData.Shader2Mix; });
 
-			//f1.add( guiData, "Channe2_1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._2_mix.value = guiData.Channe2_1Mix; });
-			//f1.add( guiData, "Pod2_1Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._2_1_1_mix.value = guiData.Pod2_1Mix; });
-			//f1.add( guiData, "Pod2_2Mix", 0.0, 1.0, 1.0 )		.onChange(function () { ap.app.material.uniforms._2_1_2_mix.value = guiData.Pod2_2Mix; });
-			//f1.add( guiData, "Shader2_2Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_1_p1.value = guiData.Shader2_2Mix; });
+			// TODO - add in p1 for clips (scale for now)
+			// load in some more .apx files that get changed with dropdown 
 
+			// mix clips have hue knob and saturation value
 
+			// post fx - white sparkle and threshold 
 
+			
+			gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_mix.value = guiData.Channel1Mix; });
+			
+			var f1 = gui.addFolder('Shader 1'); 		f1.open();
+			var f2 = gui.addFolder('Shader 2'); 		f2.open();
+			var f3 = gui.addFolder('Shader 3'); 		f3.open();
+			// Pod 3
+			f1.add( guiData, 'S3Blend', ap.BLENDS )		.onChange(function () { uniformBlendChange( guiData.S3Blend, "_1_3"); });
+			f1.add( guiData, 'S3ClipId', ap.demoPresets).onChange(function () { uniformClipTypeChange( guiData.S3ClipId, 1, 3, 1 ); });
+			f1.add( guiData, "S3Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_1_mix.value = guiData.S3Mix; });
+			f1.add( guiData, "S3Scale", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_1_p1.value = guiData.S3Scale; });
+			f1.add( guiData, "Hue3Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_2_p1.value = guiData.Hue3Mix; });
+			
+			// Pod 2
+			f2.add( guiData, 'S2Blend', ap.BLENDS )		.onChange(function () { uniformBlendChange( guiData.S2Blend, "_1_2"); });
+			f2.add( guiData, 'S2ClipId', ap.demoPresets).onChange(function () { uniformClipTypeChange( guiData.S2ClipId, 1, 2, 1 ); });
+			f2.add( guiData, "S2Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_1_mix.value = guiData.S2Mix; });
+			f2.add( guiData, "S2Scale", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_1_p1.value = guiData.S2Scale; });
+			f2.add( guiData, "Hue2Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_2_p1.value = guiData.Hue2Mix; });
+			
+			// Pod 1
+			f3.add( guiData, "S1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_1_mix.value = guiData.S1Mix; });
+			f3.add( guiData, 'S1ClipId', ap.demoPresets).onChange(function () { uniformClipTypeChange( guiData.S1ClipId, 1, 1, 1 ); });
+			f3.add( guiData, "S1Scale", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_1_p1.value = guiData.S1Scale; });
+			f3.add( guiData, "Hue1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_2_p1.value = guiData.Hue1Mix; });
+			
 
 			// ****** Event Handlers ****** 
 
@@ -187,25 +219,34 @@
 
 						break;
 
-					case 16: // shift
-
-						ap.app.updateNodePoints(); // only need to call this when we add nodes after init
-						ap.app.updateMainSourceShader();
+			*/		case 16: // shift
+/**/
+						//ap.app.updateNodePoints(); // only need to call this when we add nodes after init
+						//ap.app.updateMainSourceShader();
 
 
 						//ap.app.addPlanesForTesting(); 
 
 						console.log("doitshift");
+						ap.channels.clearAllPodsInChannel(1);
+						updateShader = true;
 
 						break;
-*/
+
 					case 17: // ctrl
 
 					// lets test changing the clips in a channel at run time
-						var mix = 1;
-						var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)])];
+						//var mix = 1;
+						//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)])];
 						//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Add)])];
-						ap.channels.channels[0] = new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods);
+						//ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
+
+
+						//ap.channels.setClip(1, 4, 1, new Clip(1, 1, ap.BLEND.Add));
+						//ap.channels.deleteClip(1, 2, 1);
+						//ap.channels.deleteAllClipsInPod(1, 2);
+
+						uniformClipTypeChange(1, 1, 2, 1) 
 
 						console.log("doit");
 						updateShader = true;
@@ -245,6 +286,7 @@
 </html>
 
 
+<!-- TODO this should be moved to seperate file, but working on it here for building is handy for now-->
 <script id="fragment_shader_pass_1" type="x-shader/x-fragment">
 
 //#INCLUDESHADERUTILS

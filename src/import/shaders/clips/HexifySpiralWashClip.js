@@ -35,7 +35,7 @@ ap.clips.HexifySpiralWashClip = {
 
 	fragmentMain: [
 
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (p1);",
+		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1);",
 		"p.x*=resolution.x/resolution.y;",
 		"p=hexifyWash(p,80.0);",
 		"vr = 0.5*sin(10.*sqrt((p.x-0.5)*(p.x-0.5)+(p.y-0.5)*(p.y-0.5))+u_time*2.5)+0.5;",

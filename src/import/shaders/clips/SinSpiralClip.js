@@ -23,7 +23,7 @@ ap.clips.SinSpiralClip = {
 
 	fragmentMain: [
 
-		"p = (2.0 * gl_FragCoord.xy / resolution.xy - 1.0)*0.1 * p1;",
+		"p = (2.0 * gl_FragCoord.xy / resolution.xy - 1.0)*0.1 * __p1;",
 		"p.x *= resolution.x / resolution.y;",
 		"d2D = 0.8 / length (p) + u_time  * 5.0;",
 		"a2D = atan (p.y, p.x);",

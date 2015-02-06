@@ -12,7 +12,7 @@ ap.clips.SwooshClip = {
 
 	fragmentMain: [
 
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (p1 * 2.);",
+		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 2.);",
 		"c = vec3(0.0,0.0,0.0);",
 		"for(float i = 0.0; i < 10.0; i++)",
 		"{",

@@ -23,7 +23,7 @@ ap.clips.ColorSineBar = {
 
 	fragmentMain: [
 
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (p1 * 2.);",
+		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 2.);",
 		"direction = vec2(cos(u_time), sin(u_time));",
 
 		"sx = 0.15 * sin( 5.0 * p.x - u_time - length(p)); ",

@@ -10,7 +10,7 @@ ap.clips.BasicTestClip = {
 	fragmentMain: [
 		
 
-		"gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);" // Output RGB Red
+		"gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);" // Output RGB Green
 
 		].join("\n")
 

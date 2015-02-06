@@ -18,7 +18,7 @@ ap.clips.SimpleSwirlClip = {
 
 	fragmentMain: [
 
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (p1 * 4.);",
+		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 4.);",
 		"for(int i=1;i<50;i++)",
 		"{",
 			"newp=p;",
