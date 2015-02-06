@@ -29,7 +29,7 @@ ap.clips.DiSinSwirlClip = {
 
 
 		// TODO position data comes from Pod/Clip coordinates
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 6.);",
+		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 8.);",
 
 		"mov0 = p.x+p.y+cos(sin(u_time)*2.0)*100.+sin(p.x/100.)*1000.;",
 		"mov1 = p.y;",

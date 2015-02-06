@@ -6,7 +6,7 @@ ap.clips.LineQSpiralClip = {
 
 	params: {
 
-		"p1": { value: 1.0, desc: "scale" }
+		"p1": { value: .8, desc: "scale" }
 
 	},
 
@@ -58,7 +58,7 @@ ap.clips.LineQSpiralClip = {
 
 	fragmentMain: [
 
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 4.);",
+		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 2.);",
 		
 		//"look = (mouse-0.5)*2.0*pi;", // TODO add in mouse support
 		"look = vec2(.5,.5);",

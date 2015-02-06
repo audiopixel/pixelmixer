@@ -14,8 +14,8 @@ HardwareManager.prototype = {
 	init: function () {
 
 		// Test using a simple grid of ports (containing nodes): 
-		var xOffset = 610;
-		var yOffset = 760;
+		var xOffset = 780;
+		var yOffset = 1000;
 		var xS = 0;
 		var yS = 0;
 		for ( u = 0; u < 15; u ++ ) { 
@@ -24,8 +24,8 @@ HardwareManager.prototype = {
 				for ( i = 0; i < 24; i ++ ) { 
 
 					var node = {};
-					node.x = (e * 30) + xS - 1150;
-					node.y = (i * 30) + yS - 550;
+					node.x = (e * 40) + xS - 1450;
+					node.y = (i * 40) + yS - 1000;
 					node.z = Math.random() * 300;
 					nodes.push(node);
 				}

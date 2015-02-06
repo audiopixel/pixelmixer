@@ -65,11 +65,10 @@ ap.HARDWAREGROUP_SOLO = 1;
 ap.HARDWAREGROUP_EXCLUDE = 2;
 
 
-// Temporary Preset Management
-
-ap.demoPresets = [0,2,3,8,10,12,13,11,9,15,6,14,7,5];
+// Temporary Preset Management // TODO dynamic clip loading system
+ap.demoPresets = [0,2,3,8,10,12,13,11,9,15,6,14,7];
 ap.demoPresetNames = ["OFF", "SolidColor", "TestFrame", "ColorSineBar", "ColorSwirls", "LineQSpiral", "SimpleSwirl",
-"SinSpiral", "SineParticles", "DiSinSwirl", "Water", "HexifyWash", "SinCosTan", "HueFx"];
+"SinSpiral", "SineParticles", "DiSinSwirl", "Water", "HexifyWash", "SinCosTan"];
 
 
 /*
