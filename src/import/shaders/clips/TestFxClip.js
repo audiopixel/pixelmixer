@@ -1,5 +1,5 @@
 /**
- * Basic fx test shader in ap clip harness
+ * Basic fx test shader in ap clip harness - simply offsets hue value for now
 
  * ****** Helper Methods:
 *
@@ -12,11 +12,17 @@
 **/
 
 
-ap.clips.GreyscaleFx = {
+ap.clips.TestFxClip = {
 
 	id: 5,
 
 	fx: true,
+
+	params: {
+
+		"p1": { value: 1.0, desc: "hue" }
+
+	},
 
 	fragmentMain: [
 
@@ -31,8 +37,11 @@ ap.clips.GreyscaleFx = {
 		// let's convert to hsv
 		"ap_hsv = rgb2hsv(ap_fxIn);",
 
-		// Change the saturation
-		"ap_hsv.y = 0.0;",
+		// Offset the hue
+		"ap_hsv.x += __p1;",
+		"if(ap_hsv.x > 1.0){",
+			"ap_hsv.x -= 1.0;",
+		"}",
 
 		// Convert back to rgb
 		"c = hsv2rgb(ap_hsv);",

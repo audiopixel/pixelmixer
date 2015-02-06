@@ -20,7 +20,12 @@ ap.clips.HueFxClip = {
 
 	params: {
 
-		"p1": { value: 1.0, desc: "scale" }
+		"p1": { value: 1.0, desc: "hue" },
+		"p2": { value: 1.0, desc: "saturation" },
+		"p3": { value: 0.0, desc: "thresMin" },
+		"p4": { value: 1.0, desc: "thresMax" },
+		"p5": { value: 1.0, desc: "sparkleRate" },
+		"p6": { value: 0.0, desc: "sparkleHue" }
 
 	},
 
@@ -43,10 +48,45 @@ ap.clips.HueFxClip = {
 			"ap_hsv.x -= 1.0;",
 		"}",
 
+		// Clamp the saturation
+		"ap_hsv.y *= __p2;",
+
+/*
+		// Min and Max 
+		"t = __p4;",
+		"if(t == 1.0){t = 0.0;}",
+		"if(ap_hsv[0] > 1.0){ ap_hsv[0] =  ap_hsv[0] - floor(ap_hsv[0]); }",
+		"if(t > __p3 && (ap_hsv[2] > t || ap_hsv[2] < __p3)){",
+			// Fully discard brightness for now - could soften with various factors
+			"ap_hsv[2] = 0.;",
+		"}",
+*/
+
+		// whitesparkle based on threshold brightness
+		"if(ap_hsv[2] > __p5){",
+			"if(random > (0.7 + ((1.0 - __p6) * .3) )){",
+				"ap_hsv[1] = 0.0;",
+				"ap_hsv[2] = 1.0;",
+			"}else{",
+				"ap_hsv[2] = 0.0;",
+			"}",
+		"}",
+
+/*
+		// whitesparkle based on hue
+		"t = ap_hsv[0] + __p5;",
+		"if(t > 1.0){ t = t- floor(t); }",
+		"if(t < 0.05){",
+			"if(random > (0.8 + ((1.0 - __p6) * .3) )){",
+				"ap_hsv[2] = 1.0;",
+			"}",
+		"}",
+*/
+
 		// Convert back to rgb
 		"c = hsv2rgb(ap_hsv);",
 
-
+		// Output fx
 		"ap_fxOut = vec4(c.r, c.g, c.b, 1.0);" 
 
 		].join("\n")

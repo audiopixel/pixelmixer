@@ -123,6 +123,7 @@ AppManager.prototype = {
 		// Update uniforms
 		if(this.material && this.nodeShaderMaterial){
 			this.material.uniforms.u_time.value = this.time;
+			this.material.uniforms.u_random.value = Math.random();
 
 			// Render first scene into texture
 			if(this.rtToggle){
@@ -367,6 +368,7 @@ AppManager.prototype = {
 		// Internal core uniforms
 		var uniforms = {
 			u_time: { type: "f", value: this.time },
+			u_random: { type: "f", value: Math.random() },
 			u_coordsMap: { type: "t", value: this.coordsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
 			u_mapSize: { type: "f", value: this.simSize }

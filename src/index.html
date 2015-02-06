@@ -45,7 +45,7 @@
 		<script src="import/shaders/clips/HexifyWashClip.js"></script>
 		<script src="import/shaders/clips/SinCosTanClip.js"></script>
 		<script src="import/shaders/clips/HueFxClip.js"></script>
-		<script src="import/shaders/clips/GreyscaleFx.js"></script>
+		<script src="import/shaders/clips/TestFxClip.js"></script>
 
 		<script src="import/nodes/test.js"></script>
 	</head>
@@ -100,10 +100,10 @@
 			var mix2 = 1;
 			var pods = [];
 
-			//pods[3] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Fx)])
-			//pods[2] = new Pod(3, mix, ap.BLEND.Add, [new Clip(3, mix2, ap.BLEND.Add), new Clip(16, 1, ap.BLEND.Fx)]);
-			pods[1] = new Pod(2, mix, ap.BLEND.Add, [new Clip(3, mix, ap.BLEND.Add), new Clip(16, 1, ap.BLEND.Fx)]);
-			pods[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(0, mix2, ap.BLEND.Add), new Clip(16, 1, ap.BLEND.Fx)]);
+			//pods[3] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Fx)]);
+			//pods[2] = new Pod(3, mix, ap.BLEND.Add, [new Clip(3, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+			pods[1] = new Pod(2, mix, ap.BLEND.Add, [new Clip(3, mix, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+			pods[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(0, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
 
 			ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
 
@@ -178,8 +178,10 @@
 				S1Scale:  1,
 				Hue1Mix:  1,
 
-				HueFXMix:  1
-				
+				Hue:  1,
+				Sat:  1,
+				Threshold:  1,
+				Noise:  0
 
 			}
 			
@@ -205,14 +207,17 @@
 			f2.add( guiData, "Hue2Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_2_p1.value = guiData.Hue2Mix; });
 			
 			// Pod 1
-			f3.add( guiData, 'S1ClipId', ap.demoPresetNames).onChange(function () { uniformClipTypeChange( guiData.S1ClipId, 1, 1, 1 ); });
 				f3.add( guiData, 'S2Blend', ap.BLENDS )		.onChange(function () { uniformBlendChange( guiData.S2Blend, "_1_2"); });
+			f3.add( guiData, 'S1ClipId', ap.demoPresetNames).onChange(function () { uniformClipTypeChange( guiData.S1ClipId, 1, 1, 1 ); });
 			f3.add( guiData, "S1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_1_mix.value = guiData.S1Mix; });
 			f3.add( guiData, "S1Scale", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_1_p1.value = guiData.S1Scale; });
 			f3.add( guiData, "Hue1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_2_p1.value = guiData.Hue1Mix; });
 			
 			// Post Fx
-			f4.add( guiData, "HueFXMix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._2_1_1_p1.value = guiData.HueFXMix; });
+			f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._2_1_1_p1.value = guiData.Hue; });
+			f4.add( guiData, "Sat", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._2_1_1_p2.value = guiData.Sat; });
+			f4.add( guiData, "Threshold", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._2_1_1_p5.value = guiData.Threshold; });
+			f4.add( guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function () { ap.app.material.uniforms._2_1_1_p6.value = guiData.Noise; });
 			
 
 			// ****** Event Handlers ****** 
@@ -325,11 +330,18 @@ vec2 resolution;
 
 varying vec2 v_vUv;
 uniform float u_time;
-//uniform float u_random;
+uniform float u_random;
 uniform float u_mapSize;
 uniform sampler2D u_coordsMap;
 uniform sampler2D u_prevCMap;
 //uniform sampler2D u_portsMap;
+
+// Temporary use values
+float random;
+vec2 p; 
+vec3 c;
+float cf;
+float t;
 
 // TODO optimize this list to only include what we need each regeneration
 #define ptpi 1385.4557313670110891409199368797 //powten(pi)
@@ -356,6 +368,8 @@ uniform sampler2D u_prevCMap;
 
 void main() {
 
+	random = rand(vec2(gl_FragCoord[0], gl_FragCoord[1] * u_random) * (u_time * 0.0001));
+
 	// Black is default
 	ap_rgb = vec3(0.0);
 
@@ -369,12 +383,6 @@ void main() {
 
 	ap_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);
 	//ap_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));
-
-	// Temp values we can use in a clip without having to declare new ones
-	vec2 p = vec2(0.0); 
-	vec3 c = vec3(0.0);
-	float cf = 0.;
-	float t = 0.;
 
 	//********************************************
 
