@@ -181,16 +181,20 @@
 				Hue:  1,
 				Sat:  1,
 				Threshold:  1,
-				Noise:  0
+				Noise:  0,
+
+				Speed: ap.app.speed,
+				PointSize: 160
 
 			}
 			
 			gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_mix.value = guiData.Channel1Mix; });
 			
 			//var f1 = gui.addFolder('Shader 1'); 		f1.open();
-			var f2 = gui.addFolder('Shader 1'); 	//	f2.open();
+			var f2 = gui.addFolder('Shader 1'); 		f2.open();
 			var f3 = gui.addFolder('Shader 2'); 	//	f3.open();
-			var f4 = gui.addFolder('Post FX'); 			f4.open();
+			var f4 = gui.addFolder('Post FX'); 		//	f4.open();
+			var f5 = gui.addFolder('Settings'); 	//	f5.open();
 
 			/*
 			// Pod 3
@@ -216,9 +220,17 @@
 			// Post Fx
 			f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._2_1_1_p1.value = guiData.Hue; });
 			f4.add( guiData, "Sat", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._2_1_1_p2.value = guiData.Sat; });
-			f4.add( guiData, "Threshold", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._2_1_1_p5.value = guiData.Threshold; });
+			f4.add( guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function () { ap.app.material.uniforms._2_1_1_p5.value = guiData.Threshold; });
 			f4.add( guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function () { ap.app.material.uniforms._2_1_1_p6.value = guiData.Noise; });
 			
+			// Global Settings (temporary for demo)
+			f5.add( guiData, "Speed", 0.0, .3, 1.0 ).onChange(function () { ap.app.speed = guiData.Speed; });
+			f5.add( guiData, "PointSize", 40.0, 200.0, 1.0 ).onChange(function () { ap.app.nodeShaderMaterial.uniforms.u_pointSize.value = guiData.PointSize; });
+			
+			f5.add( { ResetCam:function(){
+				ap.app.controls.reset();
+			} } ,'ResetCam');
+
 
 			// ****** Event Handlers ****** 
 

@@ -39,6 +39,7 @@ var AppManager = function (container) {
 	this.fragmentShader;
 
 	this.time = 0;
+	this.speed = .06;
 	this.simSize = 128;
 	this.pixels;
 	this.readPixels = false;
@@ -107,7 +108,7 @@ AppManager.prototype = {
 
 	update: function () {
 
-		this.time += .06;
+		this.time += this.speed;
 		this.stats.update();
 
 

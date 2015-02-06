@@ -63,14 +63,17 @@ ap.clips.HueFxClip = {
 */
 
 		// whitesparkle based on threshold brightness
+		"ap_hsv[2] = min(ap_hsv[2], 1.0);",
 		"if(ap_hsv[2] > __p5){",
-			"if(random > (0.7 + ((1.0 - __p6) * .3) )){",
+			"if(random > (.95 + ((1.0 - __p6) * .05) )){",
 				"ap_hsv[1] = 0.0;",
 				"ap_hsv[2] = 1.0;",
 			"}else{",
 				"ap_hsv[2] = 0.0;",
 			"}",
 		"}",
+
+		//"if(ap_hsv[0] > 1.0){ ap_hsv[0] =  ap_hsv[0] - floor(ap_hsv[0]); }",
 
 /*
 		// whitesparkle based on hue
