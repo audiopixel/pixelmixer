@@ -12,9 +12,9 @@
 **/
 
 
-ap.clips.BasicFxClip = {
+ap.clips.HueFxClip = {
 
-	id: 3,
+	id: 16,
 
 	fx: true,
 
@@ -30,7 +30,7 @@ ap.clips.BasicFxClip = {
 
 		//"ap_fxOut", // use this to send the outgoing color value after the fx is complete
 
-		//"ap_temp", // use this as a temporary color value without having to declare a new one
+		//"c", // use this as a temporary color value without having to declare a new one
 
 
 
@@ -44,10 +44,10 @@ ap.clips.BasicFxClip = {
 		"}",
 
 		// Convert back to rgb
-		"ap_temp = hsv2rgb(ap_hsv);",
+		"c = hsv2rgb(ap_hsv);",
 
 
-		"ap_fxOut = vec4(ap_temp.r, ap_temp.g, ap_temp.b, 1.0);" 
+		"ap_fxOut = vec4(c.r, c.g, c.b, 1.0);" 
 
 		].join("\n")
 

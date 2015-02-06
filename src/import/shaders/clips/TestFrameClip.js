@@ -1,18 +1,18 @@
 /**
  * Basic test shader in ap clip harness
+ * Draws a blue frame around red and green left to right gradients
  */
 
 
-ap.clips.BasicClip = {
+ap.clips.TestFrameClip = {
 
-	id: 2, // OSC requires id's to be integers
+	id: 3, // OSC requires id's to be integers
 	
 	params: { // (optional uniforms)
 
 		// Each shader can have upto 6 params that are controlled by it's UI / modulations
 		// TODO: define display ranges that will be shown in UI (percentage of param value)
-		"p1": { value: 0.5, desc: "scale" },
-		"p2": { value: 0.0, desc: "hue" }
+		"p1": { value: 1.0, desc: "scale" }
 
 	},
 	
@@ -25,13 +25,6 @@ ap.clips.BasicClip = {
 	
 	variables: { // (optional internal variables)
 
-		// These are internal variables that are used inside fragmentMain // TODO implement - to be defined with the shader importer
-		//"mov0": { type: "f" },
-		//"mov1": { type: "f" },
-		//"mov2": { type: "f" },
-		//"c1": { type: "f" },
-		//"c2": { type: "f" },
-		//"c3": { type: "f" },
 		"blue": { type: "f" },
 		"rx": { type: "f" },
 		"ry": { type: "f" }
@@ -101,34 +94,18 @@ ap.clips.BasicClip = {
 		* 
 		**/
 
-/*
-		// TODO position data comes from Pod/Clip coordinates
-		"p = ((0.01) * vec2( ap_xyz[0] +  (ap_xyz[2] * 0.25), ap_xyz[1]) ) + 6.;",
-
-		"mov0 = p.x+p.y+cos(sin(u_time)*2.0)*100.+sin(p.x/100.)*1000.;",
-		"mov1 = p.y;",
-		"mov2 = p.x;",
-		"c1 = abs(sin(mov1+u_time)/2.+mov2/2.-mov1-mov2+u_time);",
-		"c2 = abs(sin(c1+sin(mov0/1000.+u_time)+sin(p.y/40.+u_time)+sin((p.x+p.y)/100.)*3.));",
-		"c3 = abs(sin(c2+cos(mov1+mov2+c2)+cos(mov2)+sin(p.x/1000.)));",
-
-		"c1 = c1 * 0.25;",
-
-		"gl_FragColor = vec4(c2,c3,c1, 1.0); // end shader"
-
-*/
-
-		"rx = gl_FragCoord.x / resolution.x;", // Example of using variables
+		"rx = gl_FragCoord.x / resolution.x;", // Example of using variable
 		"ry = gl_FragCoord.y / resolution.y;",
-		//"ry = gl_FragCoord.y / resolution.y * __p1;", // Example of using a param
 
 		//"blue = red(0.0).r;", // Example of using a helper method
 		"blue = __v1;", // Example of using a property
+
+		"cf = ((__p1 * .5) + .5) * .98;", // Example of using a built in already existing var (nice to not have to create another one)
 		
 		// Create a blue border
-		"if(ry < 0.05 || ry > 0.95){",
+		"if(ry < (1. - cf) || ry > (cf)){",
 		"	blue = 1.0;",
-		"}else if(rx < 0.05 || rx > 0.95){",
+		"}else if(rx < (1. - cf) || rx > (cf)){",
 		"	blue = 1.0;",
 		"}",
 

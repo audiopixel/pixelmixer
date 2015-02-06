@@ -3,7 +3,7 @@
   Daily an hour GLSL sketch by @chimanaco 11/30
 */
 
-ap.clips.ColorSineBar = {
+ap.clips.ColorSineBarClip = {
 
 	id: 8,
 

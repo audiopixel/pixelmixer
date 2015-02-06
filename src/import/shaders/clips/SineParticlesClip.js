@@ -24,7 +24,7 @@ ap.clips.SineParticlesClip = {
 	
 	fragmentMain: [
 
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 2.);",
+		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 6.);",
 
 		"cf = 0.;",
 		"for(int i = 0; i < 20; i++) {",

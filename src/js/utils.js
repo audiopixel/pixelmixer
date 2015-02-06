@@ -79,7 +79,14 @@ function uniformBlendChange(guiItem, address) {
 /*
 * AP Specific: Trigger a clip type change - demo and testing for now // TODO dynamic UI listing
 */
-function uniformClipTypeChange(clipId, channel, pod, clip) {
+function uniformClipTypeChange(clipName, channel, pod, clip) {
+
+	var clipId = 0;
+
+	if(clipName !== "OFF"){
+		// TODO don't require clips to end in Clip
+		clipId = ap.clips[clipName + "Clip"].id;
+	}
 
 	ap.channels.setClip(channel, pod, clip, new Clip(clipId, 1.0, ap.BLEND.Add));
 

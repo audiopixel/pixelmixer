@@ -107,7 +107,7 @@ AppManager.prototype = {
 
 	update: function () {
 
-		this.time += .1;
+		this.time += .06;
 		this.stats.update();
 
 

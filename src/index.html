@@ -31,10 +31,20 @@
 		<script src="import/shaders/core/SimpleTextureShader.js"></script>
 		<script src="import/shaders/core/NodeShader.js"></script>
 
-		<script src="import/shaders/clips/BasicTestClip.js"></script>
-		<script src="import/shaders/clips/BareBonesClip.js"></script>
-		<script src="import/shaders/clips/BasicClip.js"></script>
-		<script src="import/shaders/clips/BasicFxClip.js"></script>
+
+		<script src="import/shaders/clips/SolidColorClip.js"></script>
+		<script src="import/shaders/clips/TestFrameClip.js"></script>
+		<script src="import/shaders/clips/DiSinSwirlClip.js"></script>
+		<script src="import/shaders/clips/ColorSineBarClip.js"></script>
+		<script src="import/shaders/clips/ColorSwirlsClip.js"></script>
+		<script src="import/shaders/clips/LineQSpiralClip.js"></script>
+		<script src="import/shaders/clips/SimpleSwirlClip.js"></script>
+		<script src="import/shaders/clips/SinSpiralClip.js"></script>
+		<script src="import/shaders/clips/SineParticlesClip.js"></script>
+		<script src="import/shaders/clips/WaterClip.js"></script>
+		<script src="import/shaders/clips/HexifyWashClip.js"></script>
+		<script src="import/shaders/clips/SinCosTanClip.js"></script>
+		<script src="import/shaders/clips/HueFxClip.js"></script>
 		<script src="import/shaders/clips/GreyscaleFx.js"></script>
 
 		<script src="import/nodes/test.js"></script>
@@ -87,12 +97,13 @@
 			
 			// Let's create some test channels for now (TODO: this should be loaded from current project settings)
 			var mix = 1;
+			var mix2 = 1;
 			var pods = [];
 
 			//pods[3] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Fx)])
-			pods[2] = new Pod(3, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Add), new Clip(3, 1, ap.BLEND.Fx)]);
-			pods[1] = new Pod(2, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(3, 1, ap.BLEND.Fx)]);
-			pods[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add), new Clip(3, 1, ap.BLEND.Fx)]);
+			pods[2] = new Pod(3, mix, ap.BLEND.Add, [new Clip(3, mix2, ap.BLEND.Add), new Clip(16, 1, ap.BLEND.Fx)]);
+			pods[1] = new Pod(2, mix, ap.BLEND.Add, [new Clip(0, mix, ap.BLEND.Add), new Clip(16, 1, ap.BLEND.Fx)]);
+			pods[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(0, mix2, ap.BLEND.Add), new Clip(16, 1, ap.BLEND.Fx)]);
 
 			ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
 
@@ -112,14 +123,13 @@
 
 
 				// Update everything else if we don't have to update the shader this frame
-				if(!updateShader || updateShaderLimiter < 4){
+				if((!updateShader || updateShaderLimiter < 4) && updateShaderLimiter > 0){
 
 					// ** Main loop update 
 					ap.app.update();
 					ap.ports.update();
 					ap.hardware.update();
 					ap.channels.update();
-					updateShaderLimiter++;
 
 				}else{
 
@@ -129,6 +139,7 @@
 					updateShaderLimiter = 0;
 					updateShader = false;
 				}
+				updateShaderLimiter++;
 
 				// Render next frame // TODO: throttle logic if needed
 				requestAnimationFrame( animate );
@@ -173,25 +184,26 @@
 			gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_mix.value = guiData.Channel1Mix; });
 			
 			var f1 = gui.addFolder('Shader 1'); 		f1.open();
-			var f2 = gui.addFolder('Shader 2'); 		f2.open();
-			var f3 = gui.addFolder('Shader 3'); 		f3.open();
+			var f2 = gui.addFolder('Shader 2'); 	//	f2.open();
+			var f3 = gui.addFolder('Shader 3'); 	//	f3.open();
+
 			// Pod 3
 			f1.add( guiData, 'S3Blend', ap.BLENDS )		.onChange(function () { uniformBlendChange( guiData.S3Blend, "_1_3"); });
-			f1.add( guiData, 'S3ClipId', ap.demoPresets).onChange(function () { uniformClipTypeChange( guiData.S3ClipId, 1, 3, 1 ); });
+			f1.add( guiData, 'S3ClipId', ap.demoPresetNames).onChange(function () { uniformClipTypeChange( guiData.S3ClipId, 1, 3, 1 ); });
 			f1.add( guiData, "S3Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_1_mix.value = guiData.S3Mix; });
 			f1.add( guiData, "S3Scale", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_1_p1.value = guiData.S3Scale; });
 			f1.add( guiData, "Hue3Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_2_p1.value = guiData.Hue3Mix; });
 			
 			// Pod 2
 			f2.add( guiData, 'S2Blend', ap.BLENDS )		.onChange(function () { uniformBlendChange( guiData.S2Blend, "_1_2"); });
-			f2.add( guiData, 'S2ClipId', ap.demoPresets).onChange(function () { uniformClipTypeChange( guiData.S2ClipId, 1, 2, 1 ); });
+			f2.add( guiData, 'S2ClipId', ap.demoPresetNames).onChange(function () { uniformClipTypeChange( guiData.S2ClipId, 1, 2, 1 ); });
 			f2.add( guiData, "S2Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_1_mix.value = guiData.S2Mix; });
 			f2.add( guiData, "S2Scale", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_1_p1.value = guiData.S2Scale; });
 			f2.add( guiData, "Hue2Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_2_p1.value = guiData.Hue2Mix; });
 			
 			// Pod 1
 			f3.add( guiData, "S1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_1_mix.value = guiData.S1Mix; });
-			f3.add( guiData, 'S1ClipId', ap.demoPresets).onChange(function () { uniformClipTypeChange( guiData.S1ClipId, 1, 1, 1 ); });
+			f3.add( guiData, 'S1ClipId', ap.demoPresetNames).onChange(function () { uniformClipTypeChange( guiData.S1ClipId, 1, 1, 1 ); });
 			f3.add( guiData, "S1Scale", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_1_p1.value = guiData.S1Scale; });
 			f3.add( guiData, "Hue1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_2_p1.value = guiData.Hue1Mix; });
 			
@@ -220,7 +232,7 @@
 						break;
 
 			*/		case 16: // shift
-/**/
+/*
 						//ap.app.updateNodePoints(); // only need to call this when we add nodes after init
 						//ap.app.updateMainSourceShader();
 
@@ -251,8 +263,8 @@
 						console.log("doit");
 						updateShader = true;
 
+		*/
 						break;
-		
 				}
 
 			}, false );
@@ -302,7 +314,6 @@ vec3 ap_rgb2;
 vec4 ap_rgbV4;
 vec3 ap_c;
 vec3 ap_p;
-vec3 ap_temp;
 vec2 resolution;
 
 varying vec2 v_vUv;
@@ -352,7 +363,8 @@ void main() {
 	ap_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);
 	//ap_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));
 
-	vec2 p = vec2(0.0);
+	// Temp values we can use in a clip without having to declare new ones
+	vec2 p = vec2(0.0); 
 	vec3 c = vec3(0.0);
 	float cf = 0.;
 	float t = 0.;

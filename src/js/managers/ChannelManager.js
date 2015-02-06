@@ -416,10 +416,6 @@ ChannelManager.prototype = {
 	// ************* Clips ***********************
 
 	setClip: function (channel, pod, clip, clipObj) {
-		// Clear clip if obj is null or .id is 0
-		if(!clipObj || clipObj.id === 0){
-			clearClip(channel, pod, clip);
-		}
 		// If channel doesn't exist ignore this request
 		if(!this.channels[channel-1]){
 			return false;

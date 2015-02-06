@@ -1,6 +1,6 @@
 // http://glslsandbox.com/e#18326.3
 
-ap.clips.LineSinSpiral = {
+ap.clips.LineQSpiralClip = {
 
 	id: 12,
 
@@ -69,7 +69,7 @@ ap.clips.LineSinSpiral = {
 		"camDir = rotateAxis(vec3(1,0,0),look.y,camDir);",
 		"camDir = rotateAxis(vec3(0,1,0),look.x,camDir);",
 		
-		"c = colorSpace(normalize(camDir)+sin(u_time/pi));",
+		"c = colorSpace(normalize(camDir)+sin((u_time * .35)/pi));",
 
 		"gl_FragColor = vec4( c, 1.0 );",
 

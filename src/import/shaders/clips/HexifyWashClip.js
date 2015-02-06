@@ -1,6 +1,6 @@
 // http://glslsandbox.com/e#19474.0
 
-ap.clips.HexifySpiralWashClip = {
+ap.clips.HexifyWashClip = {
 
 	id: 14,
 

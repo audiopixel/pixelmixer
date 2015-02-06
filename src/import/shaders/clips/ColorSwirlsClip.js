@@ -12,7 +12,6 @@ ap.clips.ColorSwirlsClip = {
 	
 	variables: {
 
-		"t": { type: "f" },
 		"camp": { type: "v3" },
 		"qAxis": { type: "v3" },
 		"wAxis": { type: "v3" },
