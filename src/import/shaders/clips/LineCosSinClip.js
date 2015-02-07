@@ -1,6 +1,6 @@
 // http://glslsandbox.com/e#18326.3
 
-ap.clips.LineQSpiralClip = {
+ap.clips.LineCosSinClip = {
 
 	id: 12,
 

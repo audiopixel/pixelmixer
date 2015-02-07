@@ -12,37 +12,15 @@ var HardwareManager = function () {
 HardwareManager.prototype = {
 
 	init: function () {
-
-		// Test using a simple grid of ports (containing nodes): 
-		var xOffset = 780;
-		var yOffset = 1000;
-		var xS = 0;
-		var yS = 0;
-		for ( u = 0; u < 15; u ++ ) { 
-			var nodes = [];
-			for ( e = 0; e < 18; e ++ ) { // Simulate a simple node grid for now
-				for ( i = 0; i < 24; i ++ ) { 
-
-					var node = {};
-					node.x = (e * 40) + xS - 1450;
-					node.y = (i * 40) + yS - 1000;
-					node.z = Math.random() * 300;
-					nodes.push(node);
-				}
-			}
-			var port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
-			ap.ports.setPort(u + 1, port);
-
-			xS += xOffset;
-			if((u + 2) % 5 == 1){
-				xS = 0;
-				yS += yOffset;
-			}
-		}
-
+/*
+		
+*/
+		
 		// Simulate Importing nodes from external file
-		//this.importNodes(ap.imported, 18, 0, 0, -100);
-		//this.importNodes(ap.imported, 18, 400, 300, -100);
+		this.importNodes(ap.imported, 1, 350, 100, 500);
+
+		//this.addTestPortsGrid3(1, 0, 0);
+
 
 	},
 
@@ -118,6 +96,102 @@ HardwareManager.prototype = {
 		}
 
 		ap.ports.setNodes(port, nodes);
+	},
+
+	addTestPortsGrid: function (portStart, xOffset, yOffset) {
+
+		// Test using a simple grid of ports (containing nodes): 
+		var xTOffset = 830;
+		var yTOffset = 1100;
+		var xS = 0;
+		var yS = 0;
+		for ( u = 0; u < 15; u ++ ) { 
+			var nodes = [];
+			for ( e = 0; e < 18; e ++ ) { // Simulate a simple node grid for now
+				for ( i = 0; i < 24; i ++ ) { 
+
+					var node = {};
+					node.x = ((e * 40) + xS - 650 + xOffset) * .26;
+					node.y = ((i * 40) + yS + yOffset) * .26;
+					node.z = (Math.random() * 275) - 130;
+					nodes.push(node);
+				}
+			}
+			var port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
+			ap.ports.setPort(u + portStart, port);
+
+			xS += xTOffset;
+			if((u + 2) % 5 == 1){
+				xS = 0;
+				yS += yTOffset;
+			}
+		}
+	},
+
+	addTestPortsGrid2: function (portStart, xOffset, yOffset) {
+		var nodes = [];
+		// Test using a simple grid of ports (containing nodes): 
+			for ( e = 0; e < 70; e ++ ) { // Simulate a simple node grid for now
+				for ( i = 0; i < 38; i ++ ) { 
+
+					var node = {};
+					node.x = ((e * 20) - 340 + xOffset);
+					node.y = ((i * 20) + 30 + yOffset);
+					nodes.push(node);
+				}
+			}
+			var port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
+			ap.ports.setPort(portStart, port);
+	},
+
+	addTestPortsGrid3: function (portStart, xOffset, yOffset) {
+		var nodes = [];
+		// Test using a simple grid of ports (containing nodes): 
+			for ( e = 0; e < 70; e ++ ) { // Simulate a simple node grid for now
+				for ( i = 0; i < 38; i ++ ) { 
+
+					var node = {};
+					node.x = ((e * 20) - 340 + xOffset);
+					node.y = ((i * 20) + 30 + yOffset);
+					nodes.push(node);
+				}
+			}
+			var port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
+			ap.ports.setPort(portStart, port);
+
+			nodes = [];
+			for ( e = 0; e < 70; e ++ ) { // Simulate a simple node grid for now
+				for ( i = 0; i < 38; i ++ ) { 
+
+					if((i+ 2) % 2 == 1 ){
+
+						var node = {};
+						node.x = ((e * 20) - 340 + xOffset);
+						node.y = ((i * 20) + 30 + yOffset);
+						node.z = 70;
+						nodes.push(node);
+					}
+				}
+			}
+			port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
+			ap.ports.setPort(portStart + 1, port);
+
+			nodes = [];
+			for ( e = 0; e < 70; e ++ ) { // Simulate a simple node grid for now
+				for ( i = 0; i < 38; i ++ ) { 
+
+					if((i - 1) % 3 == 1 && (e - 1) % 2 == 1){
+
+						var node = {};
+						node.x = ((e * 20) - 340 + xOffset);
+						node.y = ((i * 20) + 30 + yOffset);
+						node.z = 120;
+						nodes.push(node);
+					}
+				}
+			}
+			port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
+			ap.ports.setPort(portStart + 2, port);
 	}
 
 }

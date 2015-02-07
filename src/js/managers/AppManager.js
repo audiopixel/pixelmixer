@@ -75,7 +75,7 @@ AppManager.prototype = {
 
 		this.scene = new THREE.Scene();
 		this.camera = new THREE.PerspectiveCamera( 30, this.glWidth / this.glHeight, 1, 10000 );
-		this.camera.position.z = 5000;
+		this.camera.position.z = 1500;
 		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement);
 
 		this.geometry = new THREE.Geometry();
@@ -308,7 +308,10 @@ AppManager.prototype = {
 		// We always set the first Pod Position as the bounding box that fits all nodes
 		// TODO add z depth
 		ap.channels.setPodPos(1, new PodPosition(minx, miny, 0, maxx - minx, maxy - miny, 1));
-		ap.channels.setPodPos(2, new PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
+
+		// Testing on pod pos #2
+		//ap.channels.setPodPos(2, new PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
+		//ap.channels.setPodPos(2, new PodPosition(-190, 140, 0, 1070, 575, 1));
 
 		this.coordsMap = new THREE.DataTexture( a, this.simSize, this.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.coordsMap.minFilter = THREE.NearestFilter;

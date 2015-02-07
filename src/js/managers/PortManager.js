@@ -89,7 +89,8 @@ PortManager.prototype = {
 	},
 
 	clearAllPorts: function () {
-		this.ports = [];
+		delete this.ports;
+		this.ports = []; // TODO optimize: most likely better to not use 'delete'
 	}
 
 }

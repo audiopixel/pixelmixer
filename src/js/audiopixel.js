@@ -6,6 +6,8 @@ var ap = { REVISION: '1' };		// Global object
 ap.shaders = {};				// Internal shaders 
 ap.clips = {}; 					// Loaded shaders as clips
 ap.register = {}; 				// Loaded shaders get referenced here internally for quick lookup
+
+// TODO this should be a list of objects that we load at runtime, hardcoded for now
 ap.imported = {}; 				// Currently imported port (and possibly node) data
 
 
@@ -67,8 +69,10 @@ ap.HARDWAREGROUP_EXCLUDE = 2;
 
 // Temporary Preset Management // TODO dynamic clip loading system
 ap.demoPresets = [0,2,3,8,10,12,13,11,9,15,6,14,7];
-ap.demoPresetNames = ["OFF", "SolidColor", "TestFrame", "ColorSineBar", "ColorSwirls", "LineQSpiral", "SimpleSwirl",
-"SinSpiral", "SineParticles", "DiSinSwirl", "Water", "HexifyWash", "SinCosTan"];
+ap.demoPresetNames = ["OFF", "SolidColor", "TestFrame", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
+"SinSpiral", "SineParticles", "DiSinSwirl", "Water", "HexifyRadial", "SinCosTan"];
+
+ap.demoHardware = ["ApHardwareTest", "Grid", "Grid+Layer", "RanZGrid"];
 
 
 /*

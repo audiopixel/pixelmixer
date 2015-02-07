@@ -8,7 +8,7 @@ ap.shaders.NodeShader = {
 
 	uniforms: {
 		u_colorMap:   { type: "t", value: null },
-		u_pointSize:  { type: 'f', value: 160.0 },
+		u_pointSize:  { type: 'f', value: 60.0 },
 		u_texture:    { type: "t", value: null }
 	},
 
