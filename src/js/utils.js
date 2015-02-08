@@ -19,7 +19,7 @@ function getVariableTypeFromShorthand(shorthand){
 * http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
 */
 function clone(obj) {
-	if (null == obj || "object" != typeof obj) return obj;
+	if (null === obj || "object" != typeof obj) return obj;
 	var copy = obj.constructor();
 	for (var attr in obj) {
 		if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
@@ -39,8 +39,8 @@ function merge(obj1, obj2){
 	for (var attrname in obj1) {
 		if(obj1[attrname]){ obj3[attrname] = obj1[attrname]; }
 	}
-	for (var attrname in obj2) {
-		if(obj2[attrname]){ obj3[attrname] = obj2[attrname]; }
+	for (var attrname2 in obj2) {
+		if(obj2[attrname2]){ obj3[attrname2] = obj2[attrname2]; }
 	}
 	return obj3;
 }
