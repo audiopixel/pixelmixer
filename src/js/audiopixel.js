@@ -72,7 +72,7 @@ ap.demoPresets = [0,2,3,8,10,12,13,11,9,15,6,14,7];
 ap.demoPresetNames = ["OFF", "SolidColor", "TestFrame", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
 "SinSpiral", "SineParticles", "DiSinSwirl", "Water", "HexifyRadial", "SinCosTan"];
 
-ap.demoHardware = ["ApHardwareTest", "Grid", "Grid+Layer", "RanZGrid"];
+ap.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
 
 
 /*
