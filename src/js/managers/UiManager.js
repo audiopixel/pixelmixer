@@ -20,6 +20,35 @@ UiManager.prototype = {
 
 	init: function () {
 
+
+			// -------Temporary: Create some Channels/Pods/Clips for testing----------
+
+			
+			// Let's create some test channels for now (TODO: this should be loaded from current project settings)
+			var mix = 1;
+			var mix2 = 1;
+			var pods = [];
+
+			//pods[3] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Fx)]);
+			//pods[2] = new Pod(3, mix, ap.BLEND.Add, [new Clip(3, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+			pods[1] = new Pod(2, mix, ap.BLEND.Add, [new Clip(3, mix, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+			pods[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+
+			ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
+
+
+			var pods2 = [];
+			pods2[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(16, 1, ap.BLEND.Fx)]);
+
+			ap.channels.setChannel(2, new Channel("Post FX1", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Add, pods2));
+
+			ap.app.updateNodePoints();
+			ap.app.updateMainSourceShader();
+
+
+
+
+
 			// ****** UI ******  // TODO replace dat.gui with react components (or similar) that reflect model: ap.channels 
 
 
@@ -47,6 +76,10 @@ UiManager.prototype = {
 
 				Hue:  1,
 				Sat:  1,
+				HueClamp:  1,
+				SatClamp:  1,
+				Smooth:  .5,
+				PreAmp:  1,
 				//Threshold:  1,
 				//Noise:  0,
 
@@ -76,7 +109,7 @@ UiManager.prototype = {
 						break;
 					case ap.demoHardware[1]:
 
-						ap.channels.setPodPos(2, { x: -340, y: 30, z: 10, w: 1380, h: 740, d: 1 });
+						ap.channels.setPodPos(2, { x: -339, y: 30, z: 10, w: 1378, h: 738, d: 1 });
 						ap.hardware.addTestPortsGrid3(1, 0, 0);
 						break;
 
@@ -127,7 +160,11 @@ UiManager.prototype = {
 			
 			// Post Fx
 			f4.add( this.guiData, "Hue", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p1.value =_in; });
-			f4.add( this.guiData, "Sat", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p2.value =_in; });
+			f4.add( this.guiData, "HueClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p2.value =_in; });
+			f4.add( this.guiData, "Sat", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p3.value =_in; });
+			f4.add( this.guiData, "SatClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p4.value =_in; });
+			f4.add( this.guiData, "Smooth", 0.0, .98, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
+			f4.add( this.guiData, "PreAmp", 0.0, 1.0, 0.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
 			//f4.add( this.guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
 			//f4.add( this.guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
 			
@@ -146,7 +183,7 @@ UiManager.prototype = {
 
 			f2.close();
 			f3.close();
-			f4.close();
+			//f4.close();
 			f5.close();
 
 	},

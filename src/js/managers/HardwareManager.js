@@ -153,7 +153,7 @@ HardwareManager.prototype = {
 
 					var node = {};
 					node.x = ((e * 20) - 340 + xOffset);
-					node.y = ((i * 20) + 30 + yOffset);
+					node.y = ((i * 20) + 30 + yOffset) - 1;
 					nodes.push(node);
 				}
 			}
@@ -184,8 +184,8 @@ HardwareManager.prototype = {
 					if((i - 1) % 3 == 1 && (e - 1) % 2 == 1){
 
 						var node = {};
-						node.x = ((e * 20) - 340 + xOffset);
-						node.y = ((i * 20) + 30 + yOffset);
+						node.x = ((e * 20) - 340 + xOffset) - 1;
+						node.y = ((i * 20) + 30 + yOffset) - 1;
 						node.z = 210;
 						nodes.push(node);
 					}

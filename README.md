@@ -114,10 +114,9 @@ The AudioPixel platform extends the standard GLSL fragment shader capabilities s
 
 ## How to Contribute ##
 
-If you have access to this repo I would feel honored to have you as a contributor.
+If you have access to this repo we would be honored to have you as a contributor.
+Phase I is nearly completed, with the core engine now intact.
 
-Phase I is nearly completed, and the core engine is mostly all intact.
+The codebase is tagged with "TODO" comments, if you see anything that interested you, or that should be done differently, go for it. 
 
-The codebase is documented tagged with "TODO" comments, if you see anything that interested you, or think it should be done differently go for it. 
-
-Feel free to push to master branch for any small changes. Large changes or additions are best as branches.
+Push to master branch for any small changes for now. Large changes or additions are most likely best as branches.

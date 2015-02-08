@@ -403,12 +403,12 @@ AppManager.prototype = {
 
 
 		// Internal core shader is merged with the loaded shaders
-		this.fragmentShader = document.getElementById( 'fragment_shader_pass_1' ).textContent;
-		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERS", sourceShader.fragmentMain);
+		this.fragmentShader = ap.MainShader.fragmentShader;
+		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERS", sourceShader.fragmentMain);
 
 		// Add ShaderUtils and uniforms at the top
-		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERFUNCTIONS", sourceShader.fragmentFunctions);
-		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERUTILS", ap.shaders.ShaderUtils + sourceUniforms);
+		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERFUNCTIONS", sourceShader.fragmentFunctions);
+		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERUTILS", ap.shaders.ShaderUtils + sourceUniforms);
 		
 
 		// The main material object has uniforms that can be referenced and updated directly by the UI

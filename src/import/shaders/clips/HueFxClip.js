@@ -21,11 +21,11 @@ ap.clips.HueFxClip = {
 	params: {
 
 		"p1": { value: 1.0, desc: "hue" },
-		"p2": { value: 1.0, desc: "saturation" },
-		"p3": { value: 0.0, desc: "thresMin" },
-		"p4": { value: 1.0, desc: "thresMax" },
-		"p5": { value: 1.0, desc: "sparkleRate" },
-		"p6": { value: 0.0, desc: "sparkleHue" }
+		"p2": { value: 1.0, desc: "hueClamp" },
+		"p3": { value: 0.0, desc: "sat" },
+		"p4": { value: 1.0, desc: "satClamp" },
+		"p5": { value: 0.5, desc: "smooth" },
+		"p6": { value: 0.0, desc: "preamp" }
 
 	},
 
@@ -38,9 +38,18 @@ ap.clips.HueFxClip = {
 		//"c", // use this as a temporary color value without having to declare a new one
 
 
+		// preamp
+		"cf = __p6;",
+		"c = (ap_fxIn*(cf)+ap_lastRgb*cf);",
+
+		"ap_fxIn = mix(c, ap_fxIn, (1. - min(1., (__p6 * .8))));",
 
 		// let's convert to hsv
 		"ap_hsv = rgb2hsv(ap_fxIn);",
+
+
+		// Clamp the hue
+		"ap_hsv.x *= __p2;",
 
 		// Offset the hue
 		"ap_hsv.x += __p1;",
@@ -49,10 +58,17 @@ ap.clips.HueFxClip = {
 		"}",
 
 		// Clamp the saturation
-		"ap_hsv.y *= __p2;",
+		"ap_hsv.y *= __p4;",
+
+		// Offset the saturation
+		"ap_hsv.y += __p3;",
+		"if(ap_hsv.y > 1.0){",
+			"ap_hsv.y -= 1.0;",
+		"}",
+
 
 /*
-		// Min and Max 
+		// Min and Max threshold
 		"t = __p4;",
 		"if(t == 1.0){t = 0.0;}",
 		"if(ap_hsv[0] > 1.0){ ap_hsv[0] =  ap_hsv[0] - floor(ap_hsv[0]); }",
@@ -61,7 +77,7 @@ ap.clips.HueFxClip = {
 			"ap_hsv[2] = 0.;",
 		"}",
 */
-
+/*
 		// whitesparkle based on threshold brightness
 		"ap_hsv[2] = min(ap_hsv[2], 1.0);",
 		"if(ap_hsv[2] > __p5){", //  && ap_hsv[1] >( __p5*.5)
@@ -72,7 +88,7 @@ ap.clips.HueFxClip = {
 				"ap_hsv[2] = 0.0;",
 			"}",
 		"}",
-
+*/
 		//"if(ap_hsv[0] > 1.0){ ap_hsv[0] =  ap_hsv[0] - floor(ap_hsv[0]); }",
 
 /*
@@ -88,6 +104,9 @@ ap.clips.HueFxClip = {
 
 		// Convert back to rgb
 		"c = hsv2rgb(ap_hsv);",
+
+		// smooth
+		"c = mix(c, ap_lastRgb, __p5);",
 
 		// Output fx
 		"ap_fxOut = vec4(c.r, c.g, c.b, 1.0);" 

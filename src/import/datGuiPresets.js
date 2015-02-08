@@ -168,6 +168,50 @@ ap.datguiJson = {
         "Speed": 0.06137960303180161,
         "PointSize": 90
       }
+    },
+    "TestClamp": {
+      "0": {
+        "Channel1Mix": 1,
+        "Hardware": "Grid+zLayer",
+        "S2ClipId": "SinSpiral",
+        "S2Mix": 0.91527326420631,
+        "S2Scale": 0.4325800594622209,
+        "S2HueTint": 0.6780984715894273,
+        "S2Blend": "Lightest",
+        "S1ClipId": "SinCosTan",
+        "S1Mix": 0.7608898220510288,
+        "S1Scale": 0.33904923579471363,
+        "S1HueTint": 1,
+        "Hue": 0.6285611573465021,
+        "HueClamp": 0.39698599411358027,
+        "Sat": 1,
+        "SatClamp": 0,
+        "Speed": 0.059625900088035845,
+        "PointSize": 90
+      }
+    },
+    "Scatter": {
+      "0": {
+        "Channel1Mix": 1,
+        "Hardware": "RanZGrid",
+        "S2ClipId": "SinSpiral",
+        "S2Mix": 0.91527326420631,
+        "S2Scale": 0.4325800594622209,
+        "S2HueTint": 0.6780984715894273,
+        "S2Blend": "Lightest",
+        "S1ClipId": "SinCosTan",
+        "S1Mix": 0.7608898220510288,
+        "S1Scale": 0.33904923579471363,
+        "S1HueTint": 1,
+        "Hue": 0.6065063798957476,
+        "HueClamp": 0.3749312166628258,
+        "Sat": 1,
+        "SatClamp": 0,
+        "Smooth": 0.44308047898565706,
+        "PreAmp": 1,
+        "Speed": 0.059625900088035845,
+        "PointSize": 90
+      }
     }
   },
   "closed": false,
@@ -194,3 +238,4 @@ ap.datguiJson = {
     }
   }
 }
+
