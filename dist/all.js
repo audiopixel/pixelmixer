@@ -175,7 +175,12 @@ function merge(obj1, obj2){
 	return obj3;
 }
 
-
+/*
+* Return the lowest power of two that is big enough to contain x
+*/
+function lowestPowerOfTwo(x) {
+	return Math.pow(2, Math.ceil(Math.log(x)/Math.log(2)));
+}
 /*
 * ************* APPLICATION MANAGER *************** 
 *
@@ -185,8 +190,8 @@ function merge(obj1, obj2){
 
 var AppManager = function (container) {
 
-	this.glWidth;
-	this.glHeight;
+	this.glWidth = 0;
+	this.glHeight = 0;
 
 	this.stats = new Stats();
 	this.stats.domElement.style.position = 'absolute';
@@ -217,7 +222,7 @@ var AppManager = function (container) {
 	this.fragmentShader;
 
 	this.time = 0;
-	this.speed = .06;
+	this.speed = 0.06;
 	this.simSize = 128;
 	this.pixels;
 	this.readPixels = false;
@@ -376,7 +381,7 @@ AppManager.prototype = {
 
 		} );
 
-		var quad = new THREE.Mesh( testPlane, materialScreen );
+		quad = new THREE.Mesh( testPlane, materialScreen );
 		quad.position.x = -900;
 		this.scene.add( quad );
 
@@ -389,7 +394,7 @@ AppManager.prototype = {
 
 		} );
 
-		var quad = new THREE.Mesh( testPlane, materialScreen );
+		quad = new THREE.Mesh( testPlane, materialScreen );
 		quad.position.x = -1200;
 		this.scene.add( quad );
 
@@ -428,7 +433,7 @@ AppManager.prototype = {
 					// for each point push along x, y values to reference correct pixel in u_colorMaps
 					var imageSize = this.simSize; 
 					var tx = (t+1) % imageSize;
-					if(tx == 0){
+					if(tx === 0){
 						tx = imageSize;
 					}
 					var ty = ((t+2) - tx) / imageSize;
@@ -555,7 +560,7 @@ AppManager.prototype = {
 			u_coordsMap: { type: "t", value: this.coordsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
 			u_mapSize: { type: "f", value: this.simSize }
-		}
+		};
 
 		// Generate the source shader from the current loaded channels
 		var sourceShader = ap.channels.generateSourceShader();
@@ -572,7 +577,7 @@ AppManager.prototype = {
 
 		// If the material already exists, transfer over the value of any uniforms that have remained
 		if(this.material){
-			for (var uniform in uniforms) {
+			for (uniform in uniforms) {
 				if(this.material.uniforms[uniform]){
 					uniforms[uniform].value = this.material.uniforms[uniform].value;
 				}
@@ -581,12 +586,12 @@ AppManager.prototype = {
 
 
 		// Internal core shader is merged with the loaded shaders
-		this.fragmentShader = document.getElementById( 'fragment_shader_pass_1' ).textContent;
-		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERS", sourceShader.fragmentMain);
+		this.fragmentShader = ap.MainShader.fragmentShader;
+		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERS", sourceShader.fragmentMain);
 
 		// Add ShaderUtils and uniforms at the top
-		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERFUNCTIONS", sourceShader.fragmentFunctions);
-		this.fragmentShader = this.fragmentShader.replace("//#INCLUDESHADERUTILS", ap.shaders.ShaderUtils + sourceUniforms);
+		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERFUNCTIONS", sourceShader.fragmentFunctions);
+		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERUTILS", ap.shaders.ShaderUtils + sourceUniforms);
 		
 
 		// The main material object has uniforms that can be referenced and updated directly by the UI
@@ -624,7 +629,7 @@ AppManager.prototype = {
 
 	}
 
-}
+};
 /*
  * ************* CHANNEL MANAGER *************** 
  * Handles the state of all Channels running in the Universe.
@@ -746,7 +751,7 @@ ChannelManager.prototype = {
 		var fragmentFunctions = {};
 		var fragmentFunctionOutput = "";
 		var output = "";
-		var fragOutput = ""
+		var fragOutput = "";
 
 		var lastKnownPos = {};
 
@@ -772,7 +777,7 @@ ChannelManager.prototype = {
 					uniforms[pod.address + "_mix"] = { type: "f", value: pod.mix }; // TODO modulation uniforms 
 					uniforms[pod.address + "_blend"] = { type: "f", value: pod.blend };
 
-
+					var fxPod = false;
 					// Set pod position data for use by all the clips in this pod
 					if(pod.clips && pod.clips.length){
 
@@ -781,13 +786,13 @@ ChannelManager.prototype = {
 
 						// Set the resolution (if it's changed) for the next set of nodes to be the current pods position bounding box
 						if(lastKnownPos !== podPos){
-							output += "resolution = vec2(" + podPos.w + ", " + podPos.h + "); \n"
+							output += "resolution = vec2(" + podPos.w + ", " + podPos.h + "); \n";
 							lastKnownPos = podPos;
 
 							// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
 							
-						} output += "ap_xyz.x = ap_xyz2.x - " + podPos.x.toFixed(1) + "; \n"
-							output += "ap_xyz.y = ap_xyz2.y - " + podPos.y.toFixed(1) + "; \n"
+						} output += "ap_xyz.x = ap_xyz2.x - " + podPos.x.toFixed(1) + "; \n";
+							output += "ap_xyz.y = ap_xyz2.y - " + podPos.y.toFixed(1) + "; \n";
 
 						// Declare each clips variables, but we can't declare them more than once so record which ones we have declared already
 						for (var u = 0; u < pod.clips.length; u++) {
@@ -818,8 +823,8 @@ ChannelManager.prototype = {
 						output += "if(ap_xyz2.x >= " + podPos.x.toFixed(1) + " && ap_xyz2.y >= " + podPos.y.toFixed(1) + " && ap_xyz2.x <= " + (podPos.w + podPos.x).toFixed(1) + " && ap_xyz2.y <= " + (podPos.h + podPos.y).toFixed(1) + ") { \n";
 
 
-						var fxPod = true; // If the only clips that are in this pod are fx's then treat pod as a fx output and don't blend
-						for (var u = 0; u < pod.clips.length; u++) {
+						fxPod = true; // If the only clips that are in this pod are fx's then treat pod as a fx output and don't blend
+						for (u = 0; u < pod.clips.length; u++) {
 
 							var clip = pod.clips[u];
 							if(clip){
@@ -908,7 +913,7 @@ ChannelManager.prototype = {
 									output += fragOutput;
 								}
 							}
-						};
+						}
 						
 						// If the clips are not in this pod set color value to 0 unless it's a fx and let the value pass }
 						output += "}";
@@ -948,7 +953,7 @@ ChannelManager.prototype = {
 					output = output.replace(/_pod_/g, pod.address + "_") + "\n";
 				}
 
-			};
+			}
 
 				
 			//  -------------- Channel Mix & Fx --------------
@@ -967,7 +972,7 @@ ChannelManager.prototype = {
 			}
 
 			output = output.replace(/_channel_/g, channel.address + "_") + "\n";
-		};
+		}
 
 		//console.log(uniforms);
 		//console.log(output);
@@ -1027,7 +1032,7 @@ ChannelManager.prototype = {
 		if(!this.podpositions[podPositionId-1]){
 			// If pod position doesn't exist default to the first main pod sized to everything
 			//console.log("Warning: Cannot find pod position (" + podPositionId + "), using default (1).");
-			return this.podpositions[0]
+			return this.podpositions[0];
 		}
 		return this.podpositions[podPositionId-1];
 	},
@@ -1064,7 +1069,7 @@ ChannelManager.prototype = {
 		delete this.channels[channel-1].pods[pod-1].clips;  // TODO optimize: most likely better to not use 'delete'
 	}
 
-}
+};
 
 /*
 * ************* HARDWARE MANAGER *************** 
@@ -1120,15 +1125,15 @@ HardwareManager.prototype = {
 		var _scale = scale || imported.scale; 
 
 		// Add node values to 'ap.ports' for each defined port
-		for(unit in imported.hardwareunit){
+		for(var unit in imported.hardwareunit){
 
 			var _unit = imported.hardwareunit[unit];
 
-			for(port in _unit.ports){
+			for(var port in _unit.ports){
 
 				var _port = _unit.ports[port];
 
-				for(node in _port.nodes){
+				for(var node in _port.nodes){
 
 					var _node = _port.nodes[node];
 
@@ -1180,8 +1185,8 @@ HardwareManager.prototype = {
 				for ( i = 0; i < 24; i ++ ) { 
 
 					var node = {};
-					node.x = ((e * 40) + xS - 650 + xOffset) * .26;
-					node.y = ((i * 40) + yS + yOffset) * .26;
+					node.x = ((e * 40) + xS - 650 + xOffset) * 0.26;
+					node.y = ((i * 40) + yS + yOffset) * 0.26;
 					node.z = (Math.random() * 300) - 150;
 					nodes.push(node);
 				}
@@ -1215,13 +1220,14 @@ HardwareManager.prototype = {
 
 	addTestPortsGrid3: function (portStart, xOffset, yOffset) {
 		var nodes = [];
+		var node = {};
 		// Test using a simple grid of ports (containing nodes): 
 			for ( e = 0; e < 70; e ++ ) { // Simulate a simple node grid for now
 				for ( i = 0; i < 38; i ++ ) { 
 
-					var node = {};
+					node = {};
 					node.x = ((e * 20) - 340 + xOffset);
-					node.y = ((i * 20) + 30 + yOffset);
+					node.y = ((i * 20) + 30 + yOffset) - 1;
 					nodes.push(node);
 				}
 			}
@@ -1234,7 +1240,7 @@ HardwareManager.prototype = {
 
 					if((i+ 2) % 2 == 1 ){
 
-						var node = {};
+						node = {};
 						node.x = ((e * 20) - 340 + xOffset);
 						node.y = ((i * 20) + 30 + yOffset);
 						node.z = 110;
@@ -1251,9 +1257,9 @@ HardwareManager.prototype = {
 
 					if((i - 1) % 3 == 1 && (e - 1) % 2 == 1){
 
-						var node = {};
-						node.x = ((e * 20) - 340 + xOffset);
-						node.y = ((i * 20) + 30 + yOffset);
+						node = {};
+						node.x = ((e * 20) - 340 + xOffset) - 1;
+						node.y = ((i * 20) + 30 + yOffset) - 1;
 						node.z = 210;
 						nodes.push(node);
 					}
@@ -1261,10 +1267,9 @@ HardwareManager.prototype = {
 			}
 			port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
 			ap.ports.setPort(portStart + 2, port);
-
 	}
 
-}
+};
 
 /*
 * ************* PORT MANAGER *************** 
@@ -1312,7 +1317,7 @@ PortManager.prototype = {
 			nodes[i].x += offsetX;
 			nodes[i].y += offsetY;
 			nodes[i].z += offsetZ;
-		};
+		}
 		this.ports[portId-1].nodes = nodes;
 	},
 
@@ -1321,7 +1326,7 @@ PortManager.prototype = {
 		if(!this.ports[portId-1]){ this.ports[portId-1] = {}; }
 		for (var i = 0; i < nodes.length; i++) {
 			nodes[i].z = z;
-		};
+		}
 		this.ports[portId-1].nodes = nodes;
 	},
 
@@ -1361,7 +1366,7 @@ PortManager.prototype = {
 		this.ports = []; // TODO optimize: most likely better to not use 'delete'
 	}
 
-}
+};
 
 /*
 * ************* UI MANAGER *************** 
@@ -1385,6 +1390,35 @@ UiManager.prototype = {
 
 	init: function () {
 
+
+			// -------Temporary: Create some Channels/Pods/Clips for testing----------
+
+			
+			// Let's create some test channels for now (TODO: this should be loaded from current project settings)
+			var mix = 1;
+			var mix2 = 1;
+			var pods = [];
+
+			//pods[3] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Fx)]);
+			//pods[2] = new Pod(3, mix, ap.BLEND.Add, [new Clip(3, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+			pods[1] = new Pod(2, mix, ap.BLEND.Add, [new Clip(3, mix, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+			pods[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+
+			ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
+
+
+			var pods2 = [];
+			pods2[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(16, 1, ap.BLEND.Fx)]);
+
+			ap.channels.setChannel(2, new Channel("Post FX1", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Add, pods2));
+
+			ap.app.updateNodePoints();
+			ap.app.updateMainSourceShader();
+
+
+
+
+
 			// ****** UI ******  // TODO replace dat.gui with react components (or similar) that reflect model: ap.channels 
 
 
@@ -1402,16 +1436,20 @@ UiManager.prototype = {
 				S2Blend:  'Add',
 				S2ClipId:  ap.demoHardware[0],
 				S2Mix:  1,
-				S2Scale:  .7,
+				S2Scale:  0.7,
 				S2HueTint:  1,
 
 				S1Mix:  1,
 				S1ClipId:  ap.demoHardware[0],
-				S1Scale:  .7,
+				S1Scale:  0.7,
 				S1HueTint:  1,
 
 				Hue:  1,
 				Sat:  1,
+				HueClamp:  1,
+				SatClamp:  1,
+				Smooth:  0.5,
+				PreAmp:  1,
 				//Threshold:  1,
 				//Noise:  0,
 
@@ -1419,7 +1457,7 @@ UiManager.prototype = {
 				PointSize: 60,
 				Hardware: ap.demoHardware[0]
 
-			}
+			};
 			
 			// Add preset controls
 			this.gui.remember(this.guiData);
@@ -1441,7 +1479,7 @@ UiManager.prototype = {
 						break;
 					case ap.demoHardware[1]:
 
-						ap.channels.setPodPos(2, { x: -340, y: 30, z: 10, w: 1380, h: 740, d: 1 });
+						ap.channels.setPodPos(2, { x: -339, y: 30, z: 10, w: 1378, h: 738, d: 1 });
 						ap.hardware.addTestPortsGrid3(1, 0, 0);
 						break;
 
@@ -1492,12 +1530,16 @@ UiManager.prototype = {
 			
 			// Post Fx
 			f4.add( this.guiData, "Hue", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p1.value =_in; });
-			f4.add( this.guiData, "Sat", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p2.value =_in; });
+			f4.add( this.guiData, "HueClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p2.value =_in; });
+			f4.add( this.guiData, "Sat", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p3.value =_in; });
+			f4.add( this.guiData, "SatClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p4.value =_in; });
+			f4.add( this.guiData, "Smooth", 0.0, 0.98, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
+			f4.add( this.guiData, "PreAmp", 0.0, 1.0, 0.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
 			//f4.add( this.guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
 			//f4.add( this.guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
 			
 			// Global Settings (temporary for demo)
-			f5.add( this.guiData, "Speed", 0.0, .15, 1.0 ).onChange(function (_in) { ap.app.speed =_in; });
+			f5.add( this.guiData, "Speed", 0.0, 0.15, 1.0 ).onChange(function (_in) { ap.app.speed =_in; });
 			f5.add( this.guiData, "PointSize", 15.0, 90.0, 1.0 ).onChange(function (_in) { ap.app.nodeShaderMaterial.uniforms.u_pointSize.value =_in; });
 			
 			f5.add( { ResetCam:function(){
@@ -1511,7 +1553,7 @@ UiManager.prototype = {
 
 			f2.close();
 			f3.close();
-			f4.close();
+			//f4.close();
 			f5.close();
 
 	},
@@ -1564,7 +1606,7 @@ UiManager.prototype = {
 		updateShader = true;
 	}
 
-}
+};
 
 
 var Channel = function (name, type, mix, blend, pods) {
@@ -1579,7 +1621,7 @@ var Channel = function (name, type, mix, blend, pods) {
 
 Channel.prototype = {
 
-}
+};
 
 
 var Clip = function (clipId, mix, blend) {
@@ -1592,7 +1634,7 @@ var Clip = function (clipId, mix, blend) {
 
 Clip.prototype = {
 
-}
+};
 
 
 var Pod = function (positionId, mix, blend, clips, hardwareGroupMode, hardwareGroupIds) {
@@ -1607,7 +1649,7 @@ var Pod = function (positionId, mix, blend, clips, hardwareGroupMode, hardwareGr
 
 Pod.prototype = {
 
-}
+};
 
 
 var PodPosition = function (x, y, z, width, height, depth) {
@@ -1622,7 +1664,7 @@ var PodPosition = function (x, y, z, width, height, depth) {
 
 PodPosition.prototype = {
 
-}
+};
 
 
 // (String name, int type, String address, int hardwarePort [optional], Array nodes [optional]) 
@@ -1638,7 +1680,7 @@ var Port = function (name, type, address, hardwarePort, nodes) {
 
 Port.prototype = {
 
-}
+};
 
 
 var Shader = function (uniforms, fragmentFunctions, fragmentMain) {
@@ -1651,4 +1693,4 @@ var Shader = function (uniforms, fragmentFunctions, fragmentMain) {
 
 Shader.prototype = {
 
-}
+};

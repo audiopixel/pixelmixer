@@ -9,4 +9,4 @@ var Shader = function (uniforms, fragmentFunctions, fragmentMain) {
 
 Shader.prototype = {
 
-}
+};

@@ -237,5 +237,5 @@ ap.datguiJson = {
       "folders": {}
     }
   }
-}
+};
 

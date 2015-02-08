@@ -70,4 +70,4 @@ ap.shaders.ShaderUtils = [
 	  "  return fract(sin(sn) * c);",
 	"}"
 
-].join("\n")
+].join("\n");

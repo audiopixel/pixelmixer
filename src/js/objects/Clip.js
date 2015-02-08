@@ -9,4 +9,4 @@ var Clip = function (clipId, mix, blend) {
 
 Clip.prototype = {
 
-}
+};

@@ -11,4 +11,4 @@ var Channel = function (name, type, mix, blend, pods) {
 
 Channel.prototype = {
 
-}
+};

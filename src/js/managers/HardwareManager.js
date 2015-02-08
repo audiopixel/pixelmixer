@@ -52,15 +52,15 @@ HardwareManager.prototype = {
 		var _scale = scale || imported.scale; 
 
 		// Add node values to 'ap.ports' for each defined port
-		for(unit in imported.hardwareunit){
+		for(var unit in imported.hardwareunit){
 
 			var _unit = imported.hardwareunit[unit];
 
-			for(port in _unit.ports){
+			for(var port in _unit.ports){
 
 				var _port = _unit.ports[port];
 
-				for(node in _port.nodes){
+				for(var node in _port.nodes){
 
 					var _node = _port.nodes[node];
 
@@ -112,8 +112,8 @@ HardwareManager.prototype = {
 				for ( i = 0; i < 24; i ++ ) { 
 
 					var node = {};
-					node.x = ((e * 40) + xS - 650 + xOffset) * .26;
-					node.y = ((i * 40) + yS + yOffset) * .26;
+					node.x = ((e * 40) + xS - 650 + xOffset) * 0.26;
+					node.y = ((i * 40) + yS + yOffset) * 0.26;
 					node.z = (Math.random() * 300) - 150;
 					nodes.push(node);
 				}
@@ -147,11 +147,12 @@ HardwareManager.prototype = {
 
 	addTestPortsGrid3: function (portStart, xOffset, yOffset) {
 		var nodes = [];
+		var node = {};
 		// Test using a simple grid of ports (containing nodes): 
 			for ( e = 0; e < 70; e ++ ) { // Simulate a simple node grid for now
 				for ( i = 0; i < 38; i ++ ) { 
 
-					var node = {};
+					node = {};
 					node.x = ((e * 20) - 340 + xOffset);
 					node.y = ((i * 20) + 30 + yOffset) - 1;
 					nodes.push(node);
@@ -166,7 +167,7 @@ HardwareManager.prototype = {
 
 					if((i+ 2) % 2 == 1 ){
 
-						var node = {};
+						node = {};
 						node.x = ((e * 20) - 340 + xOffset);
 						node.y = ((i * 20) + 30 + yOffset);
 						node.z = 110;
@@ -183,7 +184,7 @@ HardwareManager.prototype = {
 
 					if((i - 1) % 3 == 1 && (e - 1) % 2 == 1){
 
-						var node = {};
+						node = {};
 						node.x = ((e * 20) - 340 + xOffset) - 1;
 						node.y = ((i * 20) + 30 + yOffset) - 1;
 						node.z = 210;
@@ -193,7 +194,6 @@ HardwareManager.prototype = {
 			}
 			port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
 			ap.ports.setPort(portStart + 2, port);
-
 	}
 
-}
+};

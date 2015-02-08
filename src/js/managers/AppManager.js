@@ -7,8 +7,8 @@
 
 var AppManager = function (container) {
 
-	this.glWidth;
-	this.glHeight;
+	this.glWidth = 0;
+	this.glHeight = 0;
 
 	this.stats = new Stats();
 	this.stats.domElement.style.position = 'absolute';
@@ -39,7 +39,7 @@ var AppManager = function (container) {
 	this.fragmentShader;
 
 	this.time = 0;
-	this.speed = .06;
+	this.speed = 0.06;
 	this.simSize = 128;
 	this.pixels;
 	this.readPixels = false;
@@ -198,7 +198,7 @@ AppManager.prototype = {
 
 		} );
 
-		var quad = new THREE.Mesh( testPlane, materialScreen );
+		quad = new THREE.Mesh( testPlane, materialScreen );
 		quad.position.x = -900;
 		this.scene.add( quad );
 
@@ -211,7 +211,7 @@ AppManager.prototype = {
 
 		} );
 
-		var quad = new THREE.Mesh( testPlane, materialScreen );
+		quad = new THREE.Mesh( testPlane, materialScreen );
 		quad.position.x = -1200;
 		this.scene.add( quad );
 
@@ -250,7 +250,7 @@ AppManager.prototype = {
 					// for each point push along x, y values to reference correct pixel in u_colorMaps
 					var imageSize = this.simSize; 
 					var tx = (t+1) % imageSize;
-					if(tx == 0){
+					if(tx === 0){
 						tx = imageSize;
 					}
 					var ty = ((t+2) - tx) / imageSize;
@@ -377,7 +377,7 @@ AppManager.prototype = {
 			u_coordsMap: { type: "t", value: this.coordsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
 			u_mapSize: { type: "f", value: this.simSize }
-		}
+		};
 
 		// Generate the source shader from the current loaded channels
 		var sourceShader = ap.channels.generateSourceShader();
@@ -394,7 +394,7 @@ AppManager.prototype = {
 
 		// If the material already exists, transfer over the value of any uniforms that have remained
 		if(this.material){
-			for (var uniform in uniforms) {
+			for (uniform in uniforms) {
 				if(this.material.uniforms[uniform]){
 					uniforms[uniform].value = this.material.uniforms[uniform].value;
 				}
@@ -446,4 +446,4 @@ AppManager.prototype = {
 
 	}
 
-}
+};

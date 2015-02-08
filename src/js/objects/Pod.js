@@ -11,4 +11,4 @@ var Pod = function (positionId, mix, blend, clips, hardwareGroupMode, hardwareGr
 
 Pod.prototype = {
 
-}
+};

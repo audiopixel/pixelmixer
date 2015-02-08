@@ -34,8 +34,8 @@ gulp.task('scripts', function() {
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-    gulp.watch('js/*.js', ['lint', 'scripts']);
-    gulp.watch('import/*.js', ['lint', 'scripts']);
+    gulp.watch('js/**/*.js', ['lint', 'scripts']);
+    gulp.watch('import/**/*.js', ['lint', 'scripts']);
     //gulp.watch('scss/*.scss', ['sass']);
 });
 

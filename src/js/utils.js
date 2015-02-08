@@ -45,3 +45,9 @@ function merge(obj1, obj2){
 	return obj3;
 }
 
+/*
+* Return the lowest power of two that is big enough to contain x
+*/
+function lowestPowerOfTwo(x) {
+	return Math.pow(2, Math.ceil(Math.log(x)/Math.log(2)));
+}

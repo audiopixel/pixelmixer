@@ -66,19 +66,19 @@ UiManager.prototype = {
 				S2Blend:  'Add',
 				S2ClipId:  ap.demoHardware[0],
 				S2Mix:  1,
-				S2Scale:  .7,
+				S2Scale:  0.7,
 				S2HueTint:  1,
 
 				S1Mix:  1,
 				S1ClipId:  ap.demoHardware[0],
-				S1Scale:  .7,
+				S1Scale:  0.7,
 				S1HueTint:  1,
 
 				Hue:  1,
 				Sat:  1,
 				HueClamp:  1,
 				SatClamp:  1,
-				Smooth:  .5,
+				Smooth:  0.5,
 				PreAmp:  1,
 				//Threshold:  1,
 				//Noise:  0,
@@ -87,7 +87,7 @@ UiManager.prototype = {
 				PointSize: 60,
 				Hardware: ap.demoHardware[0]
 
-			}
+			};
 			
 			// Add preset controls
 			this.gui.remember(this.guiData);
@@ -163,13 +163,13 @@ UiManager.prototype = {
 			f4.add( this.guiData, "HueClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p2.value =_in; });
 			f4.add( this.guiData, "Sat", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p3.value =_in; });
 			f4.add( this.guiData, "SatClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p4.value =_in; });
-			f4.add( this.guiData, "Smooth", 0.0, .98, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
+			f4.add( this.guiData, "Smooth", 0.0, 0.98, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
 			f4.add( this.guiData, "PreAmp", 0.0, 1.0, 0.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
 			//f4.add( this.guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
 			//f4.add( this.guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
 			
 			// Global Settings (temporary for demo)
-			f5.add( this.guiData, "Speed", 0.0, .15, 1.0 ).onChange(function (_in) { ap.app.speed =_in; });
+			f5.add( this.guiData, "Speed", 0.0, 0.15, 1.0 ).onChange(function (_in) { ap.app.speed =_in; });
 			f5.add( this.guiData, "PointSize", 15.0, 90.0, 1.0 ).onChange(function (_in) { ap.app.nodeShaderMaterial.uniforms.u_pointSize.value =_in; });
 			
 			f5.add( { ResetCam:function(){
@@ -236,4 +236,4 @@ UiManager.prototype = {
 		updateShader = true;
 	}
 
-}
+};

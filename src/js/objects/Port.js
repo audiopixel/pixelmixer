@@ -12,4 +12,4 @@ var Port = function (name, type, address, hardwarePort, nodes) {
 
 Port.prototype = {
 
-}
+};

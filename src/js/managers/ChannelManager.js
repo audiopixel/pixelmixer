@@ -119,7 +119,7 @@ ChannelManager.prototype = {
 		var fragmentFunctions = {};
 		var fragmentFunctionOutput = "";
 		var output = "";
-		var fragOutput = ""
+		var fragOutput = "";
 
 		var lastKnownPos = {};
 
@@ -145,7 +145,7 @@ ChannelManager.prototype = {
 					uniforms[pod.address + "_mix"] = { type: "f", value: pod.mix }; // TODO modulation uniforms 
 					uniforms[pod.address + "_blend"] = { type: "f", value: pod.blend };
 
-
+					var fxPod = false;
 					// Set pod position data for use by all the clips in this pod
 					if(pod.clips && pod.clips.length){
 
@@ -154,13 +154,13 @@ ChannelManager.prototype = {
 
 						// Set the resolution (if it's changed) for the next set of nodes to be the current pods position bounding box
 						if(lastKnownPos !== podPos){
-							output += "resolution = vec2(" + podPos.w + ", " + podPos.h + "); \n"
+							output += "resolution = vec2(" + podPos.w + ", " + podPos.h + "); \n";
 							lastKnownPos = podPos;
 
 							// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
 							
-						} output += "ap_xyz.x = ap_xyz2.x - " + podPos.x.toFixed(1) + "; \n"
-							output += "ap_xyz.y = ap_xyz2.y - " + podPos.y.toFixed(1) + "; \n"
+						} output += "ap_xyz.x = ap_xyz2.x - " + podPos.x.toFixed(1) + "; \n";
+							output += "ap_xyz.y = ap_xyz2.y - " + podPos.y.toFixed(1) + "; \n";
 
 						// Declare each clips variables, but we can't declare them more than once so record which ones we have declared already
 						for (var u = 0; u < pod.clips.length; u++) {
@@ -191,8 +191,8 @@ ChannelManager.prototype = {
 						output += "if(ap_xyz2.x >= " + podPos.x.toFixed(1) + " && ap_xyz2.y >= " + podPos.y.toFixed(1) + " && ap_xyz2.x <= " + (podPos.w + podPos.x).toFixed(1) + " && ap_xyz2.y <= " + (podPos.h + podPos.y).toFixed(1) + ") { \n";
 
 
-						var fxPod = true; // If the only clips that are in this pod are fx's then treat pod as a fx output and don't blend
-						for (var u = 0; u < pod.clips.length; u++) {
+						fxPod = true; // If the only clips that are in this pod are fx's then treat pod as a fx output and don't blend
+						for (u = 0; u < pod.clips.length; u++) {
 
 							var clip = pod.clips[u];
 							if(clip){
@@ -281,7 +281,7 @@ ChannelManager.prototype = {
 									output += fragOutput;
 								}
 							}
-						};
+						}
 						
 						// If the clips are not in this pod set color value to 0 unless it's a fx and let the value pass }
 						output += "}";
@@ -321,7 +321,7 @@ ChannelManager.prototype = {
 					output = output.replace(/_pod_/g, pod.address + "_") + "\n";
 				}
 
-			};
+			}
 
 				
 			//  -------------- Channel Mix & Fx --------------
@@ -340,7 +340,7 @@ ChannelManager.prototype = {
 			}
 
 			output = output.replace(/_channel_/g, channel.address + "_") + "\n";
-		};
+		}
 
 		//console.log(uniforms);
 		//console.log(output);
@@ -400,7 +400,7 @@ ChannelManager.prototype = {
 		if(!this.podpositions[podPositionId-1]){
 			// If pod position doesn't exist default to the first main pod sized to everything
 			//console.log("Warning: Cannot find pod position (" + podPositionId + "), using default (1).");
-			return this.podpositions[0]
+			return this.podpositions[0];
 		}
 		return this.podpositions[podPositionId-1];
 	},
@@ -437,4 +437,4 @@ ChannelManager.prototype = {
 		delete this.channels[channel-1].pods[pod-1].clips;  // TODO optimize: most likely better to not use 'delete'
 	}
 
-}
+};

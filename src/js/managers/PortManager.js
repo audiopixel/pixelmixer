@@ -44,7 +44,7 @@ PortManager.prototype = {
 			nodes[i].x += offsetX;
 			nodes[i].y += offsetY;
 			nodes[i].z += offsetZ;
-		};
+		}
 		this.ports[portId-1].nodes = nodes;
 	},
 
@@ -53,7 +53,7 @@ PortManager.prototype = {
 		if(!this.ports[portId-1]){ this.ports[portId-1] = {}; }
 		for (var i = 0; i < nodes.length; i++) {
 			nodes[i].z = z;
-		};
+		}
 		this.ports[portId-1].nodes = nodes;
 	},
 
@@ -93,4 +93,4 @@ PortManager.prototype = {
 		this.ports = []; // TODO optimize: most likely better to not use 'delete'
 	}
 
-}
+};

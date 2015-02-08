@@ -11,4 +11,4 @@ var PodPosition = function (x, y, z, width, height, depth) {
 
 PodPosition.prototype = {
 
-}
+};
