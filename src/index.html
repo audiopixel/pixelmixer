@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>AP3.0 Engine Demo</title>
+		<title>AP3.0 Technical Demo</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link href="css/main.css" rel="stylesheet" />
@@ -20,6 +20,7 @@
 		<script src="js/managers/PortManager.js"></script>
 		<script src="js/managers/HardwareManager.js"></script>
 		<script src="js/managers/ChannelManager.js"></script>
+		<script src="js/managers/UiManager.js"></script>
 		<script src="js/objects/Port.js"></script>
 		<script src="js/objects/Channel.js"></script>
 		<script src="js/objects/Pod.js"></script>
@@ -30,6 +31,7 @@
 		<script src="import/shaders/core/ShaderUtils.js"></script>
 		<script src="import/shaders/core/SimpleTextureShader.js"></script>
 		<script src="import/shaders/core/NodeShader.js"></script>
+		<script src="import/datGuiPresets.js"></script>
 
 
 		<script src="import/shaders/clips/SolidColorClip.js"></script>
@@ -61,7 +63,6 @@
 
 
 		var frameCount = 0;
-		var gui = new dat.GUI();
 		var updateShader;
 
 
@@ -84,11 +85,13 @@
 			ap.channels = new ChannelManager();
 			ap.app = new AppManager(document.getElementById( 'container' ));
 			ap.app.setSize(window.innerWidth, window.innerHeight);
+			ap.ui = new UiManager();
 
 			ap.ports.init();
 			ap.hardware.init();
 			ap.channels.init();
 			ap.app.init();
+			ap.ui.init();
 
 
 
@@ -136,6 +139,7 @@
 					ap.ports.update();
 					ap.hardware.update();
 					ap.channels.update();
+					ap.ui.update();
 
 				}else{
 
@@ -154,121 +158,7 @@
 
 			animate();
 
-			// ****** UI ******
 
-			// TODO replace dat.gui with react components (or similar) that reflect model: ap.channels 
-
-
-
-			var guiData  = {
-				Channel1Mix:  1,
-				/*
-				S3Blend:  'Add',
-				S3ClipId:  0,
-				S3Mix:  1,
-				S3Scale:  1,
-				Hue3Mix:  1,
-				*/
-				S2Blend:  'Add',
-				S2ClipId:  ap.demoHardware[0],
-				S2Mix:  1,
-				S2Scale:  .7,
-				S2HueTint:  1,
-
-				S1Mix:  1,
-				S1ClipId:  ap.demoHardware[0],
-				S1Scale:  .7,
-				S1HueTint:  1,
-
-				Hue:  1,
-				Sat:  1,
-				Threshold:  1,
-				Noise:  0,
-
-				Speed: ap.app.speed,
-				PointSize: 60,
-				Hardware: ap.demoHardware[0]
-
-			}
-			
-			gui.remember(guiData);
-			gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_mix.value = guiData.Channel1Mix; });
-			
-
-			gui.add( guiData, 'Hardware', ap.demoHardware).onChange(function () {
-
-				ap.ports.clearAllPorts();
-
-				switch(guiData.Hardware){
-					case ap.demoHardware[0]:
-
-						ap.channels.setPodPos(2, new PodPosition(-190, 140, 0, 1070, 575, 1));
-						ap.hardware.importNodes(ap.imported, 1, 0, 0, 0);
-						break;
-					case ap.demoHardware[1]:
-
-						ap.channels.setPodPos(2, { x: -340, y: 30, z: 10, w: 1380, h: 740, d: 1 });
-						ap.hardware.addTestPortsGrid3(1, 0, 0);
-						break;
-
-					case ap.demoHardware[2]:
-
-						ap.channels.setPodPos(2, new PodPosition(-190, 286, 0, 1070, 242, 1));
-						ap.hardware.addTestPortsGrid(1, 0, 0);
-						break;
-
-
-					default: 
-						ap.hardware.importNodes(ap.imported, 1, 0, 0, 0);
-					break;
-				}
-					ap.app.updateNodePoints(); // only need to call this when we add nodes after init
-					ap.app.updateMainSourceShader();
-
-					updateShader = true;
-
-			});
-
-			//var f1 = gui.addFolder('Shader 1'); 		f1.open();
-			var f2 = gui.addFolder('Shader 1'); 		f2.open();
-			var f3 = gui.addFolder('Shader 2'); 	//	f3.open();
-			var f4 = gui.addFolder('Post FX'); 		//	f4.open();
-			var f5 = gui.addFolder('Settings'); 	//	f5.open();
-
-			/*
-			// Pod 3
-			f1.add( guiData, 'S3Blend', ap.BLENDS )		.onChange(function () { uniformBlendChange( guiData.S3Blend, "_1_3"); });
-			f1.add( guiData, 'S3ClipId', ap.demoPresetNames).onChange(function () { uniformClipTypeChange( guiData.S3ClipId, 1, 3, 1 ); });
-			f1.add( guiData, "S3Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_1_mix.value = guiData.S3Mix; });
-			f1.add( guiData, "S3Scale", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_1_p1.value = guiData.S3Scale; });
-			f1.add( guiData, "Hue3Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_2_p1.value = guiData.Hue3Mix; });
-			*/
-			// Pod 2
-			f2.add( guiData, 'S2ClipId', ap.demoPresetNames).onChange(function () { uniformClipTypeChange( guiData.S2ClipId, 1, 2, 1 ); });
-			f2.add( guiData, "S2Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_1_mix.value = guiData.S2Mix; });
-			f2.add( guiData, "S2Scale", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_1_p1.value = guiData.S2Scale; });
-			f2.add( guiData, "S2HueTint", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_2_2_p1.value = guiData.S2HueTint; });
-			f2.add( guiData, 'S2Blend', ap.BLENDS )		.onChange(function () { uniformBlendChange( guiData.S2Blend, "_1_2"); });
-			
-			// Pod 1
-			f3.add( guiData, 'S1ClipId', ap.demoPresetNames).onChange(function () { uniformClipTypeChange( guiData.S1ClipId, 1, 1, 1 ); });
-			f3.add( guiData, "S1Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_1_mix.value = guiData.S1Mix; });
-			f3.add( guiData, "S1Scale", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_1_p1.value = guiData.S1Scale; });
-			f3.add( guiData, "S1HueTint", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_1_2_p1.value = guiData.S1HueTint; });
-			
-			// Post Fx
-			f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._2_1_1_p1.value = guiData.Hue; });
-			f4.add( guiData, "Sat", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._2_1_1_p2.value = guiData.Sat; });
-			f4.add( guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function () { ap.app.material.uniforms._2_1_1_p5.value = guiData.Threshold; });
-			f4.add( guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function () { ap.app.material.uniforms._2_1_1_p6.value = guiData.Noise; });
-			
-			// Global Settings (temporary for demo)
-			f5.add( guiData, "Speed", 0.0, .15, 1.0 ).onChange(function () { ap.app.speed = guiData.Speed; });
-			f5.add( guiData, "PointSize", 15.0, 90.0, 1.0 ).onChange(function () { ap.app.nodeShaderMaterial.uniforms.u_pointSize.value = guiData.PointSize; });
-			
-			f5.add( { ResetCam:function(){
-				ap.app.controls.reset();
-			} } ,'ResetCam');
 
 
 			// ****** Event Handlers ****** 
@@ -284,49 +174,9 @@
 						break;
 
 
-		// TESTING
-		/*
-					case 46: // delete
+				// TESTING
 
-						ap.app.pointCloud.parent.remove( ap.app.pointCloud );
-
-						console.log('delete');
-
-						break;
-
-			*/		case 16: // shift
-/*
-						//ap.app.updateNodePoints(); // only need to call this when we add nodes after init
-						//ap.app.updateMainSourceShader();
-
-
-						//ap.app.addPlanesForTesting(); 
-
-						console.log("doitshift");
-						ap.channels.clearAllPodsInChannel(1);
-						updateShader = true;
-
-						break;
-
-					case 17: // ctrl
-
-					// lets test changing the clips in a channel at run time
-						//var mix = 1;
-						//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(1, mix, ap.BLEND.Add), new Clip(2, mix, ap.BLEND.Add)])];
-						//var pods = [new Pod(1, mix, ap.BLEND.Add, [new Clip(4, mix, ap.BLEND.Add)])];
-						//ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
-
-
-						//ap.channels.setClip(1, 4, 1, new Clip(1, 1, ap.BLEND.Add));
-						//ap.channels.deleteClip(1, 2, 1);
-						//ap.channels.deleteAllClipsInPod(1, 2);
-
-						uniformClipTypeChange(1, 1, 2, 1) 
-
-						console.log("doit");
-						updateShader = true;
-
-		*/
+					case 16: // shift
 						break;
 				}
 

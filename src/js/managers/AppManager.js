@@ -308,7 +308,7 @@ AppManager.prototype = {
 		// We always set the first Pod Position as the bounding box that fits all nodes
 		// TODO add z depth
 		ap.channels.setPodPos(1, new PodPosition(minx, miny, 0, maxx - minx, maxy - miny, 1));
-		console.log(new PodPosition(minx, miny, 0, maxx - minx, maxy - miny, 1));
+		//console.log(new PodPosition(minx, miny, 0, maxx - minx, maxy - miny, 1));
 
 		// Testing on pod pos #2
 		//ap.channels.setPodPos(2, new PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));

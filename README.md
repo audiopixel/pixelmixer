@@ -67,21 +67,20 @@ A channel can contain its own effects, as well as the mixer having master post e
 
 ### Phase II ###
 
-* Modulations driven by Audio and other input(s)
-* Write clips / shaders with inline text editor
+* Audio and Modulation inputs
+* Inline text editor for writing shaders / clips
 * Dynamic UI for any amount of channels / clips (React components)
 * Create and save multiple index / position maps
 * Sync from online content to offline mode
 * Video support (HTML5)
-* Images / Animated GIFs / Text with all system fonts
 * Broadcast UDP via Chrome App
 
 ### Phase III ###
 
 * Native OS App Layer (OpenGL with direct OS performance capabilites)
+* Broadcast OSC, DMX
 * Video support (direct file access)
 * Receive MIDI events and OSC API input
-* Broadcast OSC, DMX
 * Save and share online projects / presets / shaders
 * Sync online content to offline native OS app
 * Timeline Recorder
@@ -94,31 +93,31 @@ A channel can contain its own effects, as well as the mixer having master post e
 ## AP3 Shader vs Vanilla GLSL Shader ##
 The AudioPixel platform extends the standard GLSL fragment shader capabilities so that additional functionality can be achieved.
 
-| Feature | GLSL | AP3 |
+| Feature | AP3 | GLSL |
 |----------------- | -------------------- | --------------------- |
 | GPU accelerated | x | x |
 | X,Y coordinates | x | x |
 | Attributes and uniforms | x | x |
-| Index value | | x |
-| Z coordinate | | x |
-| All node coordinates | | x |
-| Multiple defined coordinates | | x |
-| Previous node color value | | x |
-| All previous color values | | x |
-| Random values | | x |
-| Resized & blended in 3D space | | x |
-| Multiple instances of shaders | | x |
-| Accompanying init & update methods | | x |
-| Hardware port / light unit info | | x |
+| Z coordinate | x | |
+| Index value | x | |
+| Resized & blended in 3D space | x | |
+| Multiple instances of shaders | x | |
+| Multiple coordinates per pixel | x | |
+| Last color value per pixel | x | |
+| Last color values for all pixels | x | |
+| Accompanying init & update methods | x | |
+| Random values | x | |
+| Hardware port / light unit info | x | |
 
 
 ---
 
 ## How to Contribute ##
 
-Jump right in. If you have access to this repo I would feel honored to have you as a contributor on this project.
+If you have access to this repo I would feel honored to have you as a contributor.
 
-The next few weeks are more core construction, but after that it's going to be quite easy to add in managers, shaders/clips, presets, ...
+Phase I is nearly completed, and the core engine is mostly all intact.
 
-For now feel free to push to master branch for any small changes.
-Large changes or additions are best as branches.
+The codebase is documented tagged with "TODO" comments, if you see anything that interested you, or think it should be done differently go for it. 
+
+Feel free to push to master branch for any small changes. Large changes or additions are best as branches.
