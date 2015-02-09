@@ -22,7 +22,7 @@ ap.clips.HueFxClip = {
 
 		"p1": { value: 1.0, desc: "hue" },
 		"p2": { value: 1.0, desc: "hueClamp" },
-		"p3": { value: 0.0, desc: "sat" },
+		"p3": { value: 1.0, desc: "sat" },
 		"p4": { value: 1.0, desc: "satClamp" },
 		"p5": { value: 0.5, desc: "smooth" },
 		"p6": { value: 0.0, desc: "preamp" }

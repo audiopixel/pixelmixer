@@ -39,7 +39,7 @@ var AppManager = function (container) {
 	this.fragmentShader;
 
 	this.time = 0;
-	this.speed = 0.06;
+	this.speed = 0.045;
 	this.simSize = 128;
 	this.pixels;
 	this.readPixels = false;
@@ -74,8 +74,8 @@ AppManager.prototype = {
 		this.container.appendChild( this.stats.domElement );
 
 		this.scene = new THREE.Scene();
-		this.camera = new THREE.PerspectiveCamera( 30, this.glWidth / this.glHeight, 1, 10000 );
-		this.camera.position.z = 1500;
+		this.camera = new THREE.PerspectiveCamera( 30, this.glWidth / this.glHeight, 1, 100000 );
+		this.camera.position.z = 2000;
 		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement);
 
 		this.geometry = new THREE.Geometry();
@@ -108,7 +108,7 @@ AppManager.prototype = {
 
 	update: function () {
 
-		this.time += this.speed;
+		this.time += (this.speed) * .7;
 		this.stats.update();
 
 

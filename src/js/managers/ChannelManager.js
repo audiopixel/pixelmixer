@@ -284,14 +284,14 @@ ChannelManager.prototype = {
 						}
 						
 						// If the clips are not in this pod set color value to 0 unless it's a fx and let the value pass }
-						output += "}";
+						output += "}";output += " else{ ap_rgb = ap_p; } \n";
 
 						if(fxPod){
 							// If this is an effects pod don't change values for anything outside the bounding box
-							output += " else{ ap_rgb = ap_p; } \n";
+							//output += " else{ ap_rgb = ap_p; } \n";
 						}else{
 							// Otherwise clear any values that are outside the bounding box
-							output += " else{ ap_rgb = vec3(0.0);} \n";
+							//output += " else{ ap_rgb = vec3(0.0);} \n";
 						}
 					}
 

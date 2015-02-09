@@ -68,63 +68,7 @@ ap.HARDWAREGROUP_EXCLUDE = 2;
 
 
 // Temporary Preset Management // TODO dynamic clip loading system
-ap.demoPresets = [0,2,3,8,10,12,13,11,9,15,6,14,7];
-ap.demoPresetNames = ["OFF", "SolidColor", "TestFrame", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
-"SinSpiral", "SineParticles", "DiSinSwirl", "Water", "HexifyRadial", "SinCosTan"];
+ap.demoClipNames = ["OFF", "SolidColor", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
+"SinSpiral", "SineParticles", "DiSinSwirl", "HexifyRadial", "SinCosTan"];
 
 ap.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
-
-
-/*
-
-0
-OFF
-
-2
-SolidColorClip
-
-3
-TestFrameClip
-
-8
-ColorSineBar
-
-10
-ColorSwirlsClip
-
-12
-LineSinSpiral
-
-13
-SimpleSwirlClip
-
-11
-SinSpiralClip
-
-9
-SineParticlesClip
-
-15
-DiSinSwirlClip
-
-5
-WaterClip
-
-14
-HexifyWashClip
-
-7
-SwooshClip
-
---
-
-16
-HueFxClip
-
-*******************
-
-5
-GreyscaleFx
-
-
-*/

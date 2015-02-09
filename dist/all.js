@@ -68,66 +68,11 @@ ap.HARDWAREGROUP_EXCLUDE = 2;
 
 
 // Temporary Preset Management // TODO dynamic clip loading system
-ap.demoPresets = [0,2,3,8,10,12,13,11,9,15,6,14,7];
-ap.demoPresetNames = ["OFF", "SolidColor", "TestFrame", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
-"SinSpiral", "SineParticles", "DiSinSwirl", "Water", "HexifyRadial", "SinCosTan"];
+ap.demoClipNames = ["OFF", "SolidColor", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
+"SinSpiral", "SineParticles", "DiSinSwirl", "HexifyRadial", "SinCosTan"];
 
 ap.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
 
-
-/*
-
-0
-OFF
-
-2
-SolidColorClip
-
-3
-TestFrameClip
-
-8
-ColorSineBar
-
-10
-ColorSwirlsClip
-
-12
-LineSinSpiral
-
-13
-SimpleSwirlClip
-
-11
-SinSpiralClip
-
-9
-SineParticlesClip
-
-15
-DiSinSwirlClip
-
-5
-WaterClip
-
-14
-HexifyWashClip
-
-7
-SwooshClip
-
---
-
-16
-HueFxClip
-
-*******************
-
-5
-GreyscaleFx
-
-
-*/
 
 function getVariableTypeFromShorthand(shorthand){
 	var type;
@@ -222,7 +167,7 @@ var AppManager = function (container) {
 	this.fragmentShader;
 
 	this.time = 0;
-	this.speed = 0.06;
+	this.speed = 0.045;
 	this.simSize = 128;
 	this.pixels;
 	this.readPixels = false;
@@ -257,8 +202,8 @@ AppManager.prototype = {
 		this.container.appendChild( this.stats.domElement );
 
 		this.scene = new THREE.Scene();
-		this.camera = new THREE.PerspectiveCamera( 30, this.glWidth / this.glHeight, 1, 10000 );
-		this.camera.position.z = 1500;
+		this.camera = new THREE.PerspectiveCamera( 30, this.glWidth / this.glHeight, 1, 100000 );
+		this.camera.position.z = 2000;
 		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement);
 
 		this.geometry = new THREE.Geometry();
@@ -291,7 +236,7 @@ AppManager.prototype = {
 
 	update: function () {
 
-		this.time += this.speed;
+		this.time += (this.speed) * .7;
 		this.stats.update();
 
 
@@ -916,14 +861,14 @@ ChannelManager.prototype = {
 						}
 						
 						// If the clips are not in this pod set color value to 0 unless it's a fx and let the value pass }
-						output += "}";
+						output += "}";output += " else{ ap_rgb = ap_p; } \n";
 
 						if(fxPod){
 							// If this is an effects pod don't change values for anything outside the bounding box
-							output += " else{ ap_rgb = ap_p; } \n";
+							//output += " else{ ap_rgb = ap_p; } \n";
 						}else{
 							// Otherwise clear any values that are outside the bounding box
-							output += " else{ ap_rgb = vec3(0.0);} \n";
+							//output += " else{ ap_rgb = vec3(0.0);} \n";
 						}
 					}
 
@@ -1381,7 +1326,7 @@ var UiManager = function () {
 
 	this.gui = new dat.GUI({
 		load: ap.datguiJson,
-		preset: 'Test'
+		preset: 'ApHLineBar'
 	});
 
 };
@@ -1401,8 +1346,8 @@ UiManager.prototype = {
 
 			//pods[3] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Fx)]);
 			//pods[2] = new Pod(3, mix, ap.BLEND.Add, [new Clip(3, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
-			pods[1] = new Pod(2, mix, ap.BLEND.Add, [new Clip(3, mix, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
-			pods[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+			pods[1] = new Pod(2, mix, ap.BLEND.LinearLight, [new Clip(12, mix, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+			pods[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(8, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
 
 			ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
 
@@ -1421,8 +1366,6 @@ UiManager.prototype = {
 
 			// ****** UI ******  // TODO replace dat.gui with react components (or similar) that reflect model: ap.channels 
 
-
-
 			// The list of state that the UI is representing (V) and setting (C)
 			this.guiData  = {
 				Channel1Mix:  1,
@@ -1433,19 +1376,19 @@ UiManager.prototype = {
 				S3Scale:  1,
 				Hue3Mix:  1,
 				*/
-				S2Blend:  'Add',
-				S2ClipId:  ap.demoHardware[0],
+				S2Blend:  "LinearLight",
+				S2ClipId:  ap.demoClipNames[5],
 				S2Mix:  1,
 				S2Scale:  0.7,
 				S2HueTint:  1,
 
 				S1Mix:  1,
-				S1ClipId:  ap.demoHardware[0],
+				S1ClipId:  ap.demoClipNames[3],
 				S1Scale:  0.7,
 				S1HueTint:  1,
 
 				Hue:  1,
-				Sat:  1,
+				Saturation:  1,
 				HueClamp:  1,
 				SatClamp:  1,
 				Smooth:  0.5,
@@ -1454,7 +1397,7 @@ UiManager.prototype = {
 				//Noise:  0,
 
 				Speed: ap.app.speed,
-				PointSize: 60,
+				PointSize: 80,
 				Hardware: ap.demoHardware[0]
 
 			};
@@ -1465,9 +1408,55 @@ UiManager.prototype = {
 
 			// =========Event listeners===============
 
+
 			this.gui.add( this.guiData, "Channel1Mix", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_mix.value = _in; });
 			
-			this.gui.add( this.guiData, 'Hardware', ap.demoHardware).onChange(function (_in) {
+			this.gui.add( { SnapToFront:function(){
+				ap.app.controls.reset();
+				f2.close();
+				f3.close();
+				f5.close();
+			} } ,'SnapToFront');
+
+			//var f1 = gui.addFolder('Shader 1'); 		f1.open();
+			var f2 = this.gui.addFolder('Shader 1'); 	//	f2.open();
+			var f3 = this.gui.addFolder('Shader 2'); 	//	f3.open();
+			var f4 = this.gui.addFolder('Post FX'); 		//	f4.open();
+			var f5 = this.gui.addFolder('Settings'); 	//	f5.open();
+
+			/*
+			// Pod 3
+			f1.add( guiData, 'S3Blend', ap.BLENDS )		.onChange(function () { uniformBlendChange( guiData.S3Blend, "_1_3"); });
+			f1.add( guiData, 'S3ClipId', ap.demoClipNames).onChange(function () { uniformClipTypeChange( guiData.S3ClipId, 1, 3, 1 ); });
+			f1.add( guiData, "S3Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_1_mix.value = guiData.S3Mix; });
+			f1.add( guiData, "S3Scale", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_1_p1.value = guiData.S3Scale; });
+			f1.add( guiData, "Hue3Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_2_p1.value = guiData.Hue3Mix; });
+			*/
+			// Pod 2
+			f2.add( this.guiData, 'S2ClipId', ap.demoClipNames).onChange(function (_in) { ap.ui.uniformClipTypeChange(_in, 1, 2, 1 ); });
+			f2.add( this.guiData, "S2Mix", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_2_1_mix.value =_in; });
+			f2.add( this.guiData, "S2Scale", 0.1, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_2_1_p1.value =_in; });
+			f2.add( this.guiData, "S2HueTint", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_2_2_p1.value =_in; });
+			f2.add( this.guiData, 'S2Blend', ap.BLENDS )		.onChange(function (_in) { ap.ui.uniformBlendChange(_in, "_1_2"); });
+			
+			// Pod 1
+			f3.add( this.guiData, 'S1ClipId', ap.demoClipNames).onChange(function (_in) { ap.ui.uniformClipTypeChange(_in, 1, 1, 1 ); });
+			f3.add( this.guiData, "S1Mix", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_1_1_mix.value =_in; });
+			f3.add( this.guiData, "S1Scale", 0.1, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_1_1_p1.value =_in; });
+			f3.add( this.guiData, "S1HueTint", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_1_2_p1.value =_in; });
+			
+			// Post Fx
+			f4.add( this.guiData, "Hue", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p1.value =_in; });
+			f4.add( this.guiData, "HueClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p2.value =_in; });
+			f4.add( this.guiData, "Saturation", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p3.value =_in; });
+			f4.add( this.guiData, "SatClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p4.value =_in; });
+			f4.add( this.guiData, "Smooth", 0.0, 0.98, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
+			f4.add( this.guiData, "PreAmp", 0.0, 1.0, 0.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
+			//f4.add( this.guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
+			//f4.add( this.guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
+			
+			// Global Settings (temporary for demo)
+			f5.add( this.guiData, 'Hardware', ap.demoHardware).onChange(function (_in) {
 
 				ap.ports.clearAllPorts();
 
@@ -1500,51 +1489,9 @@ UiManager.prototype = {
 					updateShader = true;
 
 			});
-
-			//var f1 = gui.addFolder('Shader 1'); 		f1.open();
-			var f2 = this.gui.addFolder('Shader 1'); 	//	f2.open();
-			var f3 = this.gui.addFolder('Shader 2'); 	//	f3.open();
-			var f4 = this.gui.addFolder('Post FX'); 		//	f4.open();
-			var f5 = this.gui.addFolder('Settings'); 	//	f5.open();
-
-			/*
-			// Pod 3
-			f1.add( guiData, 'S3Blend', ap.BLENDS )		.onChange(function () { uniformBlendChange( guiData.S3Blend, "_1_3"); });
-			f1.add( guiData, 'S3ClipId', ap.demoPresetNames).onChange(function () { uniformClipTypeChange( guiData.S3ClipId, 1, 3, 1 ); });
-			f1.add( guiData, "S3Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_1_mix.value = guiData.S3Mix; });
-			f1.add( guiData, "S3Scale", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_1_p1.value = guiData.S3Scale; });
-			f1.add( guiData, "Hue3Mix", 0.0, 1.0, 1.0 )	.onChange(function () { ap.app.material.uniforms._1_3_2_p1.value = guiData.Hue3Mix; });
-			*/
-			// Pod 2
-			f2.add( this.guiData, 'S2ClipId', ap.demoPresetNames).onChange(function (_in) { ap.ui.uniformClipTypeChange(_in, 1, 2, 1 ); });
-			f2.add( this.guiData, "S2Mix", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_2_1_mix.value =_in; });
-			f2.add( this.guiData, "S2Scale", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_2_1_p1.value =_in; });
-			f2.add( this.guiData, "S2HueTint", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_2_2_p1.value =_in; });
-			f2.add( this.guiData, 'S2Blend', ap.BLENDS )		.onChange(function (_in) { ap.ui.uniformBlendChange(_in, "_1_2"); });
+			f5.add( this.guiData, "Speed", 0.025, 0.8, 1.0 ).onChange(function (_in) { ap.app.speed =_in; });
+			f5.add( this.guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (_in) { ap.app.nodeShaderMaterial.uniforms.u_pointSize.value =_in; });
 			
-			// Pod 1
-			f3.add( this.guiData, 'S1ClipId', ap.demoPresetNames).onChange(function (_in) { ap.ui.uniformClipTypeChange(_in, 1, 1, 1 ); });
-			f3.add( this.guiData, "S1Mix", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_1_1_mix.value =_in; });
-			f3.add( this.guiData, "S1Scale", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_1_1_p1.value =_in; });
-			f3.add( this.guiData, "S1HueTint", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_1_2_p1.value =_in; });
-			
-			// Post Fx
-			f4.add( this.guiData, "Hue", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p1.value =_in; });
-			f4.add( this.guiData, "HueClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p2.value =_in; });
-			f4.add( this.guiData, "Sat", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p3.value =_in; });
-			f4.add( this.guiData, "SatClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p4.value =_in; });
-			f4.add( this.guiData, "Smooth", 0.0, 0.98, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
-			f4.add( this.guiData, "PreAmp", 0.0, 1.0, 0.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
-			//f4.add( this.guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
-			//f4.add( this.guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
-			
-			// Global Settings (temporary for demo)
-			f5.add( this.guiData, "Speed", 0.0, 0.15, 1.0 ).onChange(function (_in) { ap.app.speed =_in; });
-			f5.add( this.guiData, "PointSize", 15.0, 90.0, 1.0 ).onChange(function (_in) { ap.app.nodeShaderMaterial.uniforms.u_pointSize.value =_in; });
-			
-			f5.add( { ResetCam:function(){
-				ap.app.controls.reset();
-			} } ,'ResetCam');
 
 
 			
