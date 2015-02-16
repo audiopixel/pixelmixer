@@ -230,6 +230,75 @@ ap.datguiJson = {
         "Speed": 0.059625900088035845,
         "PointSize": 90
       }
+    },
+    "trest3": {
+      "0": {
+        "Channel1Mix": 1,
+        "S2ClipId": "ColorSineBar",
+        "S2Mix": 1,
+        "S2Scale": 0.1099246498528395,
+        "S2HueTint": 0.23157516323292152,
+        "S2Blend": "VividLight",
+        "S1ClipId": "ColorSineBar",
+        "S1Mix": 1,
+        "S1Scale": 0.5863078427891353,
+        "S1HueTint": 1,
+        "Hue": 0,
+        "HueClamp": 1,
+        "Saturation": 1,
+        "SatClamp": 1,
+        "Smooth": 0.6916378208556598,
+        "PreAmp": 0,
+        "Hardware": "Grid+zLayer",
+        "Speed": 0.38394150301102886,
+        "PointSize": 79.73627448493824
+      }
+    },
+    "trest2": {
+      "0": {
+        "Channel1Mix": 1,
+        "S2ClipId": "SimpleSwirl",
+        "S2Mix": 1,
+        "S2Scale": 0.31834229676246917,
+        "S2HueTint": 0.5378022360881665,
+        "S2Blend": "Darkest",
+        "S1ClipId": "HexifyRadial",
+        "S1Mix": 1,
+        "S1Scale": 0.3878148457323457,
+        "S1HueTint": 1,
+        "Hue": 1,
+        "HueClamp": 1,
+        "Saturation": 1,
+        "SatClamp": 1,
+        "Smooth": 0.7456720256100082,
+        "PreAmp": 0,
+        "Hardware": "Grid+zLayer",
+        "Speed": 0.06137960303180161,
+        "PointSize": 90
+      }
+    },
+    "trest4": {
+      "0": {
+        "Channel1Mix": 1,
+        "S2ClipId": "HexifyRadial",
+        "S2Mix": 1,
+        "S2Scale": 0.864198038668641,
+        "S2HueTint": 0.06616433235226338,
+        "S2Blend": "LinearBurn",
+        "S1ClipId": "HexifyRadial",
+        "S1Mix": 1,
+        "S1Scale": 0.4682776181908097,
+        "S1HueTint": 1,
+        "Hue": 0.5072598813673519,
+        "HueClamp": 0.6506159347972558,
+        "Saturation": 1,
+        "SatClamp": 0,
+        "Smooth": 0,
+        "PreAmp": 0,
+        "Hardware": "Grid+zLayer",
+        "Speed": 0.06137960303180161,
+        "PointSize": 65
+      }
     }
   },
   "closed": false,

@@ -6,7 +6,7 @@ ap.clips.HexifyRadialClip = {
 
 	params: {
 
-		"p1": { value: 1.0, desc: "scale" }
+		"p1": { value: .864198038668641, desc: "scale" }
 
 	},
 

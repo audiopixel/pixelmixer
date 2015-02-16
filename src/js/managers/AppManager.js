@@ -40,7 +40,7 @@ var AppManager = function (container) {
 
 	this.time = 0;
 	this.speed = 0.045;
-	this.simSize = 128;
+	this.simSize = 64;
 	this.pixels;
 	this.readPixels = false;
 
@@ -74,8 +74,8 @@ AppManager.prototype = {
 		//this.container.appendChild( this.stats.domElement );
 
 		this.scene = new THREE.Scene();
-		this.camera = new THREE.PerspectiveCamera( 30, this.glWidth / this.glHeight, 1, 100000 );
-		this.camera.position.z = 600;
+		this.camera = new THREE.PerspectiveCamera( 35, this.glWidth / this.glHeight, 1, 100000 );
+		this.camera.position.z = 460;
 		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement);
 
 		this.geometry = new THREE.Geometry();
@@ -112,10 +112,11 @@ AppManager.prototype = {
 		//this.stats.update();
 
 
-		//this.camera.position.x += ( mouseX - this.camera.position.x ) * 0.05;
-		//this.camera.position.y += ( - mouseY - this.camera.position.y ) * 0.05;
-		//this.camera.lookAt( this.scene.position );
-		this.controls.update();
+		this.camera.position.x += ( mouseX - this.camera.position.x ) * 0.01;
+		this.camera.position.y += ( - mouseY - this.camera.position.y ) * 0.05;
+		this.camera.position.z += ( - mouseY - this.camera.position.y ) * 0.04;
+		this.camera.lookAt( this.scene.position );
+		//this.controls.update();
 
 
 		//this.renderer.clear();

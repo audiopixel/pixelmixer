@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>AP3.0 Technical Demo</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href="css/main.css" rel="stylesheet" />
+
+		<script src="../libs/Detector.js"></script>
+		<script src="../libs/stats.min.js"></script>
+		<script src="../libs/signals.min.js"></script>
+		<script src="../libs/dat.gui.min.js"></script>
+
+		<script src="../libs/three/three.min.js"></script>
+		<script src="../libs/three/controls/TrackballControls.js"></script>
+
+		<!-- <script src="../dist/all.min.js"></script> -->
+		<script src="js/audiopixel.js"></script>
+		<script src="js/utils.js"></script>
+		<script src="js/managers/AppManager.js"></script>
+		<script src="js/managers/PortManager.js"></script>
+		<script src="js/managers/HardwareManager.js"></script>
+		<script src="js/managers/ChannelManager.js"></script>
+		<script src="js/managers/UiManager.js"></script>
+		<script src="js/objects/Port.js"></script>
+		<script src="js/objects/Channel.js"></script>
+		<script src="js/objects/Pod.js"></script>
+		<script src="js/objects/Clip.js"></script>
+		<script src="js/objects/Shader.js"></script>
+		<script src="js/objects/PodPosition.js"></script>
+
+
+		<script src="import/shaders/core/MainShader.js"></script>
+		<script src="import/shaders/core/ShaderUtils.js"></script>
+		<script src="import/shaders/core/SimpleTextureShader.js"></script>
+		<script src="import/shaders/core/NodeShader.js"></script>
+		<script src="import/datGuiPresets.js"></script>
+
+
+		<script src="import/shaders/clips/SolidColorClip.js"></script>
+		<script src="import/shaders/clips/TestFrameClip.js"></script>
+		<script src="import/shaders/clips/DiSinSwirlClip.js"></script>
+		<script src="import/shaders/clips/ColorSineBarClip.js"></script>
+		<script src="import/shaders/clips/ColorSwirlsClip.js"></script>
+		<script src="import/shaders/clips/LineCosSinClip.js"></script>
+		<script src="import/shaders/clips/SimpleSwirlClip.js"></script>
+		<script src="import/shaders/clips/SinSpiralClip.js"></script>
+		<script src="import/shaders/clips/SineParticlesClip.js"></script>
+		<script src="import/shaders/clips/WaterClip.js"></script>
+		<script src="import/shaders/clips/HexifyRadialClip.js"></script>
+		<script src="import/shaders/clips/SinCosTanClip.js"></script>
+		<script src="import/shaders/clips/HueFxClip.js"></script>
+		<script src="import/shaders/clips/TestFxClip.js"></script>
+
+		<script src="import/nodes/test.js"></script>
+	</head>
+
+	<body ontouchstart="" onload="onLoad()">
+
+		<div id="container"></div>
+
+		<script>
+
+
+		if ( ! Detector.webgl ) { Detector.addGetWebGLMessage(); }
+
+
+		var frameCount = 0;
+		var updateShader;
+		var mouseX = 0;
+		var mouseY = 0;
+		var windowHalfX = 0;
+		var windowHalfY = 0;
+
+
+
+		function onLoad(){
+
+
+			// Register all clips by their id's for easy lookup later
+			for (var property in ap.clips) {
+				if (ap.clips.hasOwnProperty(property)) {
+					ap.register[ap.clips[property].id] = property;
+				}
+			}
+
+
+			// ****** Managers ******
+
+			ap.ports = new PortManager();
+			ap.hardware = new HardwareManager();
+			ap.channels = new ChannelManager();
+			ap.app = new AppManager(document.getElementById( 'container' ));
+			ap.app.setSize(window.innerWidth, window.innerHeight);
+			//ap.ui = new UiManager();
+
+			ap.ports.init();
+			ap.hardware.init();
+			ap.channels.init();
+			ap.app.init();
+			//ap.ui.init();
+
+
+
+			// ****** Temp Setup ****** 
+
+			ap.hardware.addTestPortsGrid3(1, 0, 120);
+
+
+
+			var mix = 1;
+			var mix2 = 1;
+			var pods = [];
+
+			//pods[3] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Fx)]);
+			//pods[2] = new Pod(3, mix, ap.BLEND.Add, [new Clip(3, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+			pods[1] = new Pod(2, mix, ap.BLEND.LinearBurn, [new Clip(14, mix, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+			pods[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(14, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+
+			ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
+
+
+			var pods2 = [];
+			pods2[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(16, 1, ap.BLEND.Fx)]);
+
+			ap.channels.setChannel(2, new Channel("Post FX1", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Add, pods2));
+
+			ap.app.updateNodePoints();
+			ap.app.updateMainSourceShader();
+
+			ap.app.material.uniforms._1_2_1_p1.value = .25;
+			ap.app.material.uniforms._1_1_1_p1.value = .35;
+
+
+
+
+			// ****** Runtime Loop ****** 
+
+			var updateShaderLimiter = 0;
+			// Allow limiter to be modified based on system capabilities, if we detect lag we can increase it
+
+			function animate() {
+
+				//if(frameCount % 30 == 1){ // Slow framerate testing
+
+
+				// Update everything else if we don't have to update the shader this frame
+				if((!updateShader || updateShaderLimiter < 4) && updateShaderLimiter > 0){
+
+					// ** Main loop update 
+					ap.app.update();
+					ap.ports.update();
+					ap.hardware.update();
+					ap.channels.update();
+					//ap.ui.update();
+
+				}else{
+
+					// We detected the shader needs an update, only do that this frame
+					ap.app.updateMainSourceShader();
+					ap.app.update();
+					updateShaderLimiter = 0;
+					updateShader = false;
+				}
+				updateShaderLimiter++;
+
+				// Render next frame // TODO: throttle logic if needed
+				requestAnimationFrame( animate );
+				frameCount++;
+			}
+
+			animate();
+
+
+
+
+			// ****** Event Handlers ****** 
+
+			document.addEventListener( 'keydown', function ( event ) {
+
+				//console.log(event.keyCode);
+
+				switch ( event.keyCode ) {
+
+					case 8: // prevent browser back
+						event.preventDefault();
+						break;
+
+
+				// TESTING
+
+					case 16: // shift
+						break;
+				}
+
+			}, false );
+
+
+			function onWindowResize() {
+
+				// TODO - allow to be set in page and not always use fullscreen of window res
+				ap.app.glWidth = 1000;
+				ap.app.glHeight = 400;
+
+				if(ap.app.readPixels){
+					ap.app.pixels = new Uint8Array(4 * ap.app.glWidth * ap.app.glHeight);
+				}
+
+				ap.app.camera.aspect = ap.app.glWidth / ap.app.glHeight;
+				ap.app.camera.updateProjectionMatrix();
+
+				ap.app.renderer.setSize( ap.app.glWidth, ap.app.glHeight );
+				windowHalfX = ap.app.glWidth / 2;
+				windowHalfY = ap.app.glHeight / 2;
+			}
+
+			function onDocumentMouseMove( event ) {
+
+				mouseX = event.clientX - windowHalfX;
+				mouseY = event.clientY - windowHalfY;
+
+			}
+
+			window.addEventListener( 'resize', onWindowResize, false );
+			window.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+			setTimeout(onWindowResize, 1);
+
+		}
+
+		</script>
+	</body>
+</html>
