@@ -9,7 +9,7 @@ ap.clips.ColorSineBarClip = {
 
 	params: {
 
-		"p1": { value: 0.5, desc: "scale" },
+		"p1": { value: 0.1, desc: "scale" },
 
 	},
 

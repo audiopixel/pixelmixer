@@ -6,7 +6,7 @@ ap.clips.LineCosSinClip = {
 
 	params: {
 
-		"p1": { value: .8, desc: "scale" }
+		"p1": { value: .5, desc: "scale" }
 
 	},
 

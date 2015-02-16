@@ -17,8 +17,8 @@ HardwareManager.prototype = {
 */
 		
 		// Simulate Importing nodes from external file
-		this.importNodes(ap.imported, 1, 350, 100, 500);
-		ap.channels.setPodPos(2, new PodPosition(-190, 140, 0, 1070, 575, 1));
+		//this.importNodes(ap.imported, 1, 350, 100, 500);
+		//ap.channels.setPodPos(2, new PodPosition(-190, 140, 0, 1070, 575, 1));
 
 		//this.addTestPortsGrid3(1, 0, 0);
 
@@ -96,6 +96,26 @@ HardwareManager.prototype = {
 			}
 		}
 
+		ap.ports.setNodes(port, nodes);
+	},
+
+	addTestCubes: function (port, xOffset, yOffset) {
+
+		var nodes = [];
+		var zStack = 0;
+		for ( u = 0; u < 9; u ++ ) { 
+			for ( e = 0; e < 24; e ++ ) { 
+				for ( i = 0; i < 14; i ++ ) { 
+
+					var node = {};
+					node.x = (e * 40) + xOffset;
+					node.y = (i * 40) + yOffset;
+					node.z = zStack;
+					nodes.push(node);
+				}
+			}
+			zStack += 120;
+		}
 		ap.ports.setNodes(port, nodes);
 	},
 
@@ -194,6 +214,23 @@ HardwareManager.prototype = {
 			}
 			port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
 			ap.ports.setPort(portStart + 2, port);
+
+			nodes = [];
+			for ( e = 0; e < 70; e ++ ) { // Simulate a simple node grid for now
+				for ( i = 0; i < 35; i ++ ) { 
+
+					if((i - 1) % 3 == 1 && (e - 1) % 2 == 1){
+
+						node = {};
+						node.x = ((e * 20) - 340 + xOffset) ;
+						node.y = ((i * 20) + 30 + yOffset) ;
+						node.z = 210;
+						nodes.push(node);
+					}
+				}
+			}
+			port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
+			ap.ports.setPort(portStart + 3, port);
 	}
 
 };

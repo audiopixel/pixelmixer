@@ -23,28 +23,6 @@ UiManager.prototype = {
 
 			// -------Temporary: Create some Channels/Pods/Clips for testing----------
 
-			
-			// Let's create some test channels for now (TODO: this should be loaded from current project settings)
-			var mix = 1;
-			var mix2 = 1;
-			var pods = [];
-
-			//pods[3] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Fx)]);
-			//pods[2] = new Pod(3, mix, ap.BLEND.Add, [new Clip(3, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
-			pods[1] = new Pod(2, mix, ap.BLEND.LinearLight, [new Clip(12, mix, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
-			pods[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(8, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
-
-			ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
-
-
-			var pods2 = [];
-			pods2[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(16, 1, ap.BLEND.Fx)]);
-
-			ap.channels.setChannel(2, new Channel("Post FX1", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Add, pods2));
-
-			ap.app.updateNodePoints();
-			ap.app.updateMainSourceShader();
-
 
 
 

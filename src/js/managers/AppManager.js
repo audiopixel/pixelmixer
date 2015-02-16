@@ -10,9 +10,9 @@ var AppManager = function (container) {
 	this.glWidth = 0;
 	this.glHeight = 0;
 
-	this.stats = new Stats();
-	this.stats.domElement.style.position = 'absolute';
-	this.stats.domElement.style.top = '0px';
+	//this.stats = new Stats();
+	//this.stats.domElement.style.position = 'absolute';
+	//this.stats.domElement.style.top = '0px';
 
 	this.container = container;
 	this.renderer;
@@ -71,11 +71,11 @@ AppManager.prototype = {
 		this.renderer.setSize( this.glWidth, this.glHeight );
 		this.renderer.autoClear = false;
 		this.container.appendChild( this.renderer.domElement ); 
-		this.container.appendChild( this.stats.domElement );
+		//this.container.appendChild( this.stats.domElement );
 
 		this.scene = new THREE.Scene();
 		this.camera = new THREE.PerspectiveCamera( 30, this.glWidth / this.glHeight, 1, 100000 );
-		this.camera.position.z = 2000;
+		this.camera.position.z = 600;
 		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement);
 
 		this.geometry = new THREE.Geometry();
@@ -108,8 +108,8 @@ AppManager.prototype = {
 
 	update: function () {
 
-		this.time += (this.speed) * .7;
-		this.stats.update();
+		this.time += (this.speed) * .3;
+		//this.stats.update();
 
 
 		//this.camera.position.x += ( mouseX - this.camera.position.x ) * 0.05;
