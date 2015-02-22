@@ -102,7 +102,7 @@ ChannelManager.prototype = {
 
 								// If the clip defined update function call it with proper clip addressing
 								if(srcClip && srcClip.update && ap.app.material){
-									srcClip.update("_" + (i+1) + "_" + (e+1) + "_" + (u+1), ap.app.material.uniforms);
+									srcClip.update("_"+(i+1)+"_"+(e+1)+"_"+(u+1), ap.app.material.uniforms);
 								}
 							}
 						}
@@ -120,12 +120,98 @@ ChannelManager.prototype = {
 		var fragmentFunctionOutput = "";
 		var output = "";
 		var fragOutput = "";
+		var masterFunction = "";
 
 		var lastKnownPos = {};
 
+/*
+		// ** Pod **
+		
+		pos id
+		mix
+		blend
+
+
+		// ** Clip **
+		
+		clip id
+		mix
+		blend
+
+*/
+		// Allocate pods and clips per channel
+		var numChannels = 1;
+		var numPods = 1;
+		var numClips = 1;
+
+		for (var i = 0; i < numChannels; i++) {
+
+			uniforms["_"+(i+1) + "_mix"] = { type: "f", value: 0 };
+
+			for (var e = 0; e < numPods; e++) {
+
+				uniforms["_"+(i+1)+"_"+(e+1) + "_mix"] = { type: "f", value: 0 };
+				uniforms["_"+(i+1)+"_"+(e+1) + "_blend"] = { type: "f", value: 0 };
+				uniforms["_"+(i+1)+"_"+(e+1) + "_posid"] = { type: "i", value: 0, length: 10 };
+				uniforms["_"+(i+1)+"_"+(e+1) + "_groupid"] = { type: "i", value: 0, length: 10 };
+				uniforms["_"+(i+1)+"_"+(e+1) + "_groupmode"] = { type: "i", value: 0 };
+
+				for (var o = 0; o < numClips; o++) {
+
+					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_mix"] = { type: "f", value: 0 };
+					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_blend"] = { type: "f", value: 0 };
+					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_clipid"] = { type: "i", value: 0 };
+					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_p1"] = { type: "f", value: 0 };
+					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_p2"] = { type: "f", value: 0 };
+					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_p3"] = { type: "f", value: 0 };
+					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_p4"] = { type: "f", value: 0 };
+					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_p5"] = { type: "f", value: 0 };
+					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_p6"] = { type: "f", value: 0 };
+					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_f1"] = { type: "f", value: 0 };
+					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_f2"] = { type: "f", value: 0 };
+
+				}
+			}
+		}
+
+		// Load the entire clip collection into the master function
+		for (var clip in ap.register) {
+
+			var shader = ap.clips[ap.register[clip]];
+			if(shader.fragmentFunctions){
+				for (var i = 0; i < shader.fragmentFunctions.length; i++) {
+
+					// TODO check if we already have the name and value for the function (dupe check)
+					fragmentFunctionOutput += shader.fragmentFunctions[i] + "\n";
+				}
+			}
+			masterFunction += "else if(id == " + shader.id + "){\n";
+			masterFunction += shader.fragmentMain.replace("gl_FragColor", "returnColor"); + "\n";
+			masterFunction += "}\n";
+			masterFunction += "////////\n";
+
+		}
+		masterFunction = masterFunction.slice(5, masterFunction.length); // cut the first 'else' out 
+		masterFunction = "vec4 returnColor = vec4(0.,0.,0.,0.); \n" + masterFunction;
+		masterFunction += "return returnColor; \n";
+		masterFunction = "vec4 masterFunction(int id, vec3 fxIn) { \n" + masterFunction + "}\n";
+
+		fragmentFunctionOutput += masterFunction;
+
+		output += "";
+
+
+		//console.log(masterFunction);
+		//console.log(uniforms);
+		console.log(output);
+
+
+
+		/*
+
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
-			channel.address = "_" + (i+1);
+			channel.address = "_"+(i+1);
 
 			var fxChannel = false;
 			if(channel.type === ap.CHANNEL_TYPE_FX){
@@ -139,7 +225,7 @@ ChannelManager.prototype = {
 
 				for (var e = 0; e < channel.pods.length; e++) {
 					var pod = channel.pods[e];
-					pod.address = channel.address + "_" + (e+1);
+					pod.address = channel.address+"_"+(e+1);
 
 					// uniforms 'mix' & 'blend' for the pod
 					uniforms[pod.address + "_mix"] = { type: "f", value: pod.mix }; // TODO modulation uniforms 
@@ -177,12 +263,12 @@ ChannelManager.prototype = {
 											output += type + " " + variable + ";";
 										}
 									}output += "\n";
-									for (var fragmentFunction in sourceShader.fragmentFunctions) {
+									/*for (var fragmentFunction in sourceShader.fragmentFunctions) {
 										if(!fragmentFunctions[fragmentFunction]){ // If we don't already have the function mark it as in use and include it.
 											fragmentFunctions[fragmentFunction] = 1; 
 											fragmentFunctionOutput += sourceShader.fragmentFunctions[fragmentFunction] + " \n";
 										}
-									}
+									}*//*
 								}
 							}
 						}output += "\n";
@@ -198,12 +284,12 @@ ChannelManager.prototype = {
 							if(clip){
 
 								var srcClip = ap.clips[ap.register[clip.clipId]];
-								clip.address = pod.address +"_" + (u+1);
+								clip.address = pod.address +"_"+(u+1);
 								if(srcClip){
 
 									// If the Clip defined properties define them as addressed uniforms
 									for (var property in srcClip.properties) {
-										uniforms[clip.address + "_" + property] = srcClip.properties[property];
+										uniforms[clip.address+"_"+property] = srcClip.properties[property];
 									}
 
 									// If the clip defined optional init() method call it with addressing
@@ -213,7 +299,7 @@ ChannelManager.prototype = {
 
 									// Create params with default values
 									for (var param in srcClip.params) {
-										uniforms[clip.address + "_" + param] = { type: "f", value: srcClip.params[param].value };
+										uniforms[clip.address+"_"+param] = { type: "f", value: srcClip.params[param].value };
 									}
 
 
@@ -341,6 +427,7 @@ ChannelManager.prototype = {
 
 			output = output.replace(/_channel_/g, channel.address + "_") + "\n";
 		}
+		*/
 
 		//console.log(uniforms);
 		//console.log(output);

@@ -388,7 +388,16 @@ AppManager.prototype = {
 
 			var type = getVariableTypeFromShorthand(sourceShader.uniforms[uniform].type);
 
-			sourceUniforms += "uniform " + type + " " + uniform + ";\n";
+			if(sourceShader.uniforms[uniform].length > 1){
+				var l = sourceShader.uniforms[uniform].length;
+				
+				sourceUniforms += "uniform " + type + " " + uniform + "[" + l + "];\n";
+			}else{
+				sourceUniforms += "uniform " + type + " " + uniform + ";\n";
+			}
+
+			console.log(sourceUniforms);
+
 			uniforms[uniform] = sourceShader.uniforms[uniform];
 		}
 

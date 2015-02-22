@@ -8,6 +8,8 @@ function getVariableTypeFromShorthand(shorthand){
 		case "v2": type = "vec2"; break;
 		case "v3": type = "vec3"; break;
 		case "v4": type = "vec4"; break;
+		case "iv1": type = "int"; break;
+		case "fv1": type = "float"; break;
 		// TODO add 'matrix' and 'array support'
 	}
 	return type;

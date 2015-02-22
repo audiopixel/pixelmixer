@@ -33,23 +33,23 @@ ap.clips.TestFrameClip = {
 
 	// Optional helper functions used inside fragmentMain // TODO implement - to be defined with the shader importer
 
-	fragmentFunctions: {
+	fragmentFunctions: [
 
-		"red": [ "vec3 red() {",
+		[ "vec3 red() {",
 			"	return vec3(1.0, 0.0, 0.0);",
 			"}"
 
-			].join("\n"),
+		].join("\n"),
 
-		"red2": [
+		[
 
 			"vec4 red(float bright) {",
 			"	return vec4(bright, 0.0, 0.0, 1.0);",
 			"}"
 
-			].join("\n")
+		].join("\n")
 
-	},
+	],
 
 
 	fragmentMain: [ // Note we only need the Fragment shader and not the Vertex shader as well
@@ -92,7 +92,7 @@ ap.clips.TestFrameClip = {
 		*
 		* Loader harness to bootstrap these values to any GLSL fragment shader
 		* 
-		**/
+		**//*
 
 		"rx = gl_FragCoord.x / resolution.x;", // Example of using variable
 		"ry = gl_FragCoord.y / resolution.y;",
@@ -110,8 +110,10 @@ ap.clips.TestFrameClip = {
 		"}",
 
 		"gl_FragColor = vec4( rx, ry, blue, 1.0 );"
+*/
 
-
+		"vec3 c = vec3(1., 0., 0.);",
+		"gl_FragColor = vec4( 0., 0., 1., 1.0 );"
 
 		].join("\n"),
 
