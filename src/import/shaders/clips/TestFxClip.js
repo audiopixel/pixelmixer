@@ -26,28 +26,26 @@ ap.clips.TestFxClip = {
 
 	fragmentMain: [
 
-		//"ap_fxIn", // use this to capture the incoming color value, and do something with it
-
-		//"ap_fxOut", // use this to send the outgoing color value after the fx is complete
+		//"_fxIn", // use this to capture the incoming color value, and do something with it
 
 		//"c", // use this as a temporary color value without having to declare a new one
 
 
 
 		// let's convert to hsv
-		"ap_hsv = rgb2hsv(ap_fxIn);",
+		"ap_hsv = rgb2hsv(_fxIn);",
 
 		// Offset the hue
-		"ap_hsv.x += __p1;",
+		"ap_hsv.x += _p1;",
 		"if(ap_hsv.x > 1.0){",
 			"ap_hsv.x -= 1.0;",
 		"}",
 
 		// Convert back to rgb
-		"c = hsv2rgb(ap_hsv);",
+		"vec3 c = hsv2rgb(ap_hsv);",
 
 
-		"ap_fxOut = vec4(c.r, c.g, c.b, 1.0);" 
+		"gl_FragColor = vec4(c.r, c.g, c.b, 1.0);" 
 
 		].join("\n")
 

@@ -107,7 +107,7 @@ UiManager.prototype = {
 			} } ,'SnapToFront');
 
 			//var f1 = gui.addFolder('Shader 1'); 		f1.open();
-			var f2 = this.gui.addFolder('Shader 1'); 	//	f2.open();
+			var f2 = this.gui.addFolder('Shader 1'); 		f2.open();
 			var f3 = this.gui.addFolder('Shader 2'); 		f3.open();
 			var f4 = this.gui.addFolder('Post FX'); 		//	f4.open();
 			var f5 = this.gui.addFolder('Settings'); 	//	f5.open();
@@ -124,14 +124,14 @@ UiManager.prototype = {
 			f2.add( this.guiData, 'S2ClipId', ap.demoClipNames).onChange(function (_in) { ap.ui.uniformClipTypeChange(_in, 1, 2, 1 ); });
 			f2.add( this.guiData, "S2Mix", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_2_1_mix.value =_in; });
 			f2.add( this.guiData, "S2Scale", 0.1, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_2_1_p1.value =_in; });
-			f2.add( this.guiData, "S2HueTint", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_2_2_p1.value =_in; });
+			//f2.add( this.guiData, "S2HueTint", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_2_2_p1.value =_in; });
 			f2.add( this.guiData, 'S2Blend', ap.BLENDS )		.onChange(function (_in) { ap.ui.uniformBlendChange(_in, "_1_2"); });
 			
 			// Pod 1
 			f3.add( this.guiData, 'S1ClipId', ap.demoClipNames).onChange(function (_in) { ap.ui.uniformClipTypeChange(_in, 1, 1, 1 ); });
 			f3.add( this.guiData, "S1Mix", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_1_1_mix.value =_in; });
 			f3.add( this.guiData, "S1Scale", 0.1, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_1_1_p1.value =_in; });
-			f3.add( this.guiData, "S1HueTint", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_1_2_p1.value =_in; });
+			//f3.add( this.guiData, "S1HueTint", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_1_2_p1.value =_in; });
 			
 			// Post Fx
 			f4.add( this.guiData, "Hue", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p1.value =_in; });
@@ -186,7 +186,7 @@ UiManager.prototype = {
 
 			// Close folders on startup by default
 
-			f2.close();
+			//f2.close();
 			//f3.close();
 			f4.close();
 			f5.close();

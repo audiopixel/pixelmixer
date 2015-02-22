@@ -39,6 +39,7 @@
 
 		<script src="import/shaders/clips/SolidColorClip.js"></script>
 		<script src="import/shaders/clips/TestFrameClip.js"></script>
+		<script src="import/shaders/clips/TestFxClip.js"></script>
 	
 
 		<script src="import/nodes/test.js"></script>
@@ -162,6 +163,7 @@
 				ap.app.camera.updateProjectionMatrix();
 
 				ap.app.renderer.setSize( ap.app.glWidth, ap.app.glHeight );
+				ap.app.controls.handleResize();
 
 			}
 

@@ -92,15 +92,15 @@ ap.clips.TestFrameClip = {
 		*
 		* Loader harness to bootstrap these values to any GLSL fragment shader
 		* 
-		**//*
+		**/
 
-		"rx = gl_FragCoord.x / resolution.x;", // Example of using variable
-		"ry = gl_FragCoord.y / resolution.y;",
+		"float rx = gl_FragCoord.x / resolution.x;",
+		"float ry = gl_FragCoord.y / resolution.y;",
 
 		//"blue = red(0.0).r;", // Example of using a helper method
-		"blue = __v1;", // Example of using a property
+		"float blue = 0.;//__v1;", // Example of using a property
 
-		"cf = ((__p1 * .5) + .5) * .98;", // Example of using a built in already existing var (nice to not have to create another one)
+		"float cf = ((_p1 * .5) + .5) * .98;", // Example of using a built in already existing var (nice to not have to create another one)
 		
 		// Create a blue border
 		"if(ry < (1. - cf) || ry > (cf)){",
@@ -110,10 +110,11 @@ ap.clips.TestFrameClip = {
 		"}",
 
 		"gl_FragColor = vec4( rx, ry, blue, 1.0 );"
-*/
+		//"gl_FragColor = vec4( 0., 0., blue, 1.0 );"
 
-		"vec3 c = vec3(1., 0., 0.);",
-		"gl_FragColor = vec4( 0., 0., 1., 1.0 );"
+
+		//"vec3 c = vec3(1., 0., 0.);",
+		//"gl_FragColor = vec4( 0.5, 0., 1., 1.0 );"
 
 		].join("\n"),
 

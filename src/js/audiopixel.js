@@ -18,6 +18,7 @@ ap.imported = {}; 				// Currently imported port (and possibly node) data
 
 // Blend Constants
 ap.BLEND = {};
+ap.BLEND.FX = -1; 
 ap.BLEND.OFF = 0;
 ap.BLEND.Add = 1;
 ap.BLEND.Subtract = 2;
@@ -36,7 +37,6 @@ ap.BLEND.LinearBurn = 14;
 ap.BLEND.LinearLight = 15;
 ap.BLEND.VividLight = 16;
 ap.BLEND.PinLight = 17;
-ap.BLEND.Fx = 1; // Use 'add' if this happens to get passed, all fx 'blending' happens outside blend()
 
 ap.BLENDS = [ 'Add', 'Substract', 'Darkest', 'Lightest', 'Difference', 'Exclusion', 'Multiply', 'Screen','Overlay', 
 			'HardLight', 'SoftLight', 'Dodge', 'Burn', 'LinearBurn', 'LinearLight', 'VividLight', 'PinLight'];

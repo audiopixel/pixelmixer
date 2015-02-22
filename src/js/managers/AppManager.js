@@ -278,6 +278,8 @@ AppManager.prototype = {
 		var maxx = 0;
 		var miny = 100000000000;
 		var maxy = 0;
+		var minz = 100000000000;
+		var maxz = 0;
 
 		for ( var k = 0, kl = a.length; k < kl; k += 4 ) {
 			var x = 0;
@@ -293,6 +295,8 @@ AppManager.prototype = {
 				maxx = Math.max(maxx, x);
 				miny = Math.min(miny, y);
 				maxy = Math.max(maxy, y);
+				minz = Math.min(minz, z);
+				maxz = Math.max(maxz, z);
 
 				a[ k + 3 ] = 1;
 				t++;
@@ -307,11 +311,11 @@ AppManager.prototype = {
 
 		// We always set the first Pod Position as the bounding box that fits all nodes
 		// TODO add z depth
-		ap.channels.setPodPos(1, new PodPosition(minx, miny, 0, maxx - minx, maxy - miny, 1));
+		ap.channels.setPodPos(1, new PodPosition(minx, miny, minz, maxx - minx, maxy - miny, maxz - minz));
 		//console.log(new PodPosition(minx, miny, 0, maxx - minx, maxy - miny, 1));
 
 		// Testing on pod pos #2
-		//ap.channels.setPodPos(2, new PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
+		ap.channels.setPodPos(2, new PodPosition(minx + 90, miny + 90, minz, maxx - minx - 180, maxy - miny - 180, maxz - minz));
 		//ap.channels.setPodPos(2, new PodPosition(-190, 140, 0, 1070, 575, 1));
 
 		this.coordsMap = new THREE.DataTexture( a, this.simSize, this.simSize, THREE.RGBAFormat, THREE.FloatType );
@@ -388,16 +392,12 @@ AppManager.prototype = {
 
 			var type = getVariableTypeFromShorthand(sourceShader.uniforms[uniform].type);
 
+			var len = "";
 			if(sourceShader.uniforms[uniform].length > 1){
-				var l = sourceShader.uniforms[uniform].length;
-				
-				sourceUniforms += "uniform " + type + " " + uniform + "[" + l + "];\n";
-			}else{
-				sourceUniforms += "uniform " + type + " " + uniform + ";\n";
+				len = "[" + sourceShader.uniforms[uniform].length + "]";
 			}
 
-			console.log(sourceUniforms);
-
+			sourceUniforms += "uniform " + type + " " + uniform + len + ";\n";
 			uniforms[uniform] = sourceShader.uniforms[uniform];
 		}
 

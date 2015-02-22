@@ -122,57 +122,68 @@ ChannelManager.prototype = {
 		var fragOutput = "";
 		var masterFunction = "";
 
-		var lastKnownPos = {};
 
-/*
-		// ** Pod **
-		
-		pos id
-		mix
-		blend
-
-
-		// ** Clip **
-		
-		clip id
-		mix
-		blend
-
-*/
-		// Allocate pods and clips per channel
+		// ** Allocate pod and clip uniforms per channel
 		var numChannels = 1;
-		var numPods = 1;
+		var numPods = 2;
 		var numClips = 1;
 
 		for (var i = 0; i < numChannels; i++) {
+			var channel_addy = "_"+(i+1);
 
-			uniforms["_"+(i+1) + "_mix"] = { type: "f", value: 0 };
+			uniforms[channel_addy + "_mix"] = { type: "f", value: 0 };
 
 			for (var e = 0; e < numPods; e++) {
+				var pod_addy = channel_addy+"_"+(e+1);
 
-				uniforms["_"+(i+1)+"_"+(e+1) + "_mix"] = { type: "f", value: 0 };
-				uniforms["_"+(i+1)+"_"+(e+1) + "_blend"] = { type: "f", value: 0 };
-				uniforms["_"+(i+1)+"_"+(e+1) + "_posid"] = { type: "i", value: 0, length: 10 };
-				uniforms["_"+(i+1)+"_"+(e+1) + "_groupid"] = { type: "i", value: 0, length: 10 };
-				uniforms["_"+(i+1)+"_"+(e+1) + "_groupmode"] = { type: "i", value: 0 };
+				uniforms[pod_addy + "_mix"] = { type: "f", value: 0 };
+				uniforms[pod_addy + "_blend"] = { type: "f", value: 0 };
+				uniforms[pod_addy + "_posid"] = { type: "i", value: 0, length: 10 };
+				uniforms[pod_addy + "_groupid"] = { type: "i", value: 0, length: 10 };
+				uniforms[pod_addy + "_groupmode"] = { type: "i", value: 0 };
 
 				for (var o = 0; o < numClips; o++) {
+					var clip_addy = pod_addy+"_"+(o+1);
 
-					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_mix"] = { type: "f", value: 0 };
-					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_blend"] = { type: "f", value: 0 };
-					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_clipid"] = { type: "i", value: 0 };
-					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_p1"] = { type: "f", value: 0 };
-					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_p2"] = { type: "f", value: 0 };
-					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_p3"] = { type: "f", value: 0 };
-					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_p4"] = { type: "f", value: 0 };
-					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_p5"] = { type: "f", value: 0 };
-					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_p6"] = { type: "f", value: 0 };
-					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_f1"] = { type: "f", value: 0 };
-					uniforms["_"+(i+1)+"_"+(e+1)+"_"+(o+1) + "_f2"] = { type: "f", value: 0 };
-
+					uniforms[clip_addy + "_mix"] = { type: "f", value: 0 };
+					uniforms[clip_addy + "_blend"] = { type: "f", value: 0 };
+					uniforms[clip_addy + "_clipid"] = { type: "i", value: 0 };
+					uniforms[clip_addy + "_p1"] = { type: "f", value: 0 };
+					uniforms[clip_addy + "_p2"] = { type: "f", value: 0 };
+					uniforms[clip_addy + "_p3"] = { type: "f", value: 0 };
+					uniforms[clip_addy + "_p4"] = { type: "f", value: 0 };
+					uniforms[clip_addy + "_p5"] = { type: "f", value: 0 };
+					uniforms[clip_addy + "_p6"] = { type: "f", value: 0 };
+					uniforms[clip_addy + "_f1"] = { type: "f", value: 0 };
+					uniforms[clip_addy + "_f2"] = { type: "f", value: 0 };
 				}
 			}
 		}
+
+		// Testing some defaults
+		uniforms["_1_mix"].value = 1;
+
+		uniforms["_1_1_mix"].value = 1;
+		uniforms["_1_1_blend"].value = 1;
+		uniforms["_1_1_posid"].value = [1];
+
+		uniforms["_1_2_mix"].value = 1;
+		uniforms["_1_2_blend"].value = -1;
+		uniforms["_1_2_posid"].value = [2];
+
+		uniforms["_1_1_1_clipid"].value = 3;
+		uniforms["_1_1_1_mix"].value = 1;
+		uniforms["_1_1_1_blend"].value = 1;
+		uniforms["_1_2_1_clipid"].value = 5;
+		uniforms["_1_2_1_mix"].value = 1;
+		uniforms["_1_2_1_blend"].value = -1;
+
+		//TODO update this with fx blend mode if we want to fx
+		// check update blend() with fx output
+
+
+
+		// ** Create the masterFunction() function
 
 		// Load the entire clip collection into the master function
 		for (var clip in ap.register) {
@@ -187,21 +198,136 @@ ChannelManager.prototype = {
 			}
 			masterFunction += "else if(id == " + shader.id + "){\n";
 			masterFunction += shader.fragmentMain.replace("gl_FragColor", "returnColor"); + "\n";
+			masterFunction = masterFunction.replace(/gl_FragCoord/g, "ap_xyz"); + "\n";
 			masterFunction += "}\n";
 			masterFunction += "////////\n";
 
 		}
 		masterFunction = masterFunction.slice(5, masterFunction.length); // cut the first 'else' out 
 		masterFunction = "vec4 returnColor = vec4(0.,0.,0.,0.); \n" + masterFunction;
-		masterFunction += "return returnColor; \n";
-		masterFunction = "vec4 masterFunction(int id, vec3 fxIn) { \n" + masterFunction + "}\n";
+		masterFunction += "return max(min(returnColor, vec4(1.0)), vec4(0.0)); \n";
+		masterFunction = "vec4 masterFunction(int id, vec3 _fxIn, float _p1, float _p2, float _p3, float _p4, float _p5, float _p6) { \n" + masterFunction + "}\n";
+		
+		fragmentFunctionOutput += masterFunction;
+
+
+
+		// ** Create the getPodPos() function
+
+		masterFunction = "";
+		for (var i = 0; i < this.podpositions.length; i++) {
+			masterFunction += "else if(posid == " + (i+1) + "){\n";
+			masterFunction += "returnPos = vec3("+this.podpositions[i].x+","+this.podpositions[i].y+","+this.podpositions[i].z+");\n";
+			masterFunction += "}\n";
+		}
+		masterFunction = masterFunction.slice(5, masterFunction.length); // cut the first 'else' out 
+		masterFunction = "vec3 returnPos = vec3(0.,0.,0.); \n" + masterFunction;
+		masterFunction += "return returnPos; \n";
+		masterFunction = "vec3 getPodPos(int posid) { \n" + masterFunction + "}\n";
 
 		fragmentFunctionOutput += masterFunction;
 
-		output += "";
 
 
-		//console.log(masterFunction);
+		// ** Create the getPodSize() function
+
+		masterFunction = "";
+		for (var i = 0; i < this.podpositions.length; i++) {
+			masterFunction += "else if(posid == " + (i+1) + "){\n";
+			masterFunction += "returnSize = vec3("+this.podpositions[i].w+","+this.podpositions[i].h+","+this.podpositions[i].d+");\n";
+			masterFunction += "}\n";
+		}
+		masterFunction = masterFunction.slice(5, masterFunction.length); // cut the first 'else' out 
+		masterFunction = "vec3 returnSize = vec3(0.,0.,0.); \n" + masterFunction;
+		masterFunction += "return returnSize; \n";
+		masterFunction = "vec3 getPodSize(int posid) { \n" + masterFunction + "}\n";
+
+		fragmentFunctionOutput += masterFunction;
+
+
+
+		// ** Mix and blend
+		for (var i = 0; i < numChannels; i++) {
+			var channel_addy = "_"+(i+1);
+			output += "ap_p = vec3(0.); \n";
+
+			for (var e = 0; e < numPods; e++) {
+				var pod_addy = channel_addy+"_"+(e+1);
+				output += "///////-----------------/\n";
+				output += "ap_rgb = vec3(0.); \n";
+				output += "first = 0; \n";
+
+				// TODO loop all the pod's pos groups
+				// TODO add z depth
+				output += "ap_xyzT = getPodPos("+ pod_addy +"_posid[0]); \n"; 
+				output += "ap_xyz.x = ap_xyz2.x - ap_xyzT.x; \n";
+				output += "ap_xyz.y = ap_xyz2.y - ap_xyzT.y; \n";
+				output += "ap_xyzT2 = getPodSize("+ pod_addy +"_posid[0]); \n"; 
+
+				output += "if(ap_xyz2.x >= ap_xyzT.x && ap_xyz2.y >= ap_xyzT.y  && ap_xyz2.z >= ap_xyzT.z && ap_xyz2.x <= ap_xyzT2.x + ap_xyzT.x && ap_xyz2.y <= ap_xyzT2.y + ap_xyzT.y && ap_xyz2.z <= ap_xyzT2.z + ap_xyzT.z) { \n";
+				
+					output += "resolution = vec2(ap_xyzT2.x, ap_xyzT2.y); \n";
+
+					for (var o = 0; o < numClips; o++) {
+						var clip_addy = pod_addy+"_"+(o+1);
+
+						output += "////////\n";
+
+						output += "ap_t = ap_p;\n";
+						output += "if(first > 0){\n";
+							output += "ap_t = ap_rgb;\n";
+						output += "}\n";
+
+						output += "if("+ clip_addy +"_clipid > 0){\n";
+							output += "ap_rgb2 = vec3(masterFunction("+ clip_addy +"_clipid, ap_t, "+clip_addy+"_p1, "+clip_addy+"_p2, "+clip_addy+"_p3, "+clip_addy+"_p4, "+clip_addy+"_p5, "+clip_addy+"_p6));";
+							
+							output += "if("+ clip_addy +"_blend < 0.){\n";
+								output += "ap_rgb2 = mix(ap_t, ap_rgb2, "+ clip_addy +"_mix);\n";
+							output += "}else{\n";
+								output += "ap_rgb2 = ap_rgb2 * ("+ clip_addy +"_mix);\n";
+								output += "ap_rgb = blend(ap_rgb, ap_rgb2, "+ clip_addy +"_blend);\n";
+							output += "}\n";
+
+							output += "first++;\n";
+						output += "}\n";
+					}
+
+					output += "if("+ pod_addy +"_blend < 0.){\n";
+						output += "ap_p = mix(ap_p, ap_rgb2, "+ pod_addy +"_mix);\n";
+					output += "}else{\n";
+						output += "ap_rgb2 = ap_rgb * ("+ pod_addy +"_mix); \n";
+						output += "ap_p = blend(ap_p, ap_rgb2, "+ pod_addy +"_blend);\n";
+					output += "}\n";
+
+					output += "ap_p = max(min(ap_p, vec3(1.0)), vec3(0.0)); \n";
+
+				output += "}\n";
+			}
+			output += "ap_p = ap_p * ("+ channel_addy +"_mix); \n";
+			output += "ap_c = blend(ap_c, ap_p, 1.0);\n";
+		}
+
+		//output += "ap_c = ap_p;\n";
+
+/*
+		output += "int tests = _1_1_1_clipid;\n";
+
+		output += "for (int e = 0; e < " + numChannels + "; e++) {\n";
+			output += "for (int u = 0; u < " + numPods + "; u++) {\n";
+				output += "for (int i = 0; i < " + numClips + "; i++) {\n";
+					 
+					output += "int clipid = tests;\n";
+					//output += "int clipid = _1_1_1_clipid;\n";
+					//output += "int clipid = '_'+(e+1)+'_'+(u+1)+'_'+(i+1)+'_clipid';\n";
+					output += "ap_rgb += vec3(masterFunction(clipid, vec3(0.)));\n";
+
+				output += "}\n";
+			output += "}\n";
+		output += "}\n";
+*/
+
+
+		//console.log(fragmentFunctionOutput);
 		//console.log(uniforms);
 		console.log(output);
 
