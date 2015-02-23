@@ -80,8 +80,8 @@ AppManager.prototype = {
 
 		this.geometry = new THREE.Geometry();
 
-		//this.updateNodePoints();
-		//this.updateMainSourceShader();
+		this.updateNodePoints();
+		this.updateMainSourceShader();
 
 		if(this.readPixels){
 			this.pixels = new Uint8Array(4 * this.glWidth * this.glHeight);

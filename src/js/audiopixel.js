@@ -18,7 +18,7 @@ ap.imported = {}; 				// Currently imported port (and possibly node) data
 
 // Blend Constants
 ap.BLEND = {};
-ap.BLEND.FX = -1; 
+ap.BLEND.Fx = -1; 
 ap.BLEND.OFF = 0;
 ap.BLEND.Add = 1;
 ap.BLEND.Subtract = 2;
