@@ -2,87 +2,35 @@
  * ************* CHANNEL MANAGER *************** 
  * Handles the state of all Channels running in the Universe.
  * Channels may contain Pods, which may contain Clips (structured shaders).
- *
+
+	channels / pods / clips
+
+		channels = [];
+		channels[0] = new Channel(); // 0 is the address. associative/holey arrays ok, its only looped once when we regenerate shader 
+		channels[0].type = ap.CHANNEL_TYPE_BLEND; 
+		channels[0].pods = [];
+		channels[0].pods[0] = new Pod(); // '0.0' is the 'channel.pod' address
+		channels[0].pods[0].mix = 1;
+		channels[0].pods[0].clips = [];
+		channels[0].pods[0].clips[0] = new Clip(); // '0.0.0' is the 'channel.pod.clip' address
+		channels[0].pods[0].clips[0].clipId = 12; // colorwash clip for example
+
  */
 
 var ChannelManager = function () {
 
 	this.channels = [];
 	this.podpositions = [];
-
-	/*
-
-	--hold state:
-	---------------------------------------
-
-	pod objects stored on channel objects
-
-		channels = [];
-		channels[0] = new Channel(); // 0 is the address. associative/holey arrays ok, its only looped once when we regenerate shader 
-		channels[0].type = "content"; // or 'fx' and 'scenefx' eventually
-		channels[0].pods = [];
-		channels[0].pods[0] = new Pod(); // '0.0' is the 'channel.pod' address
-		channels[0].pods[0].mix = 1;
-		channels[0].pods[0].clips = [];
-		channels[0].pods[0].clips[0] = new Clip(); // '0.0.0' is the 'channel.pod.clip' address
-		channels[0].pods[0].clips[0].id = 12; // colorwash clip for example
-
-
-
-	any number of channel objects
-		type (content, fx, or scene)
-		mix value
-		mod values (just for mix)
-
-		any number of pod objects
-			mix value
-			blend value
-			mod values (just for mix)
-			position group id (that this pod references position data from)
-			hardware group id (up to 3 of them)
-				exclude or solo mode (for all hardware groups)
-
-			any number of clip objects
-				mix value
-				blend value
-				param values
-				mod values (for mix and params)
-				clip id (so we know which shader to grab from library)
-
-
-	any number of position group objects (each pod must point to one of these) (maybe refactor into seperate manager?)
-		id
-		position data: xyz, whd
-
-
-	--responsibilites:
-	---------------------------------------
-
-	main responsibility is to build source shader from 'snippets that have pod and clip data baked in'
-		the shader gets re-generated anytime
-			a pod gets added or deleted
-			a pod changes it's hardware group(s), or how it uses the hardware group(s) (exclude or solo) 
-			a pod changes which position group it references
-			a position group's coordinates change (if actively referenced by a pod)
-
-	define shader uniforms (to be used as clip params and properties)
-
-
-	when in editor mode, show all the pod position groups, record any coordinate changes
-
-
-	*/
-
+	
 };
 
 ChannelManager.prototype = {
 
 	init: function () {
 
-		this.numChannels = 1;
+		this.numChannels = 2;
 		this.numPods = 2;
 		this.numClips = 2;
-
 	},
 
 	update: function () {
@@ -114,17 +62,15 @@ ChannelManager.prototype = {
 				}
 			}
 		}
+
 	},
+
 	generateSourceShader: function () {
 
-		var variables = {};
 		var fragmentFunctions = {};
 		var fragmentFunctionOutput = "";
 		var output = "";
-		var fragOutput = "";
 		var masterFunction = "";
-
-		
 		var uniforms = {};
 
 		// ** Allocate pod and clip uniforms per channel
@@ -133,6 +79,7 @@ ChannelManager.prototype = {
 			var channel_addy = "_"+(i+1);
 
 			uniforms[channel_addy + "_mix"] = { type: "f", value: 0 };
+			uniforms[channel_addy + "_blend"] = { type: "f", value: 0 };
 
 			for (var e = 0; e < this.numPods; e++) {
 				var pod_addy = channel_addy+"_"+(e+1);
@@ -160,21 +107,6 @@ ChannelManager.prototype = {
 				}
 			}
 		}
-/*
-		// Testing some defaults
-		uniforms["_1_mix"].value = 1;
-
-		uniforms["_1_1_mix"].value = 1;
-		uniforms["_1_1_blend"].value = -1;
-		uniforms["_1_1_posid"].value = [1];
-
-
-		uniforms["_1_1_1_clipid"].value = 3;
-		uniforms["_1_1_1_mix"].value = 1;
-		uniforms["_1_1_1_blend"].value = 1;
-*/
-
-
 
 		// ** Create the masterFunction() function
 
@@ -238,14 +170,16 @@ ChannelManager.prototype = {
 		fragmentFunctionOutput += masterFunction;
 
 
+		output += "ap_p = vec3(0.); \n";
 		// ** Mix and blend
 		for (var i = 0; i < this.numChannels; i++) {
 			var channel_addy = "_"+(i+1);
-			output += "ap_p = vec3(0.); \n";
+			
+			output += "///////-------- Channel " + (i+1) + " ----/\n";
 
 			for (var e = 0; e < this.numPods; e++) {
 				var pod_addy = channel_addy+"_"+(e+1);
-				output += "///////--------POD----/\n";
+				output += "///////--------POD " + (e+1) + "----/\n";
 				output += "ap_rgb = vec3(0.); \n";
 				output += "first = 0; \n";
 
@@ -256,14 +190,14 @@ ChannelManager.prototype = {
 				output += "ap_xyz.y = ap_xyz2.y - ap_xyzT.y; \n";
 				output += "ap_xyzT2 = getPodSize("+ pod_addy +"_posid[0]); \n"; 
 
-				output += "if(ap_xyz2.x >= ap_xyzT.x && ap_xyz2.y >= ap_xyzT.y  && ap_xyz2.z >= ap_xyzT.z && ap_xyz2.x <= ap_xyzT2.x + ap_xyzT.x && ap_xyz2.y <= ap_xyzT2.y + ap_xyzT.y && ap_xyz2.z <= ap_xyzT2.z + ap_xyzT.z) { \n";
+				output += "if(ap_xyz2.x >= ap_xyzT.x && ap_xyz2.y >= ap_xyzT.y && ap_xyz2.z >= ap_xyzT.z && ap_xyz2.x <= ap_xyzT2.x + ap_xyzT.x && ap_xyz2.y <= ap_xyzT2.y + ap_xyzT.y && ap_xyz2.z <= ap_xyzT2.z + ap_xyzT.z) { \n";
 				
 					output += "resolution = vec2(ap_xyzT2.x, ap_xyzT2.y); \n";
 
 					for (var o = 0; o < this.numClips; o++) {
 						var clip_addy = pod_addy+"_"+(o+1);
 
-						output += "///// CLIP ///\n";
+						output += "///// CLIP " + (o+1) + " ///\n";
 
 						output += "ap_t = ap_p;\n";
 						output += "if(first > 0){\n";
@@ -277,7 +211,8 @@ ChannelManager.prototype = {
 								output += "ap_rgb2 = ap_rgb2 * ("+ clip_addy +"_mix);\n";
 								output += "ap_rgb = blend(ap_rgb, ap_rgb2, "+ clip_addy +"_blend);\n";
 							output += "}else{\n";
-								output += "ap_rgb = mix(ap_rgb, ap_rgb2, "+ clip_addy +"_mix);\n";
+								output += "ap_rgb = mix(ap_t, ap_rgb2, "+ clip_addy +"_mix);\n";
+								output += "ap_rgb2 = ap_rgb;\n";
 							output += "}\n";
 
 							output += "first++;\n";
@@ -288,23 +223,34 @@ ChannelManager.prototype = {
 
 					output += "if("+ pod_addy +"_blend > 0.){\n";
 
-						output += "ap_rgb2 = ap_rgb * ("+ pod_addy +"_mix); \n";
+						output += "ap_rgb2 = ap_rgb * ("+ pod_addy +"_mix) * ("+ channel_addy +"_mix); \n";
 						output += "ap_p = blend(ap_p, ap_rgb2, "+ pod_addy +"_blend);\n";
 					output += "}else{\n";
-						output += "ap_p = mix(ap_p, ap_rgb2, "+ pod_addy +"_mix);\n"; // fx
+						output += "ap_p = mix(ap_p, ap_rgb2, "+ pod_addy +"_mix * ("+ channel_addy +"_mix));\n"; // fx
 					output += "}\n";
 
 					output += "ap_p = max(min(ap_p, vec3(1.0)), vec3(0.0)); \n";
 
 				output += "}\n";
 			}
-			output += "ap_p = ap_p * ("+ channel_addy +"_mix); \n";
-			output += "ap_c = blend(ap_c, ap_p, 1.0);\n";
+/*
+			output += "if("+ channel_addy +"_blend > 0.){\n";
+
+				output += "ap_p = ap_p * ("+ channel_addy +"_mix); \n";
+				output += "ap_c = blend(ap_c, ap_p, "+ channel_addy +"_blend);\n";
+			output += "}else{\n";
+				output += "ap_c = mix(ap_c, ap_p, "+ channel_addy +"_mix);\n"; // fx
+			output += "}\n";
+			//output += "ap_p = ap_c; \n";
+
+			output += "ap_c = max(min(ap_c, vec3(1.0)), vec3(0.0)); \n";
+			*/
 		}
+		output += "ap_c = ap_p; \n";
 
 		//console.log(fragmentFunctionOutput);
 		//console.log(uniforms);
-		//console.log(output);
+		console.log(output);
 
 
 
@@ -403,6 +349,7 @@ ChannelManager.prototype = {
 
 		var addy = "_"+channel+"_";
 		this.setUniform(addy, "mix", channelObj.mix);
+		this.setUniform(addy, "blend", channelObj.blend);
 
 		var i=1;
 		for (var pod in channelObj.pods) {

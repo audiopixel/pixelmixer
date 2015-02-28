@@ -35,21 +35,21 @@ UiManager.prototype = {
 			//pods[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(8, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
 
 
-			pods[1] = new Pod([2], mix, ap.BLEND.Add, [new Clip(3, mix2, ap.BLEND.Add), new Clip(5, mix2, ap.BLEND.Fx)]);
-			pods[0] = new Pod([1], mix, ap.BLEND.Add, [new Clip(2, mix2, ap.BLEND.Add)]);
+			pods[1] = new Pod([2], mix, ap.BLEND.Add, [new Clip(2, mix2, ap.BLEND.Add), new Clip(5, mix2, ap.BLEND.Fx)]);
+			pods[0] = new Pod([1], mix, ap.BLEND.Add, [new Clip(3, mix2, ap.BLEND.Add)]);
 
 			ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
+			//ap.channels.setChannel(2, new Channel("TestChannel2", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, [new Pod([1], mix, ap.BLEND.Add, [new Clip(3, mix2, ap.BLEND.Add)])]));
+
 			//ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
 
-			/*
+			
 			var pods2 = [];
-			pods2[0] = new Pod(1, mix, ap.BLEND.Add, [new Clip(16, 1, ap.BLEND.Fx)]);
+			pods2[1] = new Pod([1], mix, ap.BLEND.Fx, [new Clip(5, 1, ap.BLEND.Fx)]);
+			pods2[0] = new Pod([1], mix, ap.BLEND.Fx, [new Clip(5, 1, ap.BLEND.Fx)]);
 
-			ap.channels.setChannel(2, new Channel("Post FX1", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Add, pods2));
-			*/
-
-
-
+			ap.channels.setChannel(2, new Channel("Post FX1", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Fx, pods2));
+			
 
 
 
@@ -58,6 +58,7 @@ UiManager.prototype = {
 			// The list of state that the UI is representing (V) and setting (C)
 			this.guiData  = {
 				Channel1Mix:  1,
+				Channel2Mix:  1,
 				/*
 				S3Blend:  'Add',
 				S3ClipId:  0,
@@ -104,6 +105,7 @@ UiManager.prototype = {
 
 
 			this.gui.add( this.guiData, "Channel1Mix", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_mix.value = _in; });
+			this.gui.add( this.guiData, "Channel2Mix", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_mix.value = _in; });
 			
 			this.gui.add( { SnapToFront:function(){
 				ap.app.controls.reset();
@@ -113,9 +115,9 @@ UiManager.prototype = {
 			} } ,'SnapToFront');
 
 			//var f1 = gui.addFolder('Shader 1'); 		f1.open();
-			var f2 = this.gui.addFolder('Shader 1'); 		f2.open();
+			var f2 = this.gui.addFolder('Shader 1'); 	//	f2.open();
 			var f3 = this.gui.addFolder('Shader 2'); 		f3.open();
-			var f4 = this.gui.addFolder('Post FX'); 		//	f4.open();
+			var f4 = this.gui.addFolder('Post FX'); 			f4.open();
 			var f5 = this.gui.addFolder('Settings'); 	//	f5.open();
 
 			/*
@@ -144,12 +146,14 @@ UiManager.prototype = {
 			//f3.add( this.guiData, "S1HueTint", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._1_1_2_p1.value =_in; });
 			
 			// Post Fx
+			f4.add( this.guiData, "HueClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_mix.value =_in; });
+			f4.add( this.guiData, "Saturation", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_mix.value =_in; });
 			f4.add( this.guiData, "Hue", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p1.value =_in; });
-			f4.add( this.guiData, "HueClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p2.value =_in; });
-			f4.add( this.guiData, "Saturation", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p3.value =_in; });
-			f4.add( this.guiData, "SatClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p4.value =_in; });
-			f4.add( this.guiData, "Smooth", 0.0, 0.98, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
-			f4.add( this.guiData, "PreAmp", 0.0, 1.0, 0.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
+			//f4.add( this.guiData, "HueClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p2.value =_in; });
+			//f4.add( this.guiData, "Saturation", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_1_1_p3.value =_in; });
+			f4.add( this.guiData, "SatClamp", 0.0, 1.0, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_2_mix.value =_in; });
+			f4.add( this.guiData, "Smooth", 0.0, 0.98, 1.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_2_1_mix.value =_in; });
+			f4.add( this.guiData, "PreAmp", 0.0, 1.0, 0.0 )	.onChange(function (_in) { ap.app.material.uniforms._2_2_1_p1.value =_in; });
 			//f4.add( this.guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
 			//f4.add( this.guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
 			
@@ -181,12 +185,11 @@ UiManager.prototype = {
 						ap.hardware.importNodes(ap.imported, 1, 0, 0, 0);
 					break;
 				}
-					ap.app.updateNodePoints(); // only need to call this when we add nodes after_init
-					//ap.app.updateMainSourceShader();
 
-					updateShader = true;
+				ap.app.updateNodePoints();
 
 			});
+
 			f5.add( this.guiData, "Speed", 0.025, 0.8, 1.0 ).onChange(function (_in) { ap.app.speed =_in; });
 			f5.add( this.guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (_in) { ap.app.nodeShaderMaterial.uniforms.u_pointSize.value =_in; });
 			
@@ -196,9 +199,9 @@ UiManager.prototype = {
 
 			// Close folders on startup by default
 
-			//f2.close();
+			f2.close();
 			//f3.close();
-			f4.close();
+			//f4.close();
 			f5.close();
 
 	},
@@ -248,8 +251,6 @@ UiManager.prototype = {
 		}
 
 		ap.channels.setClip(channel, pod, clip, new Clip(clipId, 1.0, ap.BLEND.Add));
-
-		updateShader = true;
 	}
 
 };

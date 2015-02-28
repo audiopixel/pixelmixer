@@ -55,8 +55,6 @@
 		if ( ! Detector.webgl ) { Detector.addGetWebGLMessage(); }
 
 
-		var frameCount = 0;
-		var updateShader;
 
 
 
@@ -89,7 +87,6 @@
 
 			// ****** Runtime Loop ****** 
 
-			var updateShaderLimiter = 0;
 			// Allow limiter to be modified based on system capabilities, if we detect lag we can increase it
 
 			function animate() {
@@ -97,29 +94,15 @@
 				//if(frameCount % 30 == 1){ // Slow framerate testing
 
 
-				// Update everything else if we don't have to update the shader this frame
-				if((!updateShader || updateShaderLimiter < 4) && updateShaderLimiter > 0){
-
-					// ** Main loop update 
-					ap.app.update();
-					ap.ports.update();
-					ap.hardware.update();
-					ap.channels.update();
-					ap.ui.update();
-
-				}else{
-
-					// We detected the shader needs an update, only do that this frame
-					ap.app.updateMainSourceShader();
-					ap.app.update();
-					updateShaderLimiter = 0;
-					updateShader = false;
-				}
-				updateShaderLimiter++;
+				// ** Main loop update 
+				ap.app.update();
+				ap.ports.update();
+				ap.hardware.update();
+				ap.channels.update();
+				ap.ui.update();
 
 				// Render next frame // TODO: throttle logic if needed
 				requestAnimationFrame( animate );
-				frameCount++;
 			}
 
 			animate();

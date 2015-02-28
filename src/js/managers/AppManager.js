@@ -92,17 +92,6 @@ AppManager.prototype = {
 
 		//this.addPlanesForTesting(); 
 
-/*
-		// Example of updating the nodes on the fly:
-		var that = this;
-		setTimeout(function(){
-			//that.addNodesAsTestGrid(); // Change or add more nodes
-			//that.updateNodes();
-
-			that.updateMainSourceShader();
-		}, 2000);
-*/
-
 		//---------------
 	},
 
@@ -324,6 +313,9 @@ AppManager.prototype = {
 		this.coordsMap.needsUpdate = true;
 		this.coordsMap.flipY = true;
 
+		if(this.material){
+			this.material.uniforms.u_coordsMap.value = this.coordsMap;
+		}
 
 	},
 
