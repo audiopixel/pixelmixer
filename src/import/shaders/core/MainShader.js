@@ -26,6 +26,7 @@ ap.MainShader = {
 		"vec3 ap_t;",
 		"vec2 resolution;",
 		"int first;",
+		"float random;",
 
 		"varying vec2 v_vUv;",
 		"uniform float u_time;",
@@ -35,12 +36,6 @@ ap.MainShader = {
 		"uniform sampler2D u_prevCMap;",
 		//uniform sampler2D u_portsMap;
 
-		// Temporary use values
-		"float random;",
-		"vec2 p; ",
-		"vec3 c;",
-		"float cf;",
-		"float t;",
 
 		// TODO optimize this list to only include what we need each regeneration
 		"#define ptpi 1385.4557313670110891409199368797 //powten(pi)",
@@ -66,8 +61,6 @@ ap.MainShader = {
 		"#INCLUDESHADERFUNCTIONS",
 
 		"void main() {",
-
-			"random = rand(vec2(gl_FragCoord[0], gl_FragCoord[1] * u_random) * (u_time * 0.0001));",
 
 			// Black is default
 			"ap_rgb = vec3(0.0);",

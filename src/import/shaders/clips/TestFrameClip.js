@@ -15,21 +15,6 @@ ap.clips.TestFrameClip = {
 		"p1": { value: 1.0, desc: "scale" }
 
 	},
-	
-	properties: { // (optional uniforms)
-
-		// These are internal properties that can be referenced from init/update methods, and passed as uniforms
-		"v1": { type: "f", value: 0.0 }
-
-	},
-	
-	variables: { // (optional internal variables)
-
-		"blue": { type: "f" },
-		"rx": { type: "f" },
-		"ry": { type: "f" }
-
-	},
 
 	// Optional helper functions used inside fragmentMain // TODO implement - to be defined with the shader importer
 

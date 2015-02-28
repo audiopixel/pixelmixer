@@ -9,25 +9,10 @@ ap.clips.ColorSwirlsClip = {
 		"p1": { value: 0.35, desc: "scale" }
 
 	},
-	
-	variables: {
 
-		"camp": { type: "v3" },
-		"qAxis": { type: "v3" },
-		"wAxis": { type: "v3" },
-		"camTarget": { type: "v3" },
-		"camDir": { type: "v3" },
-		"camUp": { type: "v3" },
-		"camSide": { type: "v3" },
-		"rayDir": { type: "v3" },
-		"col": { type: "v3" },
-		"vp": { type: "v3" }
+	fragmentFunctions: [
 
-	},
-
-	fragmentFunctions: {
-
-		"rotateXY": [ "vec3 rotateXY(vec3 vect, vec3 axis, float angle) {",
+		[ "vec3 rotateXY(vec3 vect, vec3 axis, float angle) {",
 				"float s = sin(angle);",
 				"float c = cos(angle);",
 				"float oc = 1.0 - c;",
@@ -46,32 +31,32 @@ ap.clips.ColorSwirlsClip = {
 
 		].join("\n")
 
-	},
-	
+	],
+
 	fragmentMain: [
 
 
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 2.);",
+		"vec2 p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (_p1 * 2.);",
 		"p = p*pi;",
 
-		"t = (rcpi*(u_time/pi+picu))+pi;",
-	    "camp = (vec3(0.0, 0.0, 1.0))*(twpi+sin(t)*pi);",
-		"qAxis = normalize(vec3(sin(t*(rcpi)), cos(t*(prpi)), cos(t*(lgpi)) ));",
-		"wAxis = normalize(vec3(cos(t*(-trpi)), sin(t*(rcpi)), sin(t*(lgpi)) ));",
+		"float t = (rcpi*(u_time/pi+picu))+pi;",
+	    "vec3 camp = (vec3(0.0, 0.0, 1.0))*(twpi+sin(t)*pi);",
+		"vec3 qAxis = normalize(vec3(sin(t*(rcpi)), cos(t*(prpi)), cos(t*(lgpi)) ));",
+		"vec3 wAxis = normalize(vec3(cos(t*(-trpi)), sin(t*(rcpi)), sin(t*(lgpi)) ));",
 		"camp = rotateXY(camp, wAxis, sin(t*prpi)*pi);",
-		"camTarget = -camp;//vec3(0.0,0.0,0.0);",
-		"camDir = normalize(camTarget-camp);",
+		"vec3 camTarget = -camp;//vec3(0.0,0.0,0.0);",
+		"vec3 camDir = normalize(camTarget-camp);",
 		
 		"t*=rcpi;",
-	    "camUp  = normalize(vec3(0.0,1.0,0.0));",
+	    "vec3 camUp  = normalize(vec3(0.0,1.0,0.0));",
 		"camUp = rotateXY(camUp, camDir, sin(t*prpi)*pi);",
-	    "camSide = cross(camDir, camUp);",
+	    "vec3 camSide = cross(camDir, camUp);",
 		
 		"t*=rcpi;",
-	    "rayDir = ((camSide*p.x + camUp*p.y - camDir*((1.))));",
+	    "vec3 rayDir = ((camSide*p.x + camUp*p.y - camDir*((1.))));",
 		"rayDir = (rayDir+normalize(rayDir))/2.;",
-		"col = (sin(qAxis+wAxis+camp+rayDir*pisq)*0.5+0.5);",
-		"vp = col;",
+		"vec3 col = (sin(qAxis+wAxis+camp+rayDir*pisq)*0.5+0.5);",
+		"vec3 vp = col;",
 		"for(int i=1; i<64; i++)",
 		"{",
 			"float ii = sqrt(float(i));",

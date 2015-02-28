@@ -124,7 +124,7 @@ ChannelManager.prototype = {
 			masterFunction += "else if(id == " + shader.id + "){\n";
 			masterFunction += shader.fragmentMain.replace("gl_FragColor", "returnColor"); + "\n";
 			masterFunction = masterFunction.replace(/gl_FragCoord/g, "ap_xyz"); + "\n";
-			masterFunction += "}\n";
+			masterFunction += "\n}\n";
 			masterFunction += "////////\n";
 
 		}
@@ -250,7 +250,7 @@ ChannelManager.prototype = {
 
 		//console.log(fragmentFunctionOutput);
 		//console.log(uniforms);
-		console.log(output);
+		//console.log(output);
 
 
 

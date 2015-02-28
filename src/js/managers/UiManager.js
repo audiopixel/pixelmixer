@@ -117,7 +117,7 @@ UiManager.prototype = {
 			//var f1 = gui.addFolder('Shader 1'); 		f1.open();
 			var f2 = this.gui.addFolder('Shader 1'); 	//	f2.open();
 			var f3 = this.gui.addFolder('Shader 2'); 		f3.open();
-			var f4 = this.gui.addFolder('Post FX'); 			f4.open();
+			var f4 = this.gui.addFolder('Post FX'); 		//	f4.open();
 			var f5 = this.gui.addFolder('Settings'); 	//	f5.open();
 
 			/*
@@ -201,7 +201,7 @@ UiManager.prototype = {
 
 			f2.close();
 			//f3.close();
-			//f4.close();
+			f4.close();
 			f5.close();
 
 	},
