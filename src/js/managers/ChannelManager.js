@@ -197,6 +197,10 @@ ChannelManager.prototype = {
 							// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
 							output += "if(ap_xyz2.x >= " + podPos.x.toFixed(1) + " && ap_xyz2.y >= " + podPos.y.toFixed(1) + " && ap_xyz2.x <= " + (podPos.w + podPos.x).toFixed(1) + " && ap_xyz2.y <= " + (podPos.h + podPos.y).toFixed(1) + ") { \n";
 
+							// TODO add mirroring support
+								// stored on the pod position: flipx, flipy, flipz	
+								// switch each ap_xyz axis accordinaly
+								// we could also support rotations this way
 
 							fxPod = true; // If the only clips that are in this pod are fx's then treat pod as a fx output and don't blend
 							for (u = 0; u < pod.clips.length; u++) {
