@@ -68,7 +68,7 @@ ap.HARDWAREGROUP_EXCLUDE = 2;
 
 
 // Temporary Preset Management // TODO dynamic clip loading system
-ap.demoClipNames = ["OFF", "SolidColor", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
+ap.demoClipNames = ["SolidColor", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
 "SinSpiral", "SineParticles", "DiSinSwirl", "HexifyRadial", "SinCosTan"];
 
 ap.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];

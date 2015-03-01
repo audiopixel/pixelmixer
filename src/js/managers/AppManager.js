@@ -460,15 +460,16 @@ AppManager.prototype = {
 		frag = frag.replace(/_xyz/g, "_1");
 		frag = frag.replace(/hsv2rgb/g, "_2");
 		frag = frag.replace(/rgb2hsv/g, "_3");
-		frag = frag.replace(/_lastRgb/g, "_4");
+		frag = frag.replace(/offsetPos/g, "_4");
 		frag = frag.replace(/_rgb/g, "_5");
 		frag = frag.replace(/_hsv/g, "_6");
 		frag = frag.replace(/resolution/g, "_7");
 		frag = frag.replace(/superFunction/g, "_8");
-		frag = frag.replace(/returnColor/g, "_9");
-		frag = frag.replace(/checkBounds/g, "_b");
-		frag = frag.replace(/getPodSize/g, "_e");
-		frag = frag.replace(/getPodPos/g, "_s");
+		frag = frag.replace(/checkBounds/g, "_9");
+		frag = frag.replace(/returnColor/g, "_91");
+		frag = frag.replace(/getPodSize/g, "_92");
+		frag = frag.replace(/getPodPos/g, "_93");
+		frag = frag.replace(/_lastRgb/g, "_94");
 		return frag;
 	}
 

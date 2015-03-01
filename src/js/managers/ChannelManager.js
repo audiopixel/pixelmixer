@@ -122,6 +122,7 @@ ChannelManager.prototype = {
 		var output = "";
 		var fragOutput = "";
 		var lastKnownPos = {};
+		var lastKnownRes = "";
 
 
 
@@ -163,11 +164,16 @@ ChannelManager.prototype = {
 							// Set the resolution (if it's changed) for the next set of nodes to be the current pods position bounding box
 							if(lastKnownPos !== podPos){
 								lastKnownPos = podPos;
-								output += "resolution = vec2(" + podPos.w + ", " + podPos.h + "); \n";
+
+								// Only update the res if we need to
+								var res = "vec2(" + podPos.w + ", " + podPos.h + ");";
+								if(lastKnownRes !== res){
+									lastKnownRes = res;
+									output += "resolution = " + res + " \n";
+								}
 
 								// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
-							
-								output += "ap_xyz = vec4(ap_xyz2.x - " + podPos.x.toFixed(1) + ", ap_xyz2.y - " + podPos.y.toFixed(1) + ", ap_xyz2.z - " + podPos.z.toFixed(1) + ", ap_xyz.w); \n";
+								output += "ap_xyz = offsetPos(ap_xyz2, " + pod.positionIds[o] + ", ap_xyz.w);\n";
 							}
 
 							// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
@@ -395,6 +401,7 @@ ChannelManager.prototype = {
 
 	generateSizingFunctions: function () {
 		
+		// Pod Position function
 		var m = "";
 		for (var i = 0; i < this.podpositions.length; i++) {
 			m += "else if(d == " + (i+1) + "){\n";
@@ -406,8 +413,8 @@ ChannelManager.prototype = {
 		m += "return p; \n";
 		m = "vec3 getPodPos(int d) { \n" + m + "}\n";
 
+		// Pod Size function
 		var output = m;
-
 		m = "";
 		for (var i = 0; i < this.podpositions.length; i++) {
 			m += "else if(d == " + (i+1) + "){\n";
@@ -420,7 +427,8 @@ ChannelManager.prototype = {
 		m = "vec3 getPodSize(int d) { \n" + m + "}\n";
 
 		output += m;
-	
+
+		// Method to check xyz+whd against another // TODO account for non rectangular shapes
 		output += ["float checkBounds(vec4 b, int p)",
 		"{",										
 			"vec3 s = getPodPos(p);",
@@ -431,6 +439,13 @@ ChannelManager.prototype = {
 			"}}",			
 		"	return 0.;",
 		"}"].join("\n");
+
+		// Offset xyz from pod position id
+		output += "vec4 offsetPos(vec4 b, int p, float w){\n";
+			output += "vec3 s = getPodPos(p);\n",
+			output += "return vec4(b.x - s.x, b.y - s.y, b.z - s.z, w);\n";
+		output += "}\n";
+
 		return output;
 	},
 
