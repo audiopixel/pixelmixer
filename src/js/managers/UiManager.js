@@ -40,7 +40,7 @@ UiManager.prototype = {
 			var pods2 = [];
 			pods2[0] = new Pod([1], mix, ap.BLEND.Add, [new Clip(16, 1, ap.BLEND.Fx)]);
 
-			//ap.channels.setChannel(2, new Channel("Post FX1", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Add, pods2));
+			ap.channels.setChannel(2, new Channel("Post FX1", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Add, pods2));
 
 			ap.app.updateNodePoints();
 			ap.app.updateMainSourceShader();

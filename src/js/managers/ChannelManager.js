@@ -237,9 +237,8 @@ ChannelManager.prototype = {
 										fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
 										fragOutput = fragOutput.replace(/gl_FragCoord/g, "ap_xyz");
 
-										// Normalize into Vector3
-										fragOutput += "ap_rgb2 = vec3(ap_rgbV4.r, ap_rgbV4.g, ap_rgbV4.b); \n"; // vec4 -> vec3
-										fragOutput += "ap_rgb2 = max(min(ap_rgb2, vec3(1.0)), vec3(0.0)); \n";
+										// Flatten into Vector3
+										fragOutput += "ap_rgb2 = nv(ap_rgbV4); \n";
 
 
 										// ------------ Clip Mix Blend & Fx --------------
@@ -353,7 +352,7 @@ ChannelManager.prototype = {
 		}
 
 		//console.log(uniforms);
-		console.log(output);
+		//console.log(output);
 
 		/*
 		// TODO regenerate Metamap data: (if any of this changed)

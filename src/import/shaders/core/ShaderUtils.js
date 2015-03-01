@@ -68,6 +68,12 @@ ap.shaders.ShaderUtils = [
 	  "  highp float dt= dot(co.xy ,vec2(a,b));",
 	  "  highp float sn= mod(dt,3.14);",
 	  "  return fract(sin(sn) * c);",
+	"}",
+
+	"vec3 nv(vec4 c)",
+	"{",
+	  "  return max(min(vec3(c.r, c.g, c.b), vec3(1.0)), vec3(0.0));",
 	"}"
+
 
 ].join("\n");

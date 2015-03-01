@@ -409,6 +409,9 @@ AppManager.prototype = {
 		// Add ShaderUtils and uniforms at the top
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERFUNCTIONS", sourceShader.fragmentFunctions);
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERUTILS", ap.shaders.ShaderUtils + sourceUniforms);
+
+		this.fragmentShader = this.minFragmentShader(this.fragmentShader);
+
 		
 
 		// The main material object has uniforms that can be referenced and updated directly by the UI
@@ -444,6 +447,20 @@ AppManager.prototype = {
 		//this.material.uniforms = uniforms;
 		//this.material.needsUpdate = true;
 
+	},
+
+	// Minimize the fragment shader before it gets sent to gpu
+	minFragmentShader: function(frag){
+
+		frag = frag.replace(/ap_/g, "_");
+		frag = frag.replace(/_xyz/g, "_1");
+		frag = frag.replace(/hsv2rgb/g, "_2");
+		frag = frag.replace(/rgb2hsv/g, "_3");
+		frag = frag.replace(/_lastRgb/g, "_4");
+		frag = frag.replace(/_rgb/g, "_5");
+		frag = frag.replace(/_hsv/g, "_6");
+		frag = frag.replace(/resolution/g, "_7");
+		return frag;
 	}
 
 };
