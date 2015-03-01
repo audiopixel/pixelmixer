@@ -115,17 +115,20 @@ ChannelManager.prototype = {
 	generateSourceShader: function () {
 
 		var uniforms = {};
-		var variables = {};
-		var fragmentFunctions = {};
-		var fragmentFunctionOutput = "";
+		var fragList = {};
+		var fragFuncList = {};
+		var fragFuncOutput = "";
+		var fragFuncHelpers = "";
 		var output = "";
 		var fragOutput = "";
-
 		var lastKnownPos = {};
 
+		// Now create the mixed down output
 		for (var i = 0; i < this.channels.length; i++) {
+
 			var channel = this.channels[i];
 			channel.address = "_" + (i+1);
+
 
 			var fxChannel = false;
 			if(channel.type === ap.CHANNEL_TYPE_FX){
@@ -146,35 +149,7 @@ ChannelManager.prototype = {
 					uniforms[pod.address + "_blend"] = { type: "f", value: pod.blend };
 
 					var fxPod = false;
-					// Set pod position data for use by all the clips in this pod
 					if(pod.clips && pod.clips.length){
-
-
-						// Declare each clips variables, but we can't declare them more than once so record which ones we have declared already
-						for (var u = 0; u < pod.clips.length; u++) {
-
-							if(pod.clips[u]){
-
-								var sourceShader = ap.clips[ap.register[pod.clips[u].clipId]];
-								if(sourceShader){
-									for (var variable in sourceShader.variables) {
-
-										if(!variables[variable]){ // If we don't already have the variable mark it as in use and include it.
-											variables[variable] = 1; 
-											var type = getVariableTypeFromShorthand(sourceShader.variables[variable].type);
-											output += type + " " + variable + ";";
-										}
-									}output += "\n";
-									for (var fragmentFunction in sourceShader.fragmentFunctions) {
-										if(!fragmentFunctions[fragmentFunction]){ // If we don't already have the function mark it as in use and include it.
-											fragmentFunctions[fragmentFunction] = 1; 
-											fragmentFunctionOutput += sourceShader.fragmentFunctions[fragmentFunction] + " \n";
-										}
-									}
-								}
-							}
-						}output += "\n";
-
 
 						for (var o = 0; o < pod.positionIds.length; o++) {
 
@@ -209,6 +184,32 @@ ChannelManager.prototype = {
 								if(clip){
 
 									var srcClip = ap.clips[ap.register[clip.clipId]];
+
+									if(!fragList[pod.clips[u].clipId]){
+										fragList[pod.clips[u].clipId] = true;
+
+										if(srcClip.fragmentFunctions){
+											for (var v = 0; v < srcClip.fragmentFunctions.length; v++) {
+
+												// Duplicate method checking - right now just checking based off the first 5 words of function
+												var name = srcClip.fragmentFunctions[v].trim();
+												name = nthWord(name, 1) + nthWord(name, 2) + nthWord(name, 3) + nthWord(name, 4) + nthWord(name, 5);
+												if(!fragFuncList[name]){
+													fragFuncList[name] = true;
+
+													// Add the helper function to be included at the top of the shader
+													fragFuncOutput += srcClip.fragmentFunctions[v] + "\n";
+												}
+											}
+										}
+										fragFuncHelpers += "else if(id == " + srcClip.id + "){\n";
+										fragFuncHelpers += srcClip.fragmentMain.replace("gl_FragColor", "returnColor"); + "\n";
+										fragFuncHelpers = fragFuncHelpers.replace(/gl_FragCoord/g, "ap_xyz"); + "\n";
+										fragFuncHelpers += "\n}\n";
+										fragFuncHelpers += "////////\n";
+									}
+
+
 									clip.address = pod.address +"_" + (u+1);
 									if(clip.clipId > 0 && srcClip){
 
@@ -236,13 +237,20 @@ ChannelManager.prototype = {
 										// Lookup the correct imported clip based on the id stored on the clip object
 										fragOutput = srcClip.fragmentMain + "\n";
 
-										// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
-										fragOutput = fragOutput.replace(/gl_FragColor/g, "ap_rgbV4");
-										fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
-										fragOutput = fragOutput.replace(/gl_FragCoord/g, "ap_xyz");
+										// Pass along input param values if they are defined on clip
+										var params = ["0.","0.","0.","0.","0.","0."];
+										for (var j = 0; j < params.length; j++) {
+											if(srcClip.params["p"+(j+1)]){
+												params[j] = (clip.address+"_p"+(j+1));
+											}
+										};
 
-										// Flatten into Vector3
-										fragOutput += "ap_rgb2 = nv(ap_rgbV4); \n";
+										//fragOutput = "ap_rgb2 = vec3(superFunction("+ clip.clipId +", _fxIn, "+clip.address+"_p1, "+clip.address+"_p2, "+clip.address+"_p3, "+clip.address+"_p4, "+clip.address+"_p5, "+clip.address+"_p6));";
+										fragOutput = "ap_rgb2 = superFunction("+ clip.clipId +", _fxIn, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+");";
+
+										// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
+										//fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
+										fragOutput = fragOutput.replace(/gl_FragCoord/g, "ap_xyz");
 
 
 										// ------------ Clip Mix Blend & Fx --------------
@@ -277,13 +285,11 @@ ChannelManager.prototype = {
 										fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
 										fragOutput = fragOutput.replace(/__/g, clip.address + "_"); // Also detect the clip shorthand '__'
 										
-										if(fx){
-											// If we are an effects clip set the incoming value from the last clip, or the last pod if we are the first clip
-											if(u === 0){
-												fragOutput = fragOutput.replace(/ap_fxIn/g, "ap_p");
-											}else{
-												fragOutput = fragOutput.replace(/ap_fxIn/g, "ap_rgb");
-											}
+										// For use by effects clips: set the incoming value from the last clip, or the last pod if we are the first clip
+										if(u === 0){
+											fragOutput = fragOutput.replace(/_fxIn/g, "ap_p");
+										}else{
+											fragOutput = fragOutput.replace(/_fxIn/g, "ap_rgb");
 										}
 
 										// Merge the clip fragment shaders as we move along
@@ -355,7 +361,16 @@ ChannelManager.prototype = {
 			output = output.replace(/_channel_/g, channel.address + "_") + "\n";
 		}
 
+		fragFuncHelpers = fragFuncHelpers.slice(5, fragFuncHelpers.length); // cut the first 'else' out 
+		fragFuncHelpers = "vec4 returnColor = vec4(0.,0.,0.,0.); \n" + fragFuncHelpers;
+		fragFuncHelpers += "return max(min(vec3(returnColor.x, returnColor.y, returnColor.z), vec3(1.0)), vec3(0.0)); \n";
+		fragFuncHelpers = "vec3 superFunction(int id, vec3 _fxIn, float _p1, float _p2, float _p3, float _p4, float _p5, float _p6) { \n" + fragFuncHelpers + "}\n";
+		
+		fragFuncOutput += fragFuncHelpers;
+
+
 		//console.log(uniforms);
+		//console.log(fragFuncOutput);
 		//console.log(output);
 
 		/*
@@ -372,7 +387,7 @@ ChannelManager.prototype = {
 		*/
 
 
-		return new Shader(uniforms, fragmentFunctionOutput, output + "\n");
+		return new Shader(uniforms, fragFuncOutput, output + "\n");
 
 	},
 

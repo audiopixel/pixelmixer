@@ -460,6 +460,8 @@ AppManager.prototype = {
 		frag = frag.replace(/_rgb/g, "_5");
 		frag = frag.replace(/_hsv/g, "_6");
 		frag = frag.replace(/resolution/g, "_7");
+		frag = frag.replace(/superFunction/g, "_8");
+		frag = frag.replace(/returnColor/g, "_9");
 		return frag;
 	}
 

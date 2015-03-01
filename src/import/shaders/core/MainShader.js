@@ -14,7 +14,7 @@ ap.MainShader = {
 		"float ap_index;",
 		"vec4 ap_xyz;",
 		"vec4 ap_xyz2;",
-		"vec3  ap_lastRgb;",
+		"vec3 ap_lastRgb;",
 		"vec3 ap_rgb = vec3(0.);",
 		"vec3 ap_hsv;",
 		"vec3 ap_rgb2;",

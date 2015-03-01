@@ -10,23 +10,17 @@ ap.clips.SimpleSwirlClip = {
 
 	},
 
-	variables: { // (optional internal variables)
-
-		"newp": { type: "v2" }
-
-	},
-
 	fragmentMain: [
 
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 4.);",
+		"vec2 p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (_p1 * 4.);",
 		"for(int i=1;i<50;i++)",
 		"{",
-			"newp=p;",
+			"vec2 newp=p;",
 			"newp.x+=0.6/float(i)*sin(float(i)*p.y+u_time*20.0/40.0+0.3*float(i))+1.0;",
 			"newp.y+=0.6/float(i)*sin(float(i)*p.x+u_time*20.0/40.0+0.3*float(i+10))-1.4;",
 			"p=newp;",
 		"}",
-		"c=vec3(0.5*sin(3.0*p.x)+0.5,0.5*sin(3.0*p.y)+0.5,sin(p.x+p.y));",
+		"vec3 c=vec3(0.5*sin(3.0*p.x)+0.5,0.5*sin(3.0*p.y)+0.5,sin(p.x+p.y));",
 		"gl_FragColor=vec4(c, 1.0);"
 
 	].join("\n")

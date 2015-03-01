@@ -10,16 +10,9 @@ ap.clips.LineCosSinClip = {
 
 	},
 
-	variables: { // (optional internal variables)
+	fragmentFunctions: [
 
-		"look": { type: "v2" },
-		"camDir": { type: "v3" }
-
-	},
-
-	fragmentFunctions: {
-
-		"rotateAxis": [ 
+		[ 
 			"vec3 rotateAxis(vec3 axis, float ang, vec3 vec)",
 			"{",
 				"axis = normalize(axis);",
@@ -28,7 +21,7 @@ ap.clips.LineCosSinClip = {
 
 		].join("\n"),
 
-		"colorSpace": [ 
+		[ 
 			"vec3 colorSpace(vec3 space){",
 				"vec3 s = space; ",
 				"space+=(2.+cos(s)+sin(s))/pi;",
@@ -54,22 +47,22 @@ ap.clips.LineCosSinClip = {
 
 		].join("\n")
 
-	},
+	],
 
 	fragmentMain: [
 
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 2.);",
+		"vec2 p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (_p1 * 2.);",
 		
 		//"look = (mouse-0.5)*2.0*pi;", // TODO add in mouse support
-		"look = vec2(.5,.5);",
+		"vec2 look = vec2(.5,.5);",
 		"look.y = -clamp(look.y,-pi/2.0,pi/2.0);",
 
-		"camDir = normalize(vec3(p-vec2(resolution.x/resolution.y,1.0) / 2.0, .5));",
+		"vec3 camDir = normalize(vec3(p-vec2(resolution.x/resolution.y,1.0) / 2.0, .5));",
 		
 		"camDir = rotateAxis(vec3(1,0,0),look.y,camDir);",
 		"camDir = rotateAxis(vec3(0,1,0),look.x,camDir);",
 		
-		"c = colorSpace(normalize(camDir)+sin((u_time * .35)/pi));",
+		"vec3 c = colorSpace(normalize(camDir)+sin((u_time * .35)/pi));",
 
 		"gl_FragColor = vec4( c, 1.0 );",
 

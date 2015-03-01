@@ -51,3 +51,13 @@ function merge(obj1, obj2){
 function lowestPowerOfTwo(x) {
 	return Math.pow(2, Math.ceil(Math.log(x)/Math.log(2)));
 }
+
+
+/*
+* Return the nth word of a string
+* http://stackoverflow.com/a/11620169
+*/
+function nthWord(str, n) {
+	var m = str.match(new RegExp('^(?:\\w+\\W+){' + --n + '}(\\w+)'));
+	return m && m[1];
+}

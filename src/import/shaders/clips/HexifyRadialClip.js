@@ -10,17 +10,9 @@ ap.clips.HexifyRadialClip = {
 
 	},
 
-	variables: { // (optional internal variables)
+	fragmentFunctions: [ 
 
-		"vr": { type: "f" },
-		"vg": { type: "f" },
-		"vb": { type: "f" }
-
-	},
-
-	fragmentFunctions: {
-
-		"hexifyWash": [ 
+		[ 
 			"vec2 hexifyWash(vec2 p,float hexCount){",
 				"p*=hexCount;",
 				"vec3 p2=floor(vec3(p.x/0.86602540378,p.y+0.57735026919*p.x,p.y-0.57735026919*p.x));",
@@ -31,16 +23,16 @@ ap.clips.HexifyRadialClip = {
 
 		].join("\n")
 
-	},
+	],
 
 	fragmentMain: [
 
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1);",
+		"vec2 p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (_p1);",
 		"p.x*=resolution.x/resolution.y;",
 		"p=hexifyWash(p,80.0);",
-		"vr = 0.5*sin(10.*sqrt((p.x-0.5)*(p.x-0.5)+(p.y-0.5)*(p.y-0.5))+u_time*2.5)+0.5;",
-		"vg = 0.5*sin(20.*sqrt((p.x-0.5)*(p.x-0.5)+(p.y-0.25)*(p.y-0.25))-u_time*3.5)+0.5;",
-		"vb = 0.5*sin(30.*sqrt((p.x-0.5)*(p.x-0.5)+(p.y)*(p.y))+u_time*1.5)+0.5;",
+		"float vr = 0.5*sin(10.*sqrt((p.x-0.5)*(p.x-0.5)+(p.y-0.5)*(p.y-0.5))+u_time*2.5)+0.5;",
+		"float vg = 0.5*sin(20.*sqrt((p.x-0.5)*(p.x-0.5)+(p.y-0.25)*(p.y-0.25))-u_time*3.5)+0.5;",
+		"float vb = 0.5*sin(30.*sqrt((p.x-0.5)*(p.x-0.5)+(p.y)*(p.y))+u_time*1.5)+0.5;",
 		"gl_FragColor = vec4(vr,vg,vb,1);"
 
 	].join("\n")

@@ -31,7 +31,7 @@ ap.clips.HueFxClip = {
 
 	fragmentMain: [
 
-		//"ap_fxIn", // use this to capture the incoming color value, and do something with it
+		//"_fxIn", // use this to capture the incoming color value, and do something with it
 
 		//"ap_fxOut", // use this to send the outgoing color value after the fx is complete
 
@@ -39,29 +39,29 @@ ap.clips.HueFxClip = {
 
 
 		// preamp
-		"cf = __p6;",
-		"c = (ap_fxIn*(cf)+ap_lastRgb*cf);",
+		"float cf = _p6;",
+		"vec3 c = (_fxIn*(cf)+ap_lastRgb*cf);",
 
-		"ap_fxIn = mix(c, ap_fxIn, (1. - min(1., (__p6 * .8))));",
+		"vec3 cfx = mix(c, _fxIn, (1. - min(1., (_p6 * .8))));",
 
 		// let's convert to hsv
-		"ap_hsv = rgb2hsv(ap_fxIn);",
+		"ap_hsv = rgb2hsv(cfx);",
 
 
 		// Clamp the hue
-		"ap_hsv.x *= __p2;",
+		"ap_hsv.x *= _p2;",
 
 		// Offset the hue
-		"ap_hsv.x += __p1;",
+		"ap_hsv.x += _p1;",
 		"if(ap_hsv.x > 1.0){",
 			"ap_hsv.x -= 1.0;",
 		"}",
 
 		// Clamp the saturation
-		"ap_hsv.y *= __p4;",
+		"ap_hsv.y *= _p4;",
 
 		// Offset the saturation
-		"ap_hsv.y += __p3;",
+		"ap_hsv.y += _p3;",
 		"if(ap_hsv.y > 1.0){",
 			"ap_hsv.y -= 1.0;",
 		"}",
@@ -69,10 +69,10 @@ ap.clips.HueFxClip = {
 
 /*
 		// Min and Max threshold
-		"t = __p4;",
+		"t = _p4;",
 		"if(t == 1.0){t = 0.0;}",
 		"if(ap_hsv[0] > 1.0){ ap_hsv[0] =  ap_hsv[0] - floor(ap_hsv[0]); }",
-		"if(t > __p3 && (ap_hsv[2] > t || ap_hsv[2] < __p3)){",
+		"if(t > _p3 && (ap_hsv[2] > t || ap_hsv[2] < _p3)){",
 			// Fully discard brightness for now - could soften with various factors
 			"ap_hsv[2] = 0.;",
 		"}",
@@ -80,8 +80,8 @@ ap.clips.HueFxClip = {
 /*
 		// whitesparkle based on threshold brightness
 		"ap_hsv[2] = min(ap_hsv[2], 1.0);",
-		"if(ap_hsv[2] > __p5){", //  && ap_hsv[1] >( __p5*.5)
-			"if(random > (.95 + ((1.0 - __p6) * .05) )){",
+		"if(ap_hsv[2] > _p5){", //  && ap_hsv[1] >( _p5*.5)
+			"if(random > (.95 + ((1.0 - _p6) * .05) )){",
 				"ap_hsv[1] = 0.0;",
 				"ap_hsv[2] = 1.0;",
 			"}else{",
@@ -93,10 +93,10 @@ ap.clips.HueFxClip = {
 
 /*
 		// whitesparkle based on hue
-		"t = ap_hsv[0] + __p5;",
+		"t = ap_hsv[0] + _p5;",
 		"if(t > 1.0){ t = t- floor(t); }",
 		"if(t < 0.05){",
-			"if(random > (0.8 + ((1.0 - __p6) * .3) )){",
+			"if(random > (0.8 + ((1.0 - _p6) * .3) )){",
 				"ap_hsv[2] = 1.0;",
 			"}",
 		"}",
@@ -106,10 +106,10 @@ ap.clips.HueFxClip = {
 		"c = hsv2rgb(ap_hsv);",
 
 		// smooth
-		"c = mix(c, ap_lastRgb, __p5);",
+		"c = mix(c, ap_lastRgb, _p5);",
 
 		// Output fx
-		"ap_fxOut = vec4(c.r, c.g, c.b, 1.0);" 
+		"gl_FragColor = vec4(c.r, c.g, c.b, 1.0);" 
 
 		].join("\n")
 

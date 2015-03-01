@@ -17,17 +17,17 @@ ap.clips.SolidColorClip = {
 	fragmentMain: [
 
 		// TODO add in control as RGB or HSV or both
-		"c = vec3(1., 0., 0.);",
-/*
+		"vec3 c = vec3(1., 0., 0.);",
+
 		// let's convert to hsv
 		"c = rgb2hsv(c);",
 
 		// Set the hue
-		"c.x = __p1;",
+		"c.x = _p1;",
 
 		// Convert back to rgb
 		"c = hsv2rgb(c);",
-*/
+
 
 		"gl_FragColor = vec4( c.r, c.g, c.b, 1.0 );"
 

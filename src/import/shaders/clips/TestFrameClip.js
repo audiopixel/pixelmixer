@@ -15,41 +15,26 @@ ap.clips.TestFrameClip = {
 		"p1": { value: 1.0, desc: "scale" }
 
 	},
-	
-	properties: { // (optional uniforms)
-
-		// These are internal properties that can be referenced from init/update methods, and passed as uniforms
-		"v1": { type: "f", value: 0.0 }
-
-	},
-	
-	variables: { // (optional internal variables)
-
-		"blue": { type: "f" },
-		"rx": { type: "f" },
-		"ry": { type: "f" }
-
-	},
 
 	// Optional helper functions used inside fragmentMain // TODO implement - to be defined with the shader importer
 
-	fragmentFunctions: {
+	fragmentFunctions: [
 
-		"red": [ "vec3 red() {",
+		[ "vec3 red() {",
 			"	return vec3(1.0, 0.0, 0.0);",
 			"}"
 
-			].join("\n"),
+		].join("\n"),
 
-		"red2": [
+		[
 
 			"vec4 red(float bright) {",
 			"	return vec4(bright, 0.0, 0.0, 1.0);",
 			"}"
 
-			].join("\n")
+		].join("\n")
 
-	},
+	],
 
 
 	fragmentMain: [ // Note we only need the Fragment shader and not the Vertex shader as well
@@ -94,13 +79,13 @@ ap.clips.TestFrameClip = {
 		* 
 		**/
 
-		"rx = gl_FragCoord.x / resolution.x;", // Example of using variable
-		"ry = gl_FragCoord.y / resolution.y;",
+		"float rx = gl_FragCoord.x / resolution.x;",
+		"float ry = gl_FragCoord.y / resolution.y;",
 
 		//"blue = red(0.0).r;", // Example of using a helper method
-		"blue = __v1;", // Example of using a property
+		"float blue = 0.;//__v1;", // Example of using a property
 
-		"cf = ((__p1 * .5) + .5) * .98;", // Example of using a built in already existing var (nice to not have to create another one)
+		"float cf = ((_p1 * .5) + .5) * .98;", // Example of using a built in already existing var (nice to not have to create another one)
 		
 		// Create a blue border
 		"if(ry < (1. - cf) || ry > (cf)){",
@@ -110,8 +95,11 @@ ap.clips.TestFrameClip = {
 		"}",
 
 		"gl_FragColor = vec4( rx, ry, blue, 1.0 );"
+		//"gl_FragColor = vec4( 0., 0., blue, 1.0 );"
 
 
+		//"vec3 c = vec3(1., 0., 0.);",
+		//"gl_FragColor = vec4( 0.5, 0., 1., 1.0 );"
 
 		].join("\n"),
 

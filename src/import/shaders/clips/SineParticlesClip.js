@@ -10,9 +10,9 @@ ap.clips.SineParticlesClip = {
 
 	},
 
-	fragmentFunctions: {
+	fragmentFunctions: [
 
-		"metaball": [ "float metaball(vec2 pos, float offset) {",
+		[ "float  metaball ( vec2 pos, float offset) {",
 				"float t = u_time + offset;",
 				"vec2 metaballPos = vec2(sin(t * .8), cos(t));",
 				"return 1. / length(pos - metaballPos);",
@@ -20,13 +20,13 @@ ap.clips.SineParticlesClip = {
 
 		].join("\n")
 
-	},
+	],
 	
 	fragmentMain: [
 
-		"p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (__p1 * 6.);",
+		"vec2 p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (_p1 * 6.);",
 
-		"cf = 0.;",
+		"float cf = 0.;",
 		"for(int i = 0; i < 20; i++) {",
 			"cf += metaball(p, float(i) / 5.) / 20.;",
 		"}",
