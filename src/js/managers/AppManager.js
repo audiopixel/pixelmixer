@@ -278,6 +278,8 @@ AppManager.prototype = {
 		var maxx = 0;
 		var miny = 100000000000;
 		var maxy = 0;
+		var minz = 100000000000;
+		var maxz = 0;
 
 		for ( var k = 0, kl = a.length; k < kl; k += 4 ) {
 			var x = 0;
@@ -293,6 +295,8 @@ AppManager.prototype = {
 				maxx = Math.max(maxx, x);
 				miny = Math.min(miny, y);
 				maxy = Math.max(maxy, y);
+				minz = Math.min(minz, z);
+				maxz = Math.max(maxz, z);
 
 				a[ k + 3 ] = 1;
 				t++;
@@ -307,7 +311,7 @@ AppManager.prototype = {
 
 		// We always set the first Pod Position as the bounding box that fits all nodes
 		// TODO add z depth
-		ap.channels.setPodPos(1, new PodPosition(minx, miny, 0, maxx - minx, maxy - miny, 1));
+		ap.channels.setPodPos(1, new PodPosition(minx, miny, minz, maxx - minx, maxy - miny, maxz - minz));
 		//console.log(new PodPosition(minx, miny, 0, maxx - minx, maxy - miny, 1));
 
 		// Testing on pod pos #2
@@ -462,6 +466,9 @@ AppManager.prototype = {
 		frag = frag.replace(/resolution/g, "_7");
 		frag = frag.replace(/superFunction/g, "_8");
 		frag = frag.replace(/returnColor/g, "_9");
+		frag = frag.replace(/checkBounds/g, "_b");
+		frag = frag.replace(/getPodSize/g, "_e");
+		frag = frag.replace(/getPodPos/g, "_s");
 		return frag;
 	}
 

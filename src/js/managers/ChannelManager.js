@@ -117,11 +117,13 @@ ChannelManager.prototype = {
 		var uniforms = {};
 		var fragList = {};
 		var fragFuncList = {};
-		var fragFuncOutput = "";
+		var fragFuncOutput = this.generateSizingFunctions();
 		var fragFuncHelpers = "";
 		var output = "";
 		var fragOutput = "";
 		var lastKnownPos = {};
+
+
 
 		// Now create the mixed down output
 		for (var i = 0; i < this.channels.length; i++) {
@@ -164,14 +166,14 @@ ChannelManager.prototype = {
 								output += "resolution = vec2(" + podPos.w + ", " + podPos.h + "); \n";
 
 								// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
-								output += "ap_xyz.x = ap_xyz2.x - " + podPos.x.toFixed(1) + "; \n";
-								output += "ap_xyz.y = ap_xyz2.y - " + podPos.y.toFixed(1) + "; \n";
-							}
 							
+								output += "ap_xyz = vec4(ap_xyz2.x - " + podPos.x.toFixed(1) + ", ap_xyz2.y - " + podPos.y.toFixed(1) + ", ap_xyz2.z - " + podPos.z.toFixed(1) + ", ap_xyz.w); \n";
+							}
 
 							// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
-							output += "if(ap_xyz2.x >= " + podPos.x.toFixed(1) + " && ap_xyz2.y >= " + podPos.y.toFixed(1) + " && ap_xyz2.x <= " + (podPos.w + podPos.x).toFixed(1) + " && ap_xyz2.y <= " + (podPos.h + podPos.y).toFixed(1) + ") { \n";
+							output += "if(checkBounds(ap_xyz2, "+pod.positionIds[o]+") > 0.){ \n";
 
+							
 							// TODO add mirroring support
 								// stored on the pod position: flipx, flipy, flipz	
 								// switch each ap_xyz axis accordinaly
@@ -391,8 +393,49 @@ ChannelManager.prototype = {
 
 	},
 
+	generateSizingFunctions: function () {
+		
+		var m = "";
+		for (var i = 0; i < this.podpositions.length; i++) {
+			m += "else if(d == " + (i+1) + "){\n";
+			m += "p = vec3("+this.podpositions[i].x+","+this.podpositions[i].y+","+this.podpositions[i].z+");\n";
+			m += "}\n";
+		}
+		m = m.slice(5, m.length); // cut the first 'else' out 
+		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
+		m += "return p; \n";
+		m = "vec3 getPodPos(int d) { \n" + m + "}\n";
+
+		var output = m;
+
+		m = "";
+		for (var i = 0; i < this.podpositions.length; i++) {
+			m += "else if(d == " + (i+1) + "){\n";
+			m += "p = vec3("+this.podpositions[i].w+","+this.podpositions[i].h+","+this.podpositions[i].d+");\n";
+			m += "}\n";
+		}
+		m = m.slice(5, m.length); // cut the first 'else' out 
+		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
+		m += "return p; \n";
+		m = "vec3 getPodSize(int d) { \n" + m + "}\n";
+
+		output += m;
+	
+		output += ["float checkBounds(vec4 b, int p)",
+		"{",										
+			"vec3 s = getPodPos(p);",
+			"if(b.x >= s.x && b.y >= s.y && b.z >= s.z){ ",
+				"vec3 e = getPodSize(p);",
+				"if(b.x <= (e.x + s.x) && b.y <= (e.y + s.y) && b.z <= (e.z + s.z)) {",
+				"	return 1.;",
+			"}}",			
+		"	return 0.;",
+		"}"].join("\n");
+		return output;
+	},
 
 	// ************* Channels ***********************
+
 
 	setChannel: function (channelId, channelObject) {
 		this.channels[channelId-1] = channelObject;

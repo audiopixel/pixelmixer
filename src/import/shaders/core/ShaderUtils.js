@@ -65,6 +65,7 @@ ap.shaders.ShaderUtils = [
 	  "  return max(min(vec3(c.r, c.g, c.b), vec3(1.0)), vec3(0.0));",
 	"}",
 */
+	
 	"float rand(vec2 co)",
 	"{",
 	  "  highp float a = 12.9898;",

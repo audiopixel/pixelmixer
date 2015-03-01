@@ -31,7 +31,7 @@ UiManager.prototype = {
 
 			//pods[3] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Fx)]);
 			//pods[2] = new Pod(3, mix, ap.BLEND.Add, [new Clip(3, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
-			pods[1] = new Pod([2, 3], mix, ap.BLEND.LinearLight, [new Clip(12, mix, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+			pods[1] = new Pod([2], mix, ap.BLEND.LinearLight, [new Clip(12, mix, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
 			pods[0] = new Pod([1], mix, ap.BLEND.Add, [new Clip(8, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
 
 			ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
@@ -149,18 +149,18 @@ UiManager.prototype = {
 				switch(_in){
 					case ap.demoHardware[0]:
 
-						ap.channels.setPodPos(2, new PodPosition(-190, 140, 0, 1070, 575, 1));
+						ap.channels.setPodPos(2, new PodPosition(-190, 140, -1000, 1070, 575, 2000));
 						ap.hardware.importNodes(ap.imported, 1, 0, 0, 0);
 						break;
 					case ap.demoHardware[1]:
 
-						ap.channels.setPodPos(2, { x: -339, y: 30, z: 10, w: 1378, h: 738, d: 1 });
+						ap.channels.setPodPos(2, { x: -339, y: 30, z: -1000, w: 1378, h: 738, d: 2000 });
 						ap.hardware.addTestPortsGrid3(1, 0, 0);
 						break;
 
 					case ap.demoHardware[2]:
 
-						ap.channels.setPodPos(2, new PodPosition(-190, 286, 0, 1070, 242, 1));
+						ap.channels.setPodPos(2, new PodPosition(-190, 286, -1000, 1070, 242, 2000));
 						ap.hardware.addTestPortsGrid(1, 0, 0);
 						break;
 
