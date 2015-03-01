@@ -159,8 +159,9 @@ ChannelManager.prototype = {
 
 							// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
 							
-						} output += "ap_xyz.x = ap_xyz2.x - " + podPos.x.toFixed(1) + "; \n";
-							output += "ap_xyz.y = ap_xyz2.y - " + podPos.y.toFixed(1) + "; \n";
+						}
+						output += "ap_xyz.x = ap_xyz2.x - " + podPos.x.toFixed(1) + "; \n";
+						output += "ap_xyz.y = ap_xyz2.y - " + podPos.y.toFixed(1) + "; \n";
 
 						// Declare each clips variables, but we can't declare them more than once so record which ones we have declared already
 						for (var u = 0; u < pod.clips.length; u++) {
@@ -281,10 +282,34 @@ ChannelManager.prototype = {
 									output += fragOutput;
 								}
 							}
+
 						}
+					
+						//  -------------- Pod Mix Blend & Fx --------------
+
+						// If we are the very first pod mix output value, don't blend from previous pod
+						if(e === 0){
+							output += "ap_p = ap_rgb * (_pod_mix); \n";
+
+						}else{
+							if(fxPod){
+								// Fx pod: mix the original with the result of fx
+
+								//output += "ap_p = ap_rgb; \n";
+								output += "ap_p = mix(ap_p, ap_rgb, _pod_mix); \n";
+
+							}else{
+								// Blend in last pod with current pod, if it's not the first pod in this channel
+								output += "ap_rgb = ap_rgb * (_pod_mix); \n";
+								output += "ap_p = blend(ap_p, ap_rgb, _pod_blend); \n";
+								//output += "//-------------=-=- \n";
+							}
+						}
+
+						output = output.replace(/_pod_/g, pod.address + "_") + "\n";
 						
 						// If the clips are not in this pod set color value to 0 unless it's a fx and let the value pass }
-						output += "}";output += " else{ ap_rgb = ap_p; } \n";
+						output += "}";//output += " else{ ap_rgb = ap_p; } \n";
 
 						if(fxPod){
 							// If this is an effects pod don't change values for anything outside the bounding box
@@ -295,30 +320,6 @@ ChannelManager.prototype = {
 						}
 					}
 
-					
-					//  -------------- Pod Mix Blend & Fx --------------
-
-					// If we are the very first pod mix output value, don't blend from previous pod
-					if(e === 0){
-						output += "ap_rgb = ap_rgb * (_pod_mix); \n";
-						output += "ap_p = ap_rgb; \n";
-
-					}else{
-						if(fxPod){
-							// Fx pod: mix the original with the result of fx
-
-							//output += "ap_p = ap_rgb; \n";
-							output += "ap_p = mix(ap_p, ap_rgb, _pod_mix); \n";
-
-						}else{
-							// Blend in last pod with current pod, if it's not the first pod in this channel
-							output += "ap_rgb = ap_rgb * (_pod_mix); \n";
-							output += "ap_p = blend(ap_p, ap_rgb, _pod_blend); \n";
-							//output += "//-------------=-=- \n";
-						}
-					}
-
-					output = output.replace(/_pod_/g, pod.address + "_") + "\n";
 				}
 
 			}
@@ -343,7 +344,7 @@ ChannelManager.prototype = {
 		}
 
 		//console.log(uniforms);
-		//console.log(output);
+		console.log(output);
 
 		/*
 		// TODO regenerate Metamap data: (if any of this changed)
