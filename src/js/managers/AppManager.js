@@ -40,7 +40,7 @@ var AppManager = function (container) {
 
 	this.time = 0;
 	this.speed = 0.045;
-	this.simSize = 128;
+	this.simSize = 256;
 	this.pixels;
 	this.readPixels = false;
 

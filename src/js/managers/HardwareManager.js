@@ -18,7 +18,9 @@ HardwareManager.prototype = {
 		
 		// Simulate Importing nodes from external file
 		this.importNodes(ap.imported, 1, 350, 100, 500);
-		ap.channels.setPodPos(2, new PodPosition(-190, 140, 0, 1070, 575, 1));
+		//ap.channels.setPodPos(2, new PodPosition(-190, 140, 0, 1070, 575, 1));
+		ap.channels.setPodPos(2, new PodPosition(-540, 140, 0, 700, 575, 1));
+		ap.channels.setPodPos(3, new PodPosition(540, 120, 0, 700, 575, 1));
 
 		//this.addTestPortsGrid3(1, 0, 0);
 

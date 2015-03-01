@@ -149,19 +149,6 @@ ChannelManager.prototype = {
 					// Set pod position data for use by all the clips in this pod
 					if(pod.clips && pod.clips.length){
 
-						// TODO account for resolution to use 3D if there is depth data
-						var podPos = this.getPodPos(pod.positionId);
-
-						// Set the resolution (if it's changed) for the next set of nodes to be the current pods position bounding box
-						if(lastKnownPos !== podPos){
-							output += "resolution = vec2(" + podPos.w + ", " + podPos.h + "); \n";
-							lastKnownPos = podPos;
-
-							// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
-							
-						}
-						output += "ap_xyz.x = ap_xyz2.x - " + podPos.x.toFixed(1) + "; \n";
-						output += "ap_xyz.y = ap_xyz2.y - " + podPos.y.toFixed(1) + "; \n";
 
 						// Declare each clips variables, but we can't declare them more than once so record which ones we have declared already
 						for (var u = 0; u < pod.clips.length; u++) {
@@ -188,137 +175,160 @@ ChannelManager.prototype = {
 							}
 						}output += "\n";
 
-						// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
-						output += "if(ap_xyz2.x >= " + podPos.x.toFixed(1) + " && ap_xyz2.y >= " + podPos.y.toFixed(1) + " && ap_xyz2.x <= " + (podPos.w + podPos.x).toFixed(1) + " && ap_xyz2.y <= " + (podPos.h + podPos.y).toFixed(1) + ") { \n";
 
+						for (var o = 0; o < pod.positionIds.length; o++) {
 
-						fxPod = true; // If the only clips that are in this pod are fx's then treat pod as a fx output and don't blend
-						for (u = 0; u < pod.clips.length; u++) {
+							output += "/////////////////////////////////------------------------------ \n";
 
-							var clip = pod.clips[u];
-							if(clip){
+							// TODO account for resolution to use 3D if there is depth data
+							var podPos = this.getPodPos(pod.positionIds[o]);
 
-								var srcClip = ap.clips[ap.register[clip.clipId]];
-								clip.address = pod.address +"_" + (u+1);
-								if(srcClip){
+							// Set the resolution (if it's changed) for the next set of nodes to be the current pods position bounding box
+							if(lastKnownPos !== podPos){
+								lastKnownPos = podPos;
+								output += "resolution = vec2(" + podPos.w + ", " + podPos.h + "); \n";
 
-									// If the Clip defined properties define them as addressed uniforms
-									for (var property in srcClip.properties) {
-										uniforms[clip.address + "_" + property] = srcClip.properties[property];
-									}
-
-									// If the clip defined optional init() method call it with addressing
-									if(srcClip.init){
-										srcClip.init(clip.address, uniforms);
-									}
-
-									// Create params with default values
-									for (var param in srcClip.params) {
-										uniforms[clip.address + "_" + param] = { type: "f", value: srcClip.params[param].value };
-									}
-
-
-									// uniforms 'mix' & 'blend' for the clip
-									uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
-									uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
-
-
-									// Lookup the correct imported clip based on the id stored on the clip object
-									fragOutput = srcClip.fragmentMain + "\n";
-
-									// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
-									fragOutput = fragOutput.replace(/gl_FragColor/g, "ap_rgbV4");
-									fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
-									fragOutput = fragOutput.replace(/gl_FragCoord/g, "ap_xyz");
-
-									// Normalize into Vector3
-									fragOutput += "ap_rgb2 = vec3(ap_rgbV4.r, ap_rgbV4.g, ap_rgbV4.b); \n"; // vec4 -> vec3
-									fragOutput += "ap_rgb2 = max(min(ap_rgb2, vec3(1.0)), vec3(0.0)); \n";
-
-
-
-									// ------------ Clip Mix Blend & Fx --------------
-
-									var fx = ap.clips[ap.register[clip.clipId]].fx;
-									if(u === 0){
-										
-										fragOutput += "ap_rgb = ap_rgb2; \n";
-										if(!fx && !fxChannel){
-											fxPod = fxChannel;
-											fragOutput += "ap_rgb = ap_rgb * (_clip_mix); \n";  // Clip mix for this shader
-										}else{
-											fragOutput += "ap_rgb = mix(ap_p, ap_rgb2, _clip_mix); \n";
-										}
-
-									}else{
-
-										if(fx || fxChannel){
-											// Fx clip: mix the original with the result of fx
-											fragOutput += "ap_rgb = mix(ap_rgb, ap_rgb2, _clip_mix); \n";
-
-										}else{
-											// Blend in the shader with ongoing mix
-											fragOutput += "ap_rgb2 = ap_rgb2 * (_clip_mix); \n";
-											fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, _clip_blend); \n"; // Clip mix for this shader
-											fxPod = fxChannel;
-										}
-
-									}
-
-									// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
-									fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
-									fragOutput = fragOutput.replace(/__/g, clip.address + "_"); // Also detect the clip shorthand '__'
-									
-									if(fx){
-										// If we are an effects clip set the incoming value from the last clip, or the last pod if we are the first clip
-										if(u === 0){
-											fragOutput = fragOutput.replace(/ap_fxIn/g, "ap_p");
-										}else{
-											fragOutput = fragOutput.replace(/ap_fxIn/g, "ap_rgb");
-										}
-									}
-
-									// Merge the clip fragment shaders as we move along
-									output += fragOutput;
-								}
+								// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
+								output += "ap_xyz.x = ap_xyz2.x - " + podPos.x.toFixed(1) + "; \n";
+								output += "ap_xyz.y = ap_xyz2.y - " + podPos.y.toFixed(1) + "; \n";
 							}
+							
 
-						}
-					
-						//  -------------- Pod Mix Blend & Fx --------------
+							// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
+							output += "if(ap_xyz2.x >= " + podPos.x.toFixed(1) + " && ap_xyz2.y >= " + podPos.y.toFixed(1) + " && ap_xyz2.x <= " + (podPos.w + podPos.x).toFixed(1) + " && ap_xyz2.y <= " + (podPos.h + podPos.y).toFixed(1) + ") { \n";
 
-						// If we are the very first pod mix output value, don't blend from previous pod
-						if(e === 0){
-							output += "ap_p = ap_rgb * (_pod_mix); \n";
 
-						}else{
-							if(fxPod){
-								// Fx pod: mix the original with the result of fx
+							fxPod = true; // If the only clips that are in this pod are fx's then treat pod as a fx output and don't blend
+							for (u = 0; u < pod.clips.length; u++) {
 
-								//output += "ap_p = ap_rgb; \n";
-								output += "ap_p = mix(ap_p, ap_rgb, _pod_mix); \n";
+								var clip = pod.clips[u];
+								if(clip){
+
+									var srcClip = ap.clips[ap.register[clip.clipId]];
+									clip.address = pod.address +"_" + (u+1);
+									if(clip.clipId > 0 && srcClip){
+
+										// If the Clip defined properties define them as addressed uniforms
+										for (var property in srcClip.properties) {
+											uniforms[clip.address + "_" + property] = srcClip.properties[property];
+										}
+
+										// If the clip defined optional init() method call it with addressing
+										if(srcClip.init){
+											srcClip.init(clip.address, uniforms);
+										}
+
+										// Create params with default values
+										for (var param in srcClip.params) {
+											uniforms[clip.address + "_" + param] = { type: "f", value: srcClip.params[param].value };
+										}
+
+
+										// uniforms 'mix' & 'blend' for the clip
+										uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
+										uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
+
+
+										// Lookup the correct imported clip based on the id stored on the clip object
+										fragOutput = srcClip.fragmentMain + "\n";
+
+										// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
+										fragOutput = fragOutput.replace(/gl_FragColor/g, "ap_rgbV4");
+										fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
+										fragOutput = fragOutput.replace(/gl_FragCoord/g, "ap_xyz");
+
+										// Normalize into Vector3
+										fragOutput += "ap_rgb2 = vec3(ap_rgbV4.r, ap_rgbV4.g, ap_rgbV4.b); \n"; // vec4 -> vec3
+										fragOutput += "ap_rgb2 = max(min(ap_rgb2, vec3(1.0)), vec3(0.0)); \n";
+
+
+										// ------------ Clip Mix Blend & Fx --------------
+
+										var fx = ap.clips[ap.register[clip.clipId]].fx;
+										if(u === 0){
+											
+											fragOutput += "ap_rgb = ap_rgb2; \n";
+											if(!fx && !fxChannel){
+												fxPod = fxChannel;
+												fragOutput += "ap_rgb = ap_rgb * (_clip_mix); \n";  // Clip mix for this shader
+											}else{
+												fragOutput += "ap_rgb = mix(ap_p, ap_rgb2, _clip_mix); \n";
+											}
+
+										}else{
+
+											if(fx || fxChannel){
+												// Fx clip: mix the original with the result of fx
+												fragOutput += "ap_rgb = mix(ap_rgb, ap_rgb2, _clip_mix); \n";
+
+											}else{
+												// Blend in the shader with ongoing mix
+												fragOutput += "ap_rgb2 = ap_rgb2 * (_clip_mix); \n";
+												fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, _clip_blend); \n"; // Clip mix for this shader
+												fxPod = fxChannel;
+											}
+
+										}
+
+										// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
+										fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
+										fragOutput = fragOutput.replace(/__/g, clip.address + "_"); // Also detect the clip shorthand '__'
+										
+										if(fx){
+											// If we are an effects clip set the incoming value from the last clip, or the last pod if we are the first clip
+											if(u === 0){
+												fragOutput = fragOutput.replace(/ap_fxIn/g, "ap_p");
+											}else{
+												fragOutput = fragOutput.replace(/ap_fxIn/g, "ap_rgb");
+											}
+										}
+
+										// Merge the clip fragment shaders as we move along
+										output += fragOutput;
+									}
+								}
+
+							}
+						
+							//  -------------- Pod Mix Blend & Fx --------------
+
+							// If we are the very first pod mix output value, don't blend from previous pod
+							if(e === 0){
+								output += "ap_p = ap_rgb * (_pod_mix); \n";
 
 							}else{
-								// Blend in last pod with current pod, if it's not the first pod in this channel
-								output += "ap_rgb = ap_rgb * (_pod_mix); \n";
-								output += "ap_p = blend(ap_p, ap_rgb, _pod_blend); \n";
-								//output += "//-------------=-=- \n";
+								if(fxPod){
+									// Fx pod: mix the original with the result of fx
+
+									//output += "ap_p = ap_rgb; \n";
+									output += "ap_p = mix(ap_p, ap_rgb, _pod_mix); \n";
+
+								}else{
+									// Blend in last pod with current pod, if it's not the first pod in this channel
+									output += "ap_rgb = ap_rgb * (_pod_mix); \n";
+									output += "ap_p = blend(ap_p, ap_rgb, _pod_blend); \n";
+									//output += "//-------------=-=- \n";
+								}
 							}
-						}
+							
+							// If the clips are not in this pod set color value to 0 unless it's a fx and let the value pass }
+							output += "}";//output += " else{ ap_rgb = ap_p; } \n";
 
-						output = output.replace(/_pod_/g, pod.address + "_") + "\n";
+							if(fxPod){
+								// If this is an effects pod don't change values for anything outside the bounding box
+								//output += " else{ ap_rgb = ap_p; } \n";
+							}else{
+								// Otherwise clear any values that are outside the bounding box
+								//output += " else{ ap_rgb = vec3(0.0);} \n";
+							}
 						
-						// If the clips are not in this pod set color value to 0 unless it's a fx and let the value pass }
-						output += "}";//output += " else{ ap_rgb = ap_p; } \n";
+							output += "/////////////////////////////////-------------//-------------- \n";
 
-						if(fxPod){
-							// If this is an effects pod don't change values for anything outside the bounding box
-							//output += " else{ ap_rgb = ap_p; } \n";
-						}else{
-							// Otherwise clear any values that are outside the bounding box
-							//output += " else{ ap_rgb = vec3(0.0);} \n";
 						}
+
 					}
+
+					output = output.replace(/_pod_/g, pod.address + "_") + "\n";
 
 				}
 
@@ -328,8 +338,7 @@ ChannelManager.prototype = {
 			//  -------------- Channel Mix & Fx --------------
 
 			if(i === 0){
-				output += "ap_p = ap_p * (_channel_mix); \n";
-				output += "ap_c = ap_p; \n";
+				output += "ap_c = ap_p = ap_p * (_channel_mix); \n";
 			}else{
 
 				if(fxChannel){
