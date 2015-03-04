@@ -22,6 +22,7 @@ ap.MainShader = {
 		"vec3 ap_c = vec3(0.);",
 		"vec3 ap_p = vec3(0.);",
 		"vec2 resolution;",
+		"float random;",
 
 		"varying vec2 v_vUv;",
 		"uniform float u_time;",
@@ -30,13 +31,6 @@ ap.MainShader = {
 		"uniform sampler2D u_coordsMap;",
 		"uniform sampler2D u_prevCMap;",
 		//uniform sampler2D u_portsMap;
-
-		// Temporary use values
-		"float random;",
-		"vec2 p; ",
-		"vec3 c;",
-		"float cf;",
-		"float t;",
 
 		// TODO optimize this list to only include what we need each regeneration
 		"#define ptpi 1385.4557313670110891409199368797 //powten(pi)",

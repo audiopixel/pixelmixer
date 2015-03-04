@@ -161,7 +161,22 @@ AppManager.prototype = {
 			// Render the node and plane scene using the generated texture
 			this.renderer.render( this.scene, this.camera );
 		}
-		
+
+
+
+		//TESTING************
+
+		//ap.channels.setPodPos(2, { x: -339, y: 30, z: -1000, w: 1378, h: 738, d: 2000 });
+		//ap.hardware.addTestPortsGrid(1, 0, 0);
+		//this.updateGeometry();
+		//this.generateCoordsMap();
+
+		// this.updateNodePoints();
+
+		//this.material.uniforms.u_coordsMap.value = this.coordsMap;
+		//this.pointCloud.geometry = this.geometry;
+		//this.pointCloud.geometry.verticesNeedUpdate = true;
+
 	},
 
 	setSize: function(width, height){
@@ -219,9 +234,8 @@ AppManager.prototype = {
 
 	/////////////////
 
-	// Should get called whenever there are any changes on PortManager
-	// (This is the main view that should reflect state)
-	updateNodePoints: function () {
+
+	updateGeometry: function () {
 
 		// Reset values and grab entire state fresh. Note this is only called once when hardware is added or removed
 		this.geoX = [];
@@ -262,7 +276,13 @@ AppManager.prototype = {
 				}
 			}
 		}
+	},
 
+	// Should get called whenever there are any changes on PortManager
+	// (This is the main view that should reflect state)
+	updateNodePoints: function () {
+
+		this.updateGeometry();
 		this.generateCoordsMap();
 		this.createNodePointCloud();
 
@@ -404,7 +424,6 @@ AppManager.prototype = {
 				}
 			}
 		}
-
 
 		// Internal core shader is merged with the loaded shaders
 		this.fragmentShader = ap.MainShader.fragmentShader;
