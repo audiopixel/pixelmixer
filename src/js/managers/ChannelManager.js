@@ -138,6 +138,9 @@ ChannelManager.prototype = {
 				fxChannel = true;
 			}
 
+			output += "if(_channel_mix>0.){ \n";
+
+
 			// uniform 'mix' for the channel
 			uniforms[channel.address + "_mix"] = { type: "f", value: channel.mix }; // TODO modulation uniforms 
 
@@ -177,7 +180,7 @@ ChannelManager.prototype = {
 							}
 
 							// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
-							output += "if(checkBounds(ap_xyz2, "+pod.positionIds[o]+") > 0.){ \n";
+							output += "if(_pod_mix > 0. && checkBounds(ap_xyz2, "+pod.positionIds[o]+") > 0.){ \n";
 
 							
 							// TODO add mirroring support
@@ -254,7 +257,7 @@ ChannelManager.prototype = {
 										};
 
 										//fragOutput = "ap_rgb2 = vec3(superFunction("+ clip.clipId +", _fxIn, "+clip.address+"_p1, "+clip.address+"_p2, "+clip.address+"_p3, "+clip.address+"_p4, "+clip.address+"_p5, "+clip.address+"_p6));";
-										fragOutput = "ap_rgb2 = superFunction("+ clip.clipId +", _fxIn, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+");";
+										fragOutput = "ap_rgb2 = superFunction(_clip_mix, "+ clip.clipId +", _fxIn, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+");";
 
 										// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
 										//fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
@@ -362,17 +365,18 @@ ChannelManager.prototype = {
 					output += "ap_c = mix(ap_c, ap_p, _channel_mix); \n";
 				}else{
 					output += "ap_p = ap_p * (_channel_mix); \n";
-					output += "ap_c = blend(ap_c, ap_p, 1.0); \n"; // Channels always blend using 'add'
+					output += "ap_c = blend(ap_c, ap_p, 1.); \n"; // Channels always blend using 'add'
 				}
 			}
+			output += "}";
 
 			output = output.replace(/_channel_/g, channel.address + "_") + "\n";
 		}
 
 		fragFuncHelpers = fragFuncHelpers.slice(5, fragFuncHelpers.length); // cut the first 'else' out 
-		fragFuncHelpers = "vec4 returnColor = vec4(0.,0.,0.,0.); \n" + fragFuncHelpers;
+		fragFuncHelpers = "vec4 returnColor = vec4(0.,0.,0.,0.); if(_mi == 0.){return vec3(0.,0.,0.);} \n" + fragFuncHelpers;
 		fragFuncHelpers += "return max(min(vec3(returnColor.x, returnColor.y, returnColor.z), vec3(1.0)), vec3(0.0)); \n";
-		fragFuncHelpers = "vec3 superFunction(int id, vec3 _fxIn, float _p1, float _p2, float _p3, float _p4, float _p5, float _p6) { \n" + fragFuncHelpers + "}\n";
+		fragFuncHelpers = "vec3 superFunction(float _mi, int id, vec3 _fxIn, float _p1, float _p2, float _p3, float _p4, float _p5, float _p6) { \n" + fragFuncHelpers + "}\n";
 		
 		fragFuncOutput += fragFuncHelpers;
 

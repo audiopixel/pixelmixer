@@ -70,8 +70,9 @@ ap.MainShader = {
 			
 			//********************************************
 			
-			"ap_xyz = texture2D( u_coordsMap, v_vUv);", // coordinates that get overwritten with each pod
-			"ap_xyz2 = ap_xyz;", // coordinates that do not get overwritten (original)
+			// ap_xyz: coordinates that get overwritten with each pod
+			// ap_xyz2: original reference coordinates that never get overwritten
+			"ap_xyz2 = ap_xyz = texture2D( u_coordsMap, v_vUv);",
 			"if(ap_xyz[3] == 0.0){ discard; }",
 
 			"ap_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);",
