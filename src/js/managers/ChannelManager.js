@@ -115,6 +115,7 @@ ChannelManager.prototype = {
 	generateSourceShader: function () {
 
 		var uniforms = {};
+		var constants = {};
 		var fragList = {};
 		var fragFuncList = {};
 		var fragFuncOutput = this.generateSizingFunctions();
@@ -196,8 +197,19 @@ ChannelManager.prototype = {
 
 									var srcClip = ap.clips[ap.register[clip.clipId]];
 
+
 									if(!fragList[pod.clips[u].clipId]){
 										fragList[pod.clips[u].clipId] = true;
+
+										// Declare each clips constants, but we can't declare them more than once so record which ones we have declared already
+										for (var variable in srcClip.constants) {
+
+											if(!constants[variable]){ // If we don't already have the constant mark it as in use and include it.
+												constants[variable] = 1; 
+												var type = getVariableTypeFromShorthand(srcClip.constants[variable].type);
+												fragFuncOutput += type + " " + variable + " = " + srcClip.constants[variable].value + ";";
+											}
+										}fragFuncOutput += "\n";
 
 										if(srcClip.fragmentFunctions){
 											for (var v = 0; v < srcClip.fragmentFunctions.length; v++) {
