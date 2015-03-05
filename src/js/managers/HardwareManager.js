@@ -15,6 +15,30 @@ HardwareManager.prototype = {
 /*
 		
 */
+
+		var translation = [-150, 0, -360];
+		var rotation = [degToRad(190), degToRad(40), degToRad(320)];
+		var scale = [1, 1, 1];
+		var fieldOfViewRadians = degToRad(60);
+
+		// Compute the matrices
+		var translationMatrix = makeTranslation(translation[0], translation[1], translation[2]);
+		var rotationXMatrix = makeXRotation(rotation[0]);
+		var rotationYMatrix = makeYRotation(rotation[1]);
+		var rotationZMatrix = makeZRotation(rotation[2]);
+		var scaleMatrix = makeScale(scale[0], scale[1], scale[2]);
+
+		// Multiply the matrices.
+		var matrix = matrixMultiply(scaleMatrix, rotationZMatrix);
+		matrix = matrixMultiply(matrix, rotationYMatrix);
+		matrix = matrixMultiply(matrix, rotationXMatrix);
+		matrix = matrixMultiply(matrix, translationMatrix);
+
+		// Set the matrix.
+		//gl.uniformMatrix4fv(matrixLocation, false, matrix);
+
+		console.log(matrix);
+		
 		
 		// Simulate Importing nodes from external file
 		this.importNodes(ap.imported, 1, 350, 100, 500);

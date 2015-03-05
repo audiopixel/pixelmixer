@@ -459,7 +459,26 @@ ChannelManager.prototype = {
 		// Offset xyz from pod position id
 		output += "vec4 offsetPos(vec4 b, int p, float w){\n";
 			output += "vec3 s = getPodPos(p);\n",
-			output += "return vec4(b.x - s.x, b.y - s.y, b.z - s.z, w);\n";
+			output += "vec3 e = getPodSize(p);\n",
+			output += "float x = b.x - s.x;\n",
+			output += "float y = b.y - s.y;\n",
+			output += "float z = b.z - s.z;\n",
+
+			// math for simple mirror:
+			//output += "x = x * -3.5 + e.x;\n",
+			//output += "y = y * -1. + e.y;\n",
+			//output += "z = z * -1. + e.z;\n",
+
+			// translate: 
+			//output += "x += (e.x * 2. * .3);\n", //.3 is the mod
+
+			// scale/flip/mirror:
+			//output += "x += (b.x - (e.x * .5 + s.x)) * -2.;\n", //.6 is the mod
+
+			//angleInRadians = angleInDegrees * Math.PI / 180;
+
+
+			output += "return vec4(x, y, z, w);\n";
 		output += "}\n";
 
 		return output;
