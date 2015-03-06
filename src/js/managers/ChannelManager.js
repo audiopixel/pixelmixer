@@ -261,15 +261,14 @@ ChannelManager.prototype = {
 										fragOutput = srcClip.fragmentMain + "\n";
 
 										// Pass along input param values if they are defined on clip
-										var params = ["0.","0.","0.","0.","0.","0."];
+										var params = ["0.","0.","0.","0.","0.","0.","0.","0.","0."];
 										for (var j = 0; j < params.length; j++) {
 											if(srcClip.params["p"+(j+1)]){
 												params[j] = (clip.address+"_p"+(j+1));
 											}
 										};
 
-										//fragOutput = "ap_rgb2 = vec3(superFunction("+ clip.clipId +", _fxIn, "+clip.address+"_p1, "+clip.address+"_p2, "+clip.address+"_p3, "+clip.address+"_p4, "+clip.address+"_p5, "+clip.address+"_p6));";
-										fragOutput = "ap_rgb2 = superFunction(_clip_mix, "+ clip.clipId +", _fxIn, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+");";
+										fragOutput = "ap_rgb2 = superFunction(_clip_mix, "+ clip.clipId +", _fxIn, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
 
 										// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
 										//fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
@@ -388,7 +387,7 @@ ChannelManager.prototype = {
 		fragFuncHelpers = fragFuncHelpers.slice(5, fragFuncHelpers.length); // cut the first 'else' out 
 		fragFuncHelpers = "vec4 returnColor = vec4(0.,0.,0.,0.); if(_mi == 0.){return vec3(0.,0.,0.);} \n" + fragFuncHelpers;
 		fragFuncHelpers += "return max(min(vec3(returnColor.x, returnColor.y, returnColor.z), vec3(1.0)), vec3(0.0)); \n";
-		fragFuncHelpers = "vec3 superFunction(float _mi, int id, vec3 _fxIn, float _p1, float _p2, float _p3, float _p4, float _p5, float _p6) { \n" + fragFuncHelpers + "}\n";
+		fragFuncHelpers = "vec3 superFunction(float _mi, int id, vec3 _fxIn, float _p1, float _p2, float _p3, float _p4, float _p5, float _p6, float _p7, float _p8, float _p9) { \n" + fragFuncHelpers + "}\n";
 		
 		fragFuncOutput += fragFuncHelpers;
 
@@ -507,10 +506,10 @@ ChannelManager.prototype = {
 			output += "vec3 d = getPodOffset(p);\n",
 			output += "vec3 e = getPodSize(p);\n",
 
-			// translate: (magnitude of 4)
-			output += "x += (e.x * 4. * (d.x - .5));\n",
-			output += "y += (e.y * 4. * (d.y - .5));\n",
-			output += "z += (e.z * 4. * (d.z - .5));\n",
+			// translate: (magnitude of 8)
+			output += "x += (e.x * 8. * (d.x - .5));\n",
+			output += "y += (e.y * 8. * (d.y - .5));\n",
+			output += "z += (e.z * 8. * (d.z - .5));\n",
 
 			// scale/flip/mirror: (magnitude of 8)
 			output += "x += (b.x - (e.x * .5 + c.x)) * (1.-(s.x * 2.))*8.;\n",
@@ -518,7 +517,7 @@ ChannelManager.prototype = {
 			output += "z += (b.z - (e.z * .5 + c.z)) * (1.-(s.z * 2.))*8.;\n",
 
 			output += "return vec4(x, y, z, w);\n";
-			
+
 		output += "}\n";
 
 		//console.log(output);
