@@ -489,6 +489,8 @@ AppManager.prototype = {
 		frag = frag.replace(/getPodSize/g, "_92");
 		frag = frag.replace(/getPodPos/g, "_93");
 		frag = frag.replace(/_lastRgb/g, "_94");
+		frag = frag.replace(/getPodScale/g, "_95");
+		frag = frag.replace(/getPodOffset/g, "_96");
 		return frag;
 	}
 

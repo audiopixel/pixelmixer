@@ -154,7 +154,7 @@ UiManager.prototype = {
 						break;
 					case ap.demoHardware[1]:
 
-						ap.channels.setPodPos(2, { x: -339, y: 30, z: -1000, w: 1378, h: 738, d: 2000 });
+						ap.channels.setPodPos(2, new PodPosition(-339, 30, -1000, 1378, 738, 2000));
 						ap.hardware.addTestPortsGrid3(1, 0, 0);
 						break;
 

@@ -444,6 +444,35 @@ ChannelManager.prototype = {
 
 		output += m;
 
+		// Pod Offset (translation)
+		m = "";
+		for (var i = 0; i < this.podpositions.length; i++) {
+			m += "else if(d == " + (i+1) + "){\n";
+			m += "p = vec3("+this.podpositions[i].xt+","+this.podpositions[i].yt+","+this.podpositions[i].zt+");\n";
+			m += "}\n";
+		}
+		m = m.slice(5, m.length); // cut the first 'else' out 
+		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
+		m += "return p; \n";
+		m = "vec3 getPodOffset(int d) { \n" + m + "}\n";
+
+		output += m;
+
+		// Pod Scale & Flipmode
+		m = "";
+		for (var i = 0; i < this.podpositions.length; i++) {
+			m += "else if(d == " + (i+1) + "){\n";
+			m += "p = vec4("+this.podpositions[i].xs+","+this.podpositions[i].ys+","+this.podpositions[i].zs+","+this.podpositions[i].flipmode+");\n";
+			m += "}\n";
+		}
+		m = m.slice(5, m.length); // cut the first 'else' out 
+		m = "vec4 p = vec4(0.,0.,0.,0.); \n" + m;
+		m += "return p; \n";
+		m = "vec4 getPodScale(int d) { \n" + m + "}\n";
+
+		output += m;
+
+
 		// Method to check xyz+whd against another // TODO account for non rectangular shapes
 		output += ["float checkBounds(vec4 b, int p)",
 		"{",										
@@ -458,10 +487,41 @@ ChannelManager.prototype = {
 
 		// Offset xyz from pod position id
 		output += "vec4 offsetPos(vec4 b, int p, float w){\n";
-			output += "vec3 s = getPodPos(p);\n",
-			output += "return vec4(b.x - s.x, b.y - s.y, b.z - s.z, w);\n";
+
+			output += "vec3 c = getPodPos(p);\n",
+			output += "float x = b.x - c.x;\n",
+			output += "float y = b.y - c.y;\n",
+			output += "float z = b.z - c.z;\n",
+			output += "float t = x;\n",
+
+			// swap axis
+			output += "vec4 s = getPodScale(p);\n",
+			output += "if(s.w == 1.){",
+				output += "x=y;y=t;\n",		// swap x-y
+			output += "}else if(s.w == 2.){",	
+				output += "x=z;z=t;\n",		// swap x-z
+			output += "}else if(s.w == 3.){",
+				output += "t=y;y=z;z=t;\n",	// swap y-z
+			output += "}\n",
+
+			output += "vec3 d = getPodOffset(p);\n",
+			output += "vec3 e = getPodSize(p);\n",
+
+			// translate: (magnitude of 4)
+			output += "x += (e.x * 4. * (d.x - .5));\n",
+			output += "y += (e.y * 4. * (d.y - .5));\n",
+			output += "z += (e.z * 4. * (d.z - .5));\n",
+
+			// scale/flip/mirror: (magnitude of 8)
+			output += "x += (b.x - (e.x * .5 + c.x)) * (1.-(s.x * 2.))*8.;\n",
+			output += "y += (b.y - (e.y * .5 + c.y)) * (1.-(s.y * 2.))*8.;\n",
+			output += "z += (b.z - (e.z * .5 + c.z)) * (1.-(s.z * 2.))*8.;\n",
+
+			output += "return vec4(x, y, z, w);\n";
+			
 		output += "}\n";
 
+		//console.log(output);
 		return output;
 	},
 
