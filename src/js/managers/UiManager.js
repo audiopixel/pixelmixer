@@ -236,7 +236,7 @@ UiManager.prototype = {
 
 		ap.channels.setClip(channel, pod, clip, new Clip(clipId, 1.0, ap.BLEND.Add));
 
-		updateShader = true;
+		ap.updateShader = true;
 	}
 
 };

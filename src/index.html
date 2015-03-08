@@ -21,7 +21,6 @@
 		<script src="js/managers/PortManager.js"></script>
 		<script src="js/managers/HardwareManager.js"></script>
 		<script src="js/managers/ChannelManager.js"></script>
-		<script src="js/managers/UiManager.js"></script>
 		<script src="js/objects/Port.js"></script>
 		<script src="js/objects/Channel.js"></script>
 		<script src="js/objects/Pod.js"></script>
@@ -52,6 +51,7 @@
 		<script src="import/shaders/clips/BasicTestClip.js"></script>
 
 		<script src="import/nodes/test.js"></script>
+		<script src="ui/datguiSetup1.js"></script>
 
 		<script>
 
@@ -70,6 +70,9 @@
 					ap.init(document.getElementById( 'container' ));
 					ap.setSize(window.innerWidth, window.innerHeight);
 
+					datgui = new datguiSetup();
+					datgui.init();
+
 					animate();
 				}
 
@@ -78,10 +81,10 @@
 
 					ap.update();
 					stats.update();
+					datgui.update();
 
 					requestAnimationFrame( animate );
 				}
-
 
 
 				function onWindowResize() {

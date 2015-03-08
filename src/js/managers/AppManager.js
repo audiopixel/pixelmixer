@@ -75,8 +75,8 @@ AppManager.prototype = {
 
 		this.geometry = new THREE.Geometry();
 
-		//this.updateNodePoints();
-		//this.updateMainSourceShader();
+		this.updateNodePoints();
+		this.updateMainSourceShader();
 
 		if(this.readPixels){
 			this.pixels = new Uint8Array(4 * this.glWidth * this.glHeight);
@@ -330,6 +330,7 @@ AppManager.prototype = {
 
 		// Testing on pod pos #2
 		//ap.channels.setPodPos(2, new PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
+
 		//ap.channels.setPodPos(2, new PodPosition(-190, 140, 0, 1070, 575, 1));
 
 		this.coordsMap = new THREE.DataTexture( a, this.simSize, this.simSize, THREE.RGBAFormat, THREE.FloatType );

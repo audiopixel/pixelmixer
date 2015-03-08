@@ -89,13 +89,11 @@ ap.init = function(container){
 	ap.hardware = new HardwareManager();
 	ap.channels = new ChannelManager();
 	ap.app = new AppManager(container);
-	ap.ui = new UiManager();
 
 	ap.ports.init();
 	ap.hardware.init();
 	ap.channels.init();
 	ap.app.init();
-	ap.ui.init();
 }
 
 
@@ -122,7 +120,6 @@ ap.update = function() {
 			ap.ports.update();
 			ap.hardware.update();
 			ap.channels.update();
-			ap.ui.update();
 
 		}else{
 
