@@ -28,14 +28,12 @@
 		<script src="js/objects/Clip.js"></script>
 		<script src="js/objects/Shader.js"></script>
 		<script src="js/objects/PodPosition.js"></script>
-		<script src="js/main.js"></script>
 
 		<script src="import/shaders/core/MainShader.js"></script>
 		<script src="import/shaders/core/ShaderUtils.js"></script>
 		<script src="import/shaders/core/SimpleTextureShader.js"></script>
 		<script src="import/shaders/core/NodeShader.js"></script>
 		<script src="import/datGuiPresets.js"></script>
-
 
 		<script src="import/shaders/clips/SolidColorClip.js"></script>
 		<script src="import/shaders/clips/TestFrameClip.js"></script>
@@ -54,6 +52,50 @@
 		<script src="import/shaders/clips/BasicTestClip.js"></script>
 
 		<script src="import/nodes/test.js"></script>
+
+		<script>
+
+			if ( !Detector.webgl ) { Detector.addGetWebGLMessage(); } else {
+
+				var stats;
+
+				// Initialize ap
+				function onLoad(){
+
+					stats = new Stats();
+					stats.domElement.style.position = 'absolute';
+					stats.domElement.style.top = '0px';
+					document.getElementById( 'container' ).appendChild( stats.domElement );
+
+					ap.init(document.getElementById( 'container' ));
+					ap.setSize(window.innerWidth, window.innerHeight);
+
+					animate();
+				}
+
+				// Run time loop
+				function animate() {
+
+					ap.update();
+					stats.update();
+
+					requestAnimationFrame( animate );
+				}
+
+
+
+				function onWindowResize() {
+
+					ap.setSize(window.innerWidth, window.innerHeight);
+
+				}
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+		</script>
+
 	</head>
 
 	<body ontouchstart="" onload="onLoad()">
@@ -61,4 +103,5 @@
 		<div id="container"></div>
 
 	</body>
+
 </html>

@@ -15,7 +15,6 @@ ap.imported = {}; 				// Currently imported port (and possibly node) data
 
 // ****** Constants ******
 
-
 // Blend Constants
 ap.BLEND = {};
 ap.BLEND.OFF = 0;
@@ -72,3 +71,92 @@ ap.demoClipNames = ["SolidColor", "ColorSineBar", "ColorSwirls", "LineCosSin", "
 "SinSpiral", "SineParticles", "DiSinSwirl", "HexifyRadial", "SinCosTan"];
 
 ap.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
+
+
+
+// ****** Main Init ****** 
+
+ap.init = function(container){
+
+	// Register all clips by their id's for easy lookup later
+	for (var property in ap.clips) {
+		if (ap.clips.hasOwnProperty(property)) {
+			ap.register[ap.clips[property].id] = property;
+		}
+	}
+
+	ap.ports = new PortManager();
+	ap.hardware = new HardwareManager();
+	ap.channels = new ChannelManager();
+	ap.app = new AppManager(container);
+	ap.ui = new UiManager();
+
+	ap.ports.init();
+	ap.hardware.init();
+	ap.channels.init();
+	ap.app.init();
+	ap.ui.init();
+}
+
+
+// ****** Runtime Loop ****** 
+
+ap.updateShader = false;
+ap.updateShaderLimiter = 0;
+
+ap.update = function() {
+
+	//if(frameCount % 30 == 1){ // Slow framerate testing
+
+	if(!ap.app){
+
+		console.log("AP Error: Need to call ap.init before ap.update.")
+
+	}else{
+		
+		// Update everything else if we don't have to update the shader this frame
+		if((!ap.updateShader || ap.updateShaderLimiter < 4) && ap.updateShaderLimiter > 0){
+
+			// ** Main loop update 
+			ap.app.update();
+			ap.ports.update();
+			ap.hardware.update();
+			ap.channels.update();
+			ap.ui.update();
+
+		}else{
+
+			// We detected the shader needs update, only do that this frame
+			ap.app.updateMainSourceShader();
+			ap.app.update();
+			ap.updateShaderLimiter = 0;
+			ap.updateShader = false;
+		}
+		ap.updateShaderLimiter++;
+
+	}
+}
+
+ap.setSize = function(width, height) {
+
+	if(!ap.app){
+
+		console.log("AP Error: Need to call ap.init before ap.setSize.")
+
+	}else{
+
+		ap.app.glWidth = width;
+		ap.app.glHeight = height;
+
+		if(ap.app.readPixels){
+			ap.app.pixels = new Uint8Array(4 * ap.app.glWidth * ap.app.glHeight);
+		}
+
+		ap.app.camera.aspect = ap.app.glWidth / ap.app.glHeight;
+		ap.app.camera.updateProjectionMatrix();
+
+		ap.app.renderer.setSize( ap.app.glWidth, ap.app.glHeight );
+		ap.app.controls.handleResize();
+
+	}
+}
