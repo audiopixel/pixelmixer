@@ -5,7 +5,7 @@
  *
  */
 
-var ChannelManager = function () {
+ap.ChannelManager = function () {
 
 	this.channels = [];
 	this.podpositions = [];
@@ -75,7 +75,7 @@ var ChannelManager = function () {
 
 };
 
-ChannelManager.prototype = {
+ap.ChannelManager.prototype = {
 
 	init: function () {
 

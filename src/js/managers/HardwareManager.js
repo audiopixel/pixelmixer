@@ -5,11 +5,11 @@
 *
 */
 
-var HardwareManager = function () {
+ap.HardwareManager = function () {
 
 };
 
-HardwareManager.prototype = {
+ap.HardwareManager.prototype = {
 
 	init: function () {
 /*

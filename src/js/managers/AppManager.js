@@ -5,7 +5,7 @@
 *
 */
 
-var AppManager = function (scene, renderer) {
+ap.AppManager = function (scene, renderer) {
 
 	this.glWidth = 0;
 	this.glHeight = 0;
@@ -51,7 +51,7 @@ var AppManager = function (scene, renderer) {
 
 
 
-AppManager.prototype = {
+ap.AppManager.prototype = {
 
 	init: function () {
 
@@ -371,7 +371,7 @@ AppManager.prototype = {
 		this.sceneMain.add( this.pointCloud );
 
 		console.log("AP Nodes: " + this.geometry.vertices.length);
-		
+
 		ap.ready = true;
 
 	},

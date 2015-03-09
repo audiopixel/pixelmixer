@@ -85,10 +85,10 @@ ap.init = function(scene, renderer){
 		}
 	}
 
-	ap.ports = new PortManager();
-	ap.hardware = new HardwareManager();
-	ap.channels = new ChannelManager();
-	ap.app = new AppManager(scene, renderer);
+	ap.ports = new ap.PortManager();
+	ap.hardware = new ap.HardwareManager();
+	ap.channels = new ap.ChannelManager();
+	ap.app = new ap.AppManager(scene, renderer);
 
 	ap.ports.init();
 	ap.hardware.init();
