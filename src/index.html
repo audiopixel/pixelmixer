@@ -57,39 +57,77 @@
 
 			if ( !Detector.webgl ) { Detector.addGetWebGLMessage(); } else {
 
+				var glWidth = window.innerWidth;
+				var glHeight = window.innerHeight;
+
+				var scene;
+				var renderer;
+				var camera;
+				var controls;
+
+				var container;
 				var stats;
 
-				// Initialize ap
 				function onLoad(){
 
+					// Three.js setup
+					scene = new THREE.Scene();
+					container = document.getElementById( 'container' )
+
+					renderer = new THREE.WebGLRenderer( /*{ preserveDrawingBuffer: readPixels } */); // Some browsers might need preserveDrawingBuffer to readPixels
+					renderer.setSize( glWidth, glHeight );
+					renderer.autoClear = false;
+					container.appendChild( renderer.domElement ); 
+
+					camera = new THREE.PerspectiveCamera( 30, glWidth / glHeight, 1, 100000 );
+					camera.position.z = 2000;
+					controls = new THREE.TrackballControls( camera, renderer.domElement);
+
+
+					// Initialize ap
+					ap.init(scene, renderer);
+					ap.setSize(glWidth, glHeight);
+
+					// Init UI, dat.gui handling MVC setup for now 
+					initUi();
+
+
+					// Display stats
 					stats = new Stats();
 					stats.domElement.style.position = 'absolute';
 					stats.domElement.style.top = '0px';
 					document.getElementById( 'container' ).appendChild( stats.domElement );
 
-					ap.init(document.getElementById( 'container' ));
-					ap.setSize(window.innerWidth, window.innerHeight);
-
-					datgui = new datguiSetup();
-					datgui.init();
-
+					// Start the main loop
 					animate();
+					
 				}
 
-				// Run time loop
 				function animate() {
 
-					ap.update();
-					stats.update();
-					datgui.update();
+					// Main update loop
+					if(ap.ready){
+						stats.update();
+						ap.update();
+						controls.update();
+						renderer.render( scene, camera );
+					}
 
 					requestAnimationFrame( animate );
 				}
 
 
+				// Resize logic
 				function onWindowResize() {
 
-					ap.setSize(window.innerWidth, window.innerHeight);
+					glWidth = window.innerWidth;
+					glHeight = window.innerHeight;
+
+					ap.setSize(glWidth, glHeight);
+
+					camera.aspect = glWidth / glHeight;
+					camera.updateProjectionMatrix();
+					controls.handleResize();
 
 				}
 

@@ -10,7 +10,7 @@ ap.register = {}; 				// Loaded shaders get referenced here internally for quick
 // TODO this should be a list of objects that we load at runtime, hardcoded for now
 ap.imported = {}; 				// Currently imported port (and possibly node) data
 
-
+ap.ready = false;
 
 
 // ****** Constants ******
@@ -76,7 +76,7 @@ ap.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
 
 // ****** Main Init ****** 
 
-ap.init = function(container){
+ap.init = function(scene, renderer){
 
 	// Register all clips by their id's for easy lookup later
 	for (var property in ap.clips) {
@@ -88,7 +88,7 @@ ap.init = function(container){
 	ap.ports = new PortManager();
 	ap.hardware = new HardwareManager();
 	ap.channels = new ChannelManager();
-	ap.app = new AppManager(container);
+	ap.app = new AppManager(scene, renderer);
 
 	ap.ports.init();
 	ap.hardware.init();
@@ -110,8 +110,8 @@ ap.update = function() {
 
 		console.log("AP Error: Need to call ap.init before ap.update.")
 
-	}else{
-		
+	}else if(ap.ready){
+
 		// Update everything else if we don't have to update the shader this frame
 		if((!ap.updateShader || ap.updateShaderLimiter < 4) && ap.updateShaderLimiter > 0){
 
@@ -149,11 +149,7 @@ ap.setSize = function(width, height) {
 			ap.app.pixels = new Uint8Array(4 * ap.app.glWidth * ap.app.glHeight);
 		}
 
-		ap.app.camera.aspect = ap.app.glWidth / ap.app.glHeight;
-		ap.app.camera.updateProjectionMatrix();
-
 		ap.app.renderer.setSize( ap.app.glWidth, ap.app.glHeight );
-		ap.app.controls.handleResize();
 
 	}
 }

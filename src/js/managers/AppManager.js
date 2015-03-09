@@ -5,13 +5,13 @@
 *
 */
 
-var AppManager = function (container) {
+var AppManager = function (scene, renderer) {
 
 	this.glWidth = 0;
 	this.glHeight = 0;
 
-	this.container = container;
-	this.renderer;
+	this.sceneMain = scene;
+	this.renderer = renderer;
 
 	this.cameraRTT;
 	this.sceneRTT;
@@ -21,7 +21,6 @@ var AppManager = function (container) {
 	
 	this.nodeShaderMaterial;
 
-	this.scene;
 	this.controls;
 	this.camera;
 	this.material;
@@ -63,16 +62,7 @@ AppManager.prototype = {
 		this.cameraRTT = new THREE.OrthographicCamera( this.simSize / - 2, this.simSize / 2, this.simSize / 2, this.simSize / - 2, -10000, 10000 );
 		this.sceneRTT = new THREE.Scene();
 
-		this.renderer = new THREE.WebGLRenderer( /*{ preserveDrawingBuffer: this.readPixels } */); // Some browsers might need preserveDrawingBuffer to readPixels
-		this.renderer.setSize( this.glWidth, this.glHeight );
-		this.renderer.autoClear = false;
-		this.container.appendChild( this.renderer.domElement ); 
-
-		this.scene = new THREE.Scene();
-		this.camera = new THREE.PerspectiveCamera( 30, this.glWidth / this.glHeight, 1, 100000 );
-		this.camera.position.z = 2000;
-		this.controls = new THREE.TrackballControls( this.camera, this.renderer.domElement);
-
+		
 		this.geometry = new THREE.Geometry();
 
 		this.updateNodePoints();
@@ -108,8 +98,7 @@ AppManager.prototype = {
 
 		//this.camera.position.x += ( mouseX - this.camera.position.x ) * 0.05;
 		//this.camera.position.y += ( - mouseY - this.camera.position.y ) * 0.05;
-		//this.camera.lookAt( this.scene.position );
-		this.controls.update();
+		//this.camera.lookAt( this.sceneMain.position );
 
 
 		//this.renderer.clear();
@@ -152,8 +141,6 @@ AppManager.prototype = {
 				*/
 			}
 
-			// Render the node and plane scene using the generated texture
-			this.renderer.render( this.scene, this.camera );
 		}
 
 
@@ -196,7 +183,7 @@ AppManager.prototype = {
 
 		var quad = new THREE.Mesh( testPlane, materialScreen );
 		quad.position.x = -600;
-		this.scene.add( quad );
+		this.sceneMain.add( quad );
 
 		materialScreen = new THREE.ShaderMaterial( {
 
@@ -209,7 +196,7 @@ AppManager.prototype = {
 
 		quad = new THREE.Mesh( testPlane, materialScreen );
 		quad.position.x = -900;
-		this.scene.add( quad );
+		this.sceneMain.add( quad );
 
 		materialScreen = new THREE.ShaderMaterial( {
 
@@ -222,7 +209,7 @@ AppManager.prototype = {
 
 		quad = new THREE.Mesh( testPlane, materialScreen );
 		quad.position.x = -1200;
-		this.scene.add( quad );
+		this.sceneMain.add( quad );
 
 	},
 
@@ -368,9 +355,9 @@ AppManager.prototype = {
 		});
 
 		var name = "AP Nodes";
-		if(this.scene.getObjectByName(name)){
+		if(this.sceneMain.getObjectByName(name)){
 			// If the pointCloud has already been added, remove it so we can add it fresh
-			this.scene.remove( this.pointCloud );
+			this.sceneMain.remove( this.pointCloud );
 		}
 
 		this.pointCloud = new THREE.PointCloud( this.geometry, this.nodeShaderMaterial );
@@ -381,9 +368,11 @@ AppManager.prototype = {
 		this.pointCloud.position.x = -400;
 		this.pointCloud.position.y = -400;
 
-		this.scene.add( this.pointCloud );
+		this.sceneMain.add( this.pointCloud );
 
 		console.log("AP Nodes: " + this.geometry.vertices.length);
+		
+		ap.ready = true;
 
 	},
 
