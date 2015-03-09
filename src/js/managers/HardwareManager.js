@@ -15,7 +15,6 @@ ap.HardwareManager.prototype = {
 /*
 		
 */
-		
 		// Simulate Importing nodes from external file
 		this.importNodes(ap.imported, 1, 350, 100, 500);
 		ap.channels.setPodPos(2, new PodPosition(-190, 140, -100, 1070, 575, 1000));
@@ -23,6 +22,9 @@ ap.HardwareManager.prototype = {
 		//ap.channels.setPodPos(3, new PodPosition(540, 140, -100, 700, 575, 1000));
 
 		//this.addTestPortsGrid3(1, 0, 0);
+		
+		//this.addSimpleNodeGrid(1, 0, 0, 0, 30, 40, 33);
+		//this.addSimpleNodeGrid(2, 0, 220, 0, 30, 20, 33);
 
 
 	},
@@ -196,6 +198,24 @@ ap.HardwareManager.prototype = {
 			}
 			port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
 			ap.ports.setPort(portStart + 2, port);
+	},
+
+
+	addSimpleNodeGrid: function (port, x, y, z, width, height, pitch) {
+
+		var nodes = [];
+		for ( e = 0; e < width; e ++ ) { 
+			for ( i = 0; i < height; i ++ ) { 
+
+				var node = {};
+				node.x = ((e * pitch) + x);
+				node.y = ((i * pitch) + y);
+				node.z = z;
+				nodes.push(node);
+			}
+		}
+		var portd = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
+		ap.ports.setPort(port, portd);
 	}
 
 };
