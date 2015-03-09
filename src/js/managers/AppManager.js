@@ -23,14 +23,13 @@ ap.AppManager = function (scene, renderer) {
 
 	this.controls;
 	this.camera;
-	this.material;
 
 	this.geoX = [];
 	this.geoY = [];
 	this.passIndex = [];
 
-	this.geometry = new THREE.Geometry();
-	this.pointCloud;
+	pointGeometry = new THREE.Geometry();
+	ap.pointCloud;
 	this.fragmentShader;
 
 	this.time = 0;
@@ -63,7 +62,7 @@ ap.AppManager.prototype = {
 		this.sceneRTT = new THREE.Scene();
 
 		
-		this.geometry = new THREE.Geometry();
+		pointGeometry = new THREE.Geometry();
 
 		this.updateNodePoints();
 		this.updateMainSourceShader();
@@ -105,17 +104,17 @@ ap.AppManager.prototype = {
 		
 
 		// Update uniforms
-		if(this.material && this.nodeShaderMaterial){
-			this.material.uniforms.u_time.value = this.time;
-			this.material.uniforms.u_random.value = Math.random();
+		if(ap.material && this.nodeShaderMaterial){
+			ap.material.uniforms.u_time.value = this.time;
+			ap.material.uniforms.u_random.value = Math.random();
 
 			// Render first scene into texture
 			if(this.rtToggle){
-				this.material.uniforms.u_prevCMap.value = this.rtTextureB;
+				ap.material.uniforms.u_prevCMap.value = this.rtTextureB;
 				this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureA, true );
 				this.nodeShaderMaterial.uniforms.u_colorMap.value = this.rtTextureA;
 			}else{
-				this.material.uniforms.u_prevCMap.value = this.rtTextureA;
+				ap.material.uniforms.u_prevCMap.value = this.rtTextureA;
 				this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureB, true );
 				this.nodeShaderMaterial.uniforms.u_colorMap.value = this.rtTextureB;
 			}
@@ -154,9 +153,9 @@ ap.AppManager.prototype = {
 
 		// this.updateNodePoints();
 
-		//this.material.uniforms.u_coordsMap.value = this.coordsMap;
-		//this.pointCloud.geometry = this.geometry;
-		//this.pointCloud.geometry.verticesNeedUpdate = true;
+		//ap.material.uniforms.u_coordsMap.value = this.coordsMap;
+		//ap.pointCloud.geometry = pointGeometry;
+		//ap.pointCloud.geometry.verticesNeedUpdate = true;
 
 	},
 
@@ -222,9 +221,9 @@ ap.AppManager.prototype = {
 		this.geoX = [];
 		this.geoY = [];
 		this.passIndex = [];
-		this.geometry = new THREE.Geometry();
+		pointGeometry = new THREE.Geometry();
 
-		// Update 'this.geometry' with all the known nodes on state
+		// Update 'pointGeometry' with all the known nodes on state
 		// Create attributes for each one to pass to the shader
 		var t = 0;
 		for ( e = 0; e < ap.ports.getPorts().length; e ++ ) { 
@@ -238,7 +237,7 @@ ap.AppManager.prototype = {
 					vertex.x = port.nodes[i].x || 0;
 					vertex.y = port.nodes[i].y || 0;
 					vertex.z = port.nodes[i].z || 0;
-					this.geometry.vertices.push( vertex );
+					pointGeometry.vertices.push( vertex );
 
 					// TODO check port render type, if it's a directional light, or if it's a node (or plane eventually)
 
@@ -287,10 +286,10 @@ ap.AppManager.prototype = {
 			var y = 0;
 			var z = 0;
 
-			if(this.geometry.vertices[t]){
-				x = this.geometry.vertices[t].x ;// / this.base;
-				y = this.geometry.vertices[t].y ;// / this.base;
-				z = this.geometry.vertices[t].z ;// / this.base;
+			if(pointGeometry.vertices[t]){
+				x = pointGeometry.vertices[t].x ;// / this.base;
+				y = pointGeometry.vertices[t].y ;// / this.base;
+				z = pointGeometry.vertices[t].z ;// / this.base;
 
 				minx = Math.min(minx, x);
 				maxx = Math.max(maxx, x);
@@ -357,20 +356,20 @@ ap.AppManager.prototype = {
 		var name = "AP Nodes";
 		if(this.sceneMain.getObjectByName(name)){
 			// If the pointCloud has already been added, remove it so we can add it fresh
-			this.sceneMain.remove( this.pointCloud );
+			this.sceneMain.remove( ap.pointCloud );
 		}
 
-		this.pointCloud = new THREE.PointCloud( this.geometry, this.nodeShaderMaterial );
-		this.pointCloud.sortParticles = true;
-		this.pointCloud.name = name;
+		ap.pointCloud = new THREE.PointCloud( pointGeometry, this.nodeShaderMaterial );
+		ap.pointCloud.sortParticles = true;
+		ap.pointCloud.name = name;
 
 		// Center // TODO offset coords based on window size
-		this.pointCloud.position.x = -400;
-		this.pointCloud.position.y = -400;
+		ap.pointCloud.position.x = -400;
+		ap.pointCloud.position.y = -400;
 
-		this.sceneMain.add( this.pointCloud );
+		this.sceneMain.add( ap.pointCloud );
 
-		console.log("AP Nodes: " + this.geometry.vertices.length);
+		console.log("AP Nodes: " + pointGeometry.vertices.length);
 
 		ap.ready = true;
 
@@ -401,10 +400,10 @@ ap.AppManager.prototype = {
 		}
 
 		// If the material already exists, transfer over the value of any uniforms that have remained
-		if(this.material){
+		if(ap.material){
 			for (uniform in uniforms) {
-				if(this.material.uniforms[uniform]){
-					uniforms[uniform].value = this.material.uniforms[uniform].value;
+				if(ap.material.uniforms[uniform]){
+					uniforms[uniform].value = ap.material.uniforms[uniform].value;
 				}
 			}
 		}
@@ -422,19 +421,19 @@ ap.AppManager.prototype = {
 		
 
 		// The main material object has uniforms that can be referenced and updated directly by the UI
-		this.material = new THREE.ShaderMaterial( {
+		ap.material = new THREE.ShaderMaterial( {
 			uniforms: uniforms,
 			vertexShader: ap.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: this.fragmentShader
 		} );
 
 		// Update uniforms directly
-		this.material.uniforms.u_coordsMap.value = this.coordsMap;
-		this.material.uniforms.u_prevCMap.value = this.rtTextureB;
+		ap.material.uniforms.u_coordsMap.value = this.coordsMap;
+		ap.material.uniforms.u_prevCMap.value = this.rtTextureB;
 
 
 		//console.log(sourceShader);
-		//console.log(this.material.uniforms);
+		//console.log(ap.material.uniforms);
 		//console.log(this.fragmentShader);
 
 
@@ -445,14 +444,14 @@ ap.AppManager.prototype = {
 			// If the quad has already been added, remove it so we can add it fresh
 			this.sceneRTT.remove(lookupObj);
 		}
-		var quad = new THREE.Mesh( this.plane, this.material );
+		var quad = new THREE.Mesh( this.plane, ap.material );
 		quad.position.z = -100;
 		quad.name = name;
 		this.sceneRTT.add( quad );
 
 		// TODO possible optimize : seems this would be faster to update and not create new quad each time, but looks slower actually
-		//this.material.uniforms = uniforms;
-		//this.material.needsUpdate = true;
+		//ap.material.uniforms = uniforms;
+		//ap.material.needsUpdate = true;
 
 	},
 

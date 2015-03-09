@@ -1,5 +1,4 @@
 /*
-* ************* UI MANAGER *************** 
 *
 * One possible View & Controller state of the MVC application
 *
@@ -83,7 +82,7 @@ function initUi(){
 	// =========Event listeners===============
 
 
-	gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.app.material.uniforms._1_mix.value = _in; });
+	gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.material.uniforms._1_mix.value = _in; });
 
 	gui.add( { SnapToFront:function(){
 		controls.reset();
@@ -102,32 +101,32 @@ function initUi(){
 	// Pod 3
 	f1.add( guiData, 'S3Blend', ap.BLENDS )     .onChange(function () { uniformBlendChange( guiData.S3Blend, "_1_3"); });
 	f1.add( guiData, 'S3ClipId', ap.demoClipNames).onChange(function () { uniformClipTypeChange( guiData.S3ClipId, 1, 3, 1 ); });
-	f1.add( guiData, "S3Mix", 0.0, 1.0, 1.0 )   .onChange(function () { ap.app.material.uniforms._1_3_1_mix.value = guiData.S3Mix; });
-	f1.add( guiData, "S3Scale", 0.0, 1.0, 1.0 ) .onChange(function () { ap.app.material.uniforms._1_3_1_p1.value = guiData.S3Scale; });
-	f1.add( guiData, "Hue3Mix", 0.0, 1.0, 1.0 ) .onChange(function () { ap.app.material.uniforms._1_3_2_p1.value = guiData.Hue3Mix; });
+	f1.add( guiData, "S3Mix", 0.0, 1.0, 1.0 )   .onChange(function () { ap.material.uniforms._1_3_1_mix.value = guiData.S3Mix; });
+	f1.add( guiData, "S3Scale", 0.0, 1.0, 1.0 ) .onChange(function () { ap.material.uniforms._1_3_1_p1.value = guiData.S3Scale; });
+	f1.add( guiData, "Hue3Mix", 0.0, 1.0, 1.0 ) .onChange(function () { ap.material.uniforms._1_3_2_p1.value = guiData.Hue3Mix; });
 	*/
 	// Pod 2
 	f2.add( guiData, 'S2ClipId', ap.demoClipNames).onChange(function (_in) { uniformClipTypeChange(_in, 1, 2, 1 ); });
-	f2.add( guiData, "S2Mix", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.app.material.uniforms._1_2_1_mix.value =_in; });
-	f2.add( guiData, "S2Scale", 0.1, 1.0, 1.0 )    .onChange(function (_in) { ap.app.material.uniforms._1_2_1_p1.value =_in; });
-	f2.add( guiData, "S2HueTint", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.app.material.uniforms._1_2_2_p1.value =_in; });
+	f2.add( guiData, "S2Mix", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.material.uniforms._1_2_1_mix.value =_in; });
+	f2.add( guiData, "S2Scale", 0.1, 1.0, 1.0 )    .onChange(function (_in) { ap.material.uniforms._1_2_1_p1.value =_in; });
+	f2.add( guiData, "S2HueTint", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.material.uniforms._1_2_2_p1.value =_in; });
 	f2.add( guiData, 'S2Blend', ap.BLENDS )        .onChange(function (_in) { uniformBlendChange(_in, "_1_2"); });
 
 	// Pod 1
 	f3.add( guiData, 'S1ClipId', ap.demoClipNames).onChange(function (_in) { uniformClipTypeChange(_in, 1, 1, 1 ); });
-	f3.add( guiData, "S1Mix", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.app.material.uniforms._1_1_1_mix.value =_in; });
-	f3.add( guiData, "S1Scale", 0.1, 1.0, 1.0 )    .onChange(function (_in) { ap.app.material.uniforms._1_1_1_p1.value =_in; });
-	f3.add( guiData, "S1HueTint", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.app.material.uniforms._1_1_2_p1.value =_in; });
+	f3.add( guiData, "S1Mix", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.material.uniforms._1_1_1_mix.value =_in; });
+	f3.add( guiData, "S1Scale", 0.1, 1.0, 1.0 )    .onChange(function (_in) { ap.material.uniforms._1_1_1_p1.value =_in; });
+	f3.add( guiData, "S1HueTint", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.material.uniforms._1_1_2_p1.value =_in; });
 
 	// Post Fx
-	f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (_in) { ap.app.material.uniforms._2_1_1_p1.value =_in; });
-	f4.add( guiData, "HueClamp", 0.0, 1.0, 1.0 )   .onChange(function (_in) { ap.app.material.uniforms._2_1_1_p2.value =_in; });
-	f4.add( guiData, "Saturation", 0.0, 1.0, 1.0 ) .onChange(function (_in) { ap.app.material.uniforms._2_1_1_p3.value =_in; });
-	f4.add( guiData, "SatClamp", 0.0, 1.0, 1.0 )   .onChange(function (_in) { ap.app.material.uniforms._2_1_1_p4.value =_in; });
-	f4.add( guiData, "Smooth", 0.0, 0.98, 1.0 )    .onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
-	f4.add( guiData, "PreAmp", 0.0, 1.0, 0.0 ) .onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
-	//f4.add( guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p5.value =_in; });
-	//f4.add( guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.app.material.uniforms._2_1_1_p6.value =_in; });
+	f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (_in) { ap.material.uniforms._2_1_1_p1.value =_in; });
+	f4.add( guiData, "HueClamp", 0.0, 1.0, 1.0 )   .onChange(function (_in) { ap.material.uniforms._2_1_1_p2.value =_in; });
+	f4.add( guiData, "Saturation", 0.0, 1.0, 1.0 ) .onChange(function (_in) { ap.material.uniforms._2_1_1_p3.value =_in; });
+	f4.add( guiData, "SatClamp", 0.0, 1.0, 1.0 )   .onChange(function (_in) { ap.material.uniforms._2_1_1_p4.value =_in; });
+	f4.add( guiData, "Smooth", 0.0, 0.98, 1.0 )    .onChange(function (_in) { ap.material.uniforms._2_1_1_p5.value =_in; });
+	f4.add( guiData, "PreAmp", 0.0, 1.0, 0.0 ) .onChange(function (_in) { ap.material.uniforms._2_1_1_p6.value =_in; });
+	//f4.add( guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.material.uniforms._2_1_1_p5.value =_in; });
+	//f4.add( guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.material.uniforms._2_1_1_p6.value =_in; });
 
 	// Global Settings (temporary for demo)
 	f5.add( guiData, 'Hardware', ap.demoHardware).onChange(function (_in) {
@@ -180,7 +179,7 @@ function initUi(){
 }
 
 /*
-* Trigger a blend change on ap.app.material based on a defined address
+* Trigger a blend change on ap.material based on a defined address
 */
 function uniformBlendChange(guiItem, address) { 
 	var blend = 1.0;
@@ -202,7 +201,7 @@ function uniformBlendChange(guiItem, address) {
 	}else if(guiItem === ap.BLENDS[15]){ blend = 16.0;
 	}else if(guiItem === ap.BLENDS[16]){ blend = 17.0;
 	}
-	ap.app.material.uniforms[address + "_blend"].value = blend;
+	ap.material.uniforms[address + "_blend"].value = blend;
 }
 
 

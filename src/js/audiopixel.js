@@ -3,14 +3,19 @@
 // ****** Platform ******
 
 var ap = { REVISION: '1' };		// Global object
+ap.ready = false;				
+
 ap.shaders = {};				// Internal shaders 
 ap.clips = {}; 					// Loaded shaders as clips
 ap.register = {}; 				// Loaded shaders get referenced here internally for quick lookup
 
+ap.mainMaterial = false;		// Main shader referenced here, set false initially to flag that its not ready
+ap.pointCloud = {};				// Main point cloud that displays node colors
+ap.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
+
+
 // TODO this should be a list of objects that we load at runtime, hardcoded for now
 ap.imported = {}; 				// Currently imported port (and possibly node) data
-
-ap.ready = false;
 
 
 // ****** Constants ******
@@ -71,7 +76,6 @@ ap.demoClipNames = ["SolidColor", "ColorSineBar", "ColorSwirls", "LineCosSin", "
 "SinSpiral", "SineParticles", "DiSinSwirl", "HexifyRadial", "SinCosTan"];
 
 ap.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
-
 
 
 // ****** Main Init ****** 
