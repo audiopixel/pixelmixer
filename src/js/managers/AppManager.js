@@ -36,6 +36,8 @@ ap.AppManager = function (scene, renderer) {
 	this.speed = 0.045;
 	this.simSize = 256;
 	this.pixels;
+	
+	this.render = true;
 	this.readPixels = false;
 
 	this.nodeTexture = THREE.ImageUtils.loadTexture( "images/nodeflare250.png" );  // TODO preload this
@@ -99,12 +101,12 @@ ap.AppManager.prototype = {
 		//this.camera.position.y += ( - mouseY - this.camera.position.y ) * 0.05;
 		//this.camera.lookAt( this.sceneMain.position );
 
-
 		//this.renderer.clear();
 		
 
 		// Update uniforms
-		if(ap.material && this.nodeShaderMaterial){
+		if(this.render && ap.ready){
+
 			ap.material.uniforms.u_time.value = this.time;
 			ap.material.uniforms.u_random.value = Math.random();
 

@@ -9,7 +9,7 @@ ap.shaders = {};				// Internal shaders
 ap.clips = {}; 					// Loaded shaders as clips
 ap.register = {}; 				// Loaded shaders get referenced here internally for quick lookup
 
-ap.mainMaterial = false;		// Main shader referenced here, set false initially to flag that its not ready
+ap.material = false;		// Main shader referenced here, set false initially to flag that its not ready
 ap.pointCloud = {};				// Main point cloud that displays node colors
 ap.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
 
