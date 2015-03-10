@@ -397,7 +397,7 @@ ap.AppManager.prototype = {
 		// Add the uniforms from the current loaded channels
 		for (var uniform in sourceShader.uniforms) {
 
-			var type = getVariableTypeFromShorthand(sourceShader.uniforms[uniform].type);
+			var type = ap.getVariableTypeFromShorthand(sourceShader.uniforms[uniform].type);
 
 			sourceUniforms += "uniform " + type + " " + uniform + ";\n";
 			uniforms[uniform] = sourceShader.uniforms[uniform];

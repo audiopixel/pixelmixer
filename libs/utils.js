@@ -1,18 +1,4 @@
 
-function getVariableTypeFromShorthand(shorthand){
-	var type;
-	switch ( shorthand ) {
-		case "i": type = "int"; break;
-		case "f": type = "float"; break;
-		case "t": type = "sampler2D"; break;
-		case "v2": type = "vec2"; break;
-		case "v3": type = "vec3"; break;
-		case "v4": type = "vec4"; break;
-		// TODO add 'matrix' and 'array support'
-	}
-	return type;
-}
-
 /*
 * Returns a cloned an object.
 * @param	The object to clone.
@@ -44,14 +30,6 @@ function merge(obj1, obj2){
 	}
 	return obj3;
 }
-
-/*
-* Return the lowest power of two that is big enough to contain x
-*/
-function lowestPowerOfTwo(x) {
-	return Math.pow(2, Math.ceil(Math.log(x)/Math.log(2)));
-}
-
 
 /*
 * Return the nth word of a string

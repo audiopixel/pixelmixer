@@ -80,7 +80,17 @@ ap.PortManager.prototype = {
 	addPortDetails: function (portId, port) {
 		if(!this.ports[portId-1]){ console.log("Error: Cannot add details to unexisting Port " + portId); return; }
 		var nodes = this.ports[portId-1].nodes; // Preserve the nodes if they exists
-		this.ports[portId-1] = merge(this.ports[portId-1], port);
+
+		// Merge this.ports[portId-1] + new port data
+		var obj3 = {};
+		for (var attrname in this.ports[portId-1]) {
+			if(this.ports[portId-1][attrname]){ obj3[attrname] = this.ports[portId-1][attrname]; }
+		}
+		for (var attrname2 in port) {
+			if(port[attrname2]){ obj3[attrname2] = port[attrname2]; }
+		}
+		this.ports[portId-1] = obj3;
+
 		this.ports[portId-1].nodes = nodes;
 	},
 

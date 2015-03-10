@@ -125,6 +125,11 @@ ap.ChannelManager.prototype = {
 		var lastKnownPos = {};
 		var lastKnownRes = "";
 
+		// Return the nth word of a string http://stackoverflow.com/a/11620169
+		function nthWord(str, n) {
+			var m = str.match(new RegExp('^(?:\\w+\\W+){' + --n + '}(\\w+)'));
+			return m && m[1];
+		}
 
 
 		// Now create the mixed down output
@@ -206,7 +211,7 @@ ap.ChannelManager.prototype = {
 
 											if(!constants[variable]){ // If we don't already have the constant mark it as in use and include it.
 												constants[variable] = 1; 
-												var type = getVariableTypeFromShorthand(srcClip.constants[variable].type);
+												var type = ap.getVariableTypeFromShorthand(srcClip.constants[variable].type);
 												fragFuncOutput += type + " " + variable + " = " + srcClip.constants[variable].value + ";";
 											}
 										}fragFuncOutput += "\n";
