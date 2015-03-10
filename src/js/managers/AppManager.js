@@ -18,8 +18,6 @@ ap.AppManager = function (scene, renderer) {
 	this.rtTextureA;
 	this.rtTextureB;
 	this.rtToggle = true;
-	
-	this.nodeShaderMaterial;
 
 	this.controls;
 	this.camera;
@@ -113,11 +111,11 @@ ap.AppManager.prototype = {
 			if(this.rtToggle){
 				ap.material.uniforms.u_prevCMap.value = this.rtTextureB;
 				this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureA, true );
-				this.nodeShaderMaterial.uniforms.u_colorMap.value = this.rtTextureA;
+				ap.pointMaterial.uniforms.u_colorMap.value = this.rtTextureA;
 			}else{
 				ap.material.uniforms.u_prevCMap.value = this.rtTextureA;
 				this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureB, true );
-				this.nodeShaderMaterial.uniforms.u_colorMap.value = this.rtTextureB;
+				ap.pointMaterial.uniforms.u_colorMap.value = this.rtTextureB;
 			}
 			this.rtToggle = !this.rtToggle;
 
@@ -344,19 +342,20 @@ ap.AppManager.prototype = {
 		};
 
 		// Defaults if no others are defined
-		if(!ap.pointVertex){ ap.pointVertex = ap.shaders.NodeShader.vertexShader; }
-		if(!ap.pointFragment){ ap.pointFragment = ap.shaders.NodeShader.fragmentShader; }
+		if(!ap.pointMaterial){ 
 
-		this.nodeShaderMaterial = new THREE.ShaderMaterial( {
+			ap.pointMaterial = new THREE.ShaderMaterial( {
 
-			uniforms:       uniforms,
-			attributes:     attributes,
-			vertexShader:   ap.pointVertex,
-			fragmentShader: ap.pointFragment,
+				uniforms:       uniforms,
+				attributes:     attributes,
+				vertexShader:   ap.shaders.NodeShader.vertexShader,
+				fragmentShader: ap.shaders.NodeShader.fragmentShader,
 
-			depthTest:      false,
-			transparent:    true
-		});
+				depthTest:      false,
+				transparent:    true
+			});
+			
+		}
 
 		var name = "AP Nodes";
 		if(this.sceneMain.getObjectByName(name)){
@@ -364,7 +363,7 @@ ap.AppManager.prototype = {
 			this.sceneMain.remove( ap.pointCloud );
 		}
 
-		ap.pointCloud = new THREE.PointCloud( ap.pointGeometry, this.nodeShaderMaterial );
+		ap.pointCloud = new THREE.PointCloud( ap.pointGeometry, ap.pointMaterial );
 		ap.pointCloud.sortParticles = true;
 		ap.pointCloud.name = name;
 
