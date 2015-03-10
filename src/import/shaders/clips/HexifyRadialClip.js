@@ -30,9 +30,9 @@ ap.clips.HexifyRadialClip = {
 		"vec2 p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (_p1);",
 		"p.x*=resolution.x/resolution.y;",
 		"p=hexifyWash(p,80.0);",
-		"float vr = 0.5*sin(10.*sqrt((p.x-0.5)*(p.x-0.5)+(p.y-0.5)*(p.y-0.5))+_time*2.5)+0.5;",
-		"float vg = 0.5*sin(20.*sqrt((p.x-0.5)*(p.x-0.5)+(p.y-0.25)*(p.y-0.25))-_time*3.5)+0.5;",
-		"float vb = 0.5*sin(30.*sqrt((p.x-0.5)*(p.x-0.5)+(p.y)*(p.y))+_time*1.5)+0.5;",
+		"float vr = 0.5*sin(10.*sqrt((p.x-0.5)*(p.x-0.5)+(p.y-0.5)*(p.y-0.5))+time*2.5)+0.5;",
+		"float vg = 0.5*sin(20.*sqrt((p.x-0.5)*(p.x-0.5)+(p.y-0.25)*(p.y-0.25))-time*3.5)+0.5;",
+		"float vb = 0.5*sin(30.*sqrt((p.x-0.5)*(p.x-0.5)+(p.y)*(p.y))+time*1.5)+0.5;",
 		"gl_FragColor = vec4(vr,vg,vb,1);"
 
 	].join("\n")

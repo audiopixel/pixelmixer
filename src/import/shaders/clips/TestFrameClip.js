@@ -58,7 +58,7 @@ ap.clips.TestFrameClip = {
 		* vec3 ap_lastRgb;								// Current node: rgb value last frame. 4th value discard slot
 		* vec3 ap_rgb;									// Current node: rgb ouput value
 		* 
-		* float _time;									// Uniform: Animation speed, movement should be tied to this other inputs
+		* float time;									// Uniform: Animation speed, movement should be tied to this other inputs
 		* float _random;								// Uniform: Random value (0-1)
 		* float u_mapSize;								// Uniform: The pixelmap size of all nodes
 		* sampler2D u_coordsMap;						// Uniform: The xyz coordinates of all nodes stored in a texture

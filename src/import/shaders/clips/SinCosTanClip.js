@@ -16,9 +16,9 @@ ap.clips.SinCosTanClip = {
 		"vec3 c = vec3(0.,0.,0.);",
 		"for(float i = 0.; i < 10.; i++)",
 		"{",
-			"c.r += floor(sin((p.x*16.) * p.y + mod(_time,3.1415*2.0))+ i*0.1)*0.1;",
-			"c.g -= floor(cos((p.y*16.) * p.x + mod(_time,3.1415*2.0))+ i*0.1)*0.1;",
-			"c.b += floor(tan((p.x*16.) * p.y + mod(_time*2.0,3.1415*2.0))+ i*0.2)*0.1;",
+			"c.r += floor(sin((p.x*16.) * p.y + mod(time,3.1415*2.0))+ i*0.1)*0.1;",
+			"c.g -= floor(cos((p.y*16.) * p.x + mod(time,3.1415*2.0))+ i*0.1)*0.1;",
+			"c.b += floor(tan((p.x*16.) * p.y + mod(time*2.0,3.1415*2.0))+ i*0.2)*0.1;",
 		"}",
 		"gl_FragColor = vec4(c, 1.0);"
 

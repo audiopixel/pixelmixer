@@ -62,7 +62,7 @@ ap.clips.LineCosSinClip = {
 		"camDir = rotateAxis(vec3(1,0,0),look.y,camDir);",
 		"camDir = rotateAxis(vec3(0,1,0),look.x,camDir);",
 		
-		"vec3 c = colorSpace(normalize(camDir)+sin((_time * .35)/pi));",
+		"vec3 c = colorSpace(normalize(camDir)+sin((time * .35)/pi));",
 
 		"gl_FragColor = vec4( c, 1.0 );",
 

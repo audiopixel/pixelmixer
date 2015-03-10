@@ -29,7 +29,6 @@ ap.AppManager = function (scene, renderer) {
 	this.fragmentShader;
 
 	this.time = 0;
-	this.speed = 0.045;
 	this.pixels;
 
 	this.render = true;
@@ -91,7 +90,7 @@ ap.AppManager.prototype = {
 
 	update: function () {
 
-		this.time += (this.speed) * .7;
+		this.time += ap.speed;
 
 
 		//this.camera.position.x += ( mouseX - this.camera.position.x ) * 0.05;
@@ -118,6 +117,8 @@ ap.AppManager.prototype = {
 				ap.pointMaterial.uniforms.u_colorMap.value = this.rtTextureB;
 			}
 			this.rtToggle = !this.rtToggle;
+
+			this.updateTimePerClip();
 
 
 			// Capture colormap for broadcast output
@@ -212,7 +213,28 @@ ap.AppManager.prototype = {
 	},
 
 	/////////////////
+			
+	updateTimePerClip: function () {
 
+		for (var i = 0; i < ap.channels.channels.length; i++) { var channel = ap.channels.channels[i];
+			
+			if(channel && channel.pods){
+
+				for (var e = 0; e < channel.pods.length; e++) { var pod = channel.pods[e];
+					
+					if(pod && pod.clips){
+
+						for (var u = 0; u < pod.clips.length; u++) { var clip = pod.clips[u];
+							
+							if(clip){
+								ap.material.uniforms["_"+(i+1)+"_"+(e+1)+"_"+(u+1)+"_"+"time"].value += (clip.speed * ap.speed);
+							}
+						}
+					}
+				}
+			}
+		}
+	},
 
 	updateGeometry: function () {
 

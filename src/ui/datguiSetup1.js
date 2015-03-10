@@ -69,7 +69,7 @@ function initUi(){
 		//Threshold:  1,
 		//Noise:  0,
 
-		Speed: ap.app.speed,
+		Speed: ap.speed,
 		PointSize: 80,
 		Hardware: ap.demoHardware[0]
 
@@ -162,7 +162,7 @@ function initUi(){
 			updateShader = true;
 
 	});
-	f5.add( guiData, "Speed", 0.025, 0.4, 1.0 ).onChange(function (_in) { ap.app.speed =_in; });
+	f5.add( guiData, "Speed", 0.025, 0.4, 1.0 ).onChange(function (_in) { ap.speed =_in; });
 	f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (_in) { ap.app.nodeShaderMaterial.uniforms.u_pointSize.value =_in; });
 
 

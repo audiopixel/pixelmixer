@@ -13,8 +13,9 @@ ap.register = {}; 				// Loaded shaders get referenced here internally for quick
 ap.imported = {}; 				// Currently imported port (and possibly node) data
 
 
-
 // ****** Api ******
+
+ap.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
 
 ap.simSize = 256;				// Power of 2 texture size that should contain maximum node count
 ap.useTransforms = false;		// By default pixel transforms are ignored (swap axis, translate, scale)

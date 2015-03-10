@@ -20,11 +20,11 @@ ap.clips.DiSinSwirlClip = {
 		// TODO position data comes from Pod/Clip coordinates
 		"vec2 p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (_p1 * 8.);",
 
-		"float mov0 = p.x+p.y+cos(sin(_time)*2.0)*100.+sin(p.x/100.)*1000.;",
+		"float mov0 = p.x+p.y+cos(sin(time)*2.0)*100.+sin(p.x/100.)*1000.;",
 		"float mov1 = p.y;",
 		"float mov2 = p.x;",
-		"float c1 = abs(sin(mov1+_time)/2.+mov2/2.-mov1-mov2+_time);",
-		"float c2 = abs(sin(c1+sin(mov0/1000.+_time)+sin(p.y/40.+_time)+sin((p.x+p.y)/100.)*3.));",
+		"float c1 = abs(sin(mov1+time)/2.+mov2/2.-mov1-mov2+time);",
+		"float c2 = abs(sin(c1+sin(mov0/1000.+time)+sin(p.y/40.+time)+sin((p.x+p.y)/100.)*3.));",
 		"float c3 = abs(sin(c2+cos(mov1+mov2+c2)+cos(mov2)+sin(p.x/1000.)));",
 
 		"c1 = c1 * 0.25;",

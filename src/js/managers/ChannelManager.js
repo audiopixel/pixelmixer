@@ -257,10 +257,10 @@ ap.ChannelManager.prototype = {
 										}
 
 
-										// uniforms 'mix' & 'blend' for the clip
+										// Define uniforms for each clip
 										uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
 										uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
-										uniforms[clip.address + "_speed"] = { type: "f", value: clip.speed }; 
+										uniforms[clip.address + "_time"] = { type: "f", value: ap.app.time }; 
 
 
 										// Pass along input param values if they are defined on clip
@@ -271,7 +271,7 @@ ap.ChannelManager.prototype = {
 											}
 										};
 
-										fragOutput += "ap_rgb2 = superFunction(_clip_mix, "+ clip.clipId +", _fxIn, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
+										fragOutput += "ap_rgb2 = superFunction(_clip_mix, "+ clip.clipId +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
 
 										// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
 										//fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
@@ -390,7 +390,7 @@ ap.ChannelManager.prototype = {
 		fragFuncHelpers = fragFuncHelpers.slice(5, fragFuncHelpers.length); // cut the first 'else' out 
 		fragFuncHelpers = "vec4 returnColor = vec4(0.,0.,0.,0.); if(_mi == 0.){return vec3(0.,0.,0.);} \n" + fragFuncHelpers;
 		fragFuncHelpers += "return max(min(vec3(returnColor.x, returnColor.y, returnColor.z), vec3(1.0)), vec3(0.0)); \n";
-		fragFuncHelpers = "vec3 superFunction(float _mi, int id, vec3 _fxIn, float _p1, float _p2, float _p3, float _p4, float _p5, float _p6, float _p7, float _p8, float _p9) { \n" + fragFuncHelpers + "}\n";
+		fragFuncHelpers = "vec3 superFunction(float _mi, int id, vec3 _fxIn, float time, float _p1, float _p2, float _p3, float _p4, float _p5, float _p6, float _p7, float _p8, float _p9) { \n" + fragFuncHelpers + "}\n";
 		
 		fragFuncOutput += fragFuncHelpers;
 
