@@ -104,8 +104,8 @@ ap.AppManager.prototype = {
 		// Update uniforms
 		if(this.render && ap.ready){
 
-			ap.material.uniforms.u_time.value = this.time;
-			ap.material.uniforms.u_random.value = Math.random();
+			ap.material.uniforms._time.value = this.time;
+			ap.material.uniforms._random.value = Math.random();
 
 			// Render first scene into texture
 			if(this.rtToggle){
@@ -383,8 +383,8 @@ ap.AppManager.prototype = {
 
 		// Internal core uniforms
 		var uniforms = {
-			u_time: { type: "f", value: this.time },
-			u_random: { type: "f", value: Math.random() },
+			_time: { type: "f", value: this.time },
+			_random: { type: "f", value: Math.random() },
 			u_coordsMap: { type: "t", value: this.coordsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
 			u_mapSize: { type: "f", value: ap.simSize }

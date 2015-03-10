@@ -18,7 +18,7 @@ ap.clips.SinSpiralClip = {
 		"float t = max(_p1, .01);",
 		"vec2 p = (gl_FragCoord.xy / resolution.xy - .5)*0.99 * t;",
 		"p.x *= resolution.x / resolution.y;",
-		"float d2D = 0.8 / length (p) + u_time  * 5.0;",
+		"float d2D = 0.8 / length (p) + _time  * 5.0;",
 		"float a2D = atan (p.y, p.x);",
 		"float qq = d2D * 0.1 + sin(d2D) * 0.2 * cos(a2D * 3.0) + sin(d2D * 0.2) * 0.3 * cos(a2D * 8.0)",
 			"+ max(0.0, sin(d2D * 0.1 + 99.0) - 0.5) * cos(a2D * 20.0 + sin(d2D * 0.2) * 5.0)",

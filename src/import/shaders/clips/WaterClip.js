@@ -21,7 +21,7 @@ ap.clips.WaterClip = {
 
 		"for (int n = 0; n < 10; n++) ",
 		"{",
-		"	float t = (u_time * .5) * (1.0 - (3.0 / float(n+1)));",
+		"	float t = (_time * .5) * (1.0 - (3.0 / float(n+1)));",
 		"	iv2 = p + vec2(cos(t - iv2.x) + sin(t + iv2.y), sin(t - iv2.y) + cos(t + iv2.x));",
 		"	cf += 1.0/length(vec2(p.x / (sin(iv2.x+t)/inten),p.y / (cos(iv2.y+t)/inten)));",
 		"}",

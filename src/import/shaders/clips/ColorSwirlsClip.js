@@ -39,7 +39,7 @@ ap.clips.ColorSwirlsClip = {
 		"vec2 p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (_p1 * 2.);",
 		"p = p*pi;",
 
-		"float t = (rcpi*(u_time/pi+picu))+pi;",
+		"float t = (rcpi*(_time/pi+picu))+pi;",
 	    "vec3 camp = (vec3(0.0, 0.0, 1.0))*(twpi+sin(t)*pi);",
 		"vec3 qAxis = normalize(vec3(sin(t*(rcpi)), cos(t*(prpi)), cos(t*(lgpi)) ));",
 		"vec3 wAxis = normalize(vec3(cos(t*(-trpi)), sin(t*(rcpi)), sin(t*(lgpi)) ));",

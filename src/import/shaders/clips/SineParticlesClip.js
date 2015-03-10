@@ -13,7 +13,7 @@ ap.clips.SineParticlesClip = {
 	fragmentFunctions: [
 
 		[ "float  metaball ( vec2 pos, float offset) {",
-				"float t = u_time + offset;",
+				"float t = _time + offset;",
 				"vec2 metaballPos = vec2(sin(t * .8), cos(t));",
 				"return 1. / length(pos - metaballPos);",
 			"}"
@@ -31,7 +31,7 @@ ap.clips.SineParticlesClip = {
 			"cf += metaball(p, float(i) / 5.) / 20.;",
 		"}",
 
-		"gl_FragColor = vec4( vec3( cf, cf * 0.5, sin( cf + u_time / 3.0 ) * 0.75 ), 1.0 );"
+		"gl_FragColor = vec4( vec3( cf, cf * 0.5, sin( cf + _time / 3.0 ) * 0.75 ), 1.0 );"
 
 	].join("\n")
 

@@ -260,10 +260,8 @@ ap.ChannelManager.prototype = {
 										// uniforms 'mix' & 'blend' for the clip
 										uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
 										uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
+										uniforms[clip.address + "_speed"] = { type: "f", value: clip.speed }; 
 
-
-										// Lookup the correct imported clip based on the id stored on the clip object
-										fragOutput = srcClip.fragmentMain + "\n";
 
 										// Pass along input param values if they are defined on clip
 										var params = ["0.","0.","0.","0.","0.","0.","0.","0.","0."];
@@ -273,7 +271,7 @@ ap.ChannelManager.prototype = {
 											}
 										};
 
-										fragOutput = "ap_rgb2 = superFunction(_clip_mix, "+ clip.clipId +", _fxIn, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
+										fragOutput += "ap_rgb2 = superFunction(_clip_mix, "+ clip.clipId +", _fxIn, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
 
 										// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
 										//fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
@@ -449,7 +447,7 @@ ap.ChannelManager.prototype = {
 		output += m;
 
 		if(ap.useTransforms){
-			
+
 			// Pod Offset (translation)
 			m = "";
 			for (var i = 0; i < this.podpositions.length; i++) {
