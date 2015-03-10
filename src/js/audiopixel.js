@@ -87,7 +87,7 @@ ap.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
 
 // ****** Main Init ****** 
 
-ap.init = function(scene, renderer){
+ap.init = function(scene, renderer, simsize){
 
 	// Register all clips by their id's for easy lookup later
 	for (var property in ap.clips) {
@@ -99,7 +99,7 @@ ap.init = function(scene, renderer){
 	ap.ports = new ap.PortManager();
 	ap.hardware = new ap.HardwareManager();
 	ap.channels = new ap.ChannelManager();
-	ap.app = new ap.AppManager(scene, renderer);
+	ap.app = new ap.AppManager(scene, renderer, simsize);
 
 	ap.ports.init();
 	ap.hardware.init();

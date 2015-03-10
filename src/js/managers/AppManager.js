@@ -5,7 +5,7 @@
 *
 */
 
-ap.AppManager = function (scene, renderer) {
+ap.AppManager = function (scene, renderer, simsize) {
 
 	this.glWidth = 0;
 	this.glHeight = 0;
@@ -30,7 +30,7 @@ ap.AppManager = function (scene, renderer) {
 
 	this.time = 0;
 	this.speed = 0.045;
-	this.simSize = 256;
+	this.simSize = simsize || 256;
 	this.pixels;
 
 	this.render = true;
@@ -42,6 +42,7 @@ ap.AppManager = function (scene, renderer) {
 
 	this.plane = new THREE.PlaneBufferGeometry( this.simSize, this.simSize );
 	ap.pointGeometry = new THREE.Geometry();
+
 
 	// TODO
 	//this.portsMap;
@@ -354,7 +355,7 @@ ap.AppManager.prototype = {
 				depthTest:      false,
 				transparent:    true
 			});
-			
+
 		}
 
 		var name = "AP Nodes";
