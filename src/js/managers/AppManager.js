@@ -5,7 +5,7 @@
 *
 */
 
-ap.AppManager = function (scene, renderer, simsize) {
+ap.AppManager = function (scene, renderer) {
 
 	this.glWidth = 0;
 	this.glHeight = 0;
@@ -30,7 +30,6 @@ ap.AppManager = function (scene, renderer, simsize) {
 
 	this.time = 0;
 	this.speed = 0.045;
-	this.simSize = simsize || 256;
 	this.pixels;
 
 	this.render = true;
@@ -40,7 +39,7 @@ ap.AppManager = function (scene, renderer, simsize) {
 
 	this.coordsMap;
 
-	this.plane = new THREE.PlaneBufferGeometry( this.simSize, this.simSize );
+	this.plane = new THREE.PlaneBufferGeometry( ap.simSize, ap.simSize );
 	ap.pointGeometry = new THREE.Geometry();
 
 
@@ -55,10 +54,10 @@ ap.AppManager.prototype = {
 	init: function () {
 
 		// We create two source textures and swap between them every frame, so we can always reference the last frame values
-		this.rtTextureA = new THREE.WebGLRenderTarget( this.simSize, this.simSize, {minFilter: THREE.NearestMipMapNearestFilter,magFilter: THREE.NearestFilter,format: THREE.RGBFormat});
+		this.rtTextureA = new THREE.WebGLRenderTarget( ap.simSize, ap.simSize, {minFilter: THREE.NearestMipMapNearestFilter,magFilter: THREE.NearestFilter,format: THREE.RGBFormat});
 		this.rtTextureB = this.rtTextureA.clone();
 
-		this.cameraRTT = new THREE.OrthographicCamera( this.simSize / - 2, this.simSize / 2, this.simSize / 2, this.simSize / - 2, -10000, 10000 );
+		this.cameraRTT = new THREE.OrthographicCamera( ap.simSize / - 2, ap.simSize / 2, ap.simSize / 2, ap.simSize / - 2, -10000, 10000 );
 		this.sceneRTT = new THREE.Scene();
 
 		
@@ -169,7 +168,7 @@ ap.AppManager.prototype = {
 
 	addPlanesForTesting: function(){
 
-		testPlane = new THREE.PlaneBufferGeometry( this.simSize * 2, this.simSize * 2 );
+		testPlane = new THREE.PlaneBufferGeometry( ap.simSize * 2, ap.simSize * 2 );
 		
 		var materialScreen = new THREE.ShaderMaterial( {
 
@@ -242,7 +241,7 @@ ap.AppManager.prototype = {
 					// TODO check port render type, if it's a directional light, or if it's a node (or plane eventually)
 
 					// for each point push along x, y values to reference correct pixel in u_colorMaps
-					var imageSize = this.simSize; 
+					var imageSize = ap.simSize; 
 					var tx = (t+1) % imageSize;
 					if(tx === 0){
 						tx = imageSize;
@@ -271,7 +270,7 @@ ap.AppManager.prototype = {
 	generateCoordsMap: function () {
 
 		// Generate coordsMap data texture for all the nodes x,y,z
-		var a = new Float32Array( Math.pow(this.simSize, 2) * 4 );
+		var a = new Float32Array( Math.pow(ap.simSize, 2) * 4 );
 		var t = 0;
 
 		var minx = 100000000000;
@@ -319,7 +318,7 @@ ap.AppManager.prototype = {
 
 		//ap.channels.setPodPos(2, new PodPosition(-190, 140, 0, 1070, 575, 1));
 
-		this.coordsMap = new THREE.DataTexture( a, this.simSize, this.simSize, THREE.RGBAFormat, THREE.FloatType );
+		this.coordsMap = new THREE.DataTexture( a, ap.simSize, ap.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.coordsMap.minFilter = THREE.NearestFilter;
 		this.coordsMap.magFilter = THREE.NearestFilter;
 		this.coordsMap.needsUpdate = true;
@@ -388,7 +387,7 @@ ap.AppManager.prototype = {
 			u_random: { type: "f", value: Math.random() },
 			u_coordsMap: { type: "t", value: this.coordsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
-			u_mapSize: { type: "f", value: this.simSize }
+			u_mapSize: { type: "f", value: ap.simSize }
 		};
 
 		// Generate the source shader from the current loaded channels

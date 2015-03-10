@@ -72,11 +72,12 @@
 
 					// Three.js setup
 					scene = new THREE.Scene();
-					container = document.getElementById( 'container' )
 
 					renderer = new THREE.WebGLRenderer( /*{ preserveDrawingBuffer: readPixels } */); // Some browsers might need preserveDrawingBuffer to readPixels
 					renderer.setSize( glWidth, glHeight );
 					renderer.autoClear = false;
+
+					container = document.getElementById( 'container' );
 					container.appendChild( renderer.domElement ); 
 
 					camera = new THREE.PerspectiveCamera( 30, glWidth / glHeight, 1, 100000 );
@@ -85,7 +86,7 @@
 
 
 					// Initialize ap
-					ap.init(scene, renderer, 256);
+					ap.init(scene, renderer);
 					ap.setSize(glWidth, glHeight);
 
 

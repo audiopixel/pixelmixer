@@ -22,6 +22,7 @@ ap.pointCloud;					// Main point cloud that displays node colors onscreen
 ap.pointGeometry;				// The geometry of the point cloud that displays the node colors onscreen
 ap.pointMaterial;				// The material of the point cloud that displays the node colors onscreen
 
+ap.simSize = 256;				// Power of 2 texture size that should contain maximum node count
 
 
 
@@ -87,7 +88,7 @@ ap.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
 
 // ****** Main Init ****** 
 
-ap.init = function(scene, renderer, simsize){
+ap.init = function(scene, renderer){
 
 	// Register all clips by their id's for easy lookup later
 	for (var property in ap.clips) {
@@ -99,7 +100,7 @@ ap.init = function(scene, renderer, simsize){
 	ap.ports = new ap.PortManager();
 	ap.hardware = new ap.HardwareManager();
 	ap.channels = new ap.ChannelManager();
-	ap.app = new ap.AppManager(scene, renderer, simsize);
+	ap.app = new ap.AppManager(scene, renderer);
 
 	ap.ports.init();
 	ap.hardware.init();
