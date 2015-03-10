@@ -22,9 +22,9 @@ ap.HardwareManager.prototype = {
 		//ap.channels.setPodPos(3, new PodPosition(540, 140, -100, 700, 575, 1000));
 
 		//this.addTestPortsGrid3(1, 0, 0);
-		
+
 		//this.addSimpleNodeGrid(1, 0, 0, 0, 30, 40, 33);
-		//this.addSimpleNodeGrid(2, 0, 220, 0, 30, 20, 33);
+		//this.addSimpleNodeGrid(2, 0, 220, 0, 32, 20, 33);
 
 
 	},
@@ -203,6 +203,11 @@ ap.HardwareManager.prototype = {
 
 	addSimpleNodeGrid: function (port, x, y, z, width, height, pitch) {
 
+		var minx = 100000000000;
+		var maxx = 0;
+		var miny = 100000000000;
+		var maxy = 0;
+
 		var nodes = [];
 		for ( e = 0; e < width; e ++ ) { 
 			for ( i = 0; i < height; i ++ ) { 
@@ -212,10 +217,21 @@ ap.HardwareManager.prototype = {
 				node.y = ((i * pitch) + y);
 				node.z = z;
 				nodes.push(node);
+
+				minx = Math.min(minx, node.x);
+				maxx = Math.max(maxx, node.x);
+				miny = Math.min(miny, node.y);
+				maxy = Math.max(maxy, node.y);
 			}
 		}
 		var portd = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
 		ap.ports.setPort(port, portd);
+
+		// If we are not the first designated port set the pod position as a default (testing)
+		if(port > 1){
+			ap.channels.setPodPos(port, new PodPosition(minx, miny, z, maxx - minx, maxy - miny, z+1));
+		}
+
 	}
 
 };
