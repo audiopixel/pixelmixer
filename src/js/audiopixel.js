@@ -16,13 +16,14 @@ ap.imported = {}; 				// Currently imported port (and possibly node) data
 
 // ****** Api ******
 
+ap.simSize = 256;				// Power of 2 texture size that should contain maximum node count
+ap.useTransforms = false;		// By default pixel transforms are ignored (swap axis, translate, scale)
+
 ap.material = false;			// Main shader referenced here, set false initially to flag that its not ready
 
 ap.pointCloud;					// Main point cloud that displays node colors onscreen
 ap.pointGeometry;				// The geometry of the point cloud that displays the node colors onscreen
 ap.pointMaterial;				// The material of the point cloud that displays the node colors onscreen
-
-ap.simSize = 256;				// Power of 2 texture size that should contain maximum node count
 
 
 
