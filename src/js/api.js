@@ -104,4 +104,9 @@ ap.get = function(uniform, channel, pod, clip) {
 
 ap.set = function(value, uniform, channel, pod, clip) {
 	ap.uniform(uniform, channel, pod, clip).value = value;
+
+	var obj = ap.channels.channels[channel-1];
+	if(pod){ obj = obj.pods[pod-1]; }
+	if(clip){ obj = obj.clips[clip-1]; }
+	obj[uniform] = value;
 }

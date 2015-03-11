@@ -158,10 +158,10 @@ function initUi(){
 				ap.hardware.importNodes(ap.imported, 1, 0, 0, 0);
 			break;
 		}
-			ap.app.updateNodePoints(); // only need to call this when we add nodes aftervit
-			ap.app.updateMainSourceShader();
+		ap.app.updateNodePoints(); // only need to call this when we add nodes aftervit
+		ap.app.updateMainSourceShader();
 
-			updateShader = true;
+		updateShader = true;
 
 	});
 	f5.add( guiData, "Speed", 0.025, 0.4, 1.0 ).onChange(function (v) { ap.speed = v; });
