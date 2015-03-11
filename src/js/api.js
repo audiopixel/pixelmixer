@@ -90,3 +90,18 @@ ap.setSize = function(width, height) {
 
 	}
 }
+
+ap.uniform = function(uniform, channel, pod, clip) {
+	var addy = "_" + channel;
+	if(pod){ addy += "_" + pod; }
+	if(clip){ addy += "_" + clip; }
+	return ap.material.uniforms[addy + "_" + uniform];
+}
+
+ap.get = function(uniform, channel, pod, clip) {
+	return ap.uniform(uniform, channel, pod, clip).value;
+}
+
+ap.set = function(value, uniform, channel, pod, clip) {
+	ap.uniform(uniform, channel, pod, clip).value = value;
+}
