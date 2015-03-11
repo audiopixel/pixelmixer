@@ -332,13 +332,13 @@ ap.AppManager.prototype = {
 
 		// We always set the first Pod Position as the bounding box that fits all nodes
 		// TODO add z depth
-		ap.channels.setPodPos(1, new PodPosition(minx, miny, minz, maxx - minx, maxy - miny, maxz - minz));
-		//console.log(new PodPosition(minx, miny, 0, maxx - minx, maxy - miny, 1));
+		ap.channels.setPodPos(1, new ap.PodPosition(minx, miny, minz, maxx - minx, maxy - miny, maxz - minz));
+		//console.log(new ap.PodPosition(minx, miny, 0, maxx - minx, maxy - miny, 1));
 
 		// Testing on pod pos #2
-		//ap.channels.setPodPos(2, new PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
+		//ap.channels.setPodPos(2, new ap.PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
 
-		//ap.channels.setPodPos(2, new PodPosition(-190, 140, 0, 1070, 575, 1));
+		//ap.channels.setPodPos(2, new ap.PodPosition(-190, 140, 0, 1070, 575, 1));
 
 		this.coordsMap = new THREE.DataTexture( a, ap.simSize, ap.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.coordsMap.minFilter = THREE.NearestFilter;

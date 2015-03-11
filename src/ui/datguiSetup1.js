@@ -22,18 +22,18 @@ function initUi(){
 	var mix2 = 1;
 	var pods = [];
 
-	//pods[3] = new Pod(1, mix, ap.BLEND.Add, [new Clip(2, mix, ap.BLEND.Add), new Clip(5, mix, ap.BLEND.Fx)]);
-	//pods[2] = new Pod(3, mix, ap.BLEND.Add, [new Clip(3, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
-	pods[1] = new Pod([2], mix, ap.BLEND.LinearLight, [new Clip(12, mix, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
-	pods[0] = new Pod([1], mix, ap.BLEND.Add, [new Clip(8, mix2, ap.BLEND.Add), new Clip(5, 1, ap.BLEND.Fx)]);
+	//pods[3] = new ap.Pod(1, mix, ap.BLEND.Add, [new ap.Clip(2, mix, ap.BLEND.Add), new ap.Clip(5, mix, ap.BLEND.Fx)]);
+	//pods[2] = new ap.Pod(3, mix, ap.BLEND.Add, [new ap.Clip(3, mix2, ap.BLEND.Add), new ap.Clip(5, 1, ap.BLEND.Fx)]);
+	pods[1] = new ap.Pod([2], mix, ap.BLEND.LinearLight, [new ap.Clip(12, mix, ap.BLEND.Add), new ap.Clip(5, 1, ap.BLEND.Fx)]);
+	pods[0] = new ap.Pod([1], mix, ap.BLEND.Add, [new ap.Clip(8, mix2, ap.BLEND.Add), new ap.Clip(5, 1, ap.BLEND.Fx)]);
 
-	ap.channels.setChannel(1, new Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
+	ap.channels.setChannel(1, new ap.Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
 
 
 	var pods2 = [];
-	pods2[0] = new Pod([1], mix, ap.BLEND.Add, [new Clip(16, 1, ap.BLEND.Fx)]);
+	pods2[0] = new ap.Pod([1], mix, ap.BLEND.Add, [new ap.Clip(16, 1, ap.BLEND.Fx)]);
 
-	ap.channels.setChannel(2, new Channel("Post FX1", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Add, pods2));
+	ap.channels.setChannel(2, new ap.Channel("Post FX1", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Add, pods2));
 
 	// Tell the shader to update after we set some new state
 	ap.updateShader = true;
@@ -136,18 +136,18 @@ function initUi(){
 		switch(_in){
 			case ap.demoHardware[0]:
 
-				ap.channels.setPodPos(2, new PodPosition(-190, 140, -1000, 1070, 575, 2000));
+				ap.channels.setPodPos(2, new ap.PodPosition(-190, 140, -1000, 1070, 575, 2000));
 				ap.hardware.importNodes(ap.imported, 1, 0, 0, 0);
 				break;
 			case ap.demoHardware[1]:
 
-				ap.channels.setPodPos(2, new PodPosition(-339, 30, -1000, 1378, 738, 2000));
+				ap.channels.setPodPos(2, new ap.PodPosition(-339, 30, -1000, 1378, 738, 2000));
 				ap.hardware.addTestPortsGrid3(1, 0, 0);
 				break;
 
 			case ap.demoHardware[2]:
 
-				ap.channels.setPodPos(2, new PodPosition(-190, 286, -1000, 1070, 242, 2000));
+				ap.channels.setPodPos(2, new ap.PodPosition(-190, 286, -1000, 1070, 242, 2000));
 				ap.hardware.addTestPortsGrid(1, 0, 0);
 				break;
 
@@ -217,7 +217,7 @@ function uniformClipTypeChange(clipName, channel, pod, clip) {
 		clipId = ap.clips[clipName + "Clip"].id;
 	}
 
-	ap.channels.setClip(channel, pod, clip, new Clip(clipId, 1.0, ap.BLEND.Add));
+	ap.channels.setClip(channel, pod, clip, new ap.Clip(clipId, 1.0, ap.BLEND.Add));
 
 	ap.updateShader = true;
 }

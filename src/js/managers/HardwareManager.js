@@ -17,9 +17,9 @@ ap.HardwareManager.prototype = {
 */
 		// Simulate Importing nodes from external file
 		this.importNodes(ap.imported, 1, 350, 100, 500);
-		ap.channels.setPodPos(2, new PodPosition(-190, 140, -100, 1070, 575, 1000));
-		//ap.channels.setPodPos(2, new PodPosition(-540, 140, -100, 700, 575, 1000));
-		//ap.channels.setPodPos(3, new PodPosition(540, 140, -100, 700, 575, 1000));
+		ap.channels.setPodPos(2, new ap.PodPosition(-190, 140, -100, 1070, 575, 1000));
+		//ap.channels.setPodPos(2, new ap.PodPosition(-540, 140, -100, 700, 575, 1000));
+		//ap.channels.setPodPos(3, new ap.PodPosition(540, 140, -100, 700, 575, 1000));
 
 		//this.addTestPortsGrid3(1, 0, 0);
 
@@ -122,7 +122,7 @@ ap.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
+			var port = new ap.Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
 			ap.ports.setPort(u + portStart, port);
 
 			xS += xTOffset;
@@ -145,7 +145,7 @@ ap.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
+			var port = new ap.Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
 			ap.ports.setPort(portStart, port);
 	},
 
@@ -162,7 +162,7 @@ ap.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
+			var port = new ap.Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
 			ap.ports.setPort(portStart, port);
 
 			nodes = [];
@@ -179,7 +179,7 @@ ap.HardwareManager.prototype = {
 					}
 				}
 			}
-			port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
+			port = new ap.Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
 			ap.ports.setPort(portStart + 1, port);
 
 			nodes = [];
@@ -196,7 +196,7 @@ ap.HardwareManager.prototype = {
 					}
 				}
 			}
-			port = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
+			port = new ap.Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
 			ap.ports.setPort(portStart + 2, port);
 	},
 
@@ -224,12 +224,12 @@ ap.HardwareManager.prototype = {
 				maxy = Math.max(maxy, node.y);
 			}
 		}
-		var portd = new Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
+		var portd = new ap.Port("port name " + port, ap.PORT_TYPE_KINET_1, null, null, nodes);
 		ap.ports.setPort(port, portd);
 
 		// If we are not the first designated port set the pod position as a default (testing)
 		if(port > 1){
-			ap.channels.setPodPos(port, new PodPosition(minx, miny, z, maxx - minx, maxy - miny, z+1));
+			ap.channels.setPodPos(port, new ap.PodPosition(minx, miny, z, maxx - minx, maxy - miny, z+1));
 		}
 
 	}

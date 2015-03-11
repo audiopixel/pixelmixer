@@ -1,5 +1,5 @@
 
-var Pod = function (positionIds, mix, blend, clips, hardwareGroupMode, hardwareGroupIds) {
+ap.Pod = function (positionIds, mix, blend, clips, hardwareGroupMode, hardwareGroupIds) {
 
 	this.positionIds = positionIds || [];
 	this.mix = mix || 0;
@@ -9,6 +9,6 @@ var Pod = function (positionIds, mix, blend, clips, hardwareGroupMode, hardwareG
 	this.hardwareGroupIds = hardwareGroupIds || [];
 };
 
-Pod.prototype = {
+ap.Pod.prototype = {
 
 };

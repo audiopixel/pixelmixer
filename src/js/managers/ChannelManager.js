@@ -409,12 +409,9 @@ ap.ChannelManager.prototype = {
 			hardware group 2
 			hardware group 3
 			hardware group mode: off, exclude, or solo
-
 		*/
 
-
-		return new Shader(uniforms, fragFuncOutput, output + "\n");
-
+		return {uniforms: uniforms, fragmentFunctions: fragFuncOutput, fragmentMain: output + "\n"};
 	},
 
 	generateSizingFunctions: function () {

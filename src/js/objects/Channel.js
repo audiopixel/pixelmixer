@@ -1,5 +1,5 @@
 
-var Channel = function (name, type, mix, blend, pods) {
+ap.Channel = function (name, type, mix, blend, pods) {
 
 	this.name = name;
 	this.type = type 		|| ap.CHANNEL_TYPE_BLEND;
@@ -9,6 +9,6 @@ var Channel = function (name, type, mix, blend, pods) {
 
 };
 
-Channel.prototype = {
+ap.Channel.prototype = {
 
 };

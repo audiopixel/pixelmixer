@@ -1,6 +1,6 @@
 
 // (String name, int type, String address, int hardwarePort [optional], Array nodes [optional]) 
-var Port = function (name, type, address, hardwarePort, nodes) {
+ap.Port = function (name, type, address, hardwarePort, nodes) {
 
 	this.name = name;
 	this.type = type;
@@ -10,6 +10,6 @@ var Port = function (name, type, address, hardwarePort, nodes) {
 
 };
 
-Port.prototype = {
+ap.Port.prototype = {
 
 };

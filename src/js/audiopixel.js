@@ -58,7 +58,7 @@ ap.BLENDS = [ 'Add', 'Substract', 'Darkest', 'Lightest', 'Difference', 'Exclusio
 			'HardLight', 'SoftLight', 'Dodge', 'Burn', 'LinearBurn', 'LinearLight', 'VividLight', 'PinLight'];
 
 
-// Port Type Constants
+// ap.Port Type Constants
 ap.PORT_TYPE_OFF = 0;
 ap.PORT_TYPE_KINET_1 = 1; // strands
 ap.PORT_TYPE_KINET_2 = 2; // tiles
@@ -70,7 +70,7 @@ ap.PORT_TYPE_DMX_3 = 7;
 ap.PORT_TYPE_LASER_1 = 8;
 
 
-// Channel Type Constants
+// ap.Channel Type Constants
 ap.CHANNEL_TYPE_OFF = 0;
 ap.CHANNEL_TYPE_BLEND = 1;
 ap.CHANNEL_TYPE_FX = 2;

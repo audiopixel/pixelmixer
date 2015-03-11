@@ -1,5 +1,5 @@
 
-var Clip = function (clipId, mix, blend, speed) {
+ap.Clip = function (clipId, mix, blend, speed) {
 
 	this.clipId = clipId;
 	this.mix = mix 			|| 0;
@@ -8,6 +8,6 @@ var Clip = function (clipId, mix, blend, speed) {
 
 };
 
-Clip.prototype = {
+ap.Clip.prototype = {
 
 };

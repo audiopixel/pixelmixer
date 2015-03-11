@@ -1,5 +1,5 @@
 
-var PodPosition = function (x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs, flipmode) {
+ap.PodPosition = function (x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs, flipmode) {
 
 	this.x = x || 0;
 	this.y = y || 0;
@@ -17,6 +17,6 @@ var PodPosition = function (x, y, z, width, height, depth, xt, yt, zt, xs, ys, z
 	this.flipmode = flipmode || 0;
 };
 
-PodPosition.prototype = {
+ap.PodPosition.prototype = {
 
 };
