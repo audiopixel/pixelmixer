@@ -1,7 +1,6 @@
 
 ap.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
 
-ap.simSize = 256;				// Power of 2 texture size that should contain maximum node count
 ap.useTransforms = false;		// By default pixel transforms are ignored (swap axis, translate, scale)
 
 ap.material = false;			// Main shader referenced here, set false initially to flag that its not ready
@@ -16,13 +15,20 @@ ap.imported = {}; 				// Currently imported port (and possibly node) data
 
 
 
-ap.init = function(scene, renderer){
+ap.init = function(scene, renderer, maxNodeCount){
 
 	// Register all clips by their id's for easy lookup later
 	for (var property in ap.clips) {
 		if (ap.clips.hasOwnProperty(property)) {
 			ap.register[ap.clips[property].id] = property;
 		}
+	}
+
+	// Maintain the lowest possible power of 2 texture size based on maxNodeCount
+	maxNodeCount = maxNodeCount || Math.pow(128, 2); 	// Default: 16384 (128*128)
+	ap.simSize = 4;										// Minimum: 16 (4*4)
+	while(Math.pow(ap.simSize, 2) < maxNodeCount){
+		ap.simSize *= 2;
 	}
 
 	ap.ports = new ap.PortManager();

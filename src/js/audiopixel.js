@@ -4,6 +4,7 @@
 
 var ap = { REVISION: '1' };		// Global object
 ap.ready = false;				
+ap.simSize;
 
 ap.shaders = {};				// Internal shaders 
 ap.clips = {}; 					// Loaded shaders as clips

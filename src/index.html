@@ -86,7 +86,8 @@
 
 
 					// Initialize ap
-					ap.init(scene, renderer);
+					var maxNodeCount = 10000;
+					ap.init(scene, renderer, maxNodeCount);
 					ap.setSize(glWidth, glHeight);
 
 
