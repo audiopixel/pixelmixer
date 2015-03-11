@@ -22,11 +22,14 @@ ap.useTransforms = false;		// By default pixel transforms are ignored (swap axis
 
 ap.material = false;			// Main shader referenced here, set false initially to flag that its not ready
 
-ap.pointCloud;					// Main point cloud that displays node colors onscreen
-ap.pointGeometry;				// The geometry of the point cloud that displays the node colors onscreen
-ap.pointMaterial;				// The material of the point cloud that displays the node colors onscreen
+ap.pointCloud = {};				// Main point cloud that displays node colors
+ap.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
+ap.pointVertex;					// Set this to override default vertex shader
+ap.pointFragment;				// Set this to override default fragment shader
 
 
+// TODO this should be a list of objects that we load at runtime, hardcoded for now
+ap.imported = {}; 				// Currently imported port (and possibly node) data
 
 // ****** Constants ******
 
