@@ -4,18 +4,18 @@
  */
 
 
-ap.shaders.NodeShader = {
+ap.shaders.PointCloudShader = {
 
 	uniforms: {
-		u_colorMap:   { type: "t", value: null },
 		u_pointSize:  { type: 'f', value: 80.0 },
-		u_texture:    { type: "t", value: null }
+		//u_colorMap:   { type: "t", value: null },
+		//u_texture:    { type: "t", value: null }
 	},
 
-	attributes: { // For each node we pass along it's index value and x, y in relation to the colorMaps
-		a_geoX:        { type: 'f', value: null },
-		a_geoY:        { type: 'f', value: null },
-		a_index:        { type: 'f', value: null }
+	attributes: { 
+		//a_geoX:        { type: 'fv1', value: null },
+		//a_geoY:        { type: 'fv1', value: null },
+		//a_index:        { type: 'fv1', value: null }
 	},
 
 	vertexShader: [
