@@ -82,7 +82,7 @@ function initUi(){
 	// =========Event listeners===============
 
 
-	gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.material.uniforms._1_mix.value = _in; });
+	gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "mix", 1);  });
 
 	gui.add( { SnapToFront:function(){
 		controls.reset();
@@ -101,39 +101,41 @@ function initUi(){
 	// Pod 3
 	f1.add( guiData, 'S3Blend', ap.BLENDS )     .onChange(function () { uniformBlendChange( guiData.S3Blend, "_1_3"); });
 	f1.add( guiData, 'S3ClipId', ap.demoClipNames).onChange(function () { uniformClipTypeChange( guiData.S3ClipId, 1, 3, 1 ); });
-	f1.add( guiData, "S3Mix", 0.0, 1.0, 1.0 )   .onChange(function () { ap.material.uniforms._1_3_1_mix.value = guiData.S3Mix; });
-	f1.add( guiData, "S3Scale", 0.0, 1.0, 1.0 ) .onChange(function () { ap.material.uniforms._1_3_1_p1.value = guiData.S3Scale; });
-	f1.add( guiData, "Hue3Mix", 0.0, 1.0, 1.0 ) .onChange(function () { ap.material.uniforms._1_3_2_p1.value = guiData.Hue3Mix; });
+	f1.add( guiData, "S3Mix", 0.0, 1.0, 1.0 )   .onChange(function () { ap.set(v, "", 1_3_1_mix.value = guiData.S3Mix; });
+	f1.add( guiData, "S3Scale", 0.0, 1.0, 1.0 ) .onChange(function () { ap.set(v, "", 1_3_1_p1.value = guiData.S3Scale; });
+	f1.add( guiData, "Hue3Mix", 0.0, 1.0, 1.0 ) .onChange(function () { ap.set(v, "", 1_3_2_p1.value = guiData.Hue3Mix; });
 	*/
 	// Pod 2
-	f2.add( guiData, 'S2ClipId', ap.demoClipNames).onChange(function (_in) { uniformClipTypeChange(_in, 1, 2, 1 ); });
-	f2.add( guiData, "S2Mix", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.material.uniforms._1_2_1_mix.value =_in; });
-	f2.add( guiData, "S2Scale", 0.1, 1.0, 1.0 )    .onChange(function (_in) { ap.material.uniforms._1_2_1_p1.value =_in; });
-	f2.add( guiData, "S2HueTint", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.material.uniforms._1_2_2_p1.value =_in; });
-	f2.add( guiData, 'S2Blend', ap.BLENDS )        .onChange(function (_in) { uniformBlendChange(_in, "_1_2"); });
+	f2.add( guiData, 'S2ClipId', ap.demoClipNames).onChange(function (v) { uniformClipTypeChange(v, 1, 2, 1 ); });
+	f2.add( guiData, "S2Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "mix", 1, 2, 1);  });
+	f2.add( guiData, "S2Scale", 0.1, 1.0, 1.0 )    .onChange(function (v) { ap.set(v, "p1", 1, 2, 1);  });
+	f2.add( guiData, "S2HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "p1", 1, 2, 2);  });
+	f2.add( guiData, 'S2Blend', ap.BLENDS )        .onChange(function (v) { uniformBlendChange(v, "_1_2"); });
 
 	// Pod 1
-	f3.add( guiData, 'S1ClipId', ap.demoClipNames).onChange(function (_in) { uniformClipTypeChange(_in, 1, 1, 1 ); });
-	f3.add( guiData, "S1Mix", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.material.uniforms._1_1_1_mix.value =_in; });
-	f3.add( guiData, "S1Scale", 0.1, 1.0, 1.0 )    .onChange(function (_in) { ap.material.uniforms._1_1_1_p1.value =_in; });
-	f3.add( guiData, "S1HueTint", 0.0, 1.0, 1.0 )  .onChange(function (_in) { ap.material.uniforms._1_1_2_p1.value =_in; });
+	f3.add( guiData, 'S1ClipId', ap.demoClipNames).onChange(function (v) { uniformClipTypeChange(v, 1, 1, 1 ); });
+	f3.add( guiData, "S1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "mix", 1, 1, 1);  });
+	f3.add( guiData, "S1Scale", 0.1, 1.0, 1.0 )    .onChange(function (v) { ap.set(v, "p1", 1, 1, 1);  });
+	f3.add( guiData, "S1HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "p1", 1, 1, 2);  });
 
 	// Post Fx
-	f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (_in) { ap.material.uniforms._2_1_1_p1.value =_in; });
-	f4.add( guiData, "HueClamp", 0.0, 1.0, 1.0 )   .onChange(function (_in) { ap.material.uniforms._2_1_1_p2.value =_in; });
-	f4.add( guiData, "Saturation", 0.0, 1.0, 1.0 ) .onChange(function (_in) { ap.material.uniforms._2_1_1_p3.value =_in; });
-	f4.add( guiData, "SatClamp", 0.0, 1.0, 1.0 )   .onChange(function (_in) { ap.material.uniforms._2_1_1_p4.value =_in; });
-	f4.add( guiData, "Smooth", 0.0, 0.98, 1.0 )    .onChange(function (_in) { ap.material.uniforms._2_1_1_p5.value =_in; });
-	f4.add( guiData, "PreAmp", 0.0, 1.0, 0.0 ) .onChange(function (_in) { ap.material.uniforms._2_1_1_p6.value =_in; });
-	//f4.add( guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.material.uniforms._2_1_1_p5.value =_in; });
-	//f4.add( guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (_in) { ap.material.uniforms._2_1_1_p6.value =_in; });
+	//f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (v) { ap.set(v, "", "mix", 2, 1); }); // TODO fix bug
+
+	f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (v) { ap.set(v, "p1", 2, 1, 1);  });
+	f4.add( guiData, "HueClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { ap.set(v, "p2", 2, 1, 1);  });
+	f4.add( guiData, "Saturation", 0.0, 1.0, 1.0 ) .onChange(function (v) { ap.set(v, "p3", 2, 1, 1);  });
+	f4.add( guiData, "SatClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { ap.set(v, "p4", 2, 1, 1);  });
+	f4.add( guiData, "Smooth", 0.0, 0.98, 1.0 )    .onChange(function (v) { ap.set(v, "p5", 2, 1, 1);  });
+	f4.add( guiData, "PreAmp", 0.0, 1.0, 0.0 ) .onChange(function (v) { ap.set(v, "p6", 2, 1, 1);  });
+	//f4.add( guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (v) { ap.set(v, "", 2, 1, 1);  });
+	//f4.add( guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (v) { ap.set(v, "", 2, 1, 1);  });
 
 	// Global Settings (temporary for demo)
-	f5.add( guiData, 'Hardware', ap.demoHardware).onChange(function (_in) {
+	f5.add( guiData, 'Hardware', ap.demoHardware).onChange(function (v) {
 
 		ap.ports.clearAllPorts();
 
-		switch(_in){
+		switch(v){
 			case ap.demoHardware[0]:
 
 				ap.channels.setPodPos(2, new ap.PodPosition(-190, 140, -1000, 1070, 575, 2000));
@@ -156,17 +158,18 @@ function initUi(){
 				ap.hardware.importNodes(ap.imported, 1, 0, 0, 0);
 			break;
 		}
-			ap.app.updateNodePoints(); // only need to call this when we add nodes after_init
+			ap.app.updateNodePoints(); // only need to call this when we add nodes aftervit
 			ap.app.updateMainSourceShader();
 
 			updateShader = true;
 
 	});
-	f5.add( guiData, "Speed", 0.025, 0.4, 1.0 ).onChange(function (_in) { ap.speed =_in; });
-	f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (_in) { ap.pointMaterial.uniforms.u_pointSize.value =_in; });
+	f5.add( guiData, "Speed", 0.025, 0.4, 1.0 ).onChange(function (v) { ap.speed = v; });
+	f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { ap.pointMaterial.uniforms.u_pointSize = v;  });
 
 
 
+	//f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { ap.set(v, "pointSize");  });
 
 
 	// Close folders on startup by default
@@ -183,24 +186,11 @@ function initUi(){
 */
 function uniformBlendChange(guiItem, address) { 
 	var blend = 1.0;
-	if(guiItem === ap.BLENDS[0]){       blend = 1.0;
-	}else if(guiItem === ap.BLENDS[1]){ blend = 2.0; 
-	}else if(guiItem === ap.BLENDS[2]){ blend = 3.0; 
-	}else if(guiItem === ap.BLENDS[3]){ blend = 4.0; 
-	}else if(guiItem === ap.BLENDS[4]){ blend = 5.0;
-	}else if(guiItem === ap.BLENDS[5]){ blend = 6.0;
-	}else if(guiItem === ap.BLENDS[6]){ blend = 7.0; 
-	}else if(guiItem === ap.BLENDS[7]){ blend = 8.0;
-	}else if(guiItem === ap.BLENDS[8]){ blend = 9.0;
-	}else if(guiItem === ap.BLENDS[9]){ blend = 10.0;
-	}else if(guiItem === ap.BLENDS[10]){ blend = 11.0;
-	}else if(guiItem === ap.BLENDS[11]){ blend = 12.0;
-	}else if(guiItem === ap.BLENDS[12]){ blend = 13.0;
-	}else if(guiItem === ap.BLENDS[13]){ blend = 14.0;
-	}else if(guiItem === ap.BLENDS[14]){ blend = 15.0;
-	}else if(guiItem === ap.BLENDS[15]){ blend = 16.0;
-	}else if(guiItem === ap.BLENDS[16]){ blend = 17.0;
-	}
+	for (var i = 0; i < 17; i++) {
+		if(guiItem === ap.BLENDS[i]){
+			blend = (i+1) + "."; break;
+		}
+	};
 	ap.material.uniforms[address + "_blend"].value = blend;
 }
 
