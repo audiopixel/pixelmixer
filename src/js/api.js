@@ -91,22 +91,25 @@ ap.setSize = function(width, height) {
 	}
 }
 
-ap.uniform = function(uniform, channel, pod, clip) {
-	var addy = "_" + channel;
-	if(pod){ addy += "_" + pod; }
-	if(clip){ addy += "_" + clip; }
-	return ap.material.uniforms[addy + "_" + uniform];
-}
-
 ap.get = function(uniform, channel, pod, clip) {
-	return ap.uniform(uniform, channel, pod, clip).value;
+	return ap.getUniform(uniform, channel, pod, clip).value;
 }
 
 ap.set = function(value, uniform, channel, pod, clip) {
-	ap.uniform(uniform, channel, pod, clip).value = value;
+	ap.getUniform(uniform, channel, pod, clip).value = value;
+	ap.setObj(value, uniform, channel, pod, clip);
+}
 
+ap.getUniform = function(uniform, channel, pod, clip) {
+	var addy = "_" + channel;
+	if(pod){ addy += "_" + pod; 
+	if(clip){ addy += "_" + clip; }}
+	return ap.material.uniforms[addy + "_" + uniform];
+}
+
+ap.setObj = function(value, uniform, channel, pod, clip) {
 	var obj = ap.channels.channels[channel-1];
-	if(pod){ obj = obj.pods[pod-1]; }
-	if(clip){ obj = obj.clips[clip-1]; }
+	if(pod){ obj = obj.pods[pod-1]; 
+	if(clip){ obj = obj.clips[clip-1]; }}
 	obj[uniform] = value;
 }

@@ -182,13 +182,12 @@ function initUi(){
 * Trigger a blend change on a defined address
 */
 function uniformBlendChange(guiItem, channel, pod, clip) { 
-	var blend = 1.0;
 	for (var i = 0; i < 17; i++) {
 		if(guiItem === ap.BLENDS[i]){
-			blend = (i+1) + "."; break;
+			ap.set((i+1) + ".", "blend", channel, pod, clip);
+			return;
 		}
 	};
-	ap.set(blend, "blend", channel, pod, clip);
 }
 
 

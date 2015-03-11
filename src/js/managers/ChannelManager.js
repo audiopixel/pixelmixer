@@ -188,11 +188,6 @@ ap.ChannelManager.prototype = {
 							// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
 							output += "if(_pod_mix > 0. && checkBounds(ap_xyz2, "+pod.positionIds[o]+") > 0.){ \n";
 
-							
-							// TODO add mirroring support
-								// stored on the pod position: flipx, flipy, flipz	
-								// switch each ap_xyz axis accordinaly
-								// we could also support rotations this way
 
 							fxPod = true; // If the only clips that are in this pod are fx's then treat pod as a fx output and don't blend
 							for (u = 0; u < pod.clips.length; u++) {
@@ -241,7 +236,12 @@ ap.ChannelManager.prototype = {
 									clip.address = pod.address +"_" + (u+1);
 									if(clip.clipId > 0 && srcClip){
 
-										// If the Clip defined properties define them as addressed uniforms
+										// If the clip defined params transfer default values over to the obj
+										for (var param in srcClip.params) {
+											ap.setObj(srcClip.params[param].value, param, i+1, e+1, u+1);
+										}
+
+										// If the clip defined properties define them as addressed uniforms
 										for (var property in srcClip.properties) {
 											uniforms[clip.address + "_" + property] = srcClip.properties[property];
 										}
