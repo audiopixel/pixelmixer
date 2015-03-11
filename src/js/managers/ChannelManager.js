@@ -271,7 +271,7 @@ ap.ChannelManager.prototype = {
 											}
 										};
 
-										fragOutput += "ap_rgb2 = superFunction(_clip_mix, "+ clip.clipId +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
+										fragOutput = "ap_rgb2 = superFunction(_clip_mix, "+ clip.clipId +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
 
 										// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
 										//fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
