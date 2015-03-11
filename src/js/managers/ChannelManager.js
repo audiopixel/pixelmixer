@@ -238,7 +238,7 @@ ap.ChannelManager.prototype = {
 
 										// If the clip defined params transfer default values over to the obj
 										for (var param in srcClip.params) {
-											ap.setObj(srcClip.params[param].value, param, i+1, e+1, u+1);
+											ap.setObjProperty(srcClip.params[param].value, param, i+1, e+1, u+1);
 										}
 
 										// If the clip defined properties define them as addressed uniforms

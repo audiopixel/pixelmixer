@@ -97,7 +97,7 @@ ap.get = function(uniform, channel, pod, clip) {
 
 ap.set = function(value, uniform, channel, pod, clip) {
 	ap.getUniform(uniform, channel, pod, clip).value = value;
-	ap.setObj(value, uniform, channel, pod, clip);
+	ap.setObjProperty(value, uniform, channel, pod, clip);
 }
 
 ap.getUniform = function(uniform, channel, pod, clip) {
@@ -107,9 +107,23 @@ ap.getUniform = function(uniform, channel, pod, clip) {
 	return ap.material.uniforms[addy + "_" + uniform];
 }
 
-ap.setObj = function(value, uniform, channel, pod, clip) {
+ap.getObj = function(channel, pod, clip) {
 	var obj = ap.channels.channels[channel-1];
 	if(pod){ obj = obj.pods[pod-1]; 
 	if(clip){ obj = obj.clips[clip-1]; }}
-	obj[uniform] = value;
+	return obj;
+}
+
+ap.setObj = function(newObj, channel, pod, clip) {
+	ap.getObj(channel, pod, clip) = newObj;
+}
+
+ap.getObjProperty = function(property, channel, pod, clip) {
+	var obj = ap.getObj(channel, pod, clip);
+	return obj[property];
+}
+
+ap.setObjProperty = function(value, property, channel, pod, clip) {
+	var obj = ap.getObj(channel, pod, clip);
+	obj[property] = value;
 }
