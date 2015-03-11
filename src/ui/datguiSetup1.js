@@ -110,7 +110,7 @@ function initUi(){
 	f2.add( guiData, "S2Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "mix", 1, 2, 1);  });
 	f2.add( guiData, "S2Scale", 0.1, 1.0, 1.0 )    .onChange(function (v) { ap.set(v, "p1", 1, 2, 1);  });
 	f2.add( guiData, "S2HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "p1", 1, 2, 2);  });
-	f2.add( guiData, 'S2Blend', ap.BLENDS )        .onChange(function (v) { uniformBlendChange(v, "_1_2"); });
+	f2.add( guiData, 'S2Blend', ap.BLENDS )        .onChange(function (v) { uniformBlendChange(v, 1, 2); });
 
 	// Pod 1
 	f3.add( guiData, 'S1ClipId', ap.demoClipNames).onChange(function (v) { uniformClipTypeChange(v, 1, 1, 1 ); });
@@ -119,7 +119,7 @@ function initUi(){
 	f3.add( guiData, "S1HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "p1", 1, 1, 2);  });
 
 	// Post Fx
-	//f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (v) { ap.set(v, "", "mix", 2, 1); }); // TODO fix bug
+	//f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (v) { ap.set(v, "mix", 2, 1); }); // TODO fix bug
 
 	f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (v) { ap.set(v, "p1", 2, 1, 1);  });
 	f4.add( guiData, "HueClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { ap.set(v, "p2", 2, 1, 1);  });
@@ -165,15 +165,12 @@ function initUi(){
 
 	});
 	f5.add( guiData, "Speed", 0.025, 0.4, 1.0 ).onChange(function (v) { ap.speed = v; });
-	f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { ap.pointMaterial.uniforms.u_pointSize = v;  });
-
-
-
+	f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { ap.pointMaterial.uniforms.u_pointSize.value = v;  });
 	//f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { ap.set(v, "pointSize");  });
 
 
-	// Close folders on startup by default
 
+	// Close folders on startup by default
 	f2.close();
 	f3.close();
 	//f4.close();
@@ -182,16 +179,16 @@ function initUi(){
 }
 
 /*
-* Trigger a blend change on ap.material based on a defined address
+* Trigger a blend change on a defined address
 */
-function uniformBlendChange(guiItem, address) { 
+function uniformBlendChange(guiItem, channel, pod, clip) { 
 	var blend = 1.0;
 	for (var i = 0; i < 17; i++) {
 		if(guiItem === ap.BLENDS[i]){
 			blend = (i+1) + "."; break;
 		}
 	};
-	ap.material.uniforms[address + "_blend"].value = blend;
+	ap.set(blend, "blend", channel, pod, clip);
 }
 
 
