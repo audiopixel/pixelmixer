@@ -44,6 +44,7 @@ ap.init = function(scene, renderer, maxNodeCount){
 
 
 ap.updateShader = false;
+ap.updateFresh = false;
 ap.updateShaderLimiter = 0;
 ap.update = function() {
 
@@ -71,6 +72,7 @@ ap.update = function() {
 			ap.app.update();
 			ap.updateShaderLimiter = 0;
 			ap.updateShader = false;
+			ap.updateFresh = false;
 		}
 		ap.updateShaderLimiter++;
 
@@ -137,4 +139,5 @@ ap.setObjProperty = function(value, property, channel, pod, clip) {
 ap.load = function(json){
 	ap.channels.channels = json;
 	ap.updateShader = true;
+	ap.updateFresh = true;
 }
