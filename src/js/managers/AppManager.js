@@ -419,15 +419,6 @@ ap.AppManager.prototype = {
 			uniforms[uniform] = sourceShader.uniforms[uniform];
 		}
 
-		// If the material already exists, transfer over the value of any uniforms that have remained
-		if(ap.material){
-			for (uniform in uniforms) {
-				if(ap.material.uniforms[uniform]){
-					uniforms[uniform].value = ap.material.uniforms[uniform].value;
-				}
-			}
-		}
-
 		// Internal core shader is merged with the loaded shaders
 		this.fragmentShader = ap.MainShader.fragmentShader;
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERS", sourceShader.fragmentMain);
