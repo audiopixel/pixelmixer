@@ -133,3 +133,8 @@ ap.setObjProperty = function(value, property, channel, pod, clip) {
 	var obj = ap.getObj(channel, pod, clip);
 	obj[property] = value;
 }
+
+ap.load = function(json){
+	ap.channels.channels = json;
+	ap.updateShader = true;
+}
