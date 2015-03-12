@@ -324,22 +324,24 @@ ap.ChannelManager.prototype = {
 						
 							//  -------------- Pod Mix Blend & Fx --------------
 
-							// If we are the very first pod mix output value, don't blend from previous pod
-							if(e === 0){
-								output += "ap_p = ap_rgb * (_pod_mix); \n";
+
+							if(fxPod){
+
+								// Fx pod: mix the original with the result of fx_rgb, _pod_mix); \n";
+								output += "ap_p = mix(ap_p, ap_rgb, _pod_mix); \n";
 
 							}else{
-								if(fxPod){
-									// Fx pod: mix the original with the result of fx
 
-									//output += "ap_p = ap_rgb; \n";
-									output += "ap_p = mix(ap_p, ap_rgb, _pod_mix); \n";
+								if(e === 0){
+									
+									// If we are the very first pod mix output value, don't blend from previous pod
+									output += "ap_p = ap_rgb * (_pod_mix); \n";
 
 								}else{
-									// Blend in last pod with current pod, if it's not the first pod in this channel
+
+									// Blend in last pod with current pod
 									output += "ap_rgb = ap_rgb * (_pod_mix); \n";
 									output += "ap_p = blend(ap_p, ap_rgb, _pod_blend); \n";
-									//output += "//-------------=-=- \n";
 								}
 							}
 							

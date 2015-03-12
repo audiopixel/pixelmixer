@@ -119,8 +119,6 @@ function initUi(){
 	f3.add( guiData, "S1HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "p1", 1, 1, 2);  });
 
 	// Post Fx
-	//f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (v) { ap.set(v, "mix", 2, 1); }); // TODO fix bug
-
 	f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (v) { ap.set(v, "p1", 2, 1, 1);  });
 	f4.add( guiData, "HueClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { ap.set(v, "p2", 2, 1, 1);  });
 	f4.add( guiData, "Saturation", 0.0, 1.0, 1.0 ) .onChange(function (v) { ap.set(v, "p3", 2, 1, 1);  });
