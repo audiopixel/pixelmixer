@@ -82,7 +82,7 @@ function initUi(){
 	// =========Event listeners===============
 
 
-	gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "mix", 1);  });
+	gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set("mix", v, 1);  });
 
 	gui.add( { SnapToFront:function(){
 		controls.reset();
@@ -101,32 +101,32 @@ function initUi(){
 	// Pod 3
 	f1.add( guiData, 'S3Blend', ap.BLENDS )     .onChange(function () { uniformBlendChange( guiData.S3Blend, "_1_3"); });
 	f1.add( guiData, 'S3ClipId', ap.demoClipNames).onChange(function () { uniformClipTypeChange( guiData.S3ClipId, 1, 3, 1 ); });
-	f1.add( guiData, "S3Mix", 0.0, 1.0, 1.0 )   .onChange(function () { ap.set(v, "", 1_3_1_mix.value = guiData.S3Mix; });
-	f1.add( guiData, "S3Scale", 0.0, 1.0, 1.0 ) .onChange(function () { ap.set(v, "", 1_3_1_p1.value = guiData.S3Scale; });
-	f1.add( guiData, "Hue3Mix", 0.0, 1.0, 1.0 ) .onChange(function () { ap.set(v, "", 1_3_2_p1.value = guiData.Hue3Mix; });
+	f1.add( guiData, "S3Mix", 0.0, 1.0, 1.0 )   .onChange(function () { ap.set("", 1_3_1_mix.value = guiData.S3Mix; });
+	f1.add( guiData, "S3Scale", 0.0, 1.0, 1.0 ) .onChange(function () { ap.set("", 1_3_1_p1.value = guiData.S3Scale; });
+	f1.add( guiData, "Hue3Mix", 0.0, 1.0, 1.0 ) .onChange(function () { ap.set("", 1_3_2_p1.value = guiData.Hue3Mix; });
 	*/
 	// Pod 2
 	f2.add( guiData, 'S2ClipId', ap.demoClipNames).onChange(function (v) { uniformClipTypeChange(v, 1, 2, 1 ); });
-	f2.add( guiData, "S2Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "mix", 1, 2, 1);  });
-	f2.add( guiData, "S2Scale", 0.1, 1.0, 1.0 )    .onChange(function (v) { ap.set(v, "p1", 1, 2, 1);  });
-	f2.add( guiData, "S2HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "p1", 1, 2, 2);  });
+	f2.add( guiData, "S2Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set("mix", v, 1, 2, 1);  });
+	f2.add( guiData, "S2Scale", 0.1, 1.0, 1.0 )    .onChange(function (v) { ap.set("p1", v, 1, 2, 1);  });
+	f2.add( guiData, "S2HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set("p1", v, 1, 2, 2);  });
 	f2.add( guiData, 'S2Blend', ap.BLENDS )        .onChange(function (v) { uniformBlendChange(v, 1, 2); });
 
 	// Pod 1
 	f3.add( guiData, 'S1ClipId', ap.demoClipNames).onChange(function (v) { uniformClipTypeChange(v, 1, 1, 1 ); });
-	f3.add( guiData, "S1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "mix", 1, 1, 1);  });
-	f3.add( guiData, "S1Scale", 0.1, 1.0, 1.0 )    .onChange(function (v) { ap.set(v, "p1", 1, 1, 1);  });
-	f3.add( guiData, "S1HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set(v, "p1", 1, 1, 2);  });
+	f3.add( guiData, "S1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set("mix", v, 1, 1, 1);  });
+	f3.add( guiData, "S1Scale", 0.1, 1.0, 1.0 )    .onChange(function (v) { ap.set("p1", v, 1, 1, 1);  });
+	f3.add( guiData, "S1HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set("p1", v, 1, 1, 2);  });
 
 	// Post Fx
-	f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (v) { ap.set(v, "p1", 2, 1, 1);  });
-	f4.add( guiData, "HueClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { ap.set(v, "p2", 2, 1, 1);  });
-	f4.add( guiData, "Saturation", 0.0, 1.0, 1.0 ) .onChange(function (v) { ap.set(v, "p3", 2, 1, 1);  });
-	f4.add( guiData, "SatClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { ap.set(v, "p4", 2, 1, 1);  });
-	f4.add( guiData, "Smooth", 0.0, 0.98, 1.0 )    .onChange(function (v) { ap.set(v, "p5", 2, 1, 1);  });
-	f4.add( guiData, "PreAmp", 0.0, 1.0, 0.0 ) .onChange(function (v) { ap.set(v, "p6", 2, 1, 1);  });
-	//f4.add( guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (v) { ap.set(v, "", 2, 1, 1);  });
-	//f4.add( guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (v) { ap.set(v, "", 2, 1, 1);  });
+	f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (v) { ap.set("p1", v, 2, 1, 1);  });
+	f4.add( guiData, "HueClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { ap.set("p2", v, 2, 1, 1);  });
+	f4.add( guiData, "Saturation", 0.0, 1.0, 1.0 ) .onChange(function (v) { ap.set("p3", v, 2, 1, 1);  });
+	f4.add( guiData, "SatClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { ap.set("p4", v, 2, 1, 1);  });
+	f4.add( guiData, "Smooth", 0.0, 0.98, 1.0 )    .onChange(function (v) { ap.set("p5", v, 2, 1, 1);  });
+	f4.add( guiData, "PreAmp", 0.0, 1.0, 0.0 ) .onChange(function (v) { ap.set("p6", v, 2, 1, 1);  });
+	//f4.add( guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (v) { ap.set("", 2, 1, 1);  });
+	//f4.add( guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (v) { ap.set("", 2, 1, 1);  });
 
 	// Global Settings (temporary for demo)
 	f5.add( guiData, 'Hardware', ap.demoHardware).onChange(function (v) {
@@ -164,7 +164,7 @@ function initUi(){
 	});
 	f5.add( guiData, "Speed", 0.025, 0.4, 1.0 ).onChange(function (v) { ap.speed = v; });
 	f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { ap.pointMaterial.uniforms.u_pointSize.value = v;  });
-	//f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { ap.set(v, "pointSize");  });
+	//f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { ap.set("pointSize");  });
 
 
 
@@ -182,7 +182,7 @@ function initUi(){
 function uniformBlendChange(guiItem, channel, pod, clip) { 
 	for (var i = 0; i < 17; i++) {
 		if(guiItem === ap.BLENDS[i]){
-			ap.set((i+1) + ".", "blend", channel, pod, clip);
+			ap.set("blend", (i+1) + ".", channel, pod, clip);
 			return;
 		}
 	};

@@ -103,9 +103,9 @@ ap.get = function(uniform, channel, pod, clip) {
 	return ap.getUniform(uniform, channel, pod, clip).value;
 }
 
-ap.set = function(value, uniform, channel, pod, clip) {
+ap.set = function(uniform, value, channel, pod, clip) {
 	ap.getUniform(uniform, channel, pod, clip).value = value;
-	ap.setObjProperty(value, uniform, channel, pod, clip);
+	ap.setObjProperty(uniform, value, channel, pod, clip);
 }
 
 ap.getUniform = function(uniform, channel, pod, clip) {
@@ -131,7 +131,7 @@ ap.getObjProperty = function(property, channel, pod, clip) {
 	return obj[property];
 }
 
-ap.setObjProperty = function(value, property, channel, pod, clip) {
+ap.setObjProperty = function(property, value, channel, pod, clip) {
 	var obj = ap.getObj(channel, pod, clip);
 	obj[property] = value;
 }
