@@ -141,3 +141,7 @@ ap.load = function(json){
 	ap.updateShader = true;
 	ap.updateFresh = true;
 }
+
+ap.stringify = function(){
+	return JSON.stringify(ap.channels.channels);
+}
