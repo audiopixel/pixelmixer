@@ -69,23 +69,6 @@ ap.AppManager.prototype = {
 			this.pixels = new Uint8Array(4 * this.glWidth * this.glHeight);
 		}
 
-		//---------------
-		// testing
-
-		//this.addPlanesForTesting(); 
-
-/*
-		// Example of updating the nodes on the fly:
-		var that = this;
-		setTimeout(function(){
-			//that.addNodesAsTestGrid(); // Change or add more nodes
-			//that.updateNodes();
-
-			that.updateMainSourceShader();
-		}, 2000);
-*/
-
-		//---------------
 	},
 
 	update: function () {
@@ -141,21 +124,6 @@ ap.AppManager.prototype = {
 			}
 
 		}
-
-
-
-		//TESTING************
-
-		//ap.channels.setPodPos(2, { x: -339, y: 30, z: -1000, w: 1378, h: 738, d: 2000 });
-		//ap.hardware.addTestPortsGrid(1, 0, 0);
-		//this.updateGeometry();
-		//this.generateCoordsMap();
-
-		// this.updateNodePoints();
-
-		//ap.material.uniforms.u_coordsMap.value = this.coordsMap;
-		//ap.pointCloud.geometry = ap.pointGeometry;
-		//ap.pointCloud.geometry.verticesNeedUpdate = true;
 
 	},
 
@@ -260,8 +228,6 @@ ap.AppManager.prototype = {
 					vertex.z = port.nodes[i].z || 0;
 					ap.pointGeometry.vertices.push( vertex );
 
-					// TODO check port render type, if it's a directional light, or if it's a node (or plane eventually)
-
 					// for each point push along x, y values to reference correct pixel in u_colorMaps
 					var imageSize = ap.simSize; 
 					var tx = (t+1) % imageSize;
@@ -279,8 +245,6 @@ ap.AppManager.prototype = {
 		}
 	},
 
-	// Should get called whenever there are any changes on PortManager
-	// (This is the main view that should reflect state)
 	updateNodePoints: function () {
 
 		this.updateGeometry();
@@ -331,13 +295,11 @@ ap.AppManager.prototype = {
 		}
 
 		// We always set the first Pod Position as the bounding box that fits all nodes
-		// TODO add z depth
 		ap.channels.setPodPos(1, new ap.PodPosition(minx, miny, minz, maxx - minx, maxy - miny, maxz - minz));
 		//console.log(new ap.PodPosition(minx, miny, 0, maxx - minx, maxy - miny, 1));
 
 		// Testing on pod pos #2
 		//ap.channels.setPodPos(2, new ap.PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
-
 		//ap.channels.setPodPos(2, new ap.PodPosition(-190, 140, 0, 1070, 575, 1));
 
 		this.coordsMap = new THREE.DataTexture( a, ap.simSize, ap.simSize, THREE.RGBAFormat, THREE.FloatType );
