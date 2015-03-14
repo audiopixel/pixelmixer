@@ -6,8 +6,6 @@
 
 ap.clips.SolidColorClip = {
 
-	id: 2,
-
 	params: {
 
 		"p1": { value: 1.0, desc: "hue" }

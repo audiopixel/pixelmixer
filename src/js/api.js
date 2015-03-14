@@ -18,10 +18,12 @@ ap.material = false;			// Main shader referenced here, set false initially to fl
 
 ap.init = function(scene, renderer, maxNodeCount){
 
-	// Register all clips by their id's for easy lookup later
+	 // Tag each shader with a incremental id, for easy lookup later
+	var i = 0;
 	for (var property in ap.clips) {
 		if (ap.clips.hasOwnProperty(property)) {
-			ap.register[ap.clips[property].id] = property;
+			ap.clips[property].id = i;
+			i++;
 		}
 	}
 

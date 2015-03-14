@@ -2,8 +2,6 @@
 
 ap.clips.SinCosTanClip = {
 
-	id: 7,
-
 	params: {
 
 		"p1": { value: 0.35, desc: "scale" }

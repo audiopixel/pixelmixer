@@ -5,8 +5,6 @@
 
 ap.clips.BasicTestClip = {
 
-	id: 4,
-
 	fragmentMain: [
 		
 

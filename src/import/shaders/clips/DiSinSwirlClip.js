@@ -5,8 +5,6 @@
 
 ap.clips.DiSinSwirlClip = {
 
-	id: 15, 
-	
 	params: { // (optional uniforms)
 
 		"p1": { value: 0.5, desc: "scale" }

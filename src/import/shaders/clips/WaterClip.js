@@ -3,8 +3,6 @@
 
 ap.clips.WaterClip = {
 
-	id: 6,
-
 	params: {
 
 		"p1": { value: 0.5, desc: "scale" },

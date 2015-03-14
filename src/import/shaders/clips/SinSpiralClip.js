@@ -5,8 +5,6 @@
 
 ap.clips.SinSpiralClip = {
 
-	id: 11,
-
 	params: {
 
 		"p1": { value: 1.0, desc: "scale" }

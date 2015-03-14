@@ -14,8 +14,6 @@
 
 ap.clips.TestFxClip = {
 
-	id: 5,
-
 	fx: true,
 
 	params: {

@@ -14,8 +14,6 @@
 
 ap.clips.HueFxClip = {
 
-	id: 16,
-
 	fx: true,
 
 	params: {

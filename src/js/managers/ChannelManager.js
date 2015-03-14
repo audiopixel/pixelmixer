@@ -32,7 +32,7 @@ ap.ChannelManager.prototype = {
 
 						for (var u = 0; u < pod.clips.length; u++) { var clip = pod.clips[u];
 
-							if(clip){ var srcClip = ap.clips[ap.register[clip.clipId]];
+							if(clip){ var srcClip = ap.clips[clip.clipId];
 
 								// If the clip defined update function call it with proper clip addressing
 								if(srcClip && srcClip.update && ap.app.material){
@@ -127,7 +127,7 @@ ap.ChannelManager.prototype = {
 								var clip = pod.clips[u];
 								if(clip){
 
-									var srcClip = ap.clips[ap.register[clip.clipId]];
+									var srcClip = ap.clips[clip.clipId];
 
 
 									if(!fragList[pod.clips[u].clipId]){
@@ -166,7 +166,7 @@ ap.ChannelManager.prototype = {
 
 
 									clip.address = pod.address +"_" + (u+1);
-									if(clip.clipId > 0 && srcClip){
+									if(clip.clipId.length > 0 && srcClip){
 
 										// If the clip defined params transfer default values over to the obj
 										for (var param in srcClip.params) {
@@ -201,7 +201,7 @@ ap.ChannelManager.prototype = {
 											}
 										};
 
-										fragOutput = "ap_rgb2 = superFunction(_clip_mix, "+ clip.clipId +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
+										fragOutput = "ap_rgb2 = superFunction(_clip_mix, "+ srcClip.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
 
 										// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
 										//fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
@@ -210,7 +210,7 @@ ap.ChannelManager.prototype = {
 
 										// ------------ Clip Mix Blend & Fx --------------
 
-										var fx = ap.clips[ap.register[clip.clipId]].fx;
+										var fx = ap.clips[clip.clipId].fx;
 										if(u === 0){
 											
 											fragOutput += "ap_rgb = ap_rgb2; \n";

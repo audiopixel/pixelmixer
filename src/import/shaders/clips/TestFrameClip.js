@@ -6,8 +6,6 @@
 
 ap.clips.TestFrameClip = {
 
-	id: 3, // OSC requires id's to be integers
-	
 	params: { // (optional uniforms)
 
 		// Each shader can have upto 6 params that are controlled by it's UI / modulations

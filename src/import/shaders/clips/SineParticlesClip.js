@@ -2,8 +2,6 @@
 
 ap.clips.SineParticlesClip = {
 
-	id: 9,
-
 	params: {
 
 		"p1": { value: 0.5, desc: "scale" }

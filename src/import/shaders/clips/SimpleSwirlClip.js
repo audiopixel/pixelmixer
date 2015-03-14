@@ -2,8 +2,6 @@
 
 ap.clips.SimpleSwirlClip = {
 
-	id: 13,
-
 	params: {
 
 		"p1": { value: 1.0, desc: "scale" }
