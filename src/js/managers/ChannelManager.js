@@ -81,7 +81,7 @@ ap.ChannelManager.prototype = {
 
 
 			// uniform 'mix' for the channel
-			uniforms[channel.address + "_mix"] = { type: "f", value: channel.mix }; // TODO modulation uniforms 
+			uniforms[channel.address + "_mix"] = { type: "f", value: channel.mix };
 
 			if(channel && channel.pods){
 
@@ -90,7 +90,7 @@ ap.ChannelManager.prototype = {
 					pod.address = channel.address + "_" + (e+1);
 
 					// uniforms 'mix' & 'blend' for the pod
-					uniforms[pod.address + "_mix"] = { type: "f", value: pod.mix }; // TODO modulation uniforms 
+					uniforms[pod.address + "_mix"] = { type: "f", value: pod.mix };
 					uniforms[pod.address + "_blend"] = { type: "f", value: pod.blend };
 
 					var fxPod = false;
@@ -100,7 +100,6 @@ ap.ChannelManager.prototype = {
 
 							output += "/////////////////////////////////------------------------------ \n";
 
-							// TODO account for resolution to use 3D if there is depth data
 							var podPos = this.getPodPos(pod.positionIds[o]);
 
 							// Set the resolution (if it's changed) for the next set of nodes to be the current pods position bounding box
@@ -408,6 +407,7 @@ ap.ChannelManager.prototype = {
 			output += "float z = b.z - c.z;\n";
 			output += "float t = x;\n";
 
+			// For performance reasons use a lighter and manual version of Matrix transforms
 			if(ap.useTransforms){
 
 				// swap axis

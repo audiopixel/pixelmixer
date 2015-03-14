@@ -13,7 +13,6 @@ ap.pointMaterial = {};			// Shader of the point cloud that displays the node col
 // ** Internal **
 
 ap.material = false;			// Main shader referenced here, set false initially to flag that its not ready
-ap.imported = {}; 				// Currently imported port (and possibly node) data
 
 
 

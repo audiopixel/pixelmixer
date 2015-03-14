@@ -9,8 +9,6 @@ ap.simSize;
 ap.shaders = {};				// Internal shaders 
 ap.clips = {}; 					// Loaded shaders as clips
 ap.register = {}; 				// Loaded shaders get referenced here internally for quick lookup
-
-// TODO this should be a list of objects that we load at runtime, hardcoded for now
 ap.imported = {}; 				// Currently imported port (and possibly node) data
 
 
@@ -67,7 +65,7 @@ ap.HARDWAREGROUP_SOLO = 1;
 ap.HARDWAREGROUP_EXCLUDE = 2;
 
 
-// Temporary Preset Management // TODO dynamic clip loading system
+// Temporary Preset Management 
 ap.demoClipNames = ["TestFrame", "SolidColor", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
 "SinSpiral", "SineParticles", "DiSinSwirl", "HexifyRadial", "SinCosTan"];
 
