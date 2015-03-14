@@ -1,16 +1,18 @@
 
+// ** Public **
+
 ap.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
-
-ap.useTransforms = false;		// By default pixel transforms are ignored (swap axis, translate, scale)
-
-ap.material = false;			// Main shader referenced here, set false initially to flag that its not ready
+ap.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
 
 ap.pointCloud = {};				// Main point cloud that displays node colors
 ap.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
 ap.pointMaterial = {};			// Shader of the point cloud that displays the node colors
 								
 
-// TODO this should be a list of objects that we load at runtime, hardcoded for now
+
+// ** Internal **
+
+ap.material = false;			// Main shader referenced here, set false initially to flag that its not ready
 ap.imported = {}; 				// Currently imported port (and possibly node) data
 
 

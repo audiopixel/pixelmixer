@@ -1,6 +1,7 @@
 /*
 *
-* Channels are a mixable set of Pods, which contain sets of Clips (shaders).
+* Channels are a mixable collection of Pods.
+* Pods may also contain a set of Clips (shaders).
 *
 */
 
