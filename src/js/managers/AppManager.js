@@ -66,7 +66,7 @@ ap.AppManager.prototype = {
 		ap.pointGeometry = new THREE.Geometry();
 
 		this.updateNodePoints();
-		this.updateMainSourceShader();
+		//this.updateMainSourceShader();
 
 		if(this.readPixels){
 			this.pixels = new Uint8Array(4 * this.glWidth * this.glHeight);
@@ -353,9 +353,11 @@ ap.AppManager.prototype = {
 		ap.pointCloud.sortParticles = true;
 		ap.pointCloud.name = name;
 
-		// Center // TODO offset coords based on window size
-		ap.pointCloud.position.x = -400;
-		ap.pointCloud.position.y = -400;
+		if(ap.pointPosition){
+			ap.pointCloud.position.x = ap.pointPosition[0];
+			ap.pointCloud.position.y = ap.pointPosition[1];
+			ap.pointCloud.position.z = ap.pointPosition[2];
+		}
 
 		this.sceneMain.add( ap.pointCloud );
 

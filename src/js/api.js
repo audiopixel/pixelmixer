@@ -10,6 +10,7 @@ ap.pointMaterial = {};			// Shader of the point cloud that displays the node col
 								
 
 
+
 // ** Internal **
 
 ap.material = false;			// Main shader referenced here, set false initially to flag that its not ready
@@ -43,6 +44,11 @@ ap.init = function(scene, renderer, maxNodeCount){
 	ap.hardware.init();
 	ap.channels.init();
 	ap.app.init();
+
+	// If size not yet been defined, do it with some defaults
+	if(!ap.appSize){
+		ap.setSize(600, 400);
+	}
 }
 
 
@@ -55,7 +61,7 @@ ap.update = function() {
 
 	if(!ap.app){
 
-		console.log("AP Error: Need to call ap.init before ap.update.")
+		console.log("AP Error: Need to call ap.init before ap.update.");
 
 	}else if(ap.ready){
 
@@ -82,13 +88,23 @@ ap.update = function() {
 	}
 }
 
+
+ap.pointPosition = [-400, -400, 0]; // Defaults
+ap.setPointPosition = function(x, y, z) {
+	ap.pointPosition = [x, y, z];
+	if(ap.pointCloud.position){
+		ap.pointCloud.position.x = x;
+		ap.pointCloud.position.y = y;
+		ap.pointCloud.position.z = z;
+	}
+}
+
+ap.appSize;
 ap.setSize = function(width, height) {
 
-	if(!ap.app){
+	ap.appSize = [width, height];
 
-		console.log("AP Error: Need to call ap.init before ap.setSize.")
-
-	}else{
+	if(ap.app){
 
 		ap.app.glWidth = width;
 		ap.app.glHeight = height;
