@@ -1,3 +1,9 @@
+/*
+*
+* Pod Positions define coordinates for Pods to associate with.
+* Multiple Pods may associate to any amount of Pod Positions.
+*
+*/
 
 ap.PodPosition = function (x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs, flipmode) {
 

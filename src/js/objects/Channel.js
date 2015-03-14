@@ -1,3 +1,8 @@
+/*
+*
+* Channels are a mixable set of Pods, which contain sets of Clips (shaders).
+*
+*/
 
 ap.Channel = function (name, type, mix, blend, pods) {
 

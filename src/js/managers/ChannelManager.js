@@ -1,6 +1,7 @@
 /*
- * ************* CHANNEL MANAGER *************** 
- * Handles the state of all Channels running in the Universe.
+ *
+ * Handles the state of all known Channels
+ *
  * Channels may contain Pods, which may contain Clips (structured shaders).
  *
  */
@@ -161,7 +162,7 @@ ap.ChannelManager.prototype = {
 										fragFuncHelpers += srcClip.fragmentMain.replace("gl_FragColor", "returnColor"); + "\n";
 										fragFuncHelpers = fragFuncHelpers.replace(/gl_FragCoord/g, "ap_xyz"); + "\n";
 										fragFuncHelpers += "\n}\n";
-										fragFuncHelpers += "////////\n";
+										//fragFuncHelpers += "////////\n";
 									}
 
 
@@ -277,18 +278,9 @@ ap.ChannelManager.prototype = {
 								}
 							}
 							
-							// If the clips are not in this pod set color value to 0 unless it's a fx and let the value pass }
-							output += "}";//output += " else{ ap_rgb = ap_p; } \n";
+							output += "}";
 
-							if(fxPod){
-								// If this is an effects pod don't change values for anything outside the bounding box
-								//output += " else{ ap_rgb = ap_p; } \n";
-							}else{
-								// Otherwise clear any values that are outside the bounding box
-								//output += " else{ ap_rgb = vec3(0.0);} \n";
-							}
-						
-							output += "/////////////////////////////////-------------//-------------- \n";
+							//output += "/////////////////////////////////-------------//-------------- \n";
 
 						}
 

@@ -1,7 +1,8 @@
 /*
-* ************* APPLICATION MANAGER *************** 
 *
 * Handles GL state and rendering responsibilities.
+* 
+* Webgl implementation uses Three.js at the moment to support a larger audience
 *
 */
 

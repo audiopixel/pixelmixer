@@ -67,7 +67,7 @@ ap.update = function() {
 
 		}else{
 
-			// We detected the shader needs update, only do that this frame
+			// Shader needs update
 			ap.app.updateMainSourceShader();
 			ap.app.update();
 			ap.updateShaderLimiter = 0;

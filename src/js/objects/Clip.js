@@ -1,3 +1,8 @@
+/*
+*
+* Clips are an internal harness for each shader.
+*
+*/
 
 ap.Clip = function (clipId, mix, blend, speed) {
 

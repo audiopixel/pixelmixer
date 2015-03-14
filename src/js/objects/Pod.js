@@ -1,3 +1,10 @@
+/*
+*
+* Pods contain position and blend data for a group of Clips.
+* They allow you to blend multiple Clips, and then blend the result into other Clips.
+* They can be associated with multiple position areas.
+*
+*/
 
 ap.Pod = function (positionIds, mix, blend, clips, hardwareGroupMode, hardwareGroupIds) {
 

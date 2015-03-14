@@ -1,7 +1,6 @@
 /*
-* ************* HARDWARE MANAGER *************** 
 *
-* Handles adding and removing Physical Hardware in the Universe as either a Node or a Plane.
+* Manage adding and removing several types of hardware into state as Nodes
 *
 */
 
@@ -12,20 +11,18 @@ ap.HardwareManager = function () {
 ap.HardwareManager.prototype = {
 
 	init: function () {
-/*
-		
-*/
+
+		// Testing various configurations:
+
+		//this.addTestPortsGrid3(1, 0, 0);
+		//this.addSimpleNodeGrid(1, 0, 0, 0, 30, 40, 33);
+		//this.addSimpleNodeGrid(2, 0, 220, 0, 32, 20, 33);
+
 		// Simulate Importing nodes from external file
 		this.importNodes(ap.imported, 1, 350, 100, 500);
 		ap.channels.setPodPos(2, new ap.PodPosition(-190, 140, -100, 1070, 575, 1000));
 		//ap.channels.setPodPos(2, new ap.PodPosition(-540, 140, -100, 700, 575, 1000));
 		//ap.channels.setPodPos(3, new ap.PodPosition(540, 140, -100, 700, 575, 1000));
-
-		//this.addTestPortsGrid3(1, 0, 0);
-
-		//this.addSimpleNodeGrid(1, 0, 0, 0, 30, 40, 33);
-		//this.addSimpleNodeGrid(2, 0, 220, 0, 32, 20, 33);
-
 
 	},
 
