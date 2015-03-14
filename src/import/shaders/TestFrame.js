@@ -4,7 +4,7 @@
  */
 
 
-ap.clips.TestFrameClip = {
+ap.clips.TestFrame = {
 
 	params: { // (optional uniforms)
 

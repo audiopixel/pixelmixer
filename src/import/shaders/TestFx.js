@@ -12,7 +12,7 @@
 **/
 
 
-ap.clips.TestFxClip = {
+ap.clips.TestFx = {
 
 	fx: true,
 

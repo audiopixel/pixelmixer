@@ -1,6 +1,6 @@
 // http://glslsandbox.com/e#18326.3
 
-ap.clips.LineCosSinClip = {
+ap.clips.LineCosSin = {
 
 	params: {
 

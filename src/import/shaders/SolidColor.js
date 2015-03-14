@@ -4,7 +4,7 @@
 **/
 
 
-ap.clips.SolidColorClip = {
+ap.clips.SolidColor = {
 
 	params: {
 

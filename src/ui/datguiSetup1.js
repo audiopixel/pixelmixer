@@ -24,14 +24,14 @@ function initUi(){
 
 	//pods[3] = new ap.Pod(1, mix, ap.BLEND.Add, [new ap.Clip(2, mix, ap.BLEND.Add), new ap.Clip(5, mix, ap.BLEND.Fx)]);
 	//pods[2] = new ap.Pod(3, mix, ap.BLEND.Add, [new ap.Clip(3, mix2, ap.BLEND.Add), new ap.Clip(5, 1, ap.BLEND.Fx)]);
-	pods[1] = new ap.Pod([2], mix, ap.BLEND.LinearLight, [new ap.Clip("LineCosSinClip", mix, ap.BLEND.Add), new ap.Clip("TestFxClip", 1, ap.BLEND.Fx)]);
-	pods[0] = new ap.Pod([1], mix, ap.BLEND.Add, [new ap.Clip("ColorSineBarClip", mix2, ap.BLEND.Add), new ap.Clip("TestFxClip", 1, ap.BLEND.Fx)]);
+	pods[1] = new ap.Pod([2], mix, ap.BLEND.LinearLight, [new ap.Clip("LineCosSin", mix, ap.BLEND.Add), new ap.Clip("TestFx", 1, ap.BLEND.Fx)]);
+	pods[0] = new ap.Pod([1], mix, ap.BLEND.Add, [new ap.Clip("ColorSineBar", mix2, ap.BLEND.Add), new ap.Clip("TestFx", 1, ap.BLEND.Fx)]);
 
 	ap.channels.setChannel(1, new ap.Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
 
 
 	var pods2 = [];
-	pods2[0] = new ap.Pod([1], mix, ap.BLEND.Add, [new ap.Clip("HueFxClip", 1, ap.BLEND.Fx)]);
+	pods2[0] = new ap.Pod([1], mix, ap.BLEND.Add, [new ap.Clip("HueFx", 1, ap.BLEND.Fx)]);
 
 	ap.channels.setChannel(2, new ap.Channel("Post FX1", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Add, pods2));
 
@@ -197,11 +197,10 @@ function uniformClipTypeChange(clipName, channel, pod, clip) {
 	var clipId = 0;
 
 	if(clipName !== "OFF"){
-		// TODO don't require clips to end in Clip
-		clipId = ap.clips[clipName + "Clip"];
+		clipId = ap.clips[clipName];
 	}
 
-	ap.channels.setClip(channel, pod, clip, new ap.Clip(clipName + "Clip", 1.0, ap.BLEND.Add));
+	ap.channels.setClip(channel, pod, clip, new ap.Clip(clipName + "", 1.0, ap.BLEND.Add));
 
 	ap.updateShader = true;
 }

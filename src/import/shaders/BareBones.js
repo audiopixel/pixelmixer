@@ -4,7 +4,7 @@
  */
 
 
-ap.clips.BareBonesClip = {
+ap.clips.BareBones = {
 
 	fragmentMain: [
 

@@ -1,6 +1,6 @@
 // http://glslsandbox.com/e#19474.0
 
-ap.clips.HexifyRadialClip = {
+ap.clips.HexifyRadial = {
 
 	params: {
 
