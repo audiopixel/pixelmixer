@@ -24,7 +24,7 @@ gulp.task('sass', function() {
 */
 // Concatenate & Minify JS
 gulp.task('scripts', function() {
-    return gulp.src('src/js/**/*.js')
+    return gulp.src('src/**/*.js')
         .pipe(concat('all.js'))
         .pipe(gulp.dest('dist'))
         .pipe(rename('all.min.js'))
@@ -34,10 +34,10 @@ gulp.task('scripts', function() {
 
 // Watch Files For Changes
 gulp.task('watch', function() {
-    gulp.watch('js/**/*.js', ['lint', 'scripts']);
-    gulp.watch('import/**/*.js', ['lint', 'scripts']);
+    //gulp.watch('js/**/*.js', ['lint', 'scripts']);
+    //gulp.watch('import/**/*.js', ['lint', 'scripts']);
     //gulp.watch('scss/*.scss', ['sass']);
 });
 
 // Default Task
-gulp.task('default', ['lint',/*'sass',*/ 'scripts', 'watch']);
+gulp.task('default', ['lint',/*'sass',*/ 'scripts'/*, 'watch'*/]);
