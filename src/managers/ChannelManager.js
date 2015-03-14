@@ -158,8 +158,9 @@ ap.ChannelManager.prototype = {
 											}
 										}
 										fragFuncHelpers += "else if(id == " + shader.id + "){\n";
-										fragFuncHelpers += shader.fragmentMain.replace("gl_FragColor", "returnColor"); + "\n";
-										fragFuncHelpers = fragFuncHelpers.replace(/gl_FragCoord/g, "ap_xyz"); + "\n";
+										fragFuncHelpers += shader.fragmentMain.replace("gl_FragColor", "returnColor");
+										fragFuncHelpers += "\n";
+										fragFuncHelpers = fragFuncHelpers.replace(/gl_FragCoord/g, "ap_xyz");
 										fragFuncHelpers += "\n}\n";
 										//fragFuncHelpers += "////////\n";
 									}
@@ -199,7 +200,7 @@ ap.ChannelManager.prototype = {
 											if(shader.params["p"+(j+1)]){
 												params[j] = (clip.address+"_p"+(j+1));
 											}
-										};
+										}
 
 										fragOutput = "";
 										if(clip.posMap == ap.MAP_ALT1 && ap.app.altMap1){
@@ -358,7 +359,7 @@ ap.ChannelManager.prototype = {
 		// Pod Size function
 		var output = m;
 		m = "";
-		for (var i = 0; i < this.podpositions.length; i++) {
+		for (i = 0; i < this.podpositions.length; i++) {
 			m += "else if(d == " + (i+1) + "){\n";
 			m += "p = vec3("+this.podpositions[i].w+","+this.podpositions[i].h+","+this.podpositions[i].d+");\n";
 			m += "}\n";
@@ -374,7 +375,7 @@ ap.ChannelManager.prototype = {
 
 			// Pod Offset (translation)
 			m = "";
-			for (var i = 0; i < this.podpositions.length; i++) {
+			for (i = 0; i < this.podpositions.length; i++) {
 				m += "else if(d == " + (i+1) + "){\n";
 				m += "p = vec3("+this.podpositions[i].xt+","+this.podpositions[i].yt+","+this.podpositions[i].zt+");\n";
 				m += "}\n";
@@ -388,7 +389,7 @@ ap.ChannelManager.prototype = {
 
 			// Pod Scale & Flipmode
 			m = "";
-			for (var i = 0; i < this.podpositions.length; i++) {
+			for (i = 0; i < this.podpositions.length; i++) {
 				m += "else if(d == " + (i+1) + "){\n";
 				m += "p = vec4("+this.podpositions[i].xs+","+this.podpositions[i].ys+","+this.podpositions[i].zs+","+this.podpositions[i].flipmode+");\n";
 				m += "}\n";

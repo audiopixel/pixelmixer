@@ -92,4 +92,4 @@ ap.getVariableTypeFromShorthand = function(shorthand){
 		// TODO add 'matrix' and 'array support'
 	}
 	return type;
-}
+};

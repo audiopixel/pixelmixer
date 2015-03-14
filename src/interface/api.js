@@ -49,7 +49,7 @@ ap.init = function(scene, renderer, maxNodeCount){
 	if(!ap.appSize){
 		ap.setSize(600, 400);
 	}
-}
+};
 
 
 ap.updateShader = false;
@@ -86,7 +86,7 @@ ap.update = function() {
 		ap.updateShaderLimiter++;
 
 	}
-}
+};
 
 
 ap.pointPosition = [-400, -400, 0]; // Defaults
@@ -97,7 +97,7 @@ ap.setPointPosition = function(x, y, z) {
 		ap.pointCloud.position.y = y;
 		ap.pointCloud.position.z = z;
 	}
-}
+};
 
 ap.appSize;
 ap.setSize = function(width, height) {
@@ -116,51 +116,58 @@ ap.setSize = function(width, height) {
 		ap.app.renderer.setSize( ap.app.glWidth, ap.app.glHeight );
 
 	}
-}
+};
 
 ap.get = function(uniform, channel, pod, clip) {
 	return ap.getUniform(uniform, channel, pod, clip).value;
-}
+};
 
 ap.set = function(uniform, value, channel, pod, clip) {
 	ap.getUniform(uniform, channel, pod, clip).value = value;
 	ap.setObjProperty(uniform, value, channel, pod, clip);
-}
+};
 
 ap.getUniform = function(uniform, channel, pod, clip) {
 	var addy = "_" + channel;
 	if(pod){ addy += "_" + pod; 
 	if(clip){ addy += "_" + clip; }}
 	return ap.material.uniforms[addy + "_" + uniform];
-}
+};
 
 ap.getObj = function(channel, pod, clip) {
 	var obj = ap.channels.channels[channel-1];
 	if(pod){ obj = obj.pods[pod-1]; 
 	if(clip){ obj = obj.clips[clip-1]; }}
 	return obj;
-}
+};
 
 ap.setObj = function(newObj, channel, pod, clip) {
-	ap.getObj(channel, pod, clip) = newObj;
-}
+	
+	if(!pod){
+		ap.channels.channels[channel-1] = newObj;
+	}else if(!clip){
+		ap.channels.channels[channel-1].pods[pod-1] = newObj;
+	}else{
+		ap.channels.channels[channel-1].pods[pod-1].clips[clip-1] = newObj;
+	}
+};
 
 ap.getObjProperty = function(property, channel, pod, clip) {
 	var obj = ap.getObj(channel, pod, clip);
 	return obj[property];
-}
+};
 
 ap.setObjProperty = function(property, value, channel, pod, clip) {
 	var obj = ap.getObj(channel, pod, clip);
 	obj[property] = value;
-}
+};
 
 ap.load = function(json){
 	ap.channels.channels = json;
 	ap.updateShader = true;
 	ap.updateFresh = true;
-}
+};
 
 ap.stringify = function(){
 	return JSON.stringify(ap.channels.channels);
-}
+};
