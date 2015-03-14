@@ -38,6 +38,8 @@ ap.AppManager = function (scene, renderer) {
 	this.nodeTexture = THREE.ImageUtils.loadTexture( "images/nodeflare250.png" );  // TODO preload this
 
 	this.coordsMap;
+	this.altMap1;
+	this.altMap2;
 
 	this.plane = new THREE.PlaneBufferGeometry( ap.simSize, ap.simSize );
 	ap.pointGeometry = new THREE.Geometry();
@@ -297,7 +299,6 @@ ap.AppManager.prototype = {
 
 		// We always set the first Pod Position as the bounding box that fits all nodes
 		ap.channels.setPodPos(1, new ap.PodPosition(minx, miny, minz, maxx - minx, maxy - miny, maxz - minz));
-		//console.log(new ap.PodPosition(minx, miny, 0, maxx - minx, maxy - miny, 1));
 
 		// Testing on pod pos #2
 		//ap.channels.setPodPos(2, new ap.PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
@@ -309,6 +310,12 @@ ap.AppManager.prototype = {
 		this.coordsMap.needsUpdate = true;
 		this.coordsMap.flipY = true;
 
+		// testing
+		this.altMap1 = new THREE.DataTexture( a, ap.simSize, ap.simSize, THREE.RGBAFormat, THREE.FloatType );
+		this.altMap1.minFilter = THREE.NearestFilter;
+		this.altMap1.magFilter = THREE.NearestFilter;
+		this.altMap1.needsUpdate = true;
+		this.altMap1.flipY = true;
 
 	},
 
@@ -369,6 +376,7 @@ ap.AppManager.prototype = {
 			u_mapSize: { type: "f", value: ap.simSize }
 		};
 
+
 		// Generate the source shader from the current loaded channels
 		var sourceShader = ap.channels.generateSourceShader();
 		var sourceUniforms = "";
@@ -381,6 +389,17 @@ ap.AppManager.prototype = {
 			sourceUniforms += "uniform " + type + " " + uniform + ";\n";
 			uniforms[uniform] = sourceShader.uniforms[uniform];
 		}
+
+		// If we are using alt maps include the internal properties
+		if(this.altMap1){
+			sourceUniforms += "uniform sampler2D u_altMap1; vec4 ap_alt1; \n";
+			uniforms.u_altMap1 = { type: "t", value: this.altMap1 };
+		}
+		if(this.altMap2){
+			sourceUniforms += "uniform sampler2D u_altMap2; vec4 ap_alt2; \n";
+			uniforms.u_altMap2 = { type: "t", value: this.altMap2 };
+		}
+
 
 		// If the flag is to update fresh ignore the existing uniforms 
 		if(!ap.updateFresh){
@@ -418,6 +437,13 @@ ap.AppManager.prototype = {
 		ap.material.uniforms.u_coordsMap.value = this.coordsMap;
 		ap.material.uniforms.u_prevCMap.value = this.rtTextureB;
 
+		if(this.altMap1){
+			ap.material.uniforms.u_altMap1.value = this.altMap1;
+		}
+		if(this.altMap2){
+			ap.material.uniforms.u_altMap2.value = this.altMap2;
+		}
+
 
 		//console.log(sourceShader);
 		//console.log(ap.material.uniforms);
@@ -445,6 +471,7 @@ ap.AppManager.prototype = {
 	// Minimize the fragment shader before it gets sent to gpu
 	minFragmentShader: function(frag){
 
+		frag = frag.replace(/ap_alt/g, "_0");
 		frag = frag.replace(/ap_/g, "_");
 		frag = frag.replace(/_xyz/g, "_1");
 		frag = frag.replace(/hsv2rgb/g, "_2");

@@ -8,7 +8,6 @@ ap.simSize;
 
 ap.shaders = {};				// Internal shaders 
 ap.clips = {}; 					// Loaded shaders as clips
-ap.register = {}; 				// Loaded shaders get referenced here internally for quick lookup
 ap.imported = {}; 				// Currently imported port (and possibly node) data
 
 
@@ -63,6 +62,12 @@ ap.CHANNEL_TYPE_SCENE = 3;
 ap.HARDWAREGROUP_OFF = 0;
 ap.HARDWAREGROUP_SOLO = 1;
 ap.HARDWAREGROUP_EXCLUDE = 2;
+
+
+// Clip position map Constants
+ap.MAP_NORMAL = 0;
+ap.MAP_ALT1 = 1;
+ap.MAP_ALT2 = 2;
 
 
 // Temporary Preset Management 

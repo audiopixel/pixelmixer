@@ -32,11 +32,11 @@ ap.ChannelManager.prototype = {
 
 						for (var u = 0; u < pod.clips.length; u++) { var clip = pod.clips[u];
 
-							if(clip){ var srcClip = ap.clips[clip.clipId];
+							if(clip){ var shader = ap.clips[clip.clipId];
 
 								// If the clip defined update function call it with proper clip addressing
-								if(srcClip && srcClip.update && ap.app.material){
-									srcClip.update("_" + (i+1) + "_" + (e+1) + "_" + (u+1), ap.app.material.uniforms);
+								if(shader && shader.update && ap.app.material){
+									shader.update("_" + (i+1) + "_" + (e+1) + "_" + (u+1), ap.app.material.uniforms);
 								}
 							}
 						}
@@ -127,38 +127,38 @@ ap.ChannelManager.prototype = {
 								var clip = pod.clips[u];
 								if(clip){
 
-									var srcClip = ap.clips[clip.clipId];
+									var shader = ap.clips[clip.clipId];
 
 
 									if(!fragList[pod.clips[u].clipId]){
 										fragList[pod.clips[u].clipId] = true;
 
 										// Declare each clips constants, but we can't declare them more than once so record which ones we have declared already
-										for (var variable in srcClip.constants) {
+										for (var variable in shader.constants) {
 
 											if(!constants[variable]){ // If we don't already have the constant mark it as in use and include it.
 												constants[variable] = 1; 
-												var type = ap.getVariableTypeFromShorthand(srcClip.constants[variable].type);
-												fragFuncOutput += type + " " + variable + " = " + srcClip.constants[variable].value + ";";
+												var type = ap.getVariableTypeFromShorthand(shader.constants[variable].type);
+												fragFuncOutput += type + " " + variable + " = " + shader.constants[variable].value + ";";
 											}
 										}fragFuncOutput += "\n";
 
-										if(srcClip.fragmentFunctions){
-											for (var v = 0; v < srcClip.fragmentFunctions.length; v++) {
+										if(shader.fragmentFunctions){
+											for (var v = 0; v < shader.fragmentFunctions.length; v++) {
 
 												// Duplicate method checking - right now just checking based off the first 5 words of function
-												var name = srcClip.fragmentFunctions[v].trim();
+												var name = shader.fragmentFunctions[v].trim();
 												name = nthWord(name, 1) + nthWord(name, 2) + nthWord(name, 3) + nthWord(name, 4) + nthWord(name, 5);
 												if(!fragFuncList[name]){
 													fragFuncList[name] = true;
 
 													// Add the helper function to be included at the top of the shader
-													fragFuncOutput += srcClip.fragmentFunctions[v] + "\n";
+													fragFuncOutput += shader.fragmentFunctions[v] + "\n";
 												}
 											}
 										}
-										fragFuncHelpers += "else if(id == " + srcClip.id + "){\n";
-										fragFuncHelpers += srcClip.fragmentMain.replace("gl_FragColor", "returnColor"); + "\n";
+										fragFuncHelpers += "else if(id == " + shader.id + "){\n";
+										fragFuncHelpers += shader.fragmentMain.replace("gl_FragColor", "returnColor"); + "\n";
 										fragFuncHelpers = fragFuncHelpers.replace(/gl_FragCoord/g, "ap_xyz"); + "\n";
 										fragFuncHelpers += "\n}\n";
 										//fragFuncHelpers += "////////\n";
@@ -166,24 +166,24 @@ ap.ChannelManager.prototype = {
 
 
 									clip.address = pod.address +"_" + (u+1);
-									if(clip.clipId.length > 0 && srcClip){
+									if(clip.clipId.length > 0 && shader){
 
 										// If the clip defined params transfer default values over to the obj
-										for (var param in srcClip.params) {
-											ap.setObjProperty(param, srcClip.params[param].value, i+1, e+1, u+1);
+										for (var param in shader.params) {
+											ap.setObjProperty(param, shader.params[param].value, i+1, e+1, u+1);
 											
 											// Create params with default values
-											uniforms[clip.address + "_" + param] = { type: "f", value: srcClip.params[param].value };
+											uniforms[clip.address + "_" + param] = { type: "f", value: shader.params[param].value };
 										}
 
 										// If the clip defined properties define them as addressed uniforms
-										for (var property in srcClip.properties) {
-											uniforms[clip.address + "_" + property] = srcClip.properties[property];
+										for (var property in shader.properties) {
+											uniforms[clip.address + "_" + property] = shader.properties[property];
 										}
 
 										// If the clip defined optional init() method call it with addressing
-										if(srcClip.init){
-											srcClip.init(clip.address, uniforms);
+										if(shader.init){
+											shader.init(clip.address, uniforms);
 										}
 
 
@@ -196,12 +196,17 @@ ap.ChannelManager.prototype = {
 										// Pass along input param values if they are defined on clip
 										var params = ["0.","0.","0.","0.","0.","0.","0.","0.","0."];
 										for (var j = 0; j < params.length; j++) {
-											if(srcClip.params["p"+(j+1)]){
+											if(shader.params["p"+(j+1)]){
 												params[j] = (clip.address+"_p"+(j+1));
 											}
 										};
 
-										fragOutput = "ap_rgb2 = superFunction(_clip_mix, "+ srcClip.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
+										fragOutput = "";
+										if(clip.posMap == ap.MAP_ALT1 && ap.app.altMap1){
+											fragOutput += "ap_xyz = offsetPos(ap_alt1, " + pod.positionIds[o] + ", ap_xyz.w);\n";
+										}
+
+										fragOutput += "ap_rgb2 = superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
 
 										// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
 										//fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
@@ -317,10 +322,20 @@ ap.ChannelManager.prototype = {
 		
 		fragFuncOutput += fragFuncHelpers;
 
+		// Set alt map coordinates if they are defined
+		if(ap.app.altMap1){
+			output = "ap_alt1 = texture2D( u_altMap1, v_vUv);" + output;
+		}
+		if(ap.app.altMap2){
+			output = "ap_alt2 = texture2D( u_altMap2, v_vUv);" + output;
+		}
+
 
 		//console.log(uniforms);
 		//console.log(fragFuncOutput);
 		//console.log(output);
+
+		
 
 
 		return {uniforms: uniforms, fragmentFunctions: fragFuncOutput, fragmentMain: output + "\n"};

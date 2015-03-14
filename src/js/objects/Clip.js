@@ -4,11 +4,12 @@
 *
 */
 
-ap.Clip = function (clipId, mix, blend, speed) {
+ap.Clip = function (clipId, mix, blend, posMap, speed) {
 
 	this.clipId = clipId;
 	this.mix = mix 			|| 0;
 	this.blend = blend 		|| ap.BLEND.Add;
+	this.posMap = posMap 	|| ap.MAP_NORMAL;
 	this.speed = speed 		|| 1;
 
 	this.p1 = 0;
