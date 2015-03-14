@@ -35,7 +35,7 @@ ap.AppManager = function (scene, renderer) {
 	this.render = true;
 	this.readPixels = false;
 
-	this.nodeTexture = THREE.ImageUtils.loadTexture( "images/nodeflare250.png" );  // TODO preload this
+	this.nodeTexture = THREE.ImageUtils.loadTexture( "images/nodeflare250.png" );
 
 	this.coordsMap;
 	this.altMap1;

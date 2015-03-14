@@ -10,30 +10,26 @@
 		<script src="../libs/stats.min.js"></script>
 		<script src="../libs/signals.min.js"></script>
 		<script src="../libs/dat.gui.min.js"></script>
-
 		<script src="../libs/three/three.min.js"></script>
 		<script src="../libs/three/controls/TrackballControls.js"></script>
 		<script src="../libs/utils.js"></script>
 
 		<!-- <script src="../dist/all.min.js"></script> -->
-		<script src="js/audiopixel.js"></script>
-		<script src="js/api.js"></script>
-		<script src="js/managers/AppManager.js"></script>
-		<script src="js/managers/PortManager.js"></script>
-		<script src="js/managers/HardwareManager.js"></script>
-		<script src="js/managers/ChannelManager.js"></script>
-		<script src="js/objects/Port.js"></script>
-		<script src="js/objects/Channel.js"></script>
-		<script src="js/objects/Pod.js"></script>
-		<script src="js/objects/Clip.js"></script>
-		<script src="js/objects/PodPosition.js"></script>
-
-		<script src="js/shaders/MainShader.js"></script>
-		<script src="js/shaders/PointCloudShader.js"></script>
-		<script src="js/shaders/ShaderUtils.js"></script>
-		<script src="js/shaders/SimpleTextureShader.js"></script>
-
-		<script src="import/datGuiPresets.js"></script>
+		<script src="../src/js/audiopixel.js"></script>
+		<script src="../src/js/api.js"></script>
+		<script src="../src/js/managers/AppManager.js"></script>
+		<script src="../src/js/managers/PortManager.js"></script>
+		<script src="../src/js/managers/HardwareManager.js"></script>
+		<script src="../src/js/managers/ChannelManager.js"></script>
+		<script src="../src/js/objects/Port.js"></script>
+		<script src="../src/js/objects/Channel.js"></script>
+		<script src="../src/js/objects/Pod.js"></script>
+		<script src="../src/js/objects/Clip.js"></script>
+		<script src="../src/js/objects/PodPosition.js"></script>
+		<script src="../src/js/shaders/MainShader.js"></script>
+		<script src="../src/js/shaders/PointCloudShader.js"></script>
+		<script src="../src/js/shaders/ShaderUtils.js"></script>
+		<script src="../src/js/shaders/SimpleTextureShader.js"></script>
 
 		<script src="import/shaders/SolidColor.js"></script>
 		<script src="import/shaders/TestFrame.js"></script>
@@ -53,7 +49,8 @@
 
 		<script src="import/nodes/test.js"></script>
 		<script src="import/presets/testPreset.js"></script>
-
+		
+		<script src="import/datGuiPresets.js"></script>
 		<script src="ui/datguiSetup1.js"></script>
 
 		<script>
@@ -90,6 +87,7 @@
 
 					// Initialize ap
 					var maxNodeCount = 10000;
+					ap.nodeSprite = "images/nodeflare250.png";
 					ap.init(scene, renderer, maxNodeCount);
 					ap.setSize(glWidth, glHeight);
 
