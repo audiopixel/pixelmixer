@@ -18,26 +18,40 @@ function initUi(){
 	// -------Temporary: Create some Channels/Pods/Clips for testing----------
 
 	// Let's create some test channels for now (TODO: this should be loaded from current project settings)
+
+
+
+	// ** Channel 1
+
 	var mix = 1;
-	var mix2 = 1;
 	var pods = [];
 
-	//pods[3] = new ap.Pod(1, mix, ap.BLEND.Add, [new ap.Clip(2, mix, ap.BLEND.Add), new ap.Clip(5, mix, ap.BLEND.Fx)]);
-	//pods[2] = new ap.Pod(3, mix, ap.BLEND.Add, [new ap.Clip(3, mix2, ap.BLEND.Add), new ap.Clip(5, 1, ap.BLEND.Fx)]);
-	pods[1] = new ap.Pod([2], mix, ap.BLEND.LinearLight, [new ap.Clip("LineCosSin", mix, ap.BLEND.Add), new ap.Clip("TestFx", 1, ap.BLEND.Fx)]);
-	pods[0] = new ap.Pod([1], mix, ap.BLEND.Add, [new ap.Clip("ColorSineBar", mix2, ap.BLEND.Add), new ap.Clip("TestFx", 1, ap.BLEND.Fx)]);
+	var clip1 = new ap.Clip({id: "LineCosSin"});
+	var clipfx1 = new ap.Clip({id: "TestFx", blend: ap.BLEND.Fx});
+
+	var clip2 = new ap.Clip({id: "ColorSineBar"});
+	var clipfx2 = new ap.Clip({id: "TestFx", blend: ap.BLEND.Fx});
+
+	pods[1] = new ap.Pod([2], mix, ap.BLEND.LinearLight, [clip1, clipfx1]);
+	pods[0] = new ap.Pod([1], mix, ap.BLEND.Add, [clip2, clipfx2]);
 
 	ap.channels.setChannel(1, new ap.Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
 
 
+
+	// ** Channel 2 - Post FX Channel
+	
 	var pods2 = [];
-	pods2[0] = new ap.Pod([1], mix, ap.BLEND.Add, [new ap.Clip("HueFx", 1, ap.BLEND.Fx)]);
+	var clipfx3 = new ap.Clip({id: "HueFx", blend: ap.BLEND.Fx});
+
+	pods2[0] = new ap.Pod([1], mix, ap.BLEND.Add, [clipfx3]);
 
 	ap.channels.setChannel(2, new ap.Channel("Post FX1", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Add, pods2));
 
+
+
 	// Tell the shader to update after we set some new state
 	ap.updateShader = true;
-
 
 	// The list of state that the UI is representing (V) and setting (C)
 	guiData  = {

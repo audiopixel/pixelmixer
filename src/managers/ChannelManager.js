@@ -32,7 +32,7 @@ ap.ChannelManager.prototype = {
 
 						for (var u = 0; u < pod.clips.length; u++) { var clip = pod.clips[u];
 
-							if(clip){ var shader = ap.clips[clip.clipId];
+							if(clip){ var shader = ap.clips[clip.id];
 
 								// If the clip defined update function call it with proper clip addressing
 								if(shader && shader.update && ap.app.material){
@@ -130,11 +130,11 @@ ap.ChannelManager.prototype = {
 								var clip = pod.clips[u];
 								if(clip){
 
-									var shader = ap.clips[clip.clipId];
+									var shader = ap.clips[clip.id];
 
 
-									if(!fragList[pod.clips[u].clipId]){
-										fragList[pod.clips[u].clipId] = true;
+									if(!fragList[pod.clips[u].id]){
+										fragList[pod.clips[u].id] = true;
 
 										// Declare each clips constants, but we can't declare them more than once so record which ones we have declared already
 										for (var variable in shader.constants) {
@@ -170,7 +170,7 @@ ap.ChannelManager.prototype = {
 
 
 									clip.address = pod.address +"_" + (u+1);
-									if(clip.clipId.length > 0 && shader){
+									if(clip.id.length > 0 && shader){
 
 										// If the clip defined params transfer default values over to the obj
 										for (var param in shader.params) {
@@ -219,7 +219,7 @@ ap.ChannelManager.prototype = {
 
 										// ------------ Clip Mix Blend & Fx --------------
 
-										var fx = ap.clips[clip.clipId].fx;
+										var fx = ap.clips[clip.id].fx;
 										if(u === 0){
 											
 											fragOutput += "ap_rgb = ap_rgb2; \n";
