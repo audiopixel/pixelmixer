@@ -122,12 +122,20 @@ ap.setSize = function(width, height) {
 };
 
 ap.get = function(uniform, channel, pod, clip) {
-	return ap.getUniform(uniform, channel, pod, clip).value;
+	if(!channel){
+		return ap.material.uniforms[uniform].value;
+	}else{
+		return ap.getUniform(uniform, channel, pod, clip).value;
+	}
 };
 
 ap.set = function(uniform, value, channel, pod, clip) {
-	ap.getUniform(uniform, channel, pod, clip).value = value;
-	ap.setObjProperty(uniform, value, channel, pod, clip);
+	if(!channel){
+		ap.material.uniforms[uniform].value = value;
+	}else{
+		ap.getUniform(uniform, channel, pod, clip).value = value;
+		ap.setObjProperty(uniform, value, channel, pod, clip);
+	}
 };
 
 ap.getUniform = function(uniform, channel, pod, clip) {
@@ -145,7 +153,6 @@ ap.getObj = function(channel, pod, clip) {
 };
 
 ap.setObj = function(newObj, channel, pod, clip) {
-	
 	if(!pod){
 		ap.channels.channels[channel-1] = newObj;
 	}else if(!clip){
