@@ -3,6 +3,7 @@
 
 ap.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
 ap.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
+ap.usePodUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
 
 ap.pointCloud = {};				// Main point cloud that displays node colors
 ap.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
@@ -49,6 +50,8 @@ ap.init = function(scene, renderer, maxNodeCount){
 	if(!ap.appSize){
 		ap.setSize(600, 400);
 	}
+
+
 };
 
 

@@ -378,10 +378,28 @@ ap.AppManager.prototype = {
 			u_mapSize: { type: "f", value: ap.simSize }
 		};
 
-
 		// Generate the source shader from the current loaded channels
 		var sourceShader = ap.channels.generateSourceShader();
 		var sourceUniforms = "";
+
+
+		if(ap.usePodUniforms){
+			uniforms.u_pos_id= { type: "i", value: 0 };
+			uniforms.u_pos_x = { type: "f", value: 0. };
+			uniforms.u_pos_y = { type: "f", value: 0. };
+			uniforms.u_pos_z = { type: "f", value: 0. };
+			uniforms.u_pos_w = { type: "f", value: 0. };
+			uniforms.u_pos_h = { type: "f", value: 0. };
+			uniforms.u_pos_d = { type: "f", value: 0. };
+
+			sourceUniforms += "uniform int u_pos_id;\n";
+			sourceUniforms += "uniform float u_pos_x;\n";
+			sourceUniforms += "uniform float u_pos_y;\n";
+			sourceUniforms += "uniform float u_pos_z;\n";
+			sourceUniforms += "uniform float u_pos_w;\n";
+			sourceUniforms += "uniform float u_pos_h;\n";
+			sourceUniforms += "uniform float u_pos_d;\n";
+		}
 
 		// Add the uniforms from the current loaded channels
 		for (var uniform in sourceShader.uniforms) {

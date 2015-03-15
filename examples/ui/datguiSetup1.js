@@ -117,7 +117,7 @@ function initUi(){
 	f3.add( guiData, "S1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set("mix", v, 1, 1, 1);  });
 	f3.add( guiData, "S1Scale", 0.1, 1.0, 1.0 )    .onChange(function (v) { ap.set("p1", v, 1, 1, 1);  });
 	f3.add( guiData, "S1HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set("p1", v, 1, 1, 2);  });
-
+/*
 	// Post Fx
 	f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (v) { ap.set("p1", v, 2, 1, 1);  });
 	f4.add( guiData, "HueClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { ap.set("p2", v, 2, 1, 1);  });
@@ -125,6 +125,18 @@ function initUi(){
 	f4.add( guiData, "SatClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { ap.set("p4", v, 2, 1, 1);  });
 	f4.add( guiData, "Smooth", 0.0, 0.98, 1.0 )    .onChange(function (v) { ap.set("p5", v, 2, 1, 1);  });
 	f4.add( guiData, "PreAmp", 0.0, 1.0, 0.0 ) .onChange(function (v) { ap.set("p6", v, 2, 1, 1);  });
+*/
+	// Post Fx
+	f4.add( guiData, "Hue", 0.0, 1400.0, 1.0 )    .onChange(function (v) { ap.material.uniforms.u_pos_x.value = v;  });
+	f4.add( guiData, "HueClamp", 0.0, 2400.0, 1.0 )    .onChange(function (v) { ap.material.uniforms.u_pos_w.value = v;  });
+	f4.add( guiData, "Saturation", 0.0, 2.0, 1.0 )    .onChange(function (v) { ap.material.uniforms.u_pos_id.value = Math.floor(v);  });
+	f4.add( guiData, "SatClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { ap.set("p4", v, 2, 1, 1);  });
+	f4.add( guiData, "Smooth", 0.0, 0.98, 1.0 )    .onChange(function (v) { ap.set("p5", v, 2, 1, 1);  });
+	f4.add( guiData, "PreAmp", 0.0, 1.0, 0.0 ) .onChange(function (v) { ap.set("p6", v, 2, 1, 1);  });
+
+
+
+
 	//f4.add( guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (v) { ap.set("", 2, 1, 1);  });
 	//f4.add( guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (v) { ap.set("", 2, 1, 1);  });
 

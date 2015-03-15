@@ -11,7 +11,6 @@ ap.MainShader = {
 		"#INCLUDESHADERUTILS",
 
 
-
 		"precision mediump float;",
 		"float ap_index;",
 		"vec4 ap_xyz;",

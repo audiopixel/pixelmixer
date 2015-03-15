@@ -108,6 +108,9 @@ ap.ChannelManager.prototype = {
 
 								// Only update the res if we need to
 								var res = "vec2(" + podPos.w + ", " + podPos.h + ");";
+								if(ap.usePodUniforms){
+									res = "vec2(getPodSize(" + pod.positionIds[o] + ").x, getPodSize(" + pod.positionIds[o] + ").y);";
+								}
 								if(lastKnownRes !== res){
 									lastKnownRes = res;
 									output += "resolution = " + res + " \n";
@@ -346,25 +349,38 @@ ap.ChannelManager.prototype = {
 		
 		// Pod Position function
 		var m = "";
+
+		if(ap.usePodUniforms){
+			m += "if(d == u_pos_id){\n";
+				m += "p = vec3(u_pos_x, u_pos_y, u_pos_z);\n";
+			m += "}";
+		}
 		for (var i = 0; i < this.podpositions.length; i++) {
 			m += "else if(d == " + (i+1) + "){\n";
 			m += "p = vec3("+this.podpositions[i].x+","+this.podpositions[i].y+","+this.podpositions[i].z+");\n";
 			m += "}\n";
 		}
-		m = m.slice(5, m.length); // cut the first 'else' out 
+		if(!ap.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodPos(int d) { \n" + m + "}\n";
 
-		// Pod Size function
 		var output = m;
 		m = "";
+
+		if(ap.usePodUniforms){
+			m += "if(d == u_pos_id){\n";
+				m += "p = vec3(u_pos_w, u_pos_h, u_pos_d);\n";
+			m += "}";
+		}
+
+		// Pod Size function
 		for (i = 0; i < this.podpositions.length; i++) {
 			m += "else if(d == " + (i+1) + "){\n";
 			m += "p = vec3("+this.podpositions[i].w+","+this.podpositions[i].h+","+this.podpositions[i].d+");\n";
 			m += "}\n";
 		}
-		m = m.slice(5, m.length); // cut the first 'else' out 
+		if(!ap.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodSize(int d) { \n" + m + "}\n";
