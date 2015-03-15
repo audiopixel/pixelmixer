@@ -98,7 +98,7 @@ ap.ChannelManager.prototype = {
 
 						for (var o = 0; o < pod.positionIds.length; o++) {
 
-							output += "/////////////////////////////////------------------------------ \n";
+							output += "//-- \n";
 
 							var podPos = this.getPodPos(pod.positionIds[o]);
 

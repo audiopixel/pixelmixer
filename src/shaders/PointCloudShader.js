@@ -1,6 +1,5 @@
 /**
  * Simple node shader for displaying on ap nodes
- * TODO - minimize
  */
 
 

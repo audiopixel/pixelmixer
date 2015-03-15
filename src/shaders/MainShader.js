@@ -59,7 +59,7 @@ ap.MainShader = {
 
 		"void main() {",
 
-			"random = rand(vec2(gl_FragCoord[0], gl_FragCoord[1] * _random) * (_time * 0.0001));",
+			"random = rand(vec2(gl_FragCoord[0] * (gl_FragCoord[2] + 1), gl_FragCoord[1] * _random) * (_time * 0.0001));",
 
 			// Black is default
 			"ap_rgb = vec3(0.0);",

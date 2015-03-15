@@ -1,6 +1,5 @@
 /**
  * Simple shader for displaying a texture
- * TODO - minimize
  */
  
 
