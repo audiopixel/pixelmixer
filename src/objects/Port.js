@@ -17,7 +17,3 @@ ap.Port = function (name, type, address, hardwarePort, nodes) {
 	this.hardwarePort = hardwarePort || 1;
 
 };
-
-ap.Port.prototype = {
-
-};

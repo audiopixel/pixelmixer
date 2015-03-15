@@ -15,7 +15,3 @@ ap.Pod = function (positionIds, mix, blend, clips, hardwareGroupMode, hardwareGr
 	this.hardwareGroupMode = hardwareGroupMode || ap.HARDWAREGROUP_OFF;			// Off, Exclude, or Solo Mode
 	this.hardwareGroupIds = hardwareGroupIds || [];
 };
-
-ap.Pod.prototype = {
-
-};

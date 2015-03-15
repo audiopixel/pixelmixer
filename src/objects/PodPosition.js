@@ -22,7 +22,3 @@ ap.PodPosition = function (x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs
 	this.zs = zs || 0.5;
 	this.flipmode = flipmode || 0;
 };
-
-ap.PodPosition.prototype = {
-
-};

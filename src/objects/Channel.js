@@ -14,7 +14,3 @@ ap.Channel = function (name, type, mix, blend, pods) {
 	this.pods = pods 		|| [];
 
 };
-
-ap.Channel.prototype = {
-
-};
