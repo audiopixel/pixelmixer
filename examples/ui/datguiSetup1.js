@@ -23,8 +23,6 @@ function initUi(){
 
 	// ** Channel 1
 
-	var mix = 1;
-	var pods = [];
 
 	var clip1 = new ap.Clip({id: "LineCosSin"});
 	var clipfx1 = new ap.Clip({id: "TestFx", blend: ap.BLEND.Fx});
@@ -32,10 +30,11 @@ function initUi(){
 	var clip2 = new ap.Clip({id: "ColorSineBar"});
 	var clipfx2 = new ap.Clip({id: "TestFx", blend: ap.BLEND.Fx});
 
-	pods[1] = new ap.Pod({positionIds: [2], mix: mix, blend: ap.BLEND.LinearLight, clips: [clip1, clipfx1]});
-	pods[0] = new ap.Pod({positionIds: [1], mix: mix, blend: ap.BLEND.Add, clips: [clip2, clipfx2]});
+	var pods = [];
+	pods[1] = new ap.Pod({positionIds: [2], blend: ap.BLEND.LinearLight, clips: [clip1, clipfx1]});
+	pods[0] = new ap.Pod({positionIds: [1], clips: [clip2, clipfx2]});
 
-	var channel1 = new ap.Channel({name: "TestChannel1", type: ap.CHANNEL_TYPE_ADD, mix: mix, pods: pods});
+	var channel1 = new ap.Channel({name: "TestChannel1", mix: 1, pods: pods});
 	ap.channels.setChannel(1, channel1);
 
 
@@ -44,9 +43,9 @@ function initUi(){
 	var pods2 = [];
 	var clipfx3 = new ap.Clip({id: "HueFx", blend: ap.BLEND.Fx});
 
-	pods2[0] = new ap.Pod({positionIds: [1], mix: mix, blend: ap.BLEND.Add, clips: [clipfx3]});
+	pods2[0] = new ap.Pod({positionIds: [1], clips: [clipfx3]});
 
-	var channel2 = new ap.Channel({name: "Post FX1", type: ap.CHANNEL_TYPE_FX, mix: mix, pods: pods2});
+	var channel2 = new ap.Channel({name: "Post FX1", type: ap.CHANNEL_TYPE_FX, mix: 1, pods: pods2});
 	ap.channels.setChannel(2, channel2);
 
 
@@ -203,7 +202,8 @@ function uniformClipTypeChange(clipName, channel, pod, clip) {
 		clipId = ap.clips[clipName];
 	}
 
-	ap.channels.setClip(channel, pod, clip, new ap.Clip(clipName + "", 1.0, ap.BLEND.Add));
+	var clipObj = new ap.Clip({id: clipName});
+	ap.channels.setClip(channel, pod, clip, clipObj);
 
 	ap.updateShader = true;
 }
