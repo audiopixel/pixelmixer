@@ -53,7 +53,7 @@ ap.PORT_TYPE_LASER_1 = 8;
 
 // ap.Channel Type Constants
 ap.CHANNEL_TYPE_OFF = 0;
-ap.CHANNEL_TYPE_BLEND = 1;
+ap.CHANNEL_TYPE_ADD = 1;
 ap.CHANNEL_TYPE_FX = 2;
 ap.CHANNEL_TYPE_SCENE = 3;
 

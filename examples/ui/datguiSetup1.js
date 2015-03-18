@@ -32,11 +32,11 @@ function initUi(){
 	var clip2 = new ap.Clip({id: "ColorSineBar"});
 	var clipfx2 = new ap.Clip({id: "TestFx", blend: ap.BLEND.Fx});
 
-	pods[1] = new ap.Pod([2], mix, ap.BLEND.LinearLight, [clip1, clipfx1]);
-	pods[0] = new ap.Pod([1], mix, ap.BLEND.Add, [clip2, clipfx2]);
+	pods[1] = new ap.Pod({positionIds: [2], mix: mix, blend: ap.BLEND.LinearLight, clips: [clip1, clipfx1]});
+	pods[0] = new ap.Pod({positionIds: [1], mix: mix, blend: ap.BLEND.Add, clips: [clip2, clipfx2]});
 
-	ap.channels.setChannel(1, new ap.Channel("TestChannel1", ap.CHANNEL_TYPE_BLEND, mix, ap.BLEND.Add, pods));
-
+	var channel1 = new ap.Channel({name: "TestChannel1", type: ap.CHANNEL_TYPE_ADD, mix: mix, pods: pods});
+	ap.channels.setChannel(1, channel1);
 
 
 	// ** Channel 2 - Post FX Channel
@@ -44,9 +44,10 @@ function initUi(){
 	var pods2 = [];
 	var clipfx3 = new ap.Clip({id: "HueFx", blend: ap.BLEND.Fx});
 
-	pods2[0] = new ap.Pod([1], mix, ap.BLEND.Add, [clipfx3]);
+	pods2[0] = new ap.Pod({positionIds: [1], mix: mix, blend: ap.BLEND.Add, clips: [clipfx3]});
 
-	ap.channels.setChannel(2, new ap.Channel("Post FX1", ap.CHANNEL_TYPE_FX, mix, ap.BLEND.Add, pods2));
+	var channel2 = new ap.Channel({name: "Post FX1", type: ap.CHANNEL_TYPE_FX, mix: mix, pods: pods2});
+	ap.channels.setChannel(2, channel2);
 
 
 
@@ -56,13 +57,7 @@ function initUi(){
 	// The list of state that the UI is representing (V) and setting (C)
 	guiData  = {
 		Channel1Mix:  1,
-		/*
-		S3Blend:  'Add',
-		S3ClipId:  0,
-		S3Mix:  1,
-		S3Scale:  1,
-		Hue3Mix:  1,
-		*/
+		
 		S2Blend:  "LinearLight",
 		S2ClipId:  ap.demoClipNames[5],
 		S2Mix:  1,
@@ -111,14 +106,6 @@ function initUi(){
 	var f4 = gui.addFolder('Post FX');         //  f4.open();
 	var f5 = gui.addFolder('Settings');    //  f5.open();
 
-	/*
-	// Pod 3
-	f1.add( guiData, 'S3Blend', ap.BLENDS )     .onChange(function () { uniformBlendChange( guiData.S3Blend, "_1_3"); });
-	f1.add( guiData, 'S3ClipId', ap.demoClipNames).onChange(function () { uniformClipTypeChange( guiData.S3ClipId, 1, 3, 1 ); });
-	f1.add( guiData, "S3Mix", 0.0, 1.0, 1.0 )   .onChange(function () { ap.set("", 1_3_1_mix.value = guiData.S3Mix; });
-	f1.add( guiData, "S3Scale", 0.0, 1.0, 1.0 ) .onChange(function () { ap.set("", 1_3_1_p1.value = guiData.S3Scale; });
-	f1.add( guiData, "Hue3Mix", 0.0, 1.0, 1.0 ) .onChange(function () { ap.set("", 1_3_2_p1.value = guiData.Hue3Mix; });
-	*/
 	// Pod 2
 	f2.add( guiData, 'S2ClipId', ap.demoClipNames).onChange(function (v) { uniformClipTypeChange(v, 1, 2, 1 ); });
 	f2.add( guiData, "S2Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set("mix", v, 1, 2, 1);  });
@@ -181,7 +168,6 @@ function initUi(){
 	});
 	f5.add( guiData, "Speed", 0.025, 0.4, 1.0 ).onChange(function (v) { ap.speed = v; });
 	f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { ap.pointMaterial.uniforms.u_pointSize.value = v;  });
-	//f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { ap.set("pointSize");  });
 
 
 
