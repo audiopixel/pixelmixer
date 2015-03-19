@@ -3,11 +3,11 @@
 A Visual Engine optimized for performance that runs and generates OpenGL pixel shaders that can be mapped to surfaces in 3D space.
 
 Runs directly in the browser as a api service using WebGL and Three.js.
-The generated shaders can then run and be cached in any Opengl environment (such as C++/Java/Webgl).
+The generated shaders can then run and be cached in any Opengl environment (such as C++ / Java / Webgl).
 
-The original goal in creating this API was to drive lighting and projection equipment. Because of this we made it possible to capture the color values of all 3D pixels easily at runtime. This technique lets us broadcast UDP/DMX values straight from the app, as well as offering other advantages as well as shown in the comparison table below.
+The original goal in creating this API was to drive lighting and projection equipment. Because of this we made it possible to capture the color values of all 3D pixels easily at runtime. This technique lets us broadcast UDP & DMX values straight from the app, as well as offering other advantages as well as shown in the comparison table below.
 
-The API can also be used just for pure web visualization projects, and is very easy to add to any existing Three.js application.
+The API can also be used just for web visualization projects, and is very easy to add to any existing Three.js application.
 
 
 ## Features ##
@@ -29,17 +29,21 @@ The API can also be used just for pure web visualization projects, and is very e
 
 ## Steps to using API ##
 
-#### 1. Initialize API ####
+#### 1. Initialize API & Three.js ####
 
 
 ```
 ap.init(scene, renderer);
 ap.setSize(glWidth, glHeight);
+
+scene = new THREE.Scene();
+renderer = new THREE.WebGLRenderer(); 
+
 ```
 
 #### 2. Add Nodes ####
 
-To import nodes there are several hardware methods included to draw simple grids of various sizes. Or easily import node positions via JSON.
+To import nodes there are several hardware methods included to draw simple grids of various sizes. It's also easy to import new node positions via JSON.
 
 ```
 //Add a simple grid of Nodes 
@@ -57,10 +61,10 @@ ap.updateNodePoints();
 
 #### 3. Add Shaders ####
 
-A Clip is simply a shader wrapped in an object with timing and scaling controls. 
+A Clip is simply a shader wrapped in a object with additional timing, scaling, and input controls. 
 Wrapping a shader in a clip allows us to play it back at any size and at any animation speed.
 
-A Pod is a unit to group and mix shaders to be blended and positioned as one. Pods can then be mixed into other Pods. Pods can also be represented many times over in many places. As example this could be used to take one shader and display it in two different places, perhaps with one instance mirrored or scaled. 
+A Pod is a unit to group and mix Clips to be blended and positioned as one. Pods can then be mixed into other Pods. Pods can also be represented many times over in many places. As example this could be used to take one shader and display it in two different places, perhaps with one instance mirrored or scaled. 
 
 A Channel is a group of Pods that can be blended as one.
 
