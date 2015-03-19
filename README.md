@@ -62,7 +62,7 @@ ap.updateNodePoints();
 
 #### 3. Add Shaders ####
 
-[View example shader](https://github.com/hepp/audiopixel3/blob/master/examples/import/shaders/HexifyRadial.js)
+[View example shader](https://github.com/hepp/audiopixel3/blob/master/examples/import/shaders/TestFrame.js)
 
 A Clip is simply a shader wrapped in a object with additional timing, scaling, and input controls. 
 Wrapping a shader in a clip allows us to play it back at any size and at any animation speed.

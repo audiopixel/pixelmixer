@@ -8,24 +8,16 @@ ap.clips.TestFrame = {
 
 	params: { // (optional uniforms)
 
-		// Each shader can have upto 6 params that are controlled by it's UI / modulations
-		// TODO: define display ranges that will be shown in UI (percentage of param value)
+		// Each shader can have upto 9 params that are controlled by it's uniforms / UI
 		"p1": { value: 1.0, desc: "scale" }
 
 	},
 
-	// Optional helper functions used inside fragmentMain // TODO implement - to be defined with the shader importer
-
+	// Optional helper functions used inside fragmentMain 
 	fragmentFunctions: [
 
-		[ "vec3 red() {",
-			"	return vec3(1.0, 0.0, 0.0);",
-			"}"
-
-		].join("\n"),
-
+		// Example function
 		[
-
 			"vec4 red(float bright) {",
 			"	return vec4(bright, 0.0, 0.0, 1.0);",
 			"}"
@@ -58,7 +50,6 @@ ap.clips.TestFrame = {
 		* 
 		* float time;									// Uniform: Animation speed, movement should be tied to this other inputs
 		* float _random;								// Uniform: Random value (0-1)
-		* float u_mapSize;								// Uniform: The pixelmap size of all nodes
 		* sampler2D u_coordsMap;						// Uniform: The xyz coordinates of all nodes stored in a texture
 		* sampler2D u_prevCMap;							// Uniform: The previous rgb colors of all nodes stored in a texture
 		*
@@ -73,19 +64,6 @@ ap.clips.TestFrame = {
 		* 
 		**/
 
-		/**
-		* 
-		* ****** Still to come: (work in progress) // TODO
-		*
-		* sampler2D u_portsMap		
-		* Clip position data: scale and offset
-		* PortId data
-		* HardwareGroup Id's
-		* Pod's positiond data: x y z width height depth
-		*
-		* Loader harness to bootstrap these values to any GLSL fragment shader
-		* 
-		**/
 
 		"float rx = gl_FragCoord.x / resolution.x;",
 		"float ry = gl_FragCoord.y / resolution.y;",
@@ -103,11 +81,6 @@ ap.clips.TestFrame = {
 		"}",
 
 		"gl_FragColor = vec4( rx, ry, blue, 1.0 );"
-		//"gl_FragColor = vec4( 0., 0., blue, 1.0 );"
-
-
-		//"vec3 c = vec3(1., 0., 0.);",
-		//"gl_FragColor = vec4( 0.5, 0., 1., 1.0 );"
 
 		].join("\n"),
 
