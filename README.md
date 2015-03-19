@@ -64,12 +64,15 @@ ap.updateNodePoints();
 A Clip is simply a shader wrapped in a object with additional timing, scaling, and input controls. 
 Wrapping a shader in a clip allows us to play it back at any size and at any animation speed.
 
-A Pod is a unit to group and mix Clips to be blended and positioned as one. Pods can then be mixed into other Pods. Pods can also be represented many times over in many places. As example this could be used to take one shader and display it in two different places, perhaps with one instance mirrored or scaled. 
+A Pod is a way to group and mix clips to be blended and positioned as one. Pods can then be mixed into other pods. Pods can also be represented many times over in many places. An example of this could be to take one shader and display it in two different places, perhaps with the second instance mirrored or scaled. 
 
-A Channel is a group of Pods that can be blended as one.
+A Channel is a group of pods that can be blended as one.
 
 ```
-// Add a single clip using the "SolidColor" shader.
+<!-- Include source -->
+<script src="import/shaders/SolidColor.js"></script>
+
+// Create a single Clip using the "SolidColor" shader.
 var clip1 = new ap.Clip({id: "SolidColor"});
 
 // Create a single Pod to be placed in Channel 1. By default Pods are positioned to fit all Nodes.
@@ -85,7 +88,7 @@ ap.channels.setChannel(1, channel1);
 
 #### 4. Change uniforms (Optional UI Layer) ####
 
-You can easily alter Shaders while running, and assign params, mix and blend values to controllers. 
+You can easily alter shaders while running, and assign params, mix and blend values to controllers. 
 Here we are setting values on the Shader we just created in Channel 1, Pod 1, Clip 1.
 
 ```
