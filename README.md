@@ -5,7 +5,7 @@ A Visual Engine optimized for performance that runs and generates OpenGL pixel s
 Runs directly in the browser as a api service using WebGL and Three.js.
 The generated shaders can then run and be cached in any Opengl environment (such as C++ / Java / Webgl).
 
-The original goal in creating this API was to drive lighting and projection equipment. Because of this we made it possible to capture the color values of all 3D pixels easily at runtime. This technique lets us broadcast UDP & DMX values straight from the app, as well as offering other advantages as well as shown in the comparison table below.
+The original goal was to drive lighting and projection equipment, because of this we made it easy to capture the color values of all 3D pixels even at high framerates. This technique lets us broadcast UDP & DMX values straight from the app, as well as offering other advantages as well as shown in the comparison table below.
 
 The API can also be used just for web visualization projects, and is very easy to add to any existing Three.js application.
 

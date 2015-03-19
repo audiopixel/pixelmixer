@@ -312,6 +312,18 @@ ap.AppManager.prototype = {
 	},
 
 	createNodePointCloud: function(){
+
+		
+		function merge(obj1, obj2){
+			var obj3 = {};
+			for (var attrname in obj1) {
+				if(obj1[attrname]){ obj3[attrname] = obj1[attrname]; }
+			}
+			for (var attrname2 in obj2) {
+				if(obj2[attrname2]){ obj3[attrname2] = obj2[attrname2]; }
+			}
+			return obj3;
+		}
 		
 		var attributes = { // For each node we pass along it's index value and x, y in relation to the colorMaps
 			a_geoX:        { type: 'f', value: this.geoX },
