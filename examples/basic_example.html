@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Basic Example</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href="css/main.css" rel="stylesheet" />
+		
+
+		<!-- Import standard three.js stuff -->
+		<script src="libs/Detector.js"></script>
+		<script src="libs/dat.gui.min.js"></script>
+		<script src="libs/three.min.js"></script>
+		<script src="libs/TrackballControls.js"></script>
+		<script src="libs/utils.js"></script>
+
+
+		<!-- Import library -->
+		<!-- <script src="../dist/all.min.js"></script> -->
+		<script src="../src/audiopixel.js"></script>
+		<script src="../src/interface/api.js"></script>
+		<script src="../src/managers/AppManager.js"></script>
+		<script src="../src/managers/PortManager.js"></script>
+		<script src="../src/managers/HardwareManager.js"></script>
+		<script src="../src/managers/ChannelManager.js"></script>
+		<script src="../src/objects/Port.js"></script>
+		<script src="../src/objects/Channel.js"></script>
+		<script src="../src/objects/Pod.js"></script>
+		<script src="../src/objects/Clip.js"></script>
+		<script src="../src/objects/PodPosition.js"></script>
+		<script src="../src/shaders/MainShader.js"></script>
+		<script src="../src/shaders/PointCloudShader.js"></script>
+		<script src="../src/shaders/ShaderUtils.js"></script>
+		<script src="../src/shaders/SimpleTextureShader.js"></script>
+
+
+		<!-- Import Shaders Here -->
+		<script src="import/shaders/SolidColor.js"></script>
+
+
+		<script>
+
+			if ( !Detector.webgl ) { Detector.addGetWebGLMessage(); } else {
+
+				var glWidth = window.innerWidth;
+				var glHeight = window.innerHeight;
+
+				var scene;
+				var renderer;
+				var camera;
+				var controls;
+				var container;
+
+				function onLoad(){
+
+
+				// ** Standard Three.js setup
+
+					scene = new THREE.Scene();
+
+					renderer = new THREE.WebGLRenderer(); 
+					renderer.autoClear = false;
+
+					container = document.getElementById( 'container' );
+					container.appendChild( renderer.domElement ); 
+
+					camera = new THREE.PerspectiveCamera( 30, glWidth / glHeight, 1, 100000 );
+					camera.position.z = 2000;
+					controls = new THREE.TrackballControls( camera, renderer.domElement);
+
+
+
+				// ** Initialize API
+
+					ap.init(scene, renderer);
+					ap.setSize(glWidth, glHeight);
+
+
+
+				// ** Add a simple grid of Nodes 
+
+					var x = -470;		// Position coordinates for the entire grid
+					var y = 120;
+					var z = -0;
+					var width = 52;		// How many pixels for the entire grid
+					var height = 20;
+					var pitch = 33;		// How far each pixel is spaced
+
+					ap.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
+					ap.updateNodePoints();
+
+
+
+				// ** Add a shader 
+
+					// Add a single clip using the "SolidColor" shader.
+					var clip1 = new ap.Clip({id: "SolidColor"});
+
+					// Create a single Pod to be placed in Channel 1. By default Pods are positioned to fit all Nodes.
+					var pods = [];
+					pods[0] = new ap.Pod({ clips: [clip1] });
+
+					// A Channel contains a stack of Pods that can be mixed as one.
+					var channel1 = new ap.Channel({ mix: 1.0, pods: pods });
+					ap.channels.setChannel(1, channel1);
+
+
+
+				// ** Generate the Shader & set some param values on the Clip
+
+					ap.generateShader();
+
+					// Set param1 on the clip to turn the color blue (for example this could be any ui setting params)
+					ap.set("p1", .7, 1, 1, 1); // Channel 1, Pod 1 Clip 1
+
+					// Set mix on the clip to be .9
+					ap.set("mix", .9, 1, 1, 1); // Channel 1, Pod 1 Clip 1
+
+
+
+
+				// ** Start the main loop
+
+					animate();
+
+
+
+				}
+
+				function animate() {
+
+					// Main update loop
+					if(ap.ready){
+
+						// Update the API
+						ap.update();
+
+						// Update Three.js
+						controls.update();
+						renderer.render( scene, camera );
+					}
+
+					// Keep repeating the animation loop
+					requestAnimationFrame( animate );
+				}
+
+
+				function onWindowResize() {
+
+					// Resize logic
+					glWidth = window.innerWidth;
+					glHeight = window.innerHeight;
+
+					ap.setSize(glWidth, glHeight);
+
+					camera.aspect = glWidth / glHeight;
+					camera.updateProjectionMatrix();
+					controls.handleResize();
+
+				}
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+		</script>
+
+	</head>
+
+	<body ontouchstart="" onload="onLoad()">
+
+		<div id="container"></div>
+
+	</body>
+
+</html>
