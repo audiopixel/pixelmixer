@@ -31,13 +31,14 @@ The API can also be used just for web visualization projects, and is very easy t
 
 #### 1. Initialize API & Three.js ####
 
+[View this example](https://github.com/hepp/audiopixel3/blob/master/examples/basic_example.html)
 
 ```
-ap.init(scene, renderer);
-ap.setSize(glWidth, glHeight);
-
 scene = new THREE.Scene();
 renderer = new THREE.WebGLRenderer(); 
+
+ap.init(scene, renderer);
+ap.setSize(glWidth, glHeight);
 
 ```
 
@@ -61,12 +62,14 @@ ap.updateNodePoints();
 
 #### 3. Add Shaders ####
 
+[View example shader](https://github.com/hepp/audiopixel3/blob/master/examples/import/shaders/HexifyRadial.js)
+
 A Clip is simply a shader wrapped in a object with additional timing, scaling, and input controls. 
 Wrapping a shader in a clip allows us to play it back at any size and at any animation speed.
 
 A Pod is a way to group and mix clips to be blended and positioned as one. Pods can then be mixed into other pods. Pods can also be represented many times over in many places. An example of this could be to take one shader and display it in two different places, perhaps with the second instance mirrored or scaled. 
 
-A Channel is a group of pods that can be blended as one.
+Once a shader has been loaded into a clip, it can be positioned with a pod, and then mixed into the main mix inside a Channel.
 
 ```
 <!-- Include source -->
