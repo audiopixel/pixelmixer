@@ -1,97 +1,106 @@
-AudioPixel 3.0
-========
-
-#### A Tool for Sound and Color ####
-
-The aim of this project is to create an online version of the AudioPixel 2 software.
-
-The goal is for anyone to be able to load and view projects in the browser using a simplified interface, while also granting advanced users full editing capabilities,  the ability to write and save new visual content, and the functionality of broadcasting to lighting and other physical hardware.
 
 
-This is a private repo for now, with the intention of going public during release at http://www.github.com/audiopixel
+A Visual Engine optimized for performance that runs and generates OpenGL pixel shaders that can be mapped to surfaces in 3D space.
+
+Runs directly in the browser as a api service using WebGL and Three.js.
+The generated shaders can then run and be cached in any Opengl environment (such as C++/Java/Webgl).
+
+The original goal in creating this API was to drive lighting and projection equipment. Because of this we made it possible to capture the color values of all 3D pixels easily at runtime. This technique lets us broadcast UDP/DMX values straight from the app, as well as offering other advantages as well as shown in the comparison table below.
+
+The API can also be used just for pure web visualization projects, and is very easy to add to any existing Three.js application.
 
 
-## Possible Uses Include ##
+## Features ##
 
-* Mixer for loading pixel shaders into 3D space
-* Control light shows via laptop or mobile device
-* Animate particles / sprites in any OpenGL or Three.js project
-* Runs on dedicated server / gaming machine, triggered by MIDI or OSC API
-* Lighting conceptualize / architectural tool
-* Anyone with a browser can view saved projects 
-* View large-scale and interactive light art - Bay Bridge, Jen Lewin's Pools as possible examples
-
-
-
-## AudioPixel Workflow Philosophy ##
-
-A platform that functions like Ableton Live audio channels containing GLSL shaders / Processing scripts / video clips, structured in Photoshop blending layers.
-The AudioPixel platform was built by DJs & VJs, using the general mixing paradigm:
-Play content in one channel, while previewing future content to be mixed in with an adjacent channel. 
-A channel can contain its own effects, as well as the mixer having master post effect channel(s) that affect a whole project.
-
-
-
-### Planned Features ###
-    
-* 3D Editor - Import, load, edit, and construct node arrangements
-* GPU Accelerated graphics engine written in GLSL
-* Upload any GLSL fragment shader
-* Rendering views: 3D Point Cloud, 3D Directional Lights, 2D Quad Pixel Shaders
-* Easy system for handling audio (or any data) input for content manipulation
-* Broadcast lighting hardware protocols: UDP, OSC, and DMX
-* Realtime Shader Editor
-* Enhance your own shaders with helper methods/values not normally in GLSL
-* HTML5 video input
-* Preview channels in previz mode while still communicating main mix to hardware
-* MIDI controller support and MIDI mapping
-* Simulate physical sensor inputs using mouse / keyboard
-* Multiple position / index maps that are used to generate content 
-* Sync online content to offline native OS app
-* Timeline recorder with playback
-* Save user profile(s) and share projects / presets / shaders / clips
-* Open Source
+* Mix multiple pixel shaders together using various blend modes
+* Map each shader to any number of areas using 3D transformations (can be used to pixel-map lights and projection surfaces)
+* Import any number of coordinates to nodes in 3D space
+* Capture color values for all 3D nodes at high framerate (can be used for broadcasting data to lighting equipment)
+* Easily manipulate animations with incoming audio or data feeds
+* Enhance your shaders with helper methods / values not normally in GLSL
+* Multiple position / index maps can be used to generate content (spoof gl_FragCoords per shader)
+* Import any GLSL fragment shader (coming soon)
+* Preview channels in previz mode while still communicating main mix to hardware (coming soon)
+* Rendering views: 3D point cloud, 3D directional lights (coming soon), 2D quad pixel shaders (coming soon)
+* HTML5 video input (coming soon)
 
 
 ---
 
-## Basic Roadmap ##
+## Steps to using API ##
 
-### Phase I ###
+#### 1. Initialize API ####
 
-* GLSL Engine (*completed*)
-* Editor & realtime previz as one (*completed, needs UI layer*)
-* Clip harness / load any GLSL Shader (*completed*)
-* UI with fixed channel set (dat.gui) (*completed*)
-* GLSL fragment shader importer
 
-### Phase II ###
+```
+ap.init(scene, renderer);
+ap.setSize(glWidth, glHeight);
+```
 
-* Audio and Modulation inputs
-* Inline text editor for writing shaders / clips
-* Dynamic UI for any amount of channels / clips (React components)
-* Create and save multiple index / position maps
-* Sync from online content to offline mode
-* Video support (HTML5)
-* Broadcast UDP via Chrome App
+#### 2. Add Nodes ####
 
-### Phase III ###
+To import nodes there are several hardware methods included to draw simple grids of various sizes. Or easily import node positions via JSON.
 
-* Native OS App Layer (OpenGL with direct OS performance capabilites)
-* Broadcast OSC, DMX
-* Video support (direct file access)
-* Receive MIDI events and OSC API input
-* Save and share online projects / presets / shaders
-* Sync online content to offline native OS app
-* Timeline Recorder
-* Entire program logic driven by bare bones OSC API
+```
+//Add a simple grid of Nodes 
+var x = -470;		// Position coordinates for the entire grid
+var y = 120;
+var z = -0;
+var width = 52;		// How many pixels for the entire grid
+var height = 20;
+var pitch = 33;		// How far each pixel is spaced
+
+ap.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
+ap.updateNodePoints();
+
+```
+
+#### 3. Add Shaders ####
+
+A Clip is simply a shader wrapped in an object with timing and scaling controls. 
+Wrapping a shader in a clip allows us to play it back at any size and at any animation speed.
+
+A Pod is a unit to group and mix shaders to be blended and positioned as one. Pods can then be mixed into other Pods. Pods can also be represented many times over in many places. As example this could be used to take one shader and display it in two different places, perhaps with one instance mirrored or scaled. 
+
+A Channel is a group of Pods that can be blended as one.
+
+```
+// Add a single clip using the "SolidColor" shader.
+var clip1 = new ap.Clip({id: "SolidColor"});
+
+// Create a single Pod to be placed in Channel 1. By default Pods are positioned to fit all Nodes.
+var pods = [];
+pods[0] = new ap.Pod({ clips: [clip1] });
+
+// A Channel contains a stack of Pods that can be mixed as one.
+var channel1 = new ap.Channel({ mix: 1.0, pods: pods });
+ap.channels.setChannel(1, channel1);
+
+```
+
+
+#### 4. Change uniforms (Optional UI Layer) ####
+
+You can easily alter Shaders while running, and assign params, mix and blend values to controllers. 
+Here we are setting values on the Shader we just created in Channel 1, Pod 1, Clip 1.
+
+```
+// Set param 1 on the clip to .7
+ap.set("p1", .7, 1, 1, 1); // Channel 1, Pod 1, Clip 1
+
+// Set mix on the clip to be .9
+ap.set("mix", .9, 1, 1, 1); // Channel 1, Pod 1, Clip 1
+
+```
+
+
+
 
 ---
 
 
-
-## AP3 Shader vs Vanilla GLSL Shader ##
-The AudioPixel platform extends the standard GLSL fragment shader capabilities so that additional functionality can be achieved.
+## API Shader vs Vanilla GLSL Shader ##
+Extends the standard GLSL fragment shader capabilities so that additional functionality can be achieved.
 
 | Feature | AP3 | GLSL |
 |----------------- | -------------------- | --------------------- |
@@ -109,14 +118,41 @@ The AudioPixel platform extends the standard GLSL fragment shader capabilities s
 | Random values | x | |
 | Hardware port / light unit info | x | |
 
+---
+
+
+## Terminology ##
+
+
+
+**node**: A single light unit or RGB pixel. Usually represented as a particle on screen, but can be represented in many ways.
+
+**port**: A group of Nodes. May also contain protocol and address data.
+
+**channel**: Main source of color and values (like dmx) to be assigned to nodes. Channels hold pods, which may also hold clips.
+
+**pod**: A group of clips that are to be positioned together, combined, and blended as one.
+
+**position-unit**: Defined coordinates that a pod can choose to populate into. Pod's can render to any number of position units to allow advanced mapping.
+
+**clip**: A clip is a shader harnessed in a playable form. Clips can play shaders back at different speeds and different positions.
+
+**clipfx**: A type of clip that does not blend, instead it analyses incoming values and outputs a new one.
+
+**postfx**: A type of channel that takes the entire main mix and routes it through a set of clipfxs.
+
+**previz**: Render a to-be-displayed channel to preview on screen, while still outputting the main channel mix unaffected.
+
+**shader**: A opengl glsl fragment shader that runs directly on the gpu.
 
 ---
 
-## How to Contribute ##
+## Possible Uses Include ##
 
-If you have access to this repo we would be honored to have you as a contributor.
-Phase I is nearly completed, with the core engine now intact.
+* Mixer for displaying pixel shaders into 3D space
+* Control light shows via laptop or mobile device
+* Music and Data visualizers
+* Animate particles / sprites in any OpenGL or Three.js project
+* Runs on dedicated server / gaming machine, triggered by MIDI or OSC API
+* Lighting conceptualize / architectural tool
 
-The codebase is tagged with "TODO" comments, if you see anything that interested you, or that should be done differently, go for it. 
-
-Push to master branch for any small changes for now. Large changes or additions are most likely best as branches.
