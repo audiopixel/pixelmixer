@@ -53,7 +53,7 @@ ap.PORT_TYPE_LASER_1 = 8;
 
 // ap.Channel Type Constants
 ap.CHANNEL_TYPE_OFF = 0;
-ap.CHANNEL_TYPE_BLEND = 1;
+ap.CHANNEL_TYPE_ADD = 1;
 ap.CHANNEL_TYPE_FX = 2;
 ap.CHANNEL_TYPE_SCENE = 3;
 
@@ -98,6 +98,7 @@ ap.getVariableTypeFromShorthand = function(shorthand){
 
 ap.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
 ap.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
+ap.usePodUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
 
 ap.pointCloud = {};				// Main point cloud that displays node colors
 ap.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
@@ -144,6 +145,8 @@ ap.init = function(scene, renderer, maxNodeCount){
 	if(!ap.appSize){
 		ap.setSize(600, 400);
 	}
+
+
 };
 
 
@@ -213,13 +216,30 @@ ap.setSize = function(width, height) {
 	}
 };
 
+
+ap.updateNodePoints = function () {
+
+	ap.app.updateGeometry();
+	ap.app.generateCoordsMap();
+	ap.app.createNodePointCloud();
+
+};
+
 ap.get = function(uniform, channel, pod, clip) {
-	return ap.getUniform(uniform, channel, pod, clip).value;
+	if(!channel){
+		return ap.material.uniforms[uniform].value;
+	}else{
+		return ap.getUniform(uniform, channel, pod, clip).value;
+	}
 };
 
 ap.set = function(uniform, value, channel, pod, clip) {
-	ap.getUniform(uniform, channel, pod, clip).value = value;
-	ap.setObjProperty(uniform, value, channel, pod, clip);
+	if(!channel){
+		ap.material.uniforms[uniform].value = value;
+	}else{
+		ap.getUniform(uniform, channel, pod, clip).value = value;
+		ap.setObjProperty(uniform, value, channel, pod, clip);
+	}
 };
 
 ap.getUniform = function(uniform, channel, pod, clip) {
@@ -237,7 +257,6 @@ ap.getObj = function(channel, pod, clip) {
 };
 
 ap.setObj = function(newObj, channel, pod, clip) {
-	
 	if(!pod){
 		ap.channels.channels[channel-1] = newObj;
 	}else if(!clip){
@@ -333,7 +352,7 @@ ap.AppManager.prototype = {
 		
 		ap.pointGeometry = new THREE.Geometry();
 
-		this.updateNodePoints();
+		ap.updateNodePoints();
 		//this.updateMainSourceShader();
 
 		if(this.readPixels){
@@ -516,14 +535,6 @@ ap.AppManager.prototype = {
 		}
 	},
 
-	updateNodePoints: function () {
-
-		this.updateGeometry();
-		this.generateCoordsMap();
-		this.createNodePointCloud();
-
-	},
-
 	generateCoordsMap: function () {
 
 		// Generate coordsMap data texture for all the nodes x,y,z
@@ -629,9 +640,12 @@ ap.AppManager.prototype = {
 
 		this.sceneMain.add( ap.pointCloud );
 
-		console.log("AP Nodes: " + ap.pointGeometry.vertices.length);
+		if(ap.pointGeometry.vertices.length > 0){
 
-		ap.ready = true;
+			console.log("AP Nodes: " + ap.pointGeometry.vertices.length);
+			ap.ready = true;
+
+		}
 
 	},
 
@@ -646,10 +660,28 @@ ap.AppManager.prototype = {
 			u_mapSize: { type: "f", value: ap.simSize }
 		};
 
-
 		// Generate the source shader from the current loaded channels
 		var sourceShader = ap.channels.generateSourceShader();
 		var sourceUniforms = "";
+
+
+		if(ap.usePodUniforms){
+			uniforms.u_pos_id= { type: "i", value: 0 };
+			uniforms.u_pos_x = { type: "f", value: 0. };
+			uniforms.u_pos_y = { type: "f", value: 0. };
+			uniforms.u_pos_z = { type: "f", value: 0. };
+			uniforms.u_pos_w = { type: "f", value: 0. };
+			uniforms.u_pos_h = { type: "f", value: 0. };
+			uniforms.u_pos_d = { type: "f", value: 0. };
+
+			sourceUniforms += "uniform int u_pos_id;\n";
+			sourceUniforms += "uniform float u_pos_x;\n";
+			sourceUniforms += "uniform float u_pos_y;\n";
+			sourceUniforms += "uniform float u_pos_z;\n";
+			sourceUniforms += "uniform float u_pos_w;\n";
+			sourceUniforms += "uniform float u_pos_h;\n";
+			sourceUniforms += "uniform float u_pos_d;\n";
+		}
 
 		// Add the uniforms from the current loaded channels
 		for (var uniform in sourceShader.uniforms) {
@@ -796,7 +828,7 @@ ap.ChannelManager.prototype = {
 
 						for (var u = 0; u < pod.clips.length; u++) { var clip = pod.clips[u];
 
-							if(clip){ var shader = ap.clips[clip.clipId];
+							if(clip){ var shader = ap.clips[clip.id];
 
 								// If the clip defined update function call it with proper clip addressing
 								if(shader && shader.update && ap.app.material){
@@ -862,7 +894,7 @@ ap.ChannelManager.prototype = {
 
 						for (var o = 0; o < pod.positionIds.length; o++) {
 
-							output += "/////////////////////////////////------------------------------ \n";
+							output += "//-- \n";
 
 							var podPos = this.getPodPos(pod.positionIds[o]);
 
@@ -872,6 +904,9 @@ ap.ChannelManager.prototype = {
 
 								// Only update the res if we need to
 								var res = "vec2(" + podPos.w + ", " + podPos.h + ");";
+								if(ap.usePodUniforms){
+									res = "vec2(getPodSize(" + pod.positionIds[o] + ").x, getPodSize(" + pod.positionIds[o] + ").y);";
+								}
 								if(lastKnownRes !== res){
 									lastKnownRes = res;
 									output += "resolution = " + res + " \n";
@@ -891,11 +926,11 @@ ap.ChannelManager.prototype = {
 								var clip = pod.clips[u];
 								if(clip){
 
-									var shader = ap.clips[clip.clipId];
+									var shader = ap.clips[clip.id];
 
 
-									if(!fragList[pod.clips[u].clipId]){
-										fragList[pod.clips[u].clipId] = true;
+									if(!fragList[pod.clips[u].id]){
+										fragList[pod.clips[u].id] = true;
 
 										// Declare each clips constants, but we can't declare them more than once so record which ones we have declared already
 										for (var variable in shader.constants) {
@@ -931,7 +966,7 @@ ap.ChannelManager.prototype = {
 
 
 									clip.address = pod.address +"_" + (u+1);
-									if(clip.clipId.length > 0 && shader){
+									if(clip.id.length > 0 && shader){
 
 										// If the clip defined params transfer default values over to the obj
 										for (var param in shader.params) {
@@ -980,7 +1015,7 @@ ap.ChannelManager.prototype = {
 
 										// ------------ Clip Mix Blend & Fx --------------
 
-										var fx = ap.clips[clip.clipId].fx;
+										var fx = ap.clips[clip.id].fx;
 										if(u === 0){
 											
 											fragOutput += "ap_rgb = ap_rgb2; \n";
@@ -1110,25 +1145,38 @@ ap.ChannelManager.prototype = {
 		
 		// Pod Position function
 		var m = "";
+
+		if(ap.usePodUniforms){
+			m += "if(d == u_pos_id){\n";
+				m += "p = vec3(u_pos_x, u_pos_y, u_pos_z);\n";
+			m += "}";
+		}
 		for (var i = 0; i < this.podpositions.length; i++) {
 			m += "else if(d == " + (i+1) + "){\n";
 			m += "p = vec3("+this.podpositions[i].x+","+this.podpositions[i].y+","+this.podpositions[i].z+");\n";
 			m += "}\n";
 		}
-		m = m.slice(5, m.length); // cut the first 'else' out 
+		if(!ap.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodPos(int d) { \n" + m + "}\n";
 
-		// Pod Size function
 		var output = m;
 		m = "";
+
+		if(ap.usePodUniforms){
+			m += "if(d == u_pos_id){\n";
+				m += "p = vec3(u_pos_w, u_pos_h, u_pos_d);\n";
+			m += "}";
+		}
+
+		// Pod Size function
 		for (i = 0; i < this.podpositions.length; i++) {
 			m += "else if(d == " + (i+1) + "){\n";
 			m += "p = vec3("+this.podpositions[i].w+","+this.podpositions[i].h+","+this.podpositions[i].d+");\n";
 			m += "}\n";
 		}
-		m = m.slice(5, m.length); // cut the first 'else' out 
+		if(!ap.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodSize(int d) { \n" + m + "}\n";
@@ -1320,8 +1368,8 @@ ap.HardwareManager.prototype = {
 		//this.addSimpleNodeGrid(2, 0, 220, 0, 32, 20, 33);
 
 		// Simulate Importing nodes from external file
-		this.importNodes(ap.imported, 1, 350, 100, 500);
-		ap.channels.setPodPos(2, new ap.PodPosition(-190, 140, -100, 1070, 575, 1000));
+		//this.importNodes(ap.imported, 1, 350, 100, 500);
+		//ap.channels.setPodPos(2, new ap.PodPosition(-190, 140, -100, 1070, 575, 1000));
 		//ap.channels.setPodPos(2, new ap.PodPosition(-540, 140, -100, 700, 575, 1000));
 		//ap.channels.setPodPos(3, new ap.PodPosition(540, 140, -100, 700, 575, 1000));
 
@@ -1649,45 +1697,53 @@ ap.PortManager.prototype = {
 * Channels are a mixable collection of Pods.
 * Pods may also contain a set of Clips (shaders).
 *
+* @param name		String, Optional name.
+* @param type		Int, ap.CHANNEL_TYPE_ADD or ap.CHANNEL_TYPE_FX.
+* @param mix		Int, overall mix control for entire Channel.
+* @param blend 		Int, 1-17 Blend modes specified in constants.
+* @param pods 		Pods[], Array of Pod objects. Pods may also contain Clips.
+*
 */
 
-ap.Channel = function (name, type, mix, blend, pods) {
+ap.Channel = function (params) {
 
-	this.name = name;
-	this.type = type 		|| ap.CHANNEL_TYPE_BLEND;
-	this.mix = mix 			|| 0;
-	this.blend = blend 		|| ap.BLEND.Add;
-	this.pods = pods 		|| [];
-
-};
-
-ap.Channel.prototype = {
+	this.name = params.name;
+	this.type = params.type 		|| ap.CHANNEL_TYPE_ADD;
+	this.mix = params.mix 			|| 0;
+	this.blend = params.blend 		|| ap.BLEND.Add;
+	this.pods = params.pods 		|| [];
 
 };
-
 /*
 *
-* Clips are an internal harness for each shader.
+* Clips are a internal harness used for each shader.
+*
+* @param id 	String, name of the shader "SinSpiral".
+* @param mix 		Float, 0-1.
+* @param blend 		Int, 1-17 Blend modes specified in constants.
+* @param posMap 	Int, Position xyz map, default is normal.
+* @param speed 		Float, 1 is normal, 0 is no motion.
+* @param p1-p9 		Float, assignable uniforms per shader.
 *
 */
 
-ap.Clip = function (clipId, mix, blend, posMap, speed) {
+ap.Clip = function (params) {
 
-	this.clipId = clipId;
-	this.mix = mix 			|| 0;
-	this.blend = blend 		|| ap.BLEND.Add;
-	this.posMap = posMap 	|| ap.MAP_NORMAL;
-	this.speed = speed 		|| 1;
+	this.id = params.id;
+	this.mix = params.mix 			|| 1;
+	this.blend = params.blend 		|| ap.BLEND.Add;
+	this.posMap = params.posMap 	|| ap.MAP_NORMAL;
+	this.speed = params.speed 		|| 1;
 
-	this.p1 = 0;
-	this.p2 = 0;
-	this.p3 = 0;
-	this.p4 = 0;
-	this.p5 = 0;
-	this.p6 = 0;
-	this.p7 = 0;
-	this.p8 = 0;
-	this.p9 = 0;
+	this.p1 = params.p1 || 0;
+	this.p2 = params.p2 || 0;
+	this.p3 = params.p3 || 0;
+	this.p4 = params.p4 || 0;
+	this.p5 = params.p5 || 0;
+	this.p6 = params.p6 || 0;
+	this.p7 = params.p7 || 0;
+	this.p8 = params.p8 || 0;
+	this.p9 = params.p9 || 0;
 };
 
 ap.Clip.prototype = {
@@ -1712,22 +1768,25 @@ ap.Clip.prototype = {
 * They allow you to blend multiple Clips, and then blend the result into other Clips.
 * They can be associated with multiple position areas.
 *
+* @param positionIds 	Int[], a list of all position ids to draw this Pod's content into.
+* @param mix 			Float, 0-1.
+* @param blend 			Int, 1-17 Blend modes specified in constants.
+* @param clips 			Clip[], a list of Clips that render the content from shaders.
+*
 */
 
-ap.Pod = function (positionIds, mix, blend, clips, hardwareGroupMode, hardwareGroupIds) {
 
-	this.positionIds = positionIds || [];
-	this.mix = mix || 0;
-	this.blend = blend || ap.BLEND.Add;
-	this.clips = clips || [];
-	this.hardwareGroupMode = hardwareGroupMode || ap.HARDWAREGROUP_OFF;			// Off, Exclude, or Solo Mode
-	this.hardwareGroupIds = hardwareGroupIds || [];
+ap.Pod = function (params) {
+
+	this.positionIds = params.positionIds || [];
+	this.mix = params.mix || 1;
+	this.blend = params.blend || ap.BLEND.Add;
+	this.clips = params.clips || [];
+
+	// TODO - this data should be packed into portsMap, useful for creating specific groups of nodes outside of xyz or port data
+	// this.hardwareGroupMode = hardwareGroupMode || ap.HARDWAREGROUP_OFF;			// Off, Exclude, or Solo Mode
+	// this.hardwareGroupIds = hardwareGroupIds || [];
 };
-
-ap.Pod.prototype = {
-
-};
-
 /*
 *
 * Pod Positions define coordinates for Pods to associate with.
@@ -1752,11 +1811,6 @@ ap.PodPosition = function (x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs
 	this.zs = zs || 0.5;
 	this.flipmode = flipmode || 0;
 };
-
-ap.PodPosition.prototype = {
-
-};
-
 /*
 *
 * Ports are way to organize sets of Nodes.
@@ -1776,11 +1830,6 @@ ap.Port = function (name, type, address, hardwarePort, nodes) {
 	this.hardwarePort = hardwarePort || 1;
 
 };
-
-ap.Port.prototype = {
-
-};
-
 /**
  * Main Shader that all other shaders get injected into
  */
@@ -1792,7 +1841,6 @@ ap.MainShader = {
 
 		
 		"#INCLUDESHADERUTILS",
-
 
 
 		"precision mediump float;",
@@ -1843,7 +1891,7 @@ ap.MainShader = {
 
 		"void main() {",
 
-			"random = rand(vec2(gl_FragCoord[0], gl_FragCoord[1] * _random) * (_time * 0.0001));",
+			"random = rand(vec2(gl_FragCoord[0] * (gl_FragCoord[2] + 1.), gl_FragCoord[1] * _random) * (_time * 0.0001));",
 
 			// Black is default
 			"ap_rgb = vec3(0.0);",
@@ -1872,7 +1920,6 @@ ap.MainShader = {
 
 /**
  * Simple node shader for displaying on ap nodes
- * TODO - minimize
  */
 
 
@@ -2011,7 +2058,6 @@ ap.shaders.ShaderUtils = [
 ].join("\n");
 /**
  * Simple shader for displaying a texture
- * TODO - minimize
  */
  
 
