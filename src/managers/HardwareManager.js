@@ -15,12 +15,12 @@ ap.HardwareManager.prototype = {
 		// Testing various configurations:
 
 		//this.addTestPortsGrid3(1, 0, 0);
-		//this.addSimpleNodeGrid(1, 0, 0, 0, 30, 40, 33);
-		//this.addSimpleNodeGrid(2, 0, 220, 0, 32, 20, 33);
+		//this.addSimpleNodeGrid(0, 0, 0, 30, 40, 33);
+		//this.addSimpleNodeGrid(0, 220, 0, 32, 20, 33);
 
 		// Simulate Importing nodes from external file
-		this.importNodes(ap.imported, 1, 350, 100, 500);
-		ap.channels.setPodPos(2, new ap.PodPosition(-190, 140, -100, 1070, 575, 1000));
+		//this.importNodes(ap.imported, 1, 350, 100, 500);
+		//ap.channels.setPodPos(2, new ap.PodPosition(-190, 140, -100, 1070, 575, 1000));
 		//ap.channels.setPodPos(2, new ap.PodPosition(-540, 140, -100, 700, 575, 1000));
 		//ap.channels.setPodPos(3, new ap.PodPosition(540, 140, -100, 700, 575, 1000));
 
@@ -198,7 +198,13 @@ ap.HardwareManager.prototype = {
 	},
 
 
-	addSimpleNodeGrid: function (port, x, y, z, width, height, pitch) {
+	addSimpleNodeGrid: function (x, y, z, width, height, pitch, port) {
+
+		// If a port slot is not defined just add it to the next open one
+		if(!port){
+			port = ap.ports.ports.length + 1;
+		}
+		
 
 		var minx = 100000000000;
 		var maxx = 0;

@@ -91,6 +91,14 @@
 					ap.init(scene, renderer, maxNodeCount);
 					ap.setSize(glWidth, glHeight);
 
+					
+
+					// Specify defaults starting hardware
+					ap.hardware.importNodes(ap.imported, 1, 350, 100, 500);
+					ap.channels.setPodPos(2, new ap.PodPosition(-190, 140, -100, 1070, 575, 1000));
+					ap.updateNodePoints();
+
+
 
 					// Init UI, using dat.gui for now defined in "ui/datguiSetup1.js"
 					initUi();

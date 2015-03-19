@@ -65,7 +65,7 @@ ap.AppManager.prototype = {
 		
 		ap.pointGeometry = new THREE.Geometry();
 
-		this.updateNodePoints();
+		ap.updateNodePoints();
 		//this.updateMainSourceShader();
 
 		if(this.readPixels){
@@ -248,14 +248,6 @@ ap.AppManager.prototype = {
 		}
 	},
 
-	updateNodePoints: function () {
-
-		this.updateGeometry();
-		this.generateCoordsMap();
-		this.createNodePointCloud();
-
-	},
-
 	generateCoordsMap: function () {
 
 		// Generate coordsMap data texture for all the nodes x,y,z
@@ -361,9 +353,12 @@ ap.AppManager.prototype = {
 
 		this.sceneMain.add( ap.pointCloud );
 
-		console.log("AP Nodes: " + ap.pointGeometry.vertices.length);
+		if(ap.pointGeometry.vertices.length > 0){
 
-		ap.ready = true;
+			console.log("AP Nodes: " + ap.pointGeometry.vertices.length);
+			ap.ready = true;
+
+		}
 
 	},
 
@@ -468,7 +463,6 @@ ap.AppManager.prototype = {
 		//console.log(sourceShader);
 		//console.log(ap.material.uniforms);
 		//console.log(this.fragmentShader);
-
 
 		// Main quad that gets rendered as the source shader
 		var name = "SourceQuad";

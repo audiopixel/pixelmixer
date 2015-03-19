@@ -159,8 +159,7 @@ function initUi(){
 				ap.hardware.importNodes(ap.imported, 1, 0, 0, 0);
 			break;
 		}
-		ap.app.updateNodePoints(); // only need to call this when we add nodes aftervit
-		ap.app.updateMainSourceShader();
+		ap.updateNodePoints(); // only need to call this when we add nodes aftervit
 
 		updateShader = true;
 

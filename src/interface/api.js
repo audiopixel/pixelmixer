@@ -121,6 +121,22 @@ ap.setSize = function(width, height) {
 	}
 };
 
+
+ap.generateShader = function () {
+
+	ap.app.updateMainSourceShader();
+	
+};
+
+
+ap.updateNodePoints = function () {
+
+	ap.app.updateGeometry();
+	ap.app.generateCoordsMap();
+	ap.app.createNodePointCloud();
+
+};
+
 ap.get = function(uniform, channel, pod, clip) {
 	if(!channel){
 		return ap.material.uniforms[uniform].value;

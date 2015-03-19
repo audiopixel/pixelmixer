@@ -13,8 +13,7 @@
 
 
 ap.Pod = function (params) {
-
-	this.positionIds = params.positionIds || [];
+	this.positionIds = params.positionIds || [1];
 	this.mix = params.mix || 1;
 	this.blend = params.blend || ap.BLEND.Add;
 	this.clips = params.clips || [];
