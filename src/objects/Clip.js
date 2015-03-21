@@ -2,7 +2,7 @@
 *
 * Clips are a internal harness used for each shader.
 *
-* @param id 	String, name of the shader "SinSpiral".
+* @param id 		String, name of the shader "SinSpiral".
 * @param mix 		Float, 0-1.
 * @param blend 		Int, 1-17 Blend modes specified in constants.
 * @param posMap 	Int, Position xyz map, default is normal.

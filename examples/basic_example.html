@@ -53,7 +53,7 @@
 				function onLoad(){
 
 
-				// ** Standard Three.js setup
+					// ** Standard Three.js setup
 
 					scene = new THREE.Scene();
 
@@ -69,14 +69,14 @@
 
 
 
-				// ** Initialize API
+					// ** Initialize API
 
 					ap.init(scene, renderer);
 					ap.setSize(glWidth, glHeight);
 
 
 
-				// ** Add a simple grid of Nodes 
+					// ** Add a simple grid of Nodes 
 
 					var x = -470;		// Position coordinates for the entire grid
 					var y = 120;
@@ -90,7 +90,7 @@
 
 
 
-				// ** Add a shader 
+					// ** Add a shader 
 
 					// Add a single clip using the "SolidColor" shader.
 					var clip1 = new ap.Clip({id: "SolidColor"});
@@ -105,7 +105,7 @@
 
 
 
-				// ** Generate the Shader & set some param values on the Clip
+					// ** Generate the Shader & set some param values on the Clip
 
 					ap.generateShader();
 
@@ -117,11 +117,9 @@
 
 
 
-
-				// ** Start the main loop
+					// ** Start the main loop
 
 					animate();
-
 
 
 				}

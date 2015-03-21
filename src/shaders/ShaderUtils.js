@@ -1,7 +1,7 @@
 /**
- * ********** Shader Utils:
-
- * ** Helper Methods:
+ * Shader Utils:
+ *
+ * ** Helper Methods for each imported shader:
  *
  * vec3 rgb2hsv(vec3 c); 						// Convert RGB to HSV
  * vec3 hsv2rgb(vec3 c); 						// Convert HSV to RGB

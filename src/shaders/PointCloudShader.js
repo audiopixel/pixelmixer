@@ -1,5 +1,9 @@
 /**
+ *
  * Simple node shader for displaying on ap nodes
+ *
+ * Overide this class to represent nodes in different ways
+ *
  */
 
 

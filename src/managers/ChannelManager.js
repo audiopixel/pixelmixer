@@ -144,7 +144,9 @@ ap.ChannelManager.prototype = {
 												var type = ap.getVariableTypeFromShorthand(shader.constants[variable].type);
 												fragFuncOutput += type + " " + variable + " = " + shader.constants[variable].value + ";";
 											}
-										}fragFuncOutput += "\n";
+
+										}
+										fragFuncOutput += "\n";
 
 										if(shader.fragmentFunctions){
 											for (var v = 0; v < shader.fragmentFunctions.length; v++) {
@@ -304,7 +306,9 @@ ap.ChannelManager.prototype = {
 			//  -------------- Channel Mix & Fx --------------
 
 			if(i === 0){
+
 				output += "ap_c = ap_p = ap_p * (_channel_mix); \n";
+
 			}else{
 
 				if(fxChannel){
@@ -313,7 +317,9 @@ ap.ChannelManager.prototype = {
 					output += "ap_p = ap_p * (_channel_mix); \n";
 					output += "ap_c = blend(ap_c, ap_p, 1.); \n"; // Channels always blend using 'add'
 				}
+
 			}
+
 			output += "}";
 
 			output = output.replace(/_channel_/g, channel.address + "_") + "\n";
@@ -334,14 +340,11 @@ ap.ChannelManager.prototype = {
 			output = "ap_alt2 = texture2D( u_altMap2, v_vUv);" + output;
 		}
 
-
 		//console.log(uniforms);
 		//console.log(fragFuncOutput);
 		//console.log(output);
 
 		
-
-
 		return {uniforms: uniforms, fragmentFunctions: fragFuncOutput, fragmentMain: output + "\n"};
 	},
 
@@ -355,11 +358,13 @@ ap.ChannelManager.prototype = {
 				m += "p = vec3(u_pos_x, u_pos_y, u_pos_z);\n";
 			m += "}";
 		}
+
 		for (var i = 0; i < this.podpositions.length; i++) {
 			m += "else if(d == " + (i+1) + "){\n";
 			m += "p = vec3("+this.podpositions[i].x+","+this.podpositions[i].y+","+this.podpositions[i].z+");\n";
 			m += "}\n";
 		}
+
 		if(!ap.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
@@ -380,6 +385,7 @@ ap.ChannelManager.prototype = {
 			m += "p = vec3("+this.podpositions[i].w+","+this.podpositions[i].h+","+this.podpositions[i].d+");\n";
 			m += "}\n";
 		}
+
 		if(!ap.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
@@ -396,6 +402,7 @@ ap.ChannelManager.prototype = {
 				m += "p = vec3("+this.podpositions[i].xt+","+this.podpositions[i].yt+","+this.podpositions[i].zt+");\n";
 				m += "}\n";
 			}
+
 			m = m.slice(5, m.length); // cut the first 'else' out 
 			m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 			m += "return p; \n";
@@ -410,6 +417,7 @@ ap.ChannelManager.prototype = {
 				m += "p = vec4("+this.podpositions[i].xs+","+this.podpositions[i].ys+","+this.podpositions[i].zs+","+this.podpositions[i].flipmode+");\n";
 				m += "}\n";
 			}
+			
 			m = m.slice(5, m.length); // cut the first 'else' out 
 			m = "vec4 p = vec4(0.,0.,0.,0.); \n" + m;
 			m += "return p; \n";

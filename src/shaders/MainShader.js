@@ -1,15 +1,15 @@
 /**
+ *
  * Main Shader that all other shaders get injected into
+ *
  */
 
 
 ap.MainShader = {
 
 	fragmentShader: [
-
 		
 		"#INCLUDESHADERUTILS",
-
 
 		"precision mediump float;",
 		"float ap_index;",

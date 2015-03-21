@@ -2,10 +2,10 @@
 *
 * Handles the state of all Ports in the Universe.
 *
-* Ports are way to organize sets of Nodes.
-* All Nodes must be associated with a Port.
+* 	Ports are a way to organize sets of Nodes.
+* 	All Nodes must be associated with a Port.
 *
-* Ports may also define network and addressing data.
+* 	Ports may also define network and addressing data.
 *
 */
 

@@ -1,8 +1,6 @@
 /*
 *
-* Handles GL state and rendering responsibilities.
-* 
-* Webgl implementation uses Three.js at the moment to support a larger audience
+* Handles WebGL state and rendering responsibilities.
 *
 */
 
@@ -131,8 +129,10 @@ ap.AppManager.prototype = {
 	},
 
 	setSize: function(width, height){
+
 		this.glWidth = width;
 		this.glHeight = height;
+
 	},
 
 
@@ -422,6 +422,7 @@ ap.AppManager.prototype = {
 			sourceUniforms += "uniform sampler2D u_altMap1; vec4 ap_alt1; \n";
 			uniforms.u_altMap1 = { type: "t", value: this.altMap1 };
 		}
+
 		if(this.altMap2){
 			sourceUniforms += "uniform sampler2D u_altMap2; vec4 ap_alt2; \n";
 			uniforms.u_altMap2 = { type: "t", value: this.altMap2 };
@@ -441,6 +442,7 @@ ap.AppManager.prototype = {
 			}
 		}
 
+
 		// Internal core shader is merged with the loaded shaders
 		this.fragmentShader = ap.MainShader.fragmentShader;
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERS", sourceShader.fragmentMain);
@@ -459,6 +461,7 @@ ap.AppManager.prototype = {
 			vertexShader: ap.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: this.fragmentShader
 		} );
+
 
 		// Update uniforms directly
 		ap.material.uniforms.u_coordsMap.value = this.coordsMap;
@@ -515,6 +518,7 @@ ap.AppManager.prototype = {
 		frag = frag.replace(/getPodScale/g, "_95");
 		frag = frag.replace(/getPodOffset/g, "_96");
 		return frag;
+		
 	}
 
 };

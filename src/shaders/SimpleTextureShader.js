@@ -1,5 +1,9 @@
 /**
+ *
  * Simple shader for displaying a texture
+ *
+ * Currently only used for testing source textures to display planes
+ *
  */
  
 
