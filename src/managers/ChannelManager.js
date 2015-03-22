@@ -340,6 +340,13 @@ ap.ChannelManager.prototype = {
 			output = "ap_alt2 = texture2D( u_altMap2, v_vUv);" + output;
 		}
 
+		// Array of items we can set audio spectrum/waveform data to, or any data to
+		if(ap.dataSetLength && ap.dataSetLength > 0){
+			fragFuncOutput = "uniform float data[ " + ap.dataSetLength + " ]; \n" + fragFuncOutput;
+		}
+
+
+
 		//console.log(uniforms);
 		//console.log(fragFuncOutput);
 		//console.log(output);

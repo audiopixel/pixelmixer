@@ -1,5 +1,4 @@
 
-// ** Public **
 
 ap.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
 ap.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
@@ -10,9 +9,6 @@ ap.pointGeometry = {};			// The geometry of the point cloud that displays the no
 ap.pointMaterial = {};			// Shader of the point cloud that displays the node colors
 								
 
-
-
-// ** Internal **
 
 ap.material = false;			// Main shader referenced here, set false initially to flag that its not ready
 
@@ -53,6 +49,11 @@ ap.init = function(scene, renderer, maxNodeCount){
 
 
 };
+
+
+// Set this to store a [uniform float array] with specified length
+// Can be referenced later in shaders, and ap.set/get as 'data'
+ap.dataSetLength = null;
 
 
 ap.updateShader = false;
@@ -96,9 +97,7 @@ ap.pointPosition = [-400, -400, 0]; // Defaults
 ap.setPointPosition = function(x, y, z) {
 	ap.pointPosition = [x, y, z];
 	if(ap.pointCloud.position){
-		ap.pointCloud.position.x = x;
-		ap.pointCloud.position.y = y;
-		ap.pointCloud.position.z = z;
+		ap.pointCloud.position = {x: x, y: y, z: z};
 	}
 };
 
