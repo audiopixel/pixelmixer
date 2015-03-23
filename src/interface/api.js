@@ -128,8 +128,10 @@ ap.importShader = function (name, shaderTxt) {
 	var grabTxt = "";
 	var defintions = "";
 	var f = 0;
+	var c = 0;
 
 	var shader = {};
+	shader.constants = [];
 	shader.fragmentFunctions = [];
 
 	// Split shader by line breaks
@@ -160,9 +162,11 @@ ap.importShader = function (name, shaderTxt) {
 					grab = false;
 
 					if(grabTxt.localeCompare("void main(") > -1){
+
 						// Main function: add it to the sorce method
 						shader.fragmentMain = grabTxt;
 					}else{
+						
 						// Normal function: add it to the list
 						shader.fragmentFunctions[f] = grabTxt;
 						f++;
@@ -174,16 +178,13 @@ ap.importShader = function (name, shaderTxt) {
 			// If the constant is not blacklisted add it
 			}else if(!blackList(l)){
 
-				defintions += l + "\n";
+				shader.constants[c] = l;
+				c++;
 			}
 
 		}
 
 	};
-
-	// TODO only show inside of shader.fragmentMain {brackets} 
-	//console.log(shader);
-	
 
 	function blackList(msg){
 		if(msg.localeCompare("#ifdef GL_ES") > -1){return true;}
@@ -193,8 +194,12 @@ ap.importShader = function (name, shaderTxt) {
 		if(msg.localeCompare("precision highp float") > -1){return true;}
 		return false;
 	}
-			//console.log(defintions);
-			//console.log(grabTxt);
+
+	// TODO only show inside of shader.fragmentMain {brackets} 
+
+	//console.log(defintions);
+	console.log(shader);
+	//console.log(grabTxt);
 
 };
 
