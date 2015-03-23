@@ -19,7 +19,7 @@ The API can also be used just for web visualization projects, and is very easy t
 * Easily manipulate animations with incoming audio or data feeds
 * Enhance your shaders with helper methods / values not normally in GLSL
 * Multiple position / index maps can be used to generate content (spoof gl_FragCoords per shader)
-* Import any GLSL fragment shader (coming soon)
+* Import any GLSL fragment shader
 * Preview channels in previz mode while still communicating main mix to hardware (coming soon)
 * Rendering views: 3D point cloud, 3D directional lights (coming soon), 2D quad pixel shaders (coming soon)
 * HTML5 video input (coming soon)
