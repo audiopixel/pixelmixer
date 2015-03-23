@@ -163,10 +163,11 @@ ap.importShader = function (name, shaderTxt) {
 
 					if(grabTxt.localeCompare("void main(") > -1){
 
-						// Main function: add it to the sorce method
-						shader.fragmentMain = grabTxt;
+						// Main function: Grab text between main brackets and add it to the sorce method
+						shader.fragmentMain = grabTxt.slice(grabTxt.indexOf("{") + 1, grabTxt.lastIndexOf("}")); 
+
 					}else{
-						
+
 						// Normal function: add it to the list
 						shader.fragmentFunctions[f] = grabTxt;
 						f++;
@@ -195,7 +196,6 @@ ap.importShader = function (name, shaderTxt) {
 		return false;
 	}
 
-	// TODO only show inside of shader.fragmentMain {brackets} 
 
 	//console.log(defintions);
 	console.log(shader);
