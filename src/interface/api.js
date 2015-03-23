@@ -191,6 +191,7 @@ ap.importShader = function (name, shaderTxt) {
 		if(msg.localeCompare("#ifdef GL_ES") > -1){return true;}
 		if(msg.localeCompare("#endif") > -1){return true;}
 		if(msg.localeCompare("uniform float time") > -1){return true;}
+		if(msg.localeCompare("uniform float random") > -1){return true;}
 		if(msg.localeCompare("uniform vec2 resolution") > -1){return true;}
 		if(msg.localeCompare("precision highp float") > -1){return true;}
 		return false;
@@ -198,8 +199,10 @@ ap.importShader = function (name, shaderTxt) {
 
 
 	//console.log(defintions);
-	console.log(shader);
+	//console.log(shader);
 	//console.log(grabTxt);
+
+	return shader;
 
 };
 
