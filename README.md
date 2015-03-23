@@ -47,14 +47,8 @@ ap.setSize(glWidth, glHeight);
 To import nodes there are several hardware methods included to draw simple grids of various sizes. It's also easy to import new node positions via JSON.
 
 ```
-//Add a simple grid of Nodes 
-var x = -470;		// Position coordinates for the entire grid
-var y = 120;
-var z = -0;
-var width = 52;		// How many pixels for the entire grid
-var height = 20;
-var pitch = 33;		// How far each pixel is spaced
 
+// Add a simple grid of Nodes 
 ap.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
 ap.updateNodePoints();
 
@@ -64,27 +58,12 @@ ap.updateNodePoints();
 
 [View example shader](https://github.com/hepp/audiopixel3/blob/master/examples/import/shaders/TestFrame.js)
 
-A Clip is simply a shader wrapped in a object with additional timing, scaling, and input controls. 
-Wrapping a shader in a clip allows us to play it back at any size and at any animation speed.
-
-A Pod is a way to group and mix clips to be blended and positioned as one. Pods can then be mixed into other pods. Pods can also be represented many times over in many places. An example of this could be to take one shader and display it in two different places, perhaps with the second instance mirrored or scaled. 
-
-Once a shader has been loaded into a clip, it can be positioned with a pod, and then mixed into the main mix inside a Channel.
-
 ```
 <!-- Include source -->
 <script src="import/shaders/SolidColor.js"></script>
 
-// Create a single Clip using the "SolidColor" shader.
-var clip1 = new ap.Clip({id: "SolidColor"});
-
-// Create a single Pod to be placed in Channel 1. By default Pods are positioned to fit all Nodes.
-var pods = [];
-pods[0] = new ap.Pod({ clips: [clip1] });
-
-// A Channel contains a stack of Pods that can be mixed as one.
-var channel1 = new ap.Channel({ mix: 1.0, pods: pods });
-ap.channels.setChannel(1, channel1);
+// Add the Shader to Channel 1 (default fit to all nodes)
+ap.simpleSetup({channel: 1, ids: ["SolidColor"]});
 
 ```
 
