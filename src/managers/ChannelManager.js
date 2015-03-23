@@ -198,13 +198,11 @@ ap.ChannelManager.prototype = {
 										uniforms[clip.address + "_time"] = { type: "f", value: ap.app.time }; 
 
 
-										if(shader.params){
-											// Pass along input param values if they are defined on clip
-											var params = ["0.","0.","0.","0.","0.","0.","0.","0.","0."];
-											for (var j = 0; j < params.length; j++) {
-												if(shader.params["p"+(j+1)]){
-													params[j] = (clip.address+"_p"+(j+1));
-												}
+										// Pass along input param values if they are defined on clip
+										var params = ["0.","0.","0.","0.","0.","0.","0.","0.","0."];
+										for (var j = 0; j < params.length; j++) {
+											if(shader.params && shader.params["p"+(j+1)]){
+												params[j] = (clip.address+"_p"+(j+1));
 											}
 										}
 
