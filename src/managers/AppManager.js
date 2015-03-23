@@ -252,6 +252,21 @@ ap.AppManager.prototype = {
 
 		};
 
+		// If shader id's have already been registered make sure this imported one has a correct id
+		if(ap.shaderCount > 0){
+			if(ap.clips[name]){
+
+				// Replacement
+				shader.id = ap.clips[name].id;
+			}else{
+				
+				// New
+				ap.shaderCount++;
+				shader.id = ap.shaderCount;
+			}
+
+		}
+
 		function blackList(msg){
 			if(msg.localeCompare("#ifdef GL_ES") > -1){return true;}
 			if(msg.localeCompare("#endif") > -1){return true;}
@@ -262,13 +277,6 @@ ap.AppManager.prototype = {
 			return false;
 		}
 
-		// If id's have already been registered increment and add manually
-		if(ap.shaderCount > 0){
-			ap.shaderCount++;
-			shader.id = ap.shaderCount;
-		}
-
-
 		//console.log(defintions);
 		//console.log(shader);
 		//console.log(grabTxt);
@@ -276,7 +284,7 @@ ap.AppManager.prototype = {
 		ap.clips[name] = shader;
 
 	},
-	
+
 			
 	updateTimePerClip: function () {
 
