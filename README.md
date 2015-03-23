@@ -112,6 +112,13 @@ Extends the standard GLSL fragment shader capabilities so that additional functi
 
 ## Terminology ##
 
+A Clip is simply a shader wrapped in a object with additional timing, scaling, and input controls. 
+Wrapping a shader in a clip allows us to play it back at any size and at any animation speed.
+
+A Pod is a way to group and mix clips to be blended and positioned as one. Pods can then be mixed into other pods. Pods can also be represented many times over in many places. An example of this could be to take one shader and display it in two different places, perhaps with the second instance mirrored or scaled. 
+
+Once a shader has been loaded into a clip, it can be positioned with a pod, and then mixed into the main mix inside a Channel.
+
 
 
 **node**: A single light unit or RGB pixel. Usually represented as a particle on screen, but can be represented in many ways.
