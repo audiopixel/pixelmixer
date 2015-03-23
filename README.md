@@ -2,19 +2,19 @@
 
 A Visual Engine optimized for performance that runs and generates OpenGL pixel shaders that can be mapped to surfaces in 3D space.
 
-Runs directly in the browser as a api service using WebGL and Three.js.
-The generated shaders can then run and be cached in any Opengl environment (such as C++ / Java / Webgl).
+API service that runs directly in the browser using WebGL and Three.js.
+The generated shaders that the API outputs can also be run (and cached) in any OpenGL environment (such as C++ / Java / Webgl).
 
-The original goal in creating this api was to drive lighting and projection equipment. Because of this we made it possible to capture the color values of all 3D pixels easily at runtime, even during fast framerates. This technique lets us broadcast UDP & DMX values straight from the app, as well as offering other advantages as well as shown in the comparison table below.
+The original goal in creating this API was to drive lighting and projection equipment. Because of this we made it possible to capture the color values of all 3D pixels easily at runtime, even during fast framerates. This technique lets us broadcast UDP & DMX values straight from the app, as well as offering other advantages to standard GLSL as well as shown in the comparison table below.
 
-The API can also be used just for web visualization projects, and is very easy to add to any existing Three.js application.
+The API can also be used for straight web visualization projects, and is very easy to add to any existing Three.js application.
 
 
 ## Features ##
 
+* Animate pixel shaders seamlessly across textures and point cloud particles 
 * Mix multiple pixel shaders together using various blend modes
 * Map each shader to any number of areas using 3D transformations (can be used to pixel-map lights and projection surfaces)
-* Import any number of coordinates to nodes in 3D space
 * Capture color values for all 3D nodes at high framerate (can be used for broadcasting data to lighting equipment)
 * Easily manipulate animations with incoming audio or data feeds
 * Enhance your shaders with helper methods / values not normally in GLSL
@@ -41,19 +41,16 @@ ap.init(scene, renderer);
 ap.setSize(glWidth, glHeight);
 
 ```
-
 #### 2. Add Nodes ####
 
 To import nodes there are several hardware methods included to draw simple grids of various sizes. It's also easy to import new node positions via JSON.
 
 ```
-
 // Add a simple grid of Nodes 
 ap.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
 ap.updateNodePoints();
 
 ```
-
 #### 3. Add Shaders ####
 
 [View example shader](https://github.com/hepp/audiopixel3/blob/master/examples/import/shaders/TestFrame.js)
@@ -66,7 +63,6 @@ ap.updateNodePoints();
 ap.simpleSetup({channel: 1, ids: ["SolidColor"]});
 
 ```
-
 
 #### 4. Change uniforms (Optional UI Layer) ####
 
