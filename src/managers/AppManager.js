@@ -184,6 +184,99 @@ ap.AppManager.prototype = {
 	},
 
 	/////////////////
+
+
+	importShader: function (name, shaderTxt) {
+
+		var brackStatus = 0;
+		var grab = false;
+		var grabTxt = "";
+		var defintions = "";
+		var f = 0;
+		var c = 0;
+
+		var shader = {};
+		shader.constants = [];
+		shader.fragmentFunctions = [];
+
+		// Split shader by line breaks
+		var results = shaderTxt.split("\n");
+		for (var i = 0; i < results.length; i++) {
+
+			var l = results[i].trim();
+			l = l.replace(/ +(?= )/g,''); // remove multiple spaces
+
+			if(l.length > 0){
+
+				// Detect how many open and closed brackets
+				var brackOpen  = l.replace(/[^{]/g, "").length;
+				var brackClose = l.replace(/[^}]/g, "").length;
+				brackStatus += brackOpen;
+				brackStatus -= brackClose;
+
+				// If we have a open bracket
+				if(brackStatus > 0){
+					grab = true;
+				}
+
+				if(grab){
+					grabTxt += l + "\n";
+
+					// If we have a closed bracket while we are open, close
+					if(brackStatus === 0){
+						grab = false;
+
+						if(grabTxt.localeCompare("void main(") > -1){
+
+							// Main function: Grab text between main brackets and add it to the sorce method
+							shader.fragmentMain = grabTxt.slice(grabTxt.indexOf("{") + 1, grabTxt.lastIndexOf("}")); 
+
+						}else{
+
+							// Normal function: add it to the list
+							shader.fragmentFunctions[f] = grabTxt;
+							f++;
+						}
+
+						grabTxt = "";
+					}
+
+				// If the constant is not blacklisted add it
+				}else if(!blackList(l)){
+
+					shader.constants[c] = l;
+					c++;
+				}
+
+			}
+
+		};
+
+		function blackList(msg){
+			if(msg.localeCompare("#ifdef GL_ES") > -1){return true;}
+			if(msg.localeCompare("#endif") > -1){return true;}
+			if(msg.localeCompare("uniform float time") > -1){return true;}
+			if(msg.localeCompare("uniform float random") > -1){return true;}
+			if(msg.localeCompare("uniform vec2 resolution") > -1){return true;}
+			if(msg.localeCompare("precision highp float") > -1){return true;}
+			return false;
+		}
+
+		// If id's have already been registered increment and add manually
+		if(ap.shaderCount > 0){
+			ap.shaderCount++;
+			shader.id = ap.shaderCount;
+		}
+
+
+		//console.log(defintions);
+		//console.log(shader);
+		//console.log(grabTxt);
+
+		ap.clips[name] = shader;
+
+	},
+	
 			
 	updateTimePerClip: function () {
 
