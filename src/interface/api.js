@@ -7,7 +7,7 @@ ap.usePodUniforms = false;		// Allow u_pos_id uniforms to update a pod position 
 ap.pointCloud = {};				// Main point cloud that displays node colors
 ap.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
 ap.pointMaterial = {};			// Shader of the point cloud that displays the node colors
-								
+ap.pointSize = 20;				// The size of each point cloud sprite
 
 
 ap.material = false;			// Main shader referenced here, set false initially to flag that its not ready
@@ -115,6 +115,11 @@ ap.setSize = function(width, height) {
 		}
 
 		ap.app.renderer.setSize( ap.app.glWidth, ap.app.glHeight );
+
+		// Set point size relative to screen resolution
+		var v = ap.pointSize;
+		v *= ((width * height) * .00001);
+		ap.pointMaterial.uniforms.u_pointSize.value = v;
 
 	}
 };
