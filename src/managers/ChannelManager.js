@@ -87,215 +87,221 @@ ap.ChannelManager.prototype = {
 
 				for (var e = 0; e < channel.pods.length; e++) {
 					var pod = channel.pods[e];
-					pod.address = channel.address + "_" + (e+1);
 
-					// uniforms 'mix' & 'blend' for the pod
-					uniforms[pod.address + "_mix"] = { type: "f", value: pod.mix };
-					uniforms[pod.address + "_blend"] = { type: "f", value: pod.blend };
+					if(pod){
+						pod.address = channel.address + "_" + (e+1);
 
-					var fxPod = false;
-					if(pod.clips && pod.clips.length){
+						// uniforms 'mix' & 'blend' for the pod
+						uniforms[pod.address + "_mix"] = { type: "f", value: pod.mix };
+						uniforms[pod.address + "_blend"] = { type: "f", value: pod.blend };
 
-						for (var o = 0; o < pod.positionIds.length; o++) {
+						var fxPod = false;
+						if(pod.clips && pod.clips.length){
 
-							output += "//-- \n";
+							for (var o = 0; o < pod.positionIds.length; o++) {
 
-							var podPos = this.getPodPos(pod.positionIds[o]);
+								output += "//-- \n";
 
-							// Set the resolution (if it's changed) for the next set of nodes to be the current pods position bounding box
-							if(lastKnownPos !== podPos){
-								lastKnownPos = podPos;
+								var podPos = this.getPodPos(pod.positionIds[o]);
 
-								// Only update the res if we need to
-								var res = "vec2(" + podPos.w + ", " + podPos.h + ");";
-								if(ap.usePodUniforms){
-									res = "vec2(getPodSize(" + pod.positionIds[o] + ").x, getPodSize(" + pod.positionIds[o] + ").y);";
+								// Set the resolution (if it's changed) for the next set of nodes to be the current pods position bounding box
+								if(lastKnownPos !== podPos){
+									lastKnownPos = podPos;
+
+									// Only update the res if we need to
+									var res = "vec2(" + podPos.w + ", " + podPos.h + ");";
+									if(ap.usePodUniforms){
+										res = "vec2(getPodSize(" + pod.positionIds[o] + ").x, getPodSize(" + pod.positionIds[o] + ").y);";
+									}
+									if(lastKnownRes !== res){
+										lastKnownRes = res;
+										output += "resolution = " + res + " \n";
+									}
+
+									// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
+									output += "ap_xyz = offsetPos(ap_xyz2, " + pod.positionIds[o] + ", ap_xyz.w);\n";
 								}
-								if(lastKnownRes !== res){
-									lastKnownRes = res;
-									output += "resolution = " + res + " \n";
-								}
 
-								// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
-								output += "ap_xyz = offsetPos(ap_xyz2, " + pod.positionIds[o] + ", ap_xyz.w);\n";
-							}
-
-							// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
-							output += "if(_pod_mix > 0. && checkBounds(ap_xyz2, "+pod.positionIds[o]+") > 0.){ \n";
+								// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
+								output += "if(_pod_mix > 0. && checkBounds(ap_xyz2, "+pod.positionIds[o]+") > 0.){ \n";
 
 
-							fxPod = true; // If the only clips that are in this pod are fx's then treat pod as a fx output and don't blend
-							for (u = 0; u < pod.clips.length; u++) {
+								fxPod = true; // If the only clips that are in this pod are fx's then treat pod as a fx output and don't blend
+								for (u = 0; u < pod.clips.length; u++) {
 
-								var clip = pod.clips[u];
-								if(clip){
+									var clip = pod.clips[u];
+									if(clip){
 
-									var shader = ap.clips[clip.id];
+										var shader = ap.clips[clip.id];
+										if(shader){
 
+											if(!fragList[pod.clips[u].id]){
+												fragList[pod.clips[u].id] = true;
 
-									if(!fragList[pod.clips[u].id]){
-										fragList[pod.clips[u].id] = true;
+												// Declare each clips constants, but we can't declare them more than once so record which ones we have declared already
+												for (var variable in shader.constants) {
 
-										// Declare each clips constants, but we can't declare them more than once so record which ones we have declared already
-										for (var variable in shader.constants) {
+													if(!constants[variable]){ // If we don't already have the constant mark it as in use and include it.
+														constants[variable] = 1; 
+														fragFuncOutput += shader.constants[variable] + "\n";
+													}
 
-											if(!constants[variable]){ // If we don't already have the constant mark it as in use and include it.
-												constants[variable] = 1; 
-												fragFuncOutput += shader.constants[variable] + "\n";
-											}
-
-										}
-										fragFuncOutput += "\n";
-
-										if(shader.fragmentFunctions){
-											for (var v = 0; v < shader.fragmentFunctions.length; v++) {
-
-												// Duplicate method checking - right now just checking based off the first 5 words of function
-												var name = shader.fragmentFunctions[v].trim();
-												name = nthWord(name, 1) + nthWord(name, 2) + nthWord(name, 3) + nthWord(name, 4) + nthWord(name, 5);
-												if(!fragFuncList[name]){
-													fragFuncList[name] = true;
-
-													// Add the helper function to be included at the top of the shader
-													fragFuncOutput += shader.fragmentFunctions[v] + "\n";
 												}
+												fragFuncOutput += "\n";
+
+												if(shader.fragmentFunctions){
+													for (var v = 0; v < shader.fragmentFunctions.length; v++) {
+
+														// Duplicate method checking - right now just checking based off the first 5 words of function
+														var name = shader.fragmentFunctions[v].trim();
+														name = nthWord(name, 1) + nthWord(name, 2) + nthWord(name, 3) + nthWord(name, 4) + nthWord(name, 5);
+														if(!fragFuncList[name]){
+															fragFuncList[name] = true;
+
+															// Add the helper function to be included at the top of the shader
+															fragFuncOutput += shader.fragmentFunctions[v] + "\n";
+														}
+													}
+												}
+												fragFuncHelpers += "else if(id == " + shader.id + "){\n";
+												fragFuncHelpers += shader.fragmentMain.replace("gl_FragColor", "returnColor");
+												fragFuncHelpers += "\n";
+												fragFuncHelpers = fragFuncHelpers.replace(/gl_FragCoord/g, "ap_xyz");
+												fragFuncHelpers += "\n}\n";
+												//fragFuncHelpers += "////////\n";
 											}
+
+
+											clip.address = pod.address +"_" + (u+1);
+											if(clip.id.length > 0 && shader){
+
+												// If the clip defined params transfer default values over to the obj
+												for (var param in shader.params) {
+													ap.setObjProperty(param, shader.params[param].value, i+1, e+1, u+1);
+													
+													// Create params with default values
+													uniforms[clip.address + "_" + param] = { type: "f", value: shader.params[param].value };
+												}
+
+												// If the clip defined properties define them as addressed uniforms
+												for (var property in shader.properties) {
+													uniforms[clip.address + "_" + property] = shader.properties[property];
+												}
+
+												// If the clip defined optional init() method call it with addressing
+												if(shader.init){
+													shader.init(clip.address, uniforms);
+												}
+
+
+												// Define uniforms for each clip
+												uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
+												uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
+												uniforms[clip.address + "_time"] = { type: "f", value: ap.app.time }; 
+
+
+												// Pass along input param values if they are defined on clip
+												var params = ["0.","0.","0.","0.","0.","0.","0.","0.","0."];
+												for (var j = 0; j < params.length; j++) {
+													if(shader.params && shader.params["p"+(j+1)]){
+														params[j] = (clip.address+"_p"+(j+1));
+													}
+												}
+
+												fragOutput = "";
+												if(clip.posMap == ap.MAP_ALT1 && ap.app.altMap1){
+													fragOutput += "ap_xyz = offsetPos(ap_alt1, " + pod.positionIds[o] + ", ap_xyz.w);\n";
+												}
+
+												fragOutput += "ap_rgb2 = superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
+
+												// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
+												//fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
+												fragOutput = fragOutput.replace(/gl_FragCoord/g, "ap_xyz");
+
+
+												// ------------ Clip Mix Blend & Fx --------------
+
+												var fx = ap.clips[clip.id].fx;
+												if(u === 0){
+													
+													fragOutput += "ap_rgb = ap_rgb2; \n";
+													if(!fx && !fxChannel){
+														fxPod = fxChannel;
+														fragOutput += "ap_rgb = ap_rgb * (_clip_mix); \n";  // Clip mix for this shader
+													}else{
+														fragOutput += "ap_rgb = mix(ap_p, ap_rgb2, _clip_mix); \n";
+													}
+
+												}else{
+
+													if(fx || fxChannel){
+														// Fx clip: mix the original with the result of fx
+														fragOutput += "ap_rgb = mix(ap_rgb, ap_rgb2, _clip_mix); \n";
+
+													}else{
+														// Blend in the shader with ongoing mix
+														fragOutput += "ap_rgb2 = ap_rgb2 * (_clip_mix); \n";
+														fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, _clip_blend); \n"; // Clip mix for this shader
+														fxPod = fxChannel;
+													}
+
+												}
+
+												// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
+												fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
+												fragOutput = fragOutput.replace(/__/g, clip.address + "_"); // Also detect the clip shorthand '__'
+												
+												// For use by effects clips: set the incoming value from the last clip, or the last pod if we are the first clip
+												if(u === 0){
+													fragOutput = fragOutput.replace(/_fxIn/g, "ap_p");
+												}else{
+													fragOutput = fragOutput.replace(/_fxIn/g, "ap_rgb");
+												}
+
+												// Merge the clip fragment shaders as we move along
+												output += fragOutput;
+											}
+										}else{
+											console.log("AP Error - shader not found: " + clip.id);
 										}
-										fragFuncHelpers += "else if(id == " + shader.id + "){\n";
-										fragFuncHelpers += shader.fragmentMain.replace("gl_FragColor", "returnColor");
-										fragFuncHelpers += "\n";
-										fragFuncHelpers = fragFuncHelpers.replace(/gl_FragCoord/g, "ap_xyz");
-										fragFuncHelpers += "\n}\n";
-										//fragFuncHelpers += "////////\n";
 									}
 
-
-									clip.address = pod.address +"_" + (u+1);
-									if(clip.id.length > 0 && shader){
-
-										// If the clip defined params transfer default values over to the obj
-										for (var param in shader.params) {
-											ap.setObjProperty(param, shader.params[param].value, i+1, e+1, u+1);
-											
-											// Create params with default values
-											uniforms[clip.address + "_" + param] = { type: "f", value: shader.params[param].value };
-										}
-
-										// If the clip defined properties define them as addressed uniforms
-										for (var property in shader.properties) {
-											uniforms[clip.address + "_" + property] = shader.properties[property];
-										}
-
-										// If the clip defined optional init() method call it with addressing
-										if(shader.init){
-											shader.init(clip.address, uniforms);
-										}
-
-
-										// Define uniforms for each clip
-										uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
-										uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
-										uniforms[clip.address + "_time"] = { type: "f", value: ap.app.time }; 
-
-
-										// Pass along input param values if they are defined on clip
-										var params = ["0.","0.","0.","0.","0.","0.","0.","0.","0."];
-										for (var j = 0; j < params.length; j++) {
-											if(shader.params && shader.params["p"+(j+1)]){
-												params[j] = (clip.address+"_p"+(j+1));
-											}
-										}
-
-										fragOutput = "";
-										if(clip.posMap == ap.MAP_ALT1 && ap.app.altMap1){
-											fragOutput += "ap_xyz = offsetPos(ap_alt1, " + pod.positionIds[o] + ", ap_xyz.w);\n";
-										}
-
-										fragOutput += "ap_rgb2 = superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
-
-										// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
-										//fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
-										fragOutput = fragOutput.replace(/gl_FragCoord/g, "ap_xyz");
-
-
-										// ------------ Clip Mix Blend & Fx --------------
-
-										var fx = ap.clips[clip.id].fx;
-										if(u === 0){
-											
-											fragOutput += "ap_rgb = ap_rgb2; \n";
-											if(!fx && !fxChannel){
-												fxPod = fxChannel;
-												fragOutput += "ap_rgb = ap_rgb * (_clip_mix); \n";  // Clip mix for this shader
-											}else{
-												fragOutput += "ap_rgb = mix(ap_p, ap_rgb2, _clip_mix); \n";
-											}
-
-										}else{
-
-											if(fx || fxChannel){
-												// Fx clip: mix the original with the result of fx
-												fragOutput += "ap_rgb = mix(ap_rgb, ap_rgb2, _clip_mix); \n";
-
-											}else{
-												// Blend in the shader with ongoing mix
-												fragOutput += "ap_rgb2 = ap_rgb2 * (_clip_mix); \n";
-												fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, _clip_blend); \n"; // Clip mix for this shader
-												fxPod = fxChannel;
-											}
-
-										}
-
-										// Inject addressing for uniforms that are flagged (i.e. replace "_clip_mix" with "_1_1_1_mix")
-										fragOutput = fragOutput.replace(/_clip_/g, clip.address + "_");
-										fragOutput = fragOutput.replace(/__/g, clip.address + "_"); // Also detect the clip shorthand '__'
-										
-										// For use by effects clips: set the incoming value from the last clip, or the last pod if we are the first clip
-										if(u === 0){
-											fragOutput = fragOutput.replace(/_fxIn/g, "ap_p");
-										}else{
-											fragOutput = fragOutput.replace(/_fxIn/g, "ap_rgb");
-										}
-
-										// Merge the clip fragment shaders as we move along
-										output += fragOutput;
-									}
 								}
-
-							}
-						
-							//  -------------- Pod Mix Blend & Fx --------------
+							
+								//  -------------- Pod Mix Blend & Fx --------------
 
 
-							if(fxPod){
+								if(fxPod){
 
-								// Fx pod: mix the original with the result of fx_rgb, _pod_mix); \n";
-								output += "ap_p = mix(ap_p, ap_rgb, _pod_mix); \n";
-
-							}else{
-
-								if(e === 0){
-
-									// If we are the very first pod mix output value, don't blend from previous pod
-									output += "ap_p = ap_rgb * (_pod_mix); \n";
+									// Fx pod: mix the original with the result of fx_rgb, _pod_mix); \n";
+									output += "ap_p = mix(ap_p, ap_rgb, _pod_mix); \n";
 
 								}else{
 
-									// Blend in last pod with current pod
-									output += "ap_rgb = ap_rgb * (_pod_mix); \n";
-									output += "ap_p = blend(ap_p, ap_rgb, _pod_blend); \n";
-								}
-							}
-							
-							output += "}";
+									if(e === 0){
 
-							//output += "/////////////////////////////////-------------//-------------- \n";
+										// If we are the very first pod mix output value, don't blend from previous pod
+										output += "ap_p = ap_rgb * (_pod_mix); \n";
+
+									}else{
+
+										// Blend in last pod with current pod
+										output += "ap_rgb = ap_rgb * (_pod_mix); \n";
+										output += "ap_p = blend(ap_p, ap_rgb, _pod_blend); \n";
+									}
+								}
+								
+								output += "}";
+
+								//output += "/////////////////////////////////-------------//-------------- \n";
+
+							}
 
 						}
 
+						output = output.replace(/_pod_/g, pod.address + "_") + "\n";
 					}
-
-					output = output.replace(/_pod_/g, pod.address + "_") + "\n";
 
 				}
 

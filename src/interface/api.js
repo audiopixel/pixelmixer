@@ -121,7 +121,7 @@ ap.setSize = function(width, height) {
 
 
 ap.importShader = function (name, shaderTxt) {
-	
+
 	ap.app.importShader(name, shaderTxt);
 
 };
@@ -131,6 +131,28 @@ ap.generateShader = function () {
 
 	ap.app.updateMainSourceShader();
 	
+};
+
+// Easy way to add clips to a pod that is fitted to all nodes
+// [ids], mix, channel
+ap.simpleSetup = function (params) {
+
+	params.mix = params.mix || 1;
+	params.channel = params.channel || 1;
+
+	var clips = [];
+	for (var i = 0; i < params.ids.length; i++) {
+		clips[i] = new ap.Clip({id: params.ids[i]});
+	};
+
+	var pods = [];
+	pods[0] = new ap.Pod({ clips: clips });
+
+	var channel1 = new ap.Channel({ mix: params.mix, pods: pods });
+	ap.channels.setChannel(params.channel, channel1);
+
+	ap.generateShader();
+
 };
 
 

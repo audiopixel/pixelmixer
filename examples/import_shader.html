@@ -131,27 +131,12 @@
 
 
 
-					// ** Import shader from inline
+					// ** Import shader from inline and add to Channel 1
 
 					var fragmentShader = document.getElementById( 'fs' ).textContent;
 					ap.importShader("ImportSpiral", fragmentShader);
 
-
-
-					// ** Add the imported shader 
-
-					// Add a single clip using the "ImportSpiral" shader.
-					var clip1 = new ap.Clip({id: "ImportSpiral"});
-
-					// Create a single Pod to be placed in Channel 1. By default Pods are positioned to fit all Nodes.
-					var pods = [];
-					pods[0] = new ap.Pod({ clips: [clip1] });
-
-					// A Channel contains a stack of Pods that can be mixed as one.
-					var channel1 = new ap.Channel({ mix: 1.0, pods: pods });
-					ap.channels.setChannel(1, channel1);
-
-					ap.generateShader();
+					ap.simpleSetup({channel: 1, ids: ["ImportSpiral"]});
 
 
 

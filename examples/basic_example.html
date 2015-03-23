@@ -91,24 +91,13 @@
 
 
 
-					// ** Add a shader 
+					// ** Add a shader to Channel 1
 
-					// Add a single clip using the "SolidColor" shader.
-					var clip1 = new ap.Clip({id: "SolidColor"});
-
-					// Create a single Pod to be placed in Channel 1. By default Pods are positioned to fit all Nodes.
-					var pods = [];
-					pods[0] = new ap.Pod({ clips: [clip1] });
-
-					// A Channel contains a stack of Pods that can be mixed as one.
-					var channel1 = new ap.Channel({ mix: 1.0, pods: pods });
-					ap.channels.setChannel(1, channel1);
+					ap.simpleSetup({channel: 1, ids: ["SolidColor"]});
 
 
 
-					// ** Generate the Shader & set some param values on the Clip
-
-					ap.generateShader();
+					// ** Set some param values on the Clip
 
 					// Set param1 on the clip to turn the color blue (for example this could be any ui setting params)
 					ap.set("p1", .7, 1, 1, 1); // Channel 1, Pod 1 Clip 1

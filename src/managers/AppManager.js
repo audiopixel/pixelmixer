@@ -298,7 +298,8 @@ ap.AppManager.prototype = {
 
 						for (var u = 0; u < pod.clips.length; u++) { var clip = pod.clips[u];
 							
-							if(clip){
+							if(clip && ap.clips[clip.id]){
+
 								ap.material.uniforms["_"+(i+1)+"_"+(e+1)+"_"+(u+1)+"_"+"time"].value += (clip.speed * ap.speed);
 							}
 						}
