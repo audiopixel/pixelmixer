@@ -141,8 +141,7 @@ ap.ChannelManager.prototype = {
 
 											if(!constants[variable]){ // If we don't already have the constant mark it as in use and include it.
 												constants[variable] = 1; 
-												var type = ap.getVariableTypeFromShorthand(shader.constants[variable].type);
-												fragFuncOutput += type + " " + variable + " = " + shader.constants[variable].value + ";";
+												fragFuncOutput += shader.constants[variable];
 											}
 
 										}

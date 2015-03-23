@@ -31,11 +31,11 @@ ap.clips.TestFrame = {
 	* Handy for heavy lifting that only needs to happen once, yet needs to be referenced constantly.
 	* Make sure to define them with unique names as they will get overwritten if clips have different values but same names.
 	*/
-	constants: {
+	constants: [
 
-		"test_constant": { type: "v2", value: "vec2(1. * 2., 1.)" }
+		"float test_constant = 12.8 * 2.1827214;"
 
-	},
+	],
 
 	fragmentMain: [ // Note we only need the Fragment shader and not the Vertex shader as well
 
