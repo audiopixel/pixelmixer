@@ -349,7 +349,7 @@ ap.ChannelManager.prototype = {
 
 
 		//console.log(uniforms);
-		console.log(fragFuncOutput);
+		//console.log(fragFuncOutput);
 		//console.log(output);
 
 		

@@ -42,7 +42,6 @@ ap.MainShader = {
 		"#define trpi  1.0471975511965977461542144610932 //one third of pi, pi/3",
 		"#define lgpi  0.4971498726941338543512682882909 //log(pi)       ",
 		"#define rcpi  0.31830988618379067153776752674503// reciprocal of pi  , 1/pi  ",
-		
 		/*
 		"#define ptpi 1385.4557313670110891409199368797 //powten(pi)",
 		"#define pipi  36.462159607207911770990826022692 //pi pied, pi^pi",

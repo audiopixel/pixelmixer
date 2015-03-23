@@ -11,17 +11,16 @@ ap.pointMaterial = {};			// Shader of the point cloud that displays the node col
 
 
 ap.material = false;			// Main shader referenced here, set false initially to flag that its not ready
-
+ap.shaderCount = 0;
 
 
 ap.init = function(scene, renderer, maxNodeCount){
 
 	 // Tag each shader with a incremental id, for easy lookup later
-	var i = 0;
 	for (var property in ap.clips) {
 		if (ap.clips.hasOwnProperty(property)) {
-			ap.clips[property].id = i;
-			i++;
+			ap.shaderCount++;
+			ap.clips[property].id = ap.shaderCount;
 		}
 	}
 
@@ -197,12 +196,18 @@ ap.importShader = function (name, shaderTxt) {
 		return false;
 	}
 
+	// If id's have already been registered increment and add manually
+	if(ap.shaderCount > 0){
+		ap.shaderCount++;
+		shader.id = ap.shaderCount;
+	}
+
 
 	//console.log(defintions);
 	//console.log(shader);
 	//console.log(grabTxt);
 
-	return shader;
+	ap.clips[name] = shader;
 
 };
 
