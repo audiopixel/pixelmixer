@@ -11,12 +11,13 @@ ap.pointSize = 20;				// The size of each point cloud sprite
 
 
 ap.material = false;			// Main shader referenced here, set false initially to flag that its not ready
-ap.shaderCount = 0;
+ap.shaderCount = -1;
 
 
 ap.init = function(scene, renderer, maxNodeCount){
 
-	 // Tag each shader with a incremental id, for easy lookup later
+	// Tag each shader with a incremental id, for easy lookup later
+	ap.shaderCount = 0;
 	for (var property in ap.clips) {
 		if (ap.clips.hasOwnProperty(property)) {
 			ap.shaderCount++;

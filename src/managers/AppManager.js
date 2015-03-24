@@ -253,7 +253,7 @@ ap.AppManager.prototype = {
 		};
 
 		// If shader id's have already been registered make sure this imported one has a correct id
-		if(ap.pointGeometry){ // Detect if ap.init() has been called
+		if(ap.shaderCount > -1){ // Detect if ap.init() has been called
 			if(ap.clips[name]){
 
 				// Replacement
