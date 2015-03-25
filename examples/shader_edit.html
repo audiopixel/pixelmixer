@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Import Shader Example</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+				position: absolute;
+			}
+			#container {
+				position: absolute;
+				display: inline;
+			}
+
+			#code {
+				position: absolute;
+				display: inline;
+			}
+		</style>
+		
+
+		<!-- Import standard three.js stuff -->
+		<script src="libs/Detector.js"></script>
+		<script src="libs/dat.gui.min.js"></script>
+		<script src="libs/three.min.js"></script>
+		<script src="libs/TrackballControls.js"></script>
+
+
+		<!-- Import library -->
+		<!-- <script src="../dist/all.min.js"></script> -->
+		<script src="../src/audiopixel.js"></script>
+		<script src="../src/interface/api.js"></script>
+		<script src="../src/managers/AppManager.js"></script>
+		<script src="../src/managers/PortManager.js"></script>
+		<script src="../src/managers/HardwareManager.js"></script>
+		<script src="../src/managers/ChannelManager.js"></script>
+		<script src="../src/objects/Port.js"></script>
+		<script src="../src/objects/Channel.js"></script>
+		<script src="../src/objects/Pod.js"></script>
+		<script src="../src/objects/Clip.js"></script>
+		<script src="../src/objects/PodPosition.js"></script>
+		<script src="../src/shaders/MainShader.js"></script>
+		<script src="../src/shaders/PointCloudShader.js"></script>
+		<script src="../src/shaders/ShaderUtils.js"></script>
+		<script src="../src/shaders/SimpleTextureShader.js"></script>
+
+		<script src="libs/codemirror.js"></script>
+		<link rel="stylesheet" href="libs/codemirror.css">
+
+
+		<!-- Shader imported inline: -->
+		<script type="x-shader/x-fragment" id="fs">
+			// http://glslsandbox.com/e#21521.0
+			#ifdef GL_ES
+			precision mediump float;
+			#endif
+
+			uniform float time;
+			uniform vec2 mouse;
+			uniform vec2 resolution;
+
+			void main( void ) {
+
+				vec2 position = (vec2(time/40.0,time/20.0)+ vec2(gl_FragCoord.xy / resolution.xy) );
+				gl_FragColor = vec4( ceil(sin(14.0*3.1415*position.y+14.*3.1415*position.x)),ceil(sin(14.0*3.1415*position.y)), ceil(sin(14.0*3.1415*position.x)), 1.0 );
+			}
+
+
+		</script>
+
+
+		<script>
+
+			if ( !Detector.webgl ) { Detector.addGetWebGLMessage(); } else {
+
+				var glWidth = window.innerWidth;
+				var glHeight = window.innerHeight;
+
+				var scene;
+				var renderer;
+				var camera;
+				var controls;
+				var container;
+
+				function onLoad(){
+
+
+					var code = CodeMirror(document.getElementById( 'code' ), {
+
+						value: document.getElementById( 'fs' ).textContent,
+						lineNumbers: true,
+						matchBrackets: true,
+						indentWithTabs: true,
+						tabSize: 8,
+						indentUnit: 8,
+						mode: "text/x-glsl"
+							
+					});
+
+					code.on("change", function() {
+						ap.importShader("ImportSpiral", code.getValue());
+						ap.updateShader = true;
+					});
+
+
+					// ** Standard Three.js setup
+
+					scene = new THREE.Scene();
+
+					renderer = new THREE.WebGLRenderer(); 
+					renderer.setSize( glWidth, glHeight );
+					renderer.autoClear = false;
+
+					container = document.getElementById( 'container' );
+					container.appendChild( renderer.domElement ); 
+
+					camera = new THREE.PerspectiveCamera( 30, glWidth / glHeight, 1, 100000 );
+					camera.position.z = 2000;
+					controls = new THREE.TrackballControls( camera, renderer.domElement);
+
+
+
+					// ** Initialize API
+
+					ap.init(scene, renderer);
+					ap.setSize(glWidth, glHeight);
+
+
+
+					// ** Add a simple grid of Nodes 
+
+					var x = -470;		// Position coordinates for the entire grid
+					var y = 120;
+					var z = -0;
+					var width = 52;		// How many pixels for the entire grid
+					var height = 20;
+					var pitch = 33;		// How far each pixel is spaced
+
+					ap.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
+					ap.updateNodePoints();
+
+
+
+					// ** Import shader from inline and add to Channel 1
+
+					var fragmentShader = document.getElementById( 'fs' ).textContent;
+					ap.importShader("ImportSpiral", fragmentShader);
+
+					ap.simpleSetup({channel: 1, ids: ["ImportSpiral"]});
+
+
+
+					// ** Start the main loop
+
+					animate();
+
+
+				}
+
+				function animate() {
+
+					// Main update loop
+					if(ap.ready){
+
+						// Update the API
+						ap.update();
+
+						// Update Three.js
+						controls.update();
+						renderer.render( scene, camera );
+					}
+
+					// Keep repeating the animation loop
+					requestAnimationFrame( animate );
+				}
+
+
+				function onWindowResize() {
+
+					// Resize logic
+					glWidth = window.innerWidth;
+					glHeight = window.innerHeight;
+
+					ap.setSize(glWidth, glHeight);
+
+					camera.aspect = glWidth / glHeight;
+					camera.updateProjectionMatrix();
+					controls.handleResize();
+
+				}
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+		</script>
+
+	</head>
+
+	<body ontouchstart="" onload="onLoad()">
+
+		<div id="code"></div>
+		<div id="container"></div>
+
+	</body>
+
+</html>
