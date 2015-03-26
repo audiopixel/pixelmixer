@@ -9,9 +9,12 @@ The original goal in creating PixelMix was to drive led lighting and video proje
 
 There are other advantages as well when compared to standard OpenGL pixel shaders, as shown in the comparison table below.
 
-Live demo: [audiopixel.com/webdemo](https://audiopixel.com/webdemo)
+Live demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 
-Shader Editor: [github](https://github.com/hepp/audiopixel3/blob/master/examples/shader_edit.html)
+Shader editor: [github/examples/](https://github.com/hepp/audiopixel3/blob/master/examples/shader_edit.html)
+
+Load in any additional WebGL shaders, such as ones found at [glslsandbox](https://glslsandbox.com/) or [shadertoy](https://www.shadertoy.com).
+
 
 ## Features ##
 
@@ -49,7 +52,7 @@ ap.setSize(glWidth, glHeight);
 ```
 #### 2. Add Nodes ####
 
-To import nodes there are several hardware methods included to draw simple grids of various sizes.
+Import nodes with several auto generating methods included to draw simple grids at various sizes.
 It's also easy to import new node positions via JSON.
 
 ```
@@ -126,17 +129,17 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 
 **Port**: A group of Nodes. May also contain protocol and address data.
 
-**Pod**: A group of clips that are to be positioned together, combined, and blended as one.
-
-**Position-unit**: Defined coordinates that a pod can choose to populate into. Pod's can render to any number of position units to allow advanced mapping.
-
-**Channel**: Main source of color and values (like dmx) to be assigned to nodes. Channels hold pods, which may also hold clips.
-
 **Shader**: A opengl glsl fragment shader that runs directly on the gpu.
 
 **Clip**: A clip is a shader harnessed in a playable form. Clips can play shaders back at different speeds and different positions.
 
 **Clipfx**: A type of clip that does not blend, instead it analyses incoming values and outputs a new one.
+
+**Pod**: A group of clips that are to be positioned together, combined, and blended as one.
+
+**Position-unit**: Defined coordinates that a pod can choose to populate into. Pod's can render to any number of position units to allow advanced mapping.
+
+**Channel**: Main source of color and values (like dmx) to be assigned to nodes. Channels hold pods, which may also hold clips.
 
 **Postfx**: A type of channel that takes the entire main mix and routes it through a set of clipfxs.
 
@@ -148,7 +151,7 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 
 * Mixer for displaying pixel shaders into 3D space
 * Control light shows via laptop or mobile device
-* Music and Data visualizers
+* Music and data visualizers
 * Animate particles / sprites in any OpenGL or Three.js project
 * Runs on dedicated server / gaming machine, triggered by MIDI or OSC API
 * Lighting conceptualize / architectural tool
