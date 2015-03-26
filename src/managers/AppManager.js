@@ -456,7 +456,7 @@ pm.AppManager.prototype = {
 			transparent:    true
 		});
 
-		var name = "AP Nodes";
+		var name = "PM Nodes";
 		if(this.sceneMain.getObjectByName(name)){
 			// If the pointCloud has already been added, remove it so we can add it fresh
 			this.sceneMain.remove( pm.pointCloud );
@@ -476,7 +476,7 @@ pm.AppManager.prototype = {
 
 		if(pm.pointGeometry.vertices.length > 0){
 
-			console.log("AP Nodes: " + pm.pointGeometry.vertices.length);
+			console.log("PM Nodes: " + pm.pointGeometry.vertices.length);
 			pm.ready = true;
 
 		}

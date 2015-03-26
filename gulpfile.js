@@ -25,9 +25,9 @@ gulp.task('sass', function() {
 // Concatenate & Minify JS
 gulp.task('scripts', function() {
     return gulp.src('src/**/*.js')
-        .pipe(concat('all.js'))
+        .pipe(concat('pixelmix.js'))
         .pipe(gulp.dest('build'))
-        .pipe(rename('all.min.js'))
+        .pipe(rename('pixelmix.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('build'));
 });
