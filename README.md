@@ -93,12 +93,10 @@ ap.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 * VJ / Control light shows 
 * Interactive art and light installations
 * Audio and data visualizations
-* Animate particles / sprites in any OpenGL or Three.js project
+* Animate particles / sprites in any WebGL or Three.js project
 * Lighting conceptualize / architectural tool
-* Run massive led rigs on dedicated server / gaming machine, triggered by mobile MIDI / OSC API
+* Run massive LED rigs on dedicated server / gaming machine, triggered by mobile MIDI / OSC API
 
-
----
 
 
 ## Vs Vanilla GLSL Shader ##
