@@ -11,12 +11,13 @@ There are other advantages as well when compared to standard OpenGL pixel shader
 
 Live demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 
-Shader editor: [github/examples/shader_edit.html](https://github.com/hepp/audiopixel3/blob/master/examples/shader_edit.html)
+---
 
+Shader editor: [github/examples/shader_edit.html](https://github.com/hepp/audiopixel3/blob/master/examples/shader_edit.html)
 Load in additional WebGL shaders, such any of the ones found at [glslsandbox](http://glslsandbox.com/) or [shadertoy](https://www.shadertoy.com).
 
 
-Each instance of a loaded shader has independent control values setup that you can control. Global values (uniforms) are also provided to all shaders, and are ready to be populated with audio or any sort of data feed you provide. Easily enhance any loaded shaders to respond to the incoming values, and/or setup UI layers to control and change them directly. 
+Each instance of a loaded shader has independent control values setup that you can control. Global values are also provided to all shaders that are ready to be populated with audio or any sort of data feed you provide. Easily enhance any loaded shaders to respond to the incoming values, and/or setup UI layers to control and change them directly. 
 
 
 
@@ -97,9 +98,9 @@ ap.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 * VJ / Control light shows 
 * Interactive art and light installations
 * Audio and data visualizations
-* Animate particles / sprites in any WebGL or Three.js project
+* Animate particles / sprites / textures in any WebGL or Three.js project
 * Lighting conceptualize / architectural tool
-* Run massive LED rigs on dedicated server / gaming machine, triggered by mobile MIDI / OSC API
+* Run massive LED walls with dedicated server / gaming laptop, triggered by mobile MIDI / OSC API
 
 
 
