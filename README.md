@@ -20,14 +20,13 @@ Load in additional WebGL shaders, such any of the ones found at [glslsandbox](ht
 
 * Animate pixel shaders seamlessly across textures and point cloud particles 
 * Mix multiple pixel shaders together using various blend modes
-* Map each shader to any number of areas using 3D transformations (can be used to pixel-map lights and projection surfaces)
-* Capture color values for all 3D nodes at high framerate (can be used for broadcasting data to lighting equipment)
+* Map each shader to any number of areas using 3D transformations
+* Capture color values for all 3D nodes at high framerates
 * Easily manipulate animations with incoming audio or data feeds
-* Enhance your shaders with helper methods / values not normally in GLSL
-* Multiple position / index maps can be used to generate content (spoof gl_FragCoords per shader)
 * Import any GLSL fragment shader
+* Multiple position / index maps can be used to generate content (spoof gl_FragCoords per shader)
+* Enhance your shaders with helper methods / values not normally in GLSL
 * Preview channels in previz mode while still communicating main mix to hardware (coming soon)
-* Rendering views: 3D point cloud, 3D directional lights (coming soon), 2D quad pixel shaders (coming soon)
 * HTML5 video input (coming soon)
 
 
@@ -150,10 +149,12 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 
 * Mixer for displaying pixel shaders in 3D space
 * Control light shows via laptop or mobile device
+* Interactive art and light installations
 * Music and data visualizers
 * Animate particles / sprites in any OpenGL or Three.js project
-* Runs on dedicated server / gaming machine, triggered by MIDI or OSC API
+* Can run massive rigs on dedicated server / gaming machine, triggered by MIDI or OSC API
 * Lighting conceptualize / architectural tool
+* Visuals
 
 
 
