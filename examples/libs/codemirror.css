@@ -1,21 +1,5 @@
 /* BASICS */
 
-.CodeMirror {
-  color: white;
-  text-shadow: rgba( 0, 0, 0, 1 ) 0px 1px 2px;
-  background-color: transparent;
-  position: absolute; left: 25px; top: 75px;
-  padding: 12px;
-  border: solid 1px transparent;
-  border-radius: 5px;
-  line-height: 1.1em;
-  font-family: monospace;
-  font-size: 14px;
-  font-weight: bold;
-  visibility: visible;
-}
-
-
 /* PADDING */
 
 .CodeMirror-lines {
@@ -330,3 +314,19 @@ div.CodeMirror-cursors {
 
 /* Help users use markselection to safely style text background */
 span.CodeMirror-selectedtext { background: none; }
+
+
+.CodeMirror {
+  color: white;
+  text-shadow: rgba( 0, 0, 0, 1 ) 0px 1px 2px;
+  background-color: transparent;
+  position: absolute; left: 25px; top: 75px;
+  padding: 12px;
+  border: solid 1px transparent;
+  border-radius: 5px;
+  line-height: 1.1em;
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: bold;
+  visibility: visible;
+}
