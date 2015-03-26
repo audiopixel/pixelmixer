@@ -37,7 +37,6 @@ Shader Editor: [github](https://github.com/hepp/audiopixel3/blob/master/examples
 #### 1. Include pixelmix.js and three.js ####
 
 ```
-
 <script src="pixelmix.min.js"></script>
 <script src="three.min.js"></script>
 
@@ -62,7 +61,6 @@ ap.updateNodePoints();
 #### 3. Add Shaders ####
 
 ```
-
 <!-- Include source -->
 <script src="import/shaders/SolidColor.js"></script>
 
@@ -70,7 +68,6 @@ ap.updateNodePoints();
 ap.simpleSetup({channel: 1, ids: ["SolidColor"]});
 
 ```
-
 #### 4. Change uniforms (Optional UI Layer) ####
 
 Easily alter shaders while running, and assign params, mix and blend values to controllers. 
@@ -78,10 +75,10 @@ Here we are setting values on the shader we just created.
 
 ```
 // Set param 1 on the clip to .7
-ap.set("p1", .7, 1, 1, 1); // Channel 1, Pod 1, Clip 1
+ap.set("p1", .7, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 
 // Set mix on the clip to be .9
-ap.set("mix", .9, 1, 1, 1); // Channel 1, Pod 1, Clip 1
+ap.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 
 ```
 
@@ -115,10 +112,10 @@ The API extends the standard GLSL fragment shaders to achieve additional functio
 
 ## Terminology ##
 
-A Clip is simply a shader wrapped in a object with additional timing, scaling, and input controls. 
-Wrapping a shader in a clip allows us to play it back at any size and at any animation speed.
+A Clip is simply a Shader with additional timing, scaling, and input controls. 
+Loading a Shader into a Clip allows us to play it back several times, at multiple sizes and animation speeds.
 
-A Pod is a way to group and mix Clips to be blended and positioned as one. Pods can then be mixed into other pods. Pods can also be represented many times over in many places. An example of this could be to take one Clip/Shader and display it in two different places, perhaps with the second instance mirrored or scaled. 
+A Pod is a way to group and mix Clips to be blended and positioned as one. Pods can then be blended into other Pods. Pods can also be represented many times over in many places. An example of this could be to take one Clip/Shader and display it in two different places, perhaps with the second instance mirrored or scaled. 
 
 Once a Shader has been loaded into a Clip, it can be positioned in multiple places with a Pod, and then mixed into the main mix inside a Channel.
 
@@ -128,6 +125,10 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 **Node**: A single light unit or RGB pixel. Usually represented as a particle on screen, but can be represented in many ways.
 
 **Port**: A group of Nodes. May also contain protocol and address data.
+
+**Pod**: A group of clips that are to be positioned together, combined, and blended as one.
+
+**Position-unit**: Defined coordinates that a pod can choose to populate into. Pod's can render to any number of position units to allow advanced mapping.
 
 **Channel**: Main source of color and values (like dmx) to be assigned to nodes. Channels hold pods, which may also hold clips.
 
@@ -140,10 +141,6 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 **Postfx**: A type of channel that takes the entire main mix and routes it through a set of clipfxs.
 
 **Previz**: Render a to-be-displayed channel to preview on screen, while still outputting the main channel mix unaffected.
-
-**Pod**: A group of clips that are to be positioned together, combined, and blended as one.
-
-**Position-unit**: Defined coordinates that a pod can choose to populate into. Pod's can render to any number of position units to allow advanced mapping.
 
 ---
 
