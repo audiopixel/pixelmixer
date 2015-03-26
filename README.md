@@ -1,13 +1,12 @@
 
 
-A Visual Engine optimized for performance that runs and generates OpenGL pixel shaders that can be mapped to surfaces in 3D space.
+PixelMix by AudioPixel is a visual engine optimized for performance that generates, mixes, and maps OpenGL pixel shaders in 3D space.
 
-API service that runs directly in the browser using WebGL and Three.js.
-The generated shaders that the API outputs can also be run (and cached) in any OpenGL environment (such as C++ / Java / Webgl).
+Runs in the browser using WebGL and Three.js, and is very easy to add to any existing Three.js application.
+The generated shaders can also be run (and cached) in any OpenGL environment (such as C++ / Java / IPhone / Android).
 
-The original goal in creating this API was to drive lighting and projection equipment. Because of this we made it possible to capture the color values of all 3D pixels easily at runtime, even during fast framerates. This technique lets us broadcast UDP & DMX values straight from the app, as well as offering other advantages to standard GLSL as well as shown in the comparison table below.
+The original goal in creating PixelMix was to drive led lighting and video projection equipment. Because of this it is capable of capturing color values of all 3D pixels even at fast framerates. Using this for example we can broadcast color values to lighting equipment using UDP & DMX protocols. There are other advantages as well when compared to standard OpenGL pixel shaders, as shown in the comparison table below.
 
-The API can also be used for straight web visualization projects, and is very easy to add to any existing Three.js application.
 
 
 ## Features ##
@@ -84,10 +83,10 @@ ap.set("mix", .9, 1, 1, 1); // Channel 1, Pod 1, Clip 1
 ---
 
 
-## API Shader vs Vanilla GLSL Shader ##
-Extends the standard GLSL fragment shader capabilities so that additional functionality can be achieved.
+## PixelMix Shader vs Vanilla GLSL Shader ##
+The API extends the standard GLSL fragment shaders to achieve additional functionality.
 
-| Feature | AP3 | GLSL |
+| Feature | API | GLSL |
 |----------------- | -------------------- | --------------------- |
 | GPU accelerated | x | x |
 | X,Y coordinates | x | x |
