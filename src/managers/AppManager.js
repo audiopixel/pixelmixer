@@ -404,6 +404,10 @@ ap.AppManager.prototype = {
 		this.coordsMap.needsUpdate = true;
 		this.coordsMap.flipY = true;
 
+		if(ap.material){
+            ap.material.uniforms.u_coordsMap.value = this.coordsMap;
+        }
+
 		// testing
 		this.altMap1 = new THREE.DataTexture( a, ap.simSize, ap.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.altMap1.minFilter = THREE.NearestFilter;
