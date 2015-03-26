@@ -5,7 +5,7 @@ PixelMix by AudioPixel is a visual engine optimized for performance that generat
 Runs in the browser using WebGL and Three.js, and is easy to add to any web application.
 The generated shaders can also be run (and cached) in any OpenGL environment (such as C++ / Java / IPhone / Android).
 
-The original goal in creating PixelMix was to drive led lighting and video projection equipment. Capable of capturing and broadcasting color values of pixels at fast framerates, it can allow for communication to lighting equipment using Video, UDP, & DMX protocols. 
+The original goal in creating PixelMix was to drive led lighting and video projection equipment. It is capable of capturing color/data values of all 3D pixels at fast framerates, which can be used for communication to physical lighting equipment using protocols such as Video, UDP, & DMX. 
 
 There are other advantages as well when compared to standard OpenGL pixel shaders, as shown in the comparison table below.
 
@@ -36,7 +36,7 @@ Load in additional WebGL shaders, such any of the ones found at [glslsandbox](ht
 
 [View this in a simple example](https://github.com/hepp/audiopixel3/blob/master/examples/basic_example.html)
 
-#### 1. Include pixelmix.js and three.js ####
+#### 1. Include Libraries pixelmix.js and three.js ####
 
 ```
 <script src="pixelmix.min.js"></script>
@@ -70,7 +70,7 @@ ap.updateNodePoints();
 ap.simpleSetup({channel: 1, ids: ["SolidColor"]});
 
 ```
-#### 4. Change uniforms (Optional UI Layer) ####
+#### 4. Change values at runtime (Optional UI Layers) ####
 
 Easily alter shaders while running, and assign params, mix and blend values to controllers. 
 Here we are setting values on the shader we just created.
@@ -83,6 +83,19 @@ ap.set("p1", .7, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 ap.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 
 ```
+
+
+---
+
+## Possible Uses Include ##
+
+* Mixer for displaying pixel shaders in 3D space
+* VJ / Control light shows 
+* Interactive art and light installations
+* Audio and data visualizations
+* Animate particles / sprites in any OpenGL or Three.js project
+* Lighting conceptualize / architectural tool
+* Run massive led rigs on dedicated server / gaming machine, triggered by mobile MIDI / OSC API
 
 
 ---
@@ -108,7 +121,6 @@ Shaders loaded into the API extend GLSL to achieve additional functionality:
 | Hardware port / light unit info | x | |
 
 ---
-
 
 ## Terminology ##
 
@@ -141,20 +153,6 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 **Postfx**: A type of channel that takes the entire main mix and routes it through a set of clipfxs.
 
 **Previz**: Render a to-be-displayed channel to preview on screen, while still outputting the main channel mix unaffected.
-
-
----
-
-## Possible Uses Include ##
-
-* Mixer for displaying pixel shaders in 3D space
-* Control light shows via laptop or mobile device
-* Interactive art and light installations
-* Music and data visualizers
-* Animate particles / sprites in any OpenGL or Three.js project
-* Can run massive rigs on dedicated server / gaming machine, triggered by MIDI or OSC API
-* Lighting conceptualize / architectural tool
-* Visuals
 
 
 
