@@ -11,9 +11,9 @@ There are other advantages as well when compared to standard OpenGL pixel shader
 
 Live demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 
-Shader editor: [github/examples/](https://github.com/hepp/audiopixel3/blob/master/examples/shader_edit.html)
+Shader editor: [github/examples/shader_edit.html](https://github.com/hepp/audiopixel3/blob/master/examples/shader_edit.html)
 
-Load in any additional WebGL shaders, such as ones found at [glslsandbox](https://glslsandbox.com/) or [shadertoy](https://www.shadertoy.com).
+Load in additional WebGL shaders, such any of the ones found at [glslsandbox](http://glslsandbox.com/) or [shadertoy](https://www.shadertoy.com).
 
 
 ## Features ##
@@ -91,23 +91,23 @@ ap.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 ---
 
 
-## PixelMix Shader vs Vanilla GLSL Shader ##
-The API extends the standard GLSL fragment shaders to achieve additional functionality.
+## Vs Vanilla GLSL Shader ##
+Shaders for the API extend GLSL to achieve additional functionality:
 
 | Feature | API | GLSL |
 |----------------- | -------------------- | --------------------- |
 | GPU accelerated | x | x |
+| GPU optimized Math methods | x | x |
 | X,Y coordinates | x | x |
 | Attributes and uniforms | x | x |
 | Z coordinate | x | |
 | Index value | x | |
-| Resized & blended in 3D space | x | |
-| Multiple instances of shaders | x | |
 | Multiple coordinates per pixel | x | |
 | Last color value per pixel | x | |
 | Last color values for all pixels | x | |
-| Accompanying init & update methods | x | |
+| Color blending algorithms | x | |
 | Random values | x | |
+| Accompanying init & update methods | x | |
 | Hardware port / light unit info | x | |
 
 ---
