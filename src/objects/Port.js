@@ -14,7 +14,7 @@
 *
 */
 
-ap.Port = function (name, type, address, hardwarePort, nodes) {
+pm.Port = function (name, type, address, hardwarePort, nodes) {
 
 	this.name = name;
 	this.type = type;

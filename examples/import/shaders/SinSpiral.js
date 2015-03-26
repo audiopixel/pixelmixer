@@ -3,7 +3,7 @@
 // bqq
 // modified by @hintz
 
-ap.clips.SinSpiral = {
+pm.clips.SinSpiral = {
 
 	params: {
 

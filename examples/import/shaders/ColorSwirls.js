@@ -1,6 +1,6 @@
 // http://glslsandbox.com/e#18039.0
 
-ap.clips.ColorSwirls = {
+pm.clips.ColorSwirls = {
 
 	params: {
 

@@ -5,7 +5,7 @@
  */
 
 
-ap.MainShader = {
+pm.MainShader = {
 
 	fragmentShader: [
 		

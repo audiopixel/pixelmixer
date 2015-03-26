@@ -32,7 +32,7 @@
 
 		<!-- Import library -->
 		<!-- <script src="../dist/all.min.js"></script> -->
-		<script src="../src/audiopixel.js"></script>
+		<script src="../src/pixelmix.js"></script>
 		<script src="../src/interface/api.js"></script>
 		<script src="../src/managers/AppManager.js"></script>
 		<script src="../src/managers/PortManager.js"></script>
@@ -100,8 +100,8 @@
 					});
 
 					code.on("change", function() {
-						ap.importShader("ImportSpiral", code.getValue());
-						ap.updateShader = true;
+						pm.importShader("ImportSpiral", code.getValue());
+						pm.updateShader = true;
 					});
 
 
@@ -124,8 +124,8 @@
 
 					// ** Initialize API
 
-					ap.init(scene, renderer);
-					ap.setSize(glWidth, glHeight);
+					pm.init(scene, renderer);
+					pm.setSize(glWidth, glHeight);
 
 
 
@@ -138,17 +138,17 @@
 					var height = 20;
 					var pitch = 33;		// How far each pixel is spaced
 
-					ap.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
-					ap.updateNodePoints();
+					pm.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
+					pm.updateNodePoints();
 
 
 
 					// ** Import shader from inline and add to Channel 1
 
 					var fragmentShader = document.getElementById( 'fs' ).textContent;
-					ap.importShader("ImportSpiral", fragmentShader);
+					pm.importShader("ImportSpiral", fragmentShader);
 
-					ap.simpleSetup({channel: 1, ids: ["ImportSpiral"]});
+					pm.simpleSetup({channel: 1, ids: ["ImportSpiral"]});
 
 
 
@@ -162,10 +162,10 @@
 				function animate() {
 
 					// Main update loop
-					if(ap.ready){
+					if(pm.ready){
 
 						// Update the API
-						ap.update();
+						pm.update();
 
 						// Update Three.js
 						controls.update();
@@ -183,7 +183,7 @@
 					glWidth = window.innerWidth;
 					glHeight = window.innerHeight;
 
-					ap.setSize(glWidth, glHeight);
+					pm.setSize(glWidth, glHeight);
 
 					camera.aspect = glWidth / glHeight;
 					camera.updateProjectionMatrix();

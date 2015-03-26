@@ -10,7 +10,7 @@ function initUi(){
 	var guiData;
 
 	var gui = new dat.GUI({
-		load: ap.datguiJson,
+		load: pm.datguiJson,
 		preset: 'ApHLineBar'
 	});
 	
@@ -24,47 +24,47 @@ function initUi(){
 	// ** Channel 1
 
 
-	var clip1 = new ap.Clip({id: "LineCosSin"});
-	var clipfx1 = new ap.Clip({id: "TestFx", blend: ap.BLEND.Fx});
+	var clip1 = new pm.Clip({id: "LineCosSin"});
+	var clipfx1 = new pm.Clip({id: "TestFx", blend: pm.BLEND.Fx});
 
-	var clip2 = new ap.Clip({id: "ColorSineBar"});
-	var clipfx2 = new ap.Clip({id: "TestFx", blend: ap.BLEND.Fx});
+	var clip2 = new pm.Clip({id: "ColorSineBar"});
+	var clipfx2 = new pm.Clip({id: "TestFx", blend: pm.BLEND.Fx});
 
 	var pods = [];
-	pods[1] = new ap.Pod({positionIds: [2], blend: ap.BLEND.LinearLight, clips: [clip1, clipfx1]});
-	pods[0] = new ap.Pod({positionIds: [1], clips: [clip2, clipfx2]});
+	pods[1] = new pm.Pod({positionIds: [2], blend: pm.BLEND.LinearLight, clips: [clip1, clipfx1]});
+	pods[0] = new pm.Pod({positionIds: [1], clips: [clip2, clipfx2]});
 
-	var channel1 = new ap.Channel({name: "TestChannel1", mix: 1, pods: pods});
-	ap.channels.setChannel(1, channel1);
+	var channel1 = new pm.Channel({name: "TestChannel1", mix: 1, pods: pods});
+	pm.channels.setChannel(1, channel1);
 
 
 	// ** Channel 2 - Post FX Channel
 	
 	var pods2 = [];
-	var clipfx3 = new ap.Clip({id: "HueFx", blend: ap.BLEND.Fx});
+	var clipfx3 = new pm.Clip({id: "HueFx", blend: pm.BLEND.Fx});
 
-	pods2[0] = new ap.Pod({positionIds: [1], clips: [clipfx3]});
+	pods2[0] = new pm.Pod({positionIds: [1], clips: [clipfx3]});
 
-	var channel2 = new ap.Channel({name: "Post FX1", type: ap.CHANNEL_TYPE_FX, mix: 1, pods: pods2});
-	ap.channels.setChannel(2, channel2);
+	var channel2 = new pm.Channel({name: "Post FX1", type: pm.CHANNEL_TYPE_FX, mix: 1, pods: pods2});
+	pm.channels.setChannel(2, channel2);
 
 
 
 	// Tell the shader to update after we set some new state
-	ap.updateShader = true;
+	pm.updateShader = true;
 
 	// The list of state that the UI is representing (V) and setting (C)
 	guiData  = {
 		Channel1Mix:  1,
 		
 		S2Blend:  "LinearLight",
-		S2ClipId:  ap.demoClipNames[5],
+		S2ClipId:  pm.demoClipNames[5],
 		S2Mix:  1,
 		S2Scale:  0.7,
 		S2HueTint:  1,
 
 		S1Mix:  1,
-		S1ClipId:  ap.demoClipNames[3],
+		S1ClipId:  pm.demoClipNames[3],
 		S1Scale:  0.7,
 		S1HueTint:  1,
 
@@ -77,9 +77,9 @@ function initUi(){
 		//Threshold:  1,
 		//Noise:  0,
 
-		Speed: ap.speed,
+		Speed: pm.speed,
 		PointSize: 80,
-		Hardware: ap.demoHardware[0]
+		Hardware: pm.demoHardware[0]
 
 	};
 
@@ -90,7 +90,7 @@ function initUi(){
 	// =========Event listeners===============
 
 
-	gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set("mix", v, 1);  });
+	gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { pm.set("mix", v, 1);  });
 
 	gui.add( { SnapToFront:function(){
 		controls.reset();
@@ -106,64 +106,64 @@ function initUi(){
 	var f5 = gui.addFolder('Settings');    //  f5.open();
 
 	// Pod 2
-	f2.add( guiData, 'S2ClipId', ap.demoClipNames).onChange(function (v) { uniformClipTypeChange(v, 1, 2, 1 ); });
-	f2.add( guiData, "S2Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set("mix", v, 1, 2, 1);  });
-	f2.add( guiData, "S2Scale", 0.1, 1.0, 1.0 )    .onChange(function (v) { ap.set("p1", v, 1, 2, 1);  });
-	f2.add( guiData, "S2HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set("p1", v, 1, 2, 2);  });
-	f2.add( guiData, 'S2Blend', ap.BLENDS )        .onChange(function (v) { uniformBlendChange(v, 1, 2); });
+	f2.add( guiData, 'S2ClipId', pm.demoClipNames).onChange(function (v) { uniformClipTypeChange(v, 1, 2, 1 ); });
+	f2.add( guiData, "S2Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { pm.set("mix", v, 1, 2, 1);  });
+	f2.add( guiData, "S2Scale", 0.1, 1.0, 1.0 )    .onChange(function (v) { pm.set("p1", v, 1, 2, 1);  });
+	f2.add( guiData, "S2HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { pm.set("p1", v, 1, 2, 2);  });
+	f2.add( guiData, 'S2Blend', pm.BLENDS )        .onChange(function (v) { uniformBlendChange(v, 1, 2); });
 
 	// Pod 1
-	f3.add( guiData, 'S1ClipId', ap.demoClipNames).onChange(function (v) { uniformClipTypeChange(v, 1, 1, 1 ); });
-	f3.add( guiData, "S1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set("mix", v, 1, 1, 1);  });
-	f3.add( guiData, "S1Scale", 0.1, 1.0, 1.0 )    .onChange(function (v) { ap.set("p1", v, 1, 1, 1);  });
-	f3.add( guiData, "S1HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { ap.set("p1", v, 1, 1, 2);  });
+	f3.add( guiData, 'S1ClipId', pm.demoClipNames).onChange(function (v) { uniformClipTypeChange(v, 1, 1, 1 ); });
+	f3.add( guiData, "S1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { pm.set("mix", v, 1, 1, 1);  });
+	f3.add( guiData, "S1Scale", 0.1, 1.0, 1.0 )    .onChange(function (v) { pm.set("p1", v, 1, 1, 1);  });
+	f3.add( guiData, "S1HueTint", 0.0, 1.0, 1.0 )  .onChange(function (v) { pm.set("p1", v, 1, 1, 2);  });
 
 	// Post Fx
-	f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (v) { ap.set("p1", v, 2, 1, 1);  });
-	f4.add( guiData, "HueClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { ap.set("p2", v, 2, 1, 1);  });
-	f4.add( guiData, "Saturation", 0.0, 1.0, 1.0 ) .onChange(function (v) { ap.set("p3", v, 2, 1, 1);  });
-	f4.add( guiData, "SatClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { ap.set("p4", v, 2, 1, 1);  });
-	f4.add( guiData, "Smooth", 0.0, 0.98, 1.0 )    .onChange(function (v) { ap.set("p5", v, 2, 1, 1);  });
-	f4.add( guiData, "PreAmp", 0.0, 1.0, 0.0 ) .onChange(function (v) { ap.set("p6", v, 2, 1, 1);  });
+	f4.add( guiData, "Hue", 0.0, 1.0, 1.0 )    .onChange(function (v) { pm.set("p1", v, 2, 1, 1);  });
+	f4.add( guiData, "HueClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { pm.set("p2", v, 2, 1, 1);  });
+	f4.add( guiData, "Saturation", 0.0, 1.0, 1.0 ) .onChange(function (v) { pm.set("p3", v, 2, 1, 1);  });
+	f4.add( guiData, "SatClamp", 0.0, 1.0, 1.0 )   .onChange(function (v) { pm.set("p4", v, 2, 1, 1);  });
+	f4.add( guiData, "Smooth", 0.0, 0.98, 1.0 )    .onChange(function (v) { pm.set("p5", v, 2, 1, 1);  });
+	f4.add( guiData, "PreAmp", 0.0, 1.0, 0.0 ) .onChange(function (v) { pm.set("p6", v, 2, 1, 1);  });
 
 
 
-	//f4.add( guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (v) { ap.set("", 2, 1, 1);  });
-	//f4.add( guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (v) { ap.set("", 2, 1, 1);  });
+	//f4.add( guiData, "Threshold", 0.0, 1.0, 1.0 ).onChange(function (v) { pm.set("", 2, 1, 1);  });
+	//f4.add( guiData, "Noise", 0.0, 1.0, 1.0 ).onChange(function (v) { pm.set("", 2, 1, 1);  });
 
 	// Global Settings (temporary for demo)
-	f5.add( guiData, 'Hardware', ap.demoHardware).onChange(function (v) {
+	f5.add( guiData, 'Hardware', pm.demoHardware).onChange(function (v) {
 
-		ap.ports.clearAllPorts();
+		pm.ports.clearAllPorts();
 
 		switch(v){
-			case ap.demoHardware[0]:
+			case pm.demoHardware[0]:
 
-				ap.channels.setPodPos(2, new ap.PodPosition(-190, 140, -1000, 1070, 575, 2000));
-				ap.hardware.importNodes(ap.imported, 1, 0, 0, 0);
+				pm.channels.setPodPos(2, new pm.PodPosition(-190, 140, -1000, 1070, 575, 2000));
+				pm.hardware.importNodes(pm.imported, 1, 0, 0, 0);
 				break;
-			case ap.demoHardware[1]:
+			case pm.demoHardware[1]:
 
-				ap.channels.setPodPos(2, new ap.PodPosition(-339, 30, -1000, 1378, 738, 2000));
-				ap.hardware.addTestPortsGrid3(1, 0, 0);
+				pm.channels.setPodPos(2, new pm.PodPosition(-339, 30, -1000, 1378, 738, 2000));
+				pm.hardware.addTestPortsGrid3(1, 0, 0);
 				break;
 
-			case ap.demoHardware[2]:
+			case pm.demoHardware[2]:
 
-				ap.channels.setPodPos(2, new ap.PodPosition(-190, 286, -1000, 1070, 242, 2000));
-				ap.hardware.addTestPortsGrid(1, 0, 0);
+				pm.channels.setPodPos(2, new pm.PodPosition(-190, 286, -1000, 1070, 242, 2000));
+				pm.hardware.addTestPortsGrid(1, 0, 0);
 				break;
 
 			default: 
-				ap.hardware.importNodes(ap.imported, 1, 0, 0, 0);
+				pm.hardware.importNodes(pm.imported, 1, 0, 0, 0);
 			break;
 		}
-		ap.updateNodePoints(); // only need to call this when we add nodes aftervit
-		ap.updateShader = true;
+		pm.updateNodePoints(); // only need to call this when we add nodes aftervit
+		pm.updateShader = true;
 
 	});
-	f5.add( guiData, "Speed", 0.025, 0.4, 1.0 ).onChange(function (v) { ap.speed = v; });
-	f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { ap.pointMaterial.uniforms.u_pointSize.value = v;  });
+	f5.add( guiData, "Speed", 0.025, 0.4, 1.0 ).onChange(function (v) { pm.speed = v; });
+	f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { pm.pointMaterial.uniforms.u_pointSize.value = v;  });
 
 
 
@@ -180,8 +180,8 @@ function initUi(){
 */
 function uniformBlendChange(guiItem, channel, pod, clip) { 
 	for (var i = 0; i < 17; i++) {
-		if(guiItem === ap.BLENDS[i]){
-			ap.set("blend", (i+1) + ".", channel, pod, clip);
+		if(guiItem === pm.BLENDS[i]){
+			pm.set("blend", (i+1) + ".", channel, pod, clip);
 			return;
 		}
 	};
@@ -196,11 +196,11 @@ function uniformClipTypeChange(clipName, channel, pod, clip) {
 	var clipId = 0;
 
 	if(clipName !== "OFF"){
-		clipId = ap.clips[clipName];
+		clipId = pm.clips[clipName];
 	}
 
-	var clipObj = new ap.Clip({id: clipName});
-	ap.channels.setClip(channel, pod, clip, clipObj);
+	var clipObj = new pm.Clip({id: clipName});
+	pm.channels.setClip(channel, pod, clip, clipObj);
 
-	ap.updateShader = true;
+	pm.updateShader = true;
 }

@@ -7,10 +7,10 @@
  */
 
 
-ap.shaders.PointCloudShader = {
+pm.shaders.PointCloudShader = {
 
 	uniforms: {
-		u_pointSize:  { type: 'f', value: ap.pointSize }, // This is re-set in ap.setSize()
+		u_pointSize:  { type: 'f', value: pm.pointSize }, // This is re-set in pm.setSize()
 		//u_colorMap:   { type: "t", value: null },
 		//u_texture:    { type: "t", value: null }
 	},

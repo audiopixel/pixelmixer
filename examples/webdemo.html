@@ -14,7 +14,7 @@
 		<script src="libs/TrackballControls.js"></script>
 
 		<!-- <script src="../dist/all.min.js"></script> -->
-		<script src="../src/audiopixel.js"></script>
+		<script src="../src/pixelmix.js"></script>
 		<script src="../src/interface/api.js"></script>
 		<script src="../src/managers/AppManager.js"></script>
 		<script src="../src/managers/PortManager.js"></script>
@@ -86,18 +86,18 @@
 
 					// Initialize ap
 					var maxNodeCount = 10000;
-					ap.nodeSprite = "images/nodeflare250.png";
-					ap.init(scene, renderer, maxNodeCount);
-					ap.pointSize = 10;
-					ap.setSize(glWidth, glHeight);
-					//ap.dataSetLength = 1024; // use this to pass audio data (or any data feed)
+					pm.nodeSprite = "images/nodeflare250.png";
+					pm.init(scene, renderer, maxNodeCount);
+					pm.pointSize = 10;
+					pm.setSize(glWidth, glHeight);
+					//pm.dataSetLength = 1024; // use this to pass audio data (or any data feed)
 
 					
 
 					// Specify defaults starting hardware
-					ap.hardware.importNodes(ap.imported, 1, 350, 100, 500);
-					ap.channels.setPodPos(2, new ap.PodPosition(-190, 140, -100, 1070, 575, 1000));
-					ap.updateNodePoints();
+					pm.hardware.importNodes(pm.imported, 1, 350, 100, 500);
+					pm.channels.setPodPos(2, new pm.PodPosition(-190, 140, -100, 1070, 575, 1000));
+					pm.updateNodePoints();
 
 
 
@@ -119,9 +119,9 @@
 				function animate() {
 
 					// Main update loop
-					if(ap.ready){
+					if(pm.ready){
 						stats.update();
-						ap.update();
+						pm.update();
 						controls.update();
 						renderer.render( scene, camera );
 					}
@@ -136,7 +136,7 @@
 					glWidth = window.innerWidth;
 					glHeight = window.innerHeight;
 
-					ap.setSize(glWidth, glHeight);
+					pm.setSize(glWidth, glHeight);
 
 					camera.aspect = glWidth / glHeight;
 					camera.updateProjectionMatrix();

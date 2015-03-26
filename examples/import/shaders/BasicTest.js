@@ -3,7 +3,7 @@
  */
 
 
-ap.clips.BasicTest = {
+pm.clips.BasicTest = {
 
 	fragmentMain: [
 		

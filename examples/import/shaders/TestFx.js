@@ -12,7 +12,7 @@
 **/
 
 
-ap.clips.TestFx = {
+pm.clips.TestFx = {
 
 	fx: true,
 

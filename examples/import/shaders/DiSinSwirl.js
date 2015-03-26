@@ -3,7 +3,7 @@
  */
 
 
-ap.clips.DiSinSwirl = {
+pm.clips.DiSinSwirl = {
 
 	params: { // (optional uniforms)
 

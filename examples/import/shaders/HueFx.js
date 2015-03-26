@@ -12,7 +12,7 @@
 **/
 
 
-ap.clips.HueFx = {
+pm.clips.HueFx = {
 
 	fx: true,
 

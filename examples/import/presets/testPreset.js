@@ -1,4 +1,4 @@
-ap.testJSON = [
+pm.testJSON = [
     {
         "name": "TestChannel1",
         "type": 1,

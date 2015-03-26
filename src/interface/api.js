@@ -1,50 +1,50 @@
 
 
-ap.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
-ap.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
-ap.usePodUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
+pm.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
+pm.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
+pm.usePodUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
 
-ap.pointCloud = {};				// Main point cloud that displays node colors
-ap.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
-ap.pointMaterial = {};			// Shader of the point cloud that displays the node colors
-ap.pointSize = 20;				// The size of each point cloud sprite
-
-
-ap.material = false;			// Main shader referenced here, set false initially to flag that its not ready
-ap.shaderCount = -1;
+pm.pointCloud = {};				// Main point cloud that displays node colors
+pm.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
+pm.pointMaterial = {};			// Shader of the point cloud that displays the node colors
+pm.pointSize = 20;				// The size of each point cloud sprite
 
 
-ap.init = function(scene, renderer, maxNodeCount){
+pm.material = false;			// Main shader referenced here, set false initially to flag that its not ready
+pm.shaderCount = -1;
+
+
+pm.init = function(scene, renderer, maxNodeCount){
 
 	// Tag each shader with a incremental id, for easy lookup later
-	ap.shaderCount = 0;
-	for (var property in ap.clips) {
-		if (ap.clips.hasOwnProperty(property)) {
-			ap.shaderCount++;
-			ap.clips[property].id = ap.shaderCount;
+	pm.shaderCount = 0;
+	for (var property in pm.clips) {
+		if (pm.clips.hasOwnProperty(property)) {
+			pm.shaderCount++;
+			pm.clips[property].id = pm.shaderCount;
 		}
 	}
 
 	// Maintain the lowest possible power of 2 texture size based on maxNodeCount
 	maxNodeCount = maxNodeCount || Math.pow(128, 2); 	// Default: 16384 (128*128)
-	ap.simSize = 4;										// Minimum: 16 (4*4)
-	while(Math.pow(ap.simSize, 2) < maxNodeCount){
-		ap.simSize *= 2;
+	pm.simSize = 4;										// Minimum: 16 (4*4)
+	while(Math.pow(pm.simSize, 2) < maxNodeCount){
+		pm.simSize *= 2;
 	}
 
-	ap.ports = new ap.PortManager();
-	ap.hardware = new ap.HardwareManager();
-	ap.channels = new ap.ChannelManager();
-	ap.app = new ap.AppManager(scene, renderer);
+	pm.ports = new pm.PortManager();
+	pm.hardware = new pm.HardwareManager();
+	pm.channels = new pm.ChannelManager();
+	pm.app = new pm.AppManager(scene, renderer);
 
-	ap.ports.init();
-	ap.hardware.init();
-	ap.channels.init();
-	ap.app.init();
+	pm.ports.init();
+	pm.hardware.init();
+	pm.channels.init();
+	pm.app.init();
 
 	// If size not yet been defined, do it with some defaults
-	if(!ap.appSize){
-		ap.setSize(600, 400);
+	if(!pm.appSize){
+		pm.setSize(600, 400);
 	}
 
 
@@ -52,181 +52,181 @@ ap.init = function(scene, renderer, maxNodeCount){
 
 
 // Set this to store a [uniform float array] with specified length
-// Can be referenced later in shaders, and ap.set/get as 'data'
-ap.dataSetLength = null;
+// Can be referenced later in shaders, and pm.set/get as 'data'
+pm.dataSetLength = null;
 
 
-ap.updateShader = false;
-ap.updateFresh = false;
-ap.updateShaderLimiter = 0;
-ap.update = function() {
+pm.updateShader = false;
+pm.updateFresh = false;
+pm.updateShaderLimiter = 0;
+pm.update = function() {
 
 	//if(frameCount % 30 == 1){ // Slow framerate testing
 
-	if(!ap.app){
+	if(!pm.app){
 
-		console.log("AP Error: Need to call ap.init before ap.update.");
+		console.log("AP Error: Need to call pm.init before pm.update.");
 
-	}else if(ap.ready){
+	}else if(pm.ready){
 
 		// Update everything else if we don't have to update the shader this frame
-		if((!ap.updateShader || ap.updateShaderLimiter < 4) && ap.updateShaderLimiter > 0){
+		if((!pm.updateShader || pm.updateShaderLimiter < 4) && pm.updateShaderLimiter > 0){
 
 			// ** Main loop update 
-			ap.app.update();
-			ap.ports.update();
-			ap.hardware.update();
-			ap.channels.update();
+			pm.app.update();
+			pm.ports.update();
+			pm.hardware.update();
+			pm.channels.update();
 
 		}else{
 
 			// Shader needs update
-			ap.app.updateMainSourceShader();
-			ap.app.update();
-			ap.updateShaderLimiter = 0;
-			ap.updateShader = false;
-			ap.updateFresh = false;
+			pm.app.updateMainSourceShader();
+			pm.app.update();
+			pm.updateShaderLimiter = 0;
+			pm.updateShader = false;
+			pm.updateFresh = false;
 		}
-		ap.updateShaderLimiter++;
+		pm.updateShaderLimiter++;
 
 	}
 };
 
 
-ap.pointPosition = [-400, -400, 0]; // Defaults
-ap.setPointPosition = function(x, y, z) {
-	ap.pointPosition = [x, y, z];
-	if(ap.pointCloud.position){
-		ap.pointCloud.position = {x: x, y: y, z: z};
+pm.pointPosition = [-400, -400, 0]; // Defaults
+pm.setPointPosition = function(x, y, z) {
+	pm.pointPosition = [x, y, z];
+	if(pm.pointCloud.position){
+		pm.pointCloud.position = {x: x, y: y, z: z};
 	}
 };
 
-ap.appSize;
-ap.setSize = function(width, height) {
+pm.appSize;
+pm.setSize = function(width, height) {
 
-	ap.appSize = [width, height];
+	pm.appSize = [width, height];
 
-	if(ap.app){
+	if(pm.app){
 
-		ap.app.glWidth = width;
-		ap.app.glHeight = height;
+		pm.app.glWidth = width;
+		pm.app.glHeight = height;
 
-		if(ap.app.readPixels){
-			ap.app.pixels = new Uint8Array(4 * ap.app.glWidth * ap.app.glHeight);
+		if(pm.app.readPixels){
+			pm.app.pixels = new Uint8Array(4 * pm.app.glWidth * pm.app.glHeight);
 		}
 
-		ap.app.renderer.setSize( ap.app.glWidth, ap.app.glHeight );
+		pm.app.renderer.setSize( pm.app.glWidth, pm.app.glHeight );
 
 		// Set point size relative to screen resolution
-		var v = ap.pointSize;
+		var v = pm.pointSize;
 		v *= ((width * height) * .00001);
-		ap.pointMaterial.uniforms.u_pointSize.value = v;
+		pm.pointMaterial.uniforms.u_pointSize.value = v;
 
 	}
 };
 
 
-ap.importShader = function (name, shaderTxt) {
+pm.importShader = function (name, shaderTxt) {
 
-	ap.app.importShader(name, shaderTxt);
+	pm.app.importShader(name, shaderTxt);
 
 };
 
 
-ap.generateShader = function () {
+pm.generateShader = function () {
 
-	ap.app.updateMainSourceShader();
+	pm.app.updateMainSourceShader();
 	
 };
 
 // Easy way to add clips to a pod that is fitted to all nodes
 // [ids], mix, channel
-ap.simpleSetup = function (params) {
+pm.simpleSetup = function (params) {
 
 	params.mix = params.mix || 1;
 	params.channel = params.channel || 1;
 
 	var clips = [];
 	for (var i = 0; i < params.ids.length; i++) {
-		clips[i] = new ap.Clip({id: params.ids[i]});
+		clips[i] = new pm.Clip({id: params.ids[i]});
 	};
 
 	var pods = [];
-	pods[0] = new ap.Pod({ clips: clips });
+	pods[0] = new pm.Pod({ clips: clips });
 
-	var channel1 = new ap.Channel({ mix: params.mix, pods: pods });
-	ap.channels.setChannel(params.channel, channel1);
+	var channel1 = new pm.Channel({ mix: params.mix, pods: pods });
+	pm.channels.setChannel(params.channel, channel1);
 
-	ap.generateShader();
-
-};
-
-
-ap.updateNodePoints = function () {
-
-	ap.app.updateGeometry();
-	ap.app.generateCoordsMap();
-	ap.app.createNodePointCloud();
+	pm.generateShader();
 
 };
 
-ap.get = function(uniform, channel, pod, clip) {
+
+pm.updateNodePoints = function () {
+
+	pm.app.updateGeometry();
+	pm.app.generateCoordsMap();
+	pm.app.createNodePointCloud();
+
+};
+
+pm.get = function(uniform, channel, pod, clip) {
 	if(!channel){
-		return ap.material.uniforms[uniform].value;
+		return pm.material.uniforms[uniform].value;
 	}else{
-		return ap.getUniform(uniform, channel, pod, clip).value;
+		return pm.getUniform(uniform, channel, pod, clip).value;
 	}
 };
 
-ap.set = function(uniform, value, channel, pod, clip) {
+pm.set = function(uniform, value, channel, pod, clip) {
 	if(!channel){
-		ap.material.uniforms[uniform].value = value;
+		pm.material.uniforms[uniform].value = value;
 	}else{
-		ap.getUniform(uniform, channel, pod, clip).value = value;
-		ap.setObjProperty(uniform, value, channel, pod, clip);
+		pm.getUniform(uniform, channel, pod, clip).value = value;
+		pm.setObjProperty(uniform, value, channel, pod, clip);
 	}
 };
 
-ap.getUniform = function(uniform, channel, pod, clip) {
+pm.getUniform = function(uniform, channel, pod, clip) {
 	var addy = "_" + channel;
 	if(pod){ addy += "_" + pod; 
 	if(clip){ addy += "_" + clip; }}
-	return ap.material.uniforms[addy + "_" + uniform];
+	return pm.material.uniforms[addy + "_" + uniform];
 };
 
-ap.getObj = function(channel, pod, clip) {
-	var obj = ap.channels.channels[channel-1];
+pm.getObj = function(channel, pod, clip) {
+	var obj = pm.channels.channels[channel-1];
 	if(pod){ obj = obj.pods[pod-1]; 
 	if(clip){ obj = obj.clips[clip-1]; }}
 	return obj;
 };
 
-ap.setObj = function(newObj, channel, pod, clip) {
+pm.setObj = function(newObj, channel, pod, clip) {
 	if(!pod){
-		ap.channels.channels[channel-1] = newObj;
+		pm.channels.channels[channel-1] = newObj;
 	}else if(!clip){
-		ap.channels.channels[channel-1].pods[pod-1] = newObj;
+		pm.channels.channels[channel-1].pods[pod-1] = newObj;
 	}else{
-		ap.channels.channels[channel-1].pods[pod-1].clips[clip-1] = newObj;
+		pm.channels.channels[channel-1].pods[pod-1].clips[clip-1] = newObj;
 	}
 };
 
-ap.getObjProperty = function(property, channel, pod, clip) {
-	var obj = ap.getObj(channel, pod, clip);
+pm.getObjProperty = function(property, channel, pod, clip) {
+	var obj = pm.getObj(channel, pod, clip);
 	return obj[property];
 };
 
-ap.setObjProperty = function(property, value, channel, pod, clip) {
-	var obj = ap.getObj(channel, pod, clip);
+pm.setObjProperty = function(property, value, channel, pod, clip) {
+	var obj = pm.getObj(channel, pod, clip);
 	obj[property] = value;
 };
 
-ap.load = function(json){
-	ap.channels.channels = json;
-	ap.updateShader = true;
-	ap.updateFresh = true;
+pm.load = function(json){
+	pm.channels.channels = json;
+	pm.updateShader = true;
+	pm.updateFresh = true;
 };
 
-ap.stringify = function(){
-	return JSON.stringify(ap.channels.channels);
+pm.stringify = function(){
+	return JSON.stringify(pm.channels.channels);
 };

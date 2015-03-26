@@ -9,13 +9,13 @@
 *
 */
 
-ap.PortManager = function () {
+pm.PortManager = function () {
 
 	this.ports = [];
 
 };
 
-ap.PortManager.prototype = {
+pm.PortManager.prototype = {
 
 	init: function () {
 

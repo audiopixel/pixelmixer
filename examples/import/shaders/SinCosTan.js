@@ -1,6 +1,6 @@
 // http://glslsandbox.com/e#17645.2
 
-ap.clips.SinCosTan = {
+pm.clips.SinCosTan = {
 
 	params: {
 

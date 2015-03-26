@@ -7,7 +7,7 @@
  */
  
 
-ap.shaders.SimpleTextureShader = {
+pm.shaders.SimpleTextureShader = {
 
 	uniforms: {
 
