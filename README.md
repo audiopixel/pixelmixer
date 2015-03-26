@@ -1,11 +1,11 @@
 
 
-PixelMix by AudioPixel is a visual engine optimized for performance that generates, mixes, and maps OpenGL pixel shaders in 3D space.
+PixelMix by AudioPixel is a OpenGL visuals engine optimized for performance that generates, blends, and maps pixel shaders onto surfaces in 3D space.
 
 Runs in the browser using WebGL and Three.js, and is easy to add to any web application.
 The generated shaders can also be run (and cached) in any OpenGL environment (such as C++ / Java / IPhone / Android).
 
-The original goal in creating PixelMix was to drive led lighting and video projection equipment. It is capable of capturing color/data values of all 3D pixels at fast framerates, which can be used for communication to physical lighting equipment using protocols such as Video, UDP, & DMX. 
+The original goal in creating PixelMix was to drive led lighting and video projection equipment. It is capable of capturing color/data values of 3D pixels at fast framerates, which can be used for communication to physical lighting equipment using protocols such as Video, UDP, & DMX. 
 
 There are other advantages as well when compared to standard OpenGL pixel shaders, as shown in the comparison table below.
 
@@ -14,6 +14,10 @@ Live demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 Shader editor: [github/examples/shader_edit.html](https://github.com/hepp/audiopixel3/blob/master/examples/shader_edit.html)
 
 Load in additional WebGL shaders, such any of the ones found at [glslsandbox](http://glslsandbox.com/) or [shadertoy](https://www.shadertoy.com).
+
+
+Each instance of a loaded shader has independent control values setup that you can control. Global values (uniforms) are also provided to all shaders, and are ready to be populated with audio or any sort of data feed you provide. Easily enhance any loaded shaders to respond to the incoming values, and/or setup UI layers to control and change them directly. 
+
 
 
 ## Features ##
