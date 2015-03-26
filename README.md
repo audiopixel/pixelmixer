@@ -84,31 +84,19 @@ ap.set("p1", .7, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 ap.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 
 ```
-
-
-
-
 ---
 
+## Possible Uses Include ##
 
-## Vs Vanilla GLSL Shader ##
-Shaders for the API extend GLSL to achieve additional functionality:
+* Mixer for displaying pixel shaders into 3D space
+* Control light shows via laptop or mobile device
+* Music and data visualizers
+* Animate particles / sprites in any OpenGL or Three.js project
+* Runs on dedicated server / gaming machine, triggered by MIDI or OSC API
+* Lighting conceptualize / architectural tool
 
-| Feature | API | GLSL |
-|----------------- | -------------------- | --------------------- |
-| GPU accelerated | x | x |
-| GPU optimized Math methods | x | x |
-| X,Y coordinates | x | x |
-| Attributes and uniforms | x | x |
-| Z coordinate | x | |
-| Index value | x | |
-| Multiple coordinates per pixel | x | |
-| Last color value per pixel | x | |
-| Last color values for all pixels | x | |
-| Color blending algorithms | x | |
-| Random values | x | |
-| Accompanying init & update methods | x | |
-| Hardware port / light unit info | x | |
+
+
 
 ---
 
@@ -145,14 +133,26 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 
 **Previz**: Render a to-be-displayed channel to preview on screen, while still outputting the main channel mix unaffected.
 
+
+
 ---
 
-## Possible Uses Include ##
 
-* Mixer for displaying pixel shaders into 3D space
-* Control light shows via laptop or mobile device
-* Music and data visualizers
-* Animate particles / sprites in any OpenGL or Three.js project
-* Runs on dedicated server / gaming machine, triggered by MIDI or OSC API
-* Lighting conceptualize / architectural tool
+## Vs Vanilla GLSL Shader ##
+Shaders loaded into the API extend GLSL to achieve additional functionality:
 
+| Feature | API | GLSL |
+|----------------- | -------------------- | --------------------- |
+| GPU accelerated | x | x |
+| GPU optimized Math methods | x | x |
+| X,Y coordinates | x | x |
+| Attributes and uniforms | x | x |
+| Z coordinate | x | |
+| Index value | x | |
+| Multiple coordinates per pixel | x | |
+| Last color value per pixel | x | |
+| Last color values for all pixels | x | |
+| Color blending algorithms | x | |
+| Random values | x | |
+| Accompanying init & update methods | x | |
+| Hardware port / light unit info | x | |
