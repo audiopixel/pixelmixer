@@ -54,19 +54,17 @@
 
 		<!-- Shader imported inline: -->
 		<script type="x-shader/x-fragment" id="fs">
-			// http://glslsandbox.com/e#21521.0
-			#ifdef GL_ES
-			precision mediump float;
-			#endif
 
-			uniform float time;
-			uniform vec2 mouse;
-			uniform vec2 resolution;
+			// http://glslsandbox.com/e#21521.0
 
 			void main( void ) {
 
 				vec2 position = (vec2(time/40.0,time/20.0)+ vec2(gl_FragCoord.xy / resolution.xy) );
-				gl_FragColor = vec4( ceil(sin(14.0*3.1415*position.y+14.*3.1415*position.x)),ceil(sin(14.0*3.1415*position.y)), ceil(sin(14.0*3.1415*position.x)), 1.0 );
+
+				float r = ceil(sin(14.0*3.1415*position.y+14.*3.1415*position.x));
+				float g = ceil(sin(14.0*3.1415*position.y));
+				float b = ceil(sin(14.0*3.1415*position.x));
+				gl_FragColor = vec4(r, g, b, 1.0 );
 			}
 
 
