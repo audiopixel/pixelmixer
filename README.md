@@ -7,7 +7,8 @@ The generated shaders can also be run (and cached) in any OpenGL environment (su
 
 The original goal in creating PixelMix was to drive led lighting and video projection equipment. Because of this it is capable of capturing color values of all 3D pixels even at fast framerates. Using this for example we can broadcast color values to lighting equipment using UDP & DMX protocols. There are other advantages as well when compared to standard OpenGL pixel shaders, as shown in the comparison table below.
 
-
+Live demo: [audiopixel.com/webdemo](https://audiopixel.com/webdemo)
+Shader Editor: [github](https://github.com/hepp/audiopixel3/blob/master/examples/shader_edit.html)
 
 ## Features ##
 
@@ -28,11 +29,15 @@ The original goal in creating PixelMix was to drive led lighting and video proje
 
 ## Steps to using API ##
 
-#### 1. Initialize API & Three.js ####
+[View this in a simple example](https://github.com/hepp/audiopixel3/blob/master/examples/basic_example.html)
 
-[View this example](https://github.com/hepp/audiopixel3/blob/master/examples/basic_example.html)
+#### 1. Include pixelmix.js and three.js ####
 
 ```
+
+<script src="pixelmix.min.js"></script>
+<script src="three.min.js"></script>
+
 scene = new THREE.Scene();
 renderer = new THREE.WebGLRenderer(); 
 
@@ -42,7 +47,8 @@ ap.setSize(glWidth, glHeight);
 ```
 #### 2. Add Nodes ####
 
-To import nodes there are several hardware methods included to draw simple grids of various sizes. It's also easy to import new node positions via JSON.
+To import nodes there are several hardware methods included to draw simple grids of various sizes.
+It's also easy to import new node positions via JSON.
 
 ```
 // Add a simple grid of Nodes 
@@ -52,9 +58,8 @@ ap.updateNodePoints();
 ```
 #### 3. Add Shaders ####
 
-[View example shader](https://github.com/hepp/audiopixel3/blob/master/examples/import/shaders/TestFrame.js)
-
 ```
+
 <!-- Include source -->
 <script src="import/shaders/SolidColor.js"></script>
 
@@ -65,8 +70,8 @@ ap.simpleSetup({channel: 1, ids: ["SolidColor"]});
 
 #### 4. Change uniforms (Optional UI Layer) ####
 
-You can easily alter shaders while running, and assign params, mix and blend values to controllers. 
-Here we are setting values on the Shader we just created in Channel 1, Pod 1, Clip 1.
+Easily alter shaders while running, and assign params, mix and blend values to controllers. 
+Here we are setting values on the shader we just created.
 
 ```
 // Set param 1 on the clip to .7
@@ -110,31 +115,32 @@ The API extends the standard GLSL fragment shaders to achieve additional functio
 A Clip is simply a shader wrapped in a object with additional timing, scaling, and input controls. 
 Wrapping a shader in a clip allows us to play it back at any size and at any animation speed.
 
-A Pod is a way to group and mix clips to be blended and positioned as one. Pods can then be mixed into other pods. Pods can also be represented many times over in many places. An example of this could be to take one shader and display it in two different places, perhaps with the second instance mirrored or scaled. 
+A Pod is a way to group and mix Clips to be blended and positioned as one. Pods can then be mixed into other pods. Pods can also be represented many times over in many places. An example of this could be to take one Clip/Shader and display it in two different places, perhaps with the second instance mirrored or scaled. 
 
-Once a shader has been loaded into a clip, it can be positioned with a pod, and then mixed into the main mix inside a Channel.
+Once a Shader has been loaded into a Clip, it can be positioned in multiple places with a Pod, and then mixed into the main mix inside a Channel.
 
 
 
-**node**: A single light unit or RGB pixel. Usually represented as a particle on screen, but can be represented in many ways.
 
-**port**: A group of Nodes. May also contain protocol and address data.
+**Node**: A single light unit or RGB pixel. Usually represented as a particle on screen, but can be represented in many ways.
 
-**channel**: Main source of color and values (like dmx) to be assigned to nodes. Channels hold pods, which may also hold clips.
+**Port**: A group of Nodes. May also contain protocol and address data.
 
-**pod**: A group of clips that are to be positioned together, combined, and blended as one.
+**Channel**: Main source of color and values (like dmx) to be assigned to nodes. Channels hold pods, which may also hold clips.
 
-**position-unit**: Defined coordinates that a pod can choose to populate into. Pod's can render to any number of position units to allow advanced mapping.
+**Shader**: A opengl glsl fragment shader that runs directly on the gpu.
 
-**clip**: A clip is a shader harnessed in a playable form. Clips can play shaders back at different speeds and different positions.
+**Clip**: A clip is a shader harnessed in a playable form. Clips can play shaders back at different speeds and different positions.
 
-**clipfx**: A type of clip that does not blend, instead it analyses incoming values and outputs a new one.
+**Clipfx**: A type of clip that does not blend, instead it analyses incoming values and outputs a new one.
 
-**postfx**: A type of channel that takes the entire main mix and routes it through a set of clipfxs.
+**Postfx**: A type of channel that takes the entire main mix and routes it through a set of clipfxs.
 
-**previz**: Render a to-be-displayed channel to preview on screen, while still outputting the main channel mix unaffected.
+**Previz**: Render a to-be-displayed channel to preview on screen, while still outputting the main channel mix unaffected.
 
-**shader**: A opengl glsl fragment shader that runs directly on the gpu.
+**Pod**: A group of clips that are to be positioned together, combined, and blended as one.
+
+**Position-unit**: Defined coordinates that a pod can choose to populate into. Pod's can render to any number of position units to allow advanced mapping.
 
 ---
 
