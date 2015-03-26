@@ -154,14 +154,12 @@ function initUi(){
 				ap.hardware.addTestPortsGrid(1, 0, 0);
 				break;
 
-
 			default: 
 				ap.hardware.importNodes(ap.imported, 1, 0, 0, 0);
 			break;
 		}
 		ap.updateNodePoints(); // only need to call this when we add nodes aftervit
-
-		updateShader = true;
+		ap.updateShader = true;
 
 	});
 	f5.add( guiData, "Speed", 0.025, 0.4, 1.0 ).onChange(function (v) { ap.speed = v; });

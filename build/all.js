@@ -589,12 +589,14 @@ ap.AppManager.prototype = {
 		this.coordsMap.needsUpdate = true;
 		this.coordsMap.flipY = true;
 
+		/*
 		// testing
 		this.altMap1 = new THREE.DataTexture( a, ap.simSize, ap.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.altMap1.minFilter = THREE.NearestFilter;
 		this.altMap1.magFilter = THREE.NearestFilter;
 		this.altMap1.needsUpdate = true;
 		this.altMap1.flipY = true;
+		*/
 
 	},
 
