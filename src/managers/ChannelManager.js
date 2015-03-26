@@ -21,29 +21,6 @@ pm.ChannelManager.prototype = {
 
 	update: function () {
 
-		// For every clip in each pods channel, we call it's update function if it's defined
-		for (var i = 0; i < this.channels.length; i++) { var channel = this.channels[i];
-
-			if(channel && channel.pods){
-
-				for (var e = 0; e < channel.pods.length; e++) { var pod = channel.pods[e];
-
-					if(pod && pod.clips){
-
-						for (var u = 0; u < pod.clips.length; u++) { var clip = pod.clips[u];
-
-							if(clip){ var shader = pm.clips[clip.id];
-
-								// If the clip defined update function call it with proper clip addressing
-								if(shader && shader.update && pm.app.material){
-									shader.update("_" + (i+1) + "_" + (e+1) + "_" + (u+1), pm.app.material.uniforms);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
 	},
 
 	generateSourceShader: function () {

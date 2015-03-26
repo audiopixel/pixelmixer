@@ -84,9 +84,9 @@ pm.AppManager.prototype = {
 		//this.renderer.clear();
 		
 
-		// Update uniforms
 		if(this.render && pm.ready){
 
+			// Update uniforms
 			pm.material.uniforms._time.value = this.time;
 			pm.material.uniforms._random.value = Math.random();
 
@@ -102,7 +102,7 @@ pm.AppManager.prototype = {
 			}
 			this.rtToggle = !this.rtToggle;
 
-			this.updateTimePerClip();
+			this.updateClips();
 
 
 			// Capture colormap for broadcast output
@@ -286,7 +286,7 @@ pm.AppManager.prototype = {
 	},
 
 			
-	updateTimePerClip: function () {
+	updateClips: function () {
 
 		for (var i = 0; i < pm.channels.channels.length; i++) { var channel = pm.channels.channels[i];
 			
@@ -300,7 +300,14 @@ pm.AppManager.prototype = {
 							
 							if(clip && pm.clips[clip.id]){
 
+								// update uniform
 								pm.material.uniforms["_"+(i+1)+"_"+(e+1)+"_"+(u+1)+"_"+"time"].value += (clip.speed * pm.speed);
+
+								// If the clip defined update function call it with proper clip addressing
+								var shader = pm.clips[clip.id];
+								if(shader && shader.update && pm.material){
+									shader.update("_" + (i+1) + "_" + (e+1) + "_" + (u+1), pm.material.uniforms);
+								}
 							}
 						}
 					}
