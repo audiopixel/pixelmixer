@@ -208,4 +208,4 @@ We are releasing it to the world in the hopes that it can improve sound and inte
 
 ## Contribute ##
 
-Please feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API, please let us know. Better yet - take a stab at it yourself. We encourage you to fork and experiment with the code and these techniques. If you would like to contribute in whatever fashion, we would love to [hear from you.](http://audiopixel.com/contact)
+Please feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API, please let us know. Better yet - also try and take a stab at it yourself. We encourage you to fork and experiment with the code and these techniques. We are also seeking beta testers, especially if you have lighting hardware to test with. If you would like to contribute in whatever fashion, we would love to [hear from you.](http://audiopixel.com/contact)
