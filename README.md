@@ -1,6 +1,6 @@
 
 
-PixelMixer by AudioPixel is a graphics engine optimized for performance that is able to generate, blend, and map OpenGL pixel shaders in 3D space.
+PixelMixer by AudioPixel is a visual engine optimized for performance that is able to generate, blend, and map OpenGL pixel shaders in 3D space.
 
 Runs in the browser using WebGL and Three.js, and is easy to add to any web application.
 The generated shaders can also be run in any OpenGL ES 2.0 environment (C / Java / IPhone / Android etc).
@@ -11,13 +11,20 @@ There are other advantages as well when compared to standard OpenGL pixel shader
 
 Live demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 
+
+####[Features](https://github.com/hepp/audiopixel3#features)####
+####[Steps to using API](https://github.com/hepp/audiopixel3#steps-to-using-api)####
+####[Possible Uses Include](https://github.com/hepp/audiopixel3#possible-uses-include)####
+####[Vs Vanilla GLSL Shader](https://github.com/hepp/audiopixel3#vs-vanilla-glsl-shader)####
+####[Terminology](https://github.com/hepp/audiopixel3#terminology)####
+####[About AudioPixel](https://github.com/hepp/audiopixel3#about-audiopixel)####
+
 ---
 
 Shader editor: [github/examples/shader_edit.html](https://github.com/hepp/audiopixel3/blob/master/examples/shader_edit.html)
+
 Load in additional WebGL shaders, such any of the ones found at [glslsandbox](http://glslsandbox.com/) or [shadertoy](https://www.shadertoy.com).
 
-
-Each instance of a loaded shader has independent uniforms setup for easy control. Global values are also provided to all shaders that are ready to be populated with audio or any sort of data feed you provide. Easily enhance any loaded shaders to respond to the incoming values, and/or setup UI layers to control and change them directly. 
 
 
 
@@ -41,6 +48,8 @@ Each instance of a loaded shader has independent uniforms setup for easy control
 ## Steps to using API ##
 
 [View this in a simple example](https://github.com/hepp/audiopixel3/blob/master/examples/basic_example.html)
+
+
 
 #### 1. Include Libraries pixelmixer.js and three.js ####
 
@@ -90,6 +99,7 @@ PMX.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 
 ```
 
+Each instance of a loaded shader has independent uniforms setup for easy control. Global values are also provided to all shaders that are ready to be populated with audio or any sort of data feed you provide. Easily enhance any loaded shaders to respond to the incoming values, and/or setup UI layers to control and change them directly. 
 
 ---
 
@@ -173,18 +183,16 @@ We are on our 3rd revision of our in-house lighting software.
 
 In our quest of optimizing lighting technology PixelMixer was born.
 
-We are releasing it to the world in hopes that it can improve sound responsive and interactive light art for all.
+We are releasing it to the world in hopes that it will improve sound and interactive light art for all.
 
 
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/rick6.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel_festival_lights-585x390.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-bigBounce_06.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-SonicBloom_05.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-Tipper-SF_03.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-cubes1.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-Tipper-SF_01.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-SonicBloom_05.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/blank_prod_santa_cruz_01_585.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/Emrg-N-See-2010.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/EmrgNSee-VibeSquad-AudioPixel.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel_Nexus_BurningMan_2012_17.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/lorn-decibel.jpg.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel_festival_lights-585x390.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/Emrg-N-See-2010.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/lorn-decibel-audiopixel.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/raindanceSnapshot1.png)
