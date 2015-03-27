@@ -11,20 +11,23 @@ There are other advantages as well when compared to standard OpenGL pixel shader
 
 Live demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 
-
-[Features](https://github.com/hepp/audiopixel3#features)
-[Steps to using API](https://github.com/hepp/audiopixel3#steps-to-using-api)
-[Possible Uses Include](https://github.com/hepp/audiopixel3#possible-uses-include)
-[Vs Vanilla GLSL Shader](https://github.com/hepp/audiopixel3#vs-vanilla-glsl-shader)
-[Terminology](https://github.com/hepp/audiopixel3#terminology)
-[About AudioPixel](https://github.com/hepp/audiopixel3#about-audiopixel)
-
----
-
 Shader editor: [github/examples/shader_edit.html](https://github.com/hepp/audiopixel3/blob/master/examples/shader_edit.html)
 
 Load in additional WebGL shaders, such any of the ones found at [glslsandbox](http://glslsandbox.com/) or [shadertoy](https://www.shadertoy.com).
 
+---
+
+## Table of Contents ##
+
+[Features](https://github.com/hepp/audiopixel3#features) |
+[Steps to using API](https://github.com/hepp/audiopixel3#steps-to-using-api) |
+[Possible uses](https://github.com/hepp/audiopixel3#possible-uses)
+
+[vs Vanilla GLSL Shader](https://github.com/hepp/audiopixel3#vs-vanilla-glsl-shader) |
+[Terminology](https://github.com/hepp/audiopixel3#terminology) |
+[About AudioPixel](https://github.com/hepp/audiopixel3#about-audiopixel)
+
+---
 
 
 
@@ -103,7 +106,7 @@ Each instance of a loaded shader has independent uniforms setup for easy control
 
 ---
 
-## Possible Uses Include ##
+## Possible uses ##
 
 * Mixer for displaying pixel shaders in 3D space
 * VJ / Control light shows 
@@ -116,7 +119,7 @@ Each instance of a loaded shader has independent uniforms setup for easy control
 
 
 
-## Vs Vanilla GLSL Shader ##
+## vs Vanilla GLSL Shader ##
 Shaders loaded into the API extend GLSL to achieve additional functionality:
 
 | Feature | API | GLSL |
@@ -190,9 +193,9 @@ We are releasing it to the world in hopes that it will improve sound and interac
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-Tipper-SF_01.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-SonicBloom_05.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/blank_prod_santa_cruz_01_585.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel_festival_lights-585x390.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/EmrgNSee-VibeSquad-AudioPixel.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel_Nexus_BurningMan_2012_17.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel_festival_lights-585x390.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/Emrg-N-See-2010.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/lorn-decibel-audiopixel.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/raindanceSnapshot1.png)
