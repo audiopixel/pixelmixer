@@ -1,6 +1,8 @@
 /*
 *
-* One possible View & Controller state of the MVC application
+* One possible way to use UI layer to control the API.
+* 
+* Webdemo setup
 *
 */
 
@@ -15,14 +17,10 @@ function initUi(){
 	});
 	
 
-	// -------Temporary: Create some Channels/Pods/Clips for testing----------
-
-	// Let's create some test channels for now (TODO: this should be loaded from current project settings)
-
+	// -------Create some Channels/Pods/Clips----------
 
 
 	// ** Channel 1
-
 
 	var clip1 = new PMX.Clip({id: "LineCosSin"});
 	var clipfx1 = new PMX.Clip({id: "TestFx", blend: PMX.BLEND.Fx});
@@ -30,10 +28,12 @@ function initUi(){
 	var clip2 = new PMX.Clip({id: "ColorSineBar"});
 	var clipfx2 = new PMX.Clip({id: "TestFx", blend: PMX.BLEND.Fx});
 
+	// Create two pods each with a content clip and a fx clip inside it
 	var pods = [];
 	pods[1] = new PMX.Pod({positionIds: [2], blend: PMX.BLEND.LinearLight, clips: [clip1, clipfx1]});
 	pods[0] = new PMX.Pod({positionIds: [1], clips: [clip2, clipfx2]});
 
+	// Add them both to the first channel
 	var channel1 = new PMX.Channel({name: "TestChannel1", mix: 1, pods: pods});
 	PMX.channels.setChannel(1, channel1);
 

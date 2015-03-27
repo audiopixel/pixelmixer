@@ -185,11 +185,11 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 
 AudioPixel develops custom lighting technology and sound-reactive visual programming.
 
-We are on our 3rd revision of our in-house lighting software.
+We are currently using the 3rd revision of our in-house lighting software, which has now been by used by dozens of artists at hundreds of performances and art installations around the world.
 
-In our quest of optimizing lighting technology PixelMixer was born.
+In our quest of optimizing lighting programming PixelMixer was born.
 
-We are releasing it to the world in the hopes that it can improve sound and interactive light art for all.
+Built to be a capable engine for any installation we would dream up, it is now be capable of so much more. We are releasing it to the world in the hopes that it can improve sound and interactive light art for all.
 
 
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-cubes1.jpg)
@@ -208,4 +208,4 @@ We are releasing it to the world in the hopes that it can improve sound and inte
 
 ## Contribute ##
 
-Please feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API, please let us know. Better yet - also try and take a stab at it yourself. We encourage you to fork and experiment with the code and these techniques. We are also seeking beta testers, especially if you have lighting hardware to test with. If you would like to contribute in whatever fashion, we would love to [hear from you.](http://audiopixel.com/contact)
+Please feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API, please let us know. Better yet - also try and take a stab at it yourself. We encourage you to fork and experiment with the code and these techniques. We are also seeking beta testers, and people to try out some new advanced techniques, especially if you have lighting hardware to test with. If you would like to be involved in whatever fashion, we would love to [hear from you.](http://audiopixel.com/contact)

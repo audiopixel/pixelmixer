@@ -227,6 +227,10 @@ PMX.load = function(json){
 	PMX.updateFresh = true;
 };
 
-PMX.stringify = function(){
+PMX.stringifyChannels = function(){
 	return JSON.stringify(PMX.channels.channels);
+};
+
+PMX.stringifyNodes = function(){
+	return JSON.stringify(PMX.ports.ports);
 };
