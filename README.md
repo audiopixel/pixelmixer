@@ -164,7 +164,7 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 
 ## About AudioPixel ##
 
-![AudioPixel Logo](https://github.com/hepp/audiopixel2/blob/master/docs/audiopixel-web-grid.png)
+![AudioPixel Logo](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-web-grid.png)
 
 
 AudioPixel develops custom lighting technology and sound-reactive visual programming.
@@ -176,9 +176,9 @@ In our quest of optimizing lighting technology PixelMixer was born.
 We are releasing it to the world in hopes that it can improve sound responsive and interactive light art for all.
 
 
-![AudioPixel Show](https://github.com/hepp/audiopixel2/blob/master/docs/AudioPixel-Tipper-SF_03.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel2/blob/master/docs/blank_prod_santa_cruz_01_585.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel2/blob/master/docs/blank_prod_santa_cruz_04_585.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel2/blob/master/docs/AudioPixel-bigBounce_06.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel2/blob/master/docs/AudioPixel-SonicBloom_05.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel2/blob/master/docs/AudioPixel-Tipper-SF_01.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-Tipper-SF_03.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/blank_prod_santa_cruz_01_585.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/blank_prod_santa_cruz_04_585.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-bigBounce_06.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-SonicBloom_05.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-Tipper-SF_01.jpg)
