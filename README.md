@@ -3,7 +3,7 @@
 PixelMixer by AudioPixel is a graphics engine optimized for performance that is able to generate, blend, and map OpenGL pixel shaders in 3D space.
 
 Runs in the browser using WebGL and Three.js, and is easy to add to any web application.
-The generated shaders can also be run (and cached) in any OpenGL ES 2.0 environment (such as C / Java / IPhone / Android).
+The generated shaders can also be run in any OpenGL ES 2.0 environment (C / Java / IPhone / Android etc).
 
 The original goal in creating PixelMixer was to drive lighting and video projection equipment. It is capable of capturing all color / data values of 3D pixels at fast framerates, which can be used for communication to physical lighting equipment using protocols such as Video, UDP, & DMX. 
 
@@ -17,7 +17,7 @@ Shader editor: [github/examples/shader_edit.html](https://github.com/hepp/audiop
 Load in additional WebGL shaders, such any of the ones found at [glslsandbox](http://glslsandbox.com/) or [shadertoy](https://www.shadertoy.com).
 
 
-Each instance of a loaded shader has independent control values setup that you can control. Global values are also provided to all shaders that are ready to be populated with audio or any sort of data feed you provide. Easily enhance any loaded shaders to respond to the incoming values, and/or setup UI layers to control and change them directly. 
+Each instance of a loaded shader has independent uniforms setup for easy control. Global values are also provided to all shaders that are ready to be populated with audio or any sort of data feed you provide. Easily enhance any loaded shaders to respond to the incoming values, and/or setup UI layers to control and change them directly. 
 
 
 
@@ -160,3 +160,25 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 **Previz**: Render a to-be-displayed channel to preview on screen, while still outputting the main channel mix unaffected.
 
 
+---
+
+## About AudioPixel ##
+
+![AudioPixel Logo](https://github.com/hepp/audiopixel2/blob/master/docs/audiopixel-web-grid.png)
+
+
+AudioPixel develops custom lighting technology and sound-reactive visual programming.
+
+We are on our 3rd revision of our in-house lighting software.
+
+In our quest of optimizing lighting technology PixelMixer was born.
+
+We are releasing it to the world in hopes that it can improve sound responsive and interactive light art for all.
+
+
+![AudioPixel Show](https://github.com/hepp/audiopixel2/blob/master/docs/AudioPixel-Tipper-SF_03.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel2/blob/master/docs/blank_prod_santa_cruz_01_585.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel2/blob/master/docs/blank_prod_santa_cruz_04_585.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel2/blob/master/docs/AudioPixel-bigBounce_06.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel2/blob/master/docs/AudioPixel-SonicBloom_05.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel2/blob/master/docs/AudioPixel-Tipper-SF_01.jpg)
