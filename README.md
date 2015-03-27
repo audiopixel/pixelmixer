@@ -1,11 +1,11 @@
 
 
-PixelMix by AudioPixel is a OpenGL visuals engine optimized for performance that generates, blends, and maps pixel shaders onto surfaces in 3D space.
+PixelMixer by AudioPixel is a graphics engine optimized for performance that is able to generate, blend, and map OpenGL pixel shaders in 3D space.
 
 Runs in the browser using WebGL and Three.js, and is easy to add to any web application.
-The generated shaders can also be run (and cached) in any OpenGL environment (such as C++ / Java / IPhone / Android).
+The generated shaders can also be run (and cached) in any OpenGL ES 2.0 environment (such as C / Java / IPhone / Android).
 
-The original goal in creating PixelMix was to drive led lighting and video projection equipment. It is capable of capturing color/data values of 3D pixels at fast framerates, which can be used for communication to physical lighting equipment using protocols such as Video, UDP, & DMX. 
+The original goal in creating PixelMixer was to drive lighting and video projection equipment. It is capable of capturing all color / data values of 3D pixels at fast framerates, which can be used for communication to physical lighting equipment using protocols such as Video, UDP, & DMX. 
 
 There are other advantages as well when compared to standard OpenGL pixel shaders, as shown in the comparison table below.
 
@@ -25,7 +25,8 @@ Each instance of a loaded shader has independent control values setup that you c
 
 * Animate pixel shaders seamlessly across textures and point cloud particles 
 * Mix multiple pixel shaders together using various blend modes
-* Map each shader to any number of areas using 3D transformations
+* Map shaders to any number of areas using 3D transformations
+* Blend multiple shaders into combined shaders
 * Capture color values for all 3D nodes at high framerates
 * Easily manipulate animations with incoming audio or data feeds
 * Import any GLSL fragment shader
@@ -41,10 +42,10 @@ Each instance of a loaded shader has independent control values setup that you c
 
 [View this in a simple example](https://github.com/hepp/audiopixel3/blob/master/examples/basic_example.html)
 
-#### 1. Include Libraries pixelmix.js and three.js ####
+#### 1. Include Libraries pixelmixer.js and three.js ####
 
 ```
-<script src="pixelmix.min.js"></script>
+<script src="pixelmixer.min.js"></script>
 <script src="three.min.js"></script>
 
 scene = new THREE.Scene();
@@ -100,6 +101,7 @@ ap.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 * Audio and data visualizations
 * Animate particles / sprites / textures in any WebGL or Three.js project
 * Lighting conceptualize / architectural tool
+* Generate shaders that can be used in separate OpenGL applications
 * Run massive LED walls with dedicated server / gaming laptop, triggered by mobile MIDI / OSC API
 
 
@@ -156,6 +158,5 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 **Postfx**: A type of channel that takes the entire main mix and routes it through a set of clipfxs.
 
 **Previz**: Render a to-be-displayed channel to preview on screen, while still outputting the main channel mix unaffected.
-
 
 
