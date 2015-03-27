@@ -9,13 +9,13 @@
 *
 */
 
-pm.PortManager = function () {
+PMX.PortManager = function () {
 
 	this.ports = [];
 
 };
 
-pm.PortManager.prototype = {
+PMX.PortManager.prototype = {
 
 	init: function () {
 

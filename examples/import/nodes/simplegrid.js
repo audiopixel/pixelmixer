@@ -1,5 +1,5 @@
 
-pm.imported = {
+PMX.imported = {
 	scale: 1.0,
 	hardwareunit: [
 		{

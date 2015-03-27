@@ -12,7 +12,7 @@
 **/
 
 
-pm.clips.HueFx = {
+PMX.clips.HueFx = {
 
 	fx: true,
 

@@ -4,11 +4,11 @@
 *
 */
 
-pm.HardwareManager = function () {
+PMX.HardwareManager = function () {
 
 };
 
-pm.HardwareManager.prototype = {
+PMX.HardwareManager.prototype = {
 
 	init: function () {
 
@@ -19,10 +19,10 @@ pm.HardwareManager.prototype = {
 		//this.addSimpleNodeGrid(0, 220, 0, 32, 20, 33);
 
 		// Simulate Importing nodes from external file
-		//this.importNodes(pm.imported, 1, 350, 100, 500);
-		//pm.channels.setPodPos(2, new pm.PodPosition(-190, 140, -100, 1070, 575, 1000));
-		//pm.channels.setPodPos(2, new pm.PodPosition(-540, 140, -100, 700, 575, 1000));
-		//pm.channels.setPodPos(3, new pm.PodPosition(540, 140, -100, 700, 575, 1000));
+		//this.importNodes(PMX.imported, 1, 350, 100, 500);
+		//PMX.channels.setPodPos(2, new PMX.PodPosition(-190, 140, -100, 1070, 575, 1000));
+		//PMX.channels.setPodPos(2, new PMX.PodPosition(-540, 140, -100, 700, 575, 1000));
+		//PMX.channels.setPodPos(3, new PMX.PodPosition(540, 140, -100, 700, 575, 1000));
 
 	},
 
@@ -52,7 +52,7 @@ pm.HardwareManager.prototype = {
 		// Use the scale value defined in JS object unless one is passed as an argument instead
 		var _scale = scale || imported.scale; 
 
-		// Add node values to 'pm.ports' for each defined port
+		// Add node values to 'PMX.ports' for each defined port
 		for(var unit in imported.hardwareunit){
 
 			var _unit = imported.hardwareunit[unit];
@@ -78,7 +78,7 @@ pm.HardwareManager.prototype = {
 					_node.z += zOffset;
 
 				}
-				pm.ports.setNodes(_port.portid + portOffset, _port.nodes);
+				PMX.ports.setNodes(_port.portid + portOffset, _port.nodes);
 			}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 		}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 	},
@@ -97,7 +97,7 @@ pm.HardwareManager.prototype = {
 			}
 		}
 
-		pm.ports.setNodes(port, nodes);
+		PMX.ports.setNodes(port, nodes);
 	},
 
 	addTestPortsGrid: function (portStart, xOffset, yOffset) {
@@ -119,8 +119,8 @@ pm.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new pm.Port("port name " + port, pm.PORT_TYPE_KINET_1, null, null, nodes);
-			pm.ports.setPort(u + portStart, port);
+			var port = new PMX.Port("port name " + port, PMX.PORT_TYPE_KINET_1, null, null, nodes);
+			PMX.ports.setPort(u + portStart, port);
 
 			xS += xTOffset;
 			if((u + 2) % 5 == 1){
@@ -142,8 +142,8 @@ pm.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new pm.Port("port name " + port, pm.PORT_TYPE_KINET_1, null, null, nodes);
-			pm.ports.setPort(portStart, port);
+			var port = new PMX.Port("port name " + port, PMX.PORT_TYPE_KINET_1, null, null, nodes);
+			PMX.ports.setPort(portStart, port);
 	},
 
 	addTestPortsGrid3: function (portStart, xOffset, yOffset) {
@@ -159,8 +159,8 @@ pm.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new pm.Port("port name " + port, pm.PORT_TYPE_KINET_1, null, null, nodes);
-			pm.ports.setPort(portStart, port);
+			var port = new PMX.Port("port name " + port, PMX.PORT_TYPE_KINET_1, null, null, nodes);
+			PMX.ports.setPort(portStart, port);
 
 			nodes = [];
 			for ( e = 0; e < 70; e ++ ) { // Simulate a simple node grid for now
@@ -176,8 +176,8 @@ pm.HardwareManager.prototype = {
 					}
 				}
 			}
-			port = new pm.Port("port name " + port, pm.PORT_TYPE_KINET_1, null, null, nodes);
-			pm.ports.setPort(portStart + 1, port);
+			port = new PMX.Port("port name " + port, PMX.PORT_TYPE_KINET_1, null, null, nodes);
+			PMX.ports.setPort(portStart + 1, port);
 
 			nodes = [];
 			for ( e = 0; e < 70; e ++ ) { // Simulate a simple node grid for now
@@ -193,8 +193,8 @@ pm.HardwareManager.prototype = {
 					}
 				}
 			}
-			port = new pm.Port("port name " + port, pm.PORT_TYPE_KINET_1, null, null, nodes);
-			pm.ports.setPort(portStart + 2, port);
+			port = new PMX.Port("port name " + port, PMX.PORT_TYPE_KINET_1, null, null, nodes);
+			PMX.ports.setPort(portStart + 2, port);
 	},
 
 
@@ -202,7 +202,7 @@ pm.HardwareManager.prototype = {
 
 		// If a port slot is not defined just add it to the next open one
 		if(!port){
-			port = pm.ports.ports.length + 1;
+			port = PMX.ports.ports.length + 1;
 		}
 		
 
@@ -227,12 +227,12 @@ pm.HardwareManager.prototype = {
 				maxy = Math.max(maxy, node.y);
 			}
 		}
-		var portd = new pm.Port("port name " + port, pm.PORT_TYPE_KINET_1, null, null, nodes);
-		pm.ports.setPort(port, portd);
+		var portd = new PMX.Port("port name " + port, PMX.PORT_TYPE_KINET_1, null, null, nodes);
+		PMX.ports.setPort(port, portd);
 
 		// If we are not the first designated port set the pod position as a default (testing)
 		if(port > 1){
-			pm.channels.setPodPos(port, new pm.PodPosition(minx, miny, z, maxx - minx, maxy - miny, z+1));
+			PMX.channels.setPodPos(port, new PMX.PodPosition(minx, miny, z, maxx - minx, maxy - miny, z+1));
 		}
 
 	}

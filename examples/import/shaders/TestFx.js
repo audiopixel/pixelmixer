@@ -12,7 +12,7 @@
 **/
 
 
-pm.clips.TestFx = {
+PMX.clips.TestFx = {
 
 	fx: true,
 

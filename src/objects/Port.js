@@ -14,7 +14,7 @@
 *
 */
 
-pm.Port = function (name, type, address, hardwarePort, nodes) {
+PMX.Port = function (name, type, address, hardwarePort, nodes) {
 
 	this.name = name;
 	this.type = type;

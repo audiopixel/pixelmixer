@@ -4,7 +4,7 @@
 *
 */
 
-pm.AppManager = function (scene, renderer) {
+PMX.AppManager = function (scene, renderer) {
 
 	this.glWidth = 0;
 	this.glHeight = 0;
@@ -39,8 +39,8 @@ pm.AppManager = function (scene, renderer) {
 	this.altMap1;
 	this.altMap2;
 
-	this.plane = new THREE.PlaneBufferGeometry( pm.simSize, pm.simSize );
-	pm.pointGeometry = new THREE.Geometry();
+	this.plane = new THREE.PlaneBufferGeometry( PMX.simSize, PMX.simSize );
+	PMX.pointGeometry = new THREE.Geometry();
 
 
 	// TODO
@@ -49,21 +49,21 @@ pm.AppManager = function (scene, renderer) {
 
 
 
-pm.AppManager.prototype = {
+PMX.AppManager.prototype = {
 
 	init: function () {
 
 		// We create two source textures and swap between them every frame, so we can always reference the last frame values
-		this.rtTextureA = new THREE.WebGLRenderTarget( pm.simSize, pm.simSize, {minFilter: THREE.NearestMipMapNearestFilter,magFilter: THREE.NearestFilter,format: THREE.RGBFormat});
+		this.rtTextureA = new THREE.WebGLRenderTarget( PMX.simSize, PMX.simSize, {minFilter: THREE.NearestMipMapNearestFilter,magFilter: THREE.NearestFilter,format: THREE.RGBFormat});
 		this.rtTextureB = this.rtTextureA.clone();
 
-		this.cameraRTT = new THREE.OrthographicCamera( pm.simSize / - 2, pm.simSize / 2, pm.simSize / 2, pm.simSize / - 2, -10000, 10000 );
+		this.cameraRTT = new THREE.OrthographicCamera( PMX.simSize / - 2, PMX.simSize / 2, PMX.simSize / 2, PMX.simSize / - 2, -10000, 10000 );
 		this.sceneRTT = new THREE.Scene();
 
 		
-		pm.pointGeometry = new THREE.Geometry();
+		PMX.pointGeometry = new THREE.Geometry();
 
-		pm.updateNodePoints();
+		PMX.updateNodePoints();
 		//this.updateMainSourceShader();
 
 		if(this.readPixels){
@@ -74,7 +74,7 @@ pm.AppManager.prototype = {
 
 	update: function () {
 
-		this.time += pm.speed;
+		this.time += PMX.speed;
 
 
 		//this.camera.position.x += ( mouseX - this.camera.position.x ) * 0.05;
@@ -84,21 +84,21 @@ pm.AppManager.prototype = {
 		//this.renderer.clear();
 		
 
-		if(this.render && pm.ready){
+		if(this.render && PMX.ready){
 
 			// Update uniforms
-			pm.material.uniforms._time.value = this.time;
-			pm.material.uniforms._random.value = Math.random();
+			PMX.material.uniforms._time.value = this.time;
+			PMX.material.uniforms._random.value = Math.random();
 
 			// Render first scene into texture
 			if(this.rtToggle){
-				pm.material.uniforms.u_prevCMap.value = this.rtTextureB;
+				PMX.material.uniforms.u_prevCMap.value = this.rtTextureB;
 				this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureA, true );
-				pm.pointMaterial.uniforms.u_colorMap.value = this.rtTextureA;
+				PMX.pointMaterial.uniforms.u_colorMap.value = this.rtTextureA;
 			}else{
-				pm.material.uniforms.u_prevCMap.value = this.rtTextureA;
+				PMX.material.uniforms.u_prevCMap.value = this.rtTextureA;
 				this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureB, true );
-				pm.pointMaterial.uniforms.u_colorMap.value = this.rtTextureB;
+				PMX.pointMaterial.uniforms.u_colorMap.value = this.rtTextureB;
 			}
 			this.rtToggle = !this.rtToggle;
 
@@ -140,13 +140,13 @@ pm.AppManager.prototype = {
 
 	addPlanesForTesting: function(){
 
-		testPlane = new THREE.PlaneBufferGeometry( pm.simSize * 2, pm.simSize * 2 );
+		testPlane = new THREE.PlaneBufferGeometry( PMX.simSize * 2, PMX.simSize * 2 );
 		
 		var materialScreen = new THREE.ShaderMaterial( {
 
 			uniforms: 		{u_texture:   { type: "t", value: this.rtTextureA }},
-			vertexShader: 	pm.shaders.SimpleTextureShader.vertexShader,
-			fragmentShader: pm.shaders.SimpleTextureShader.fragmentShader,
+			vertexShader: 	PMX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PMX.shaders.SimpleTextureShader.fragmentShader,
 			depthWrite: false
 
 		} );
@@ -158,8 +158,8 @@ pm.AppManager.prototype = {
 		materialScreen = new THREE.ShaderMaterial( {
 
 			uniforms: 		{u_texture:   { type: "t", value: this.rtTextureB }},
-			vertexShader: 	pm.shaders.SimpleTextureShader.vertexShader,
-			fragmentShader: pm.shaders.SimpleTextureShader.fragmentShader,
+			vertexShader: 	PMX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PMX.shaders.SimpleTextureShader.fragmentShader,
 			depthWrite: false
 
 		} );
@@ -171,8 +171,8 @@ pm.AppManager.prototype = {
 		materialScreen = new THREE.ShaderMaterial( {
 
 			uniforms: 		{u_texture:   { type: "t", value: this.coordsMap }},
-			vertexShader: 	pm.shaders.SimpleTextureShader.vertexShader,
-			fragmentShader: pm.shaders.SimpleTextureShader.fragmentShader,
+			vertexShader: 	PMX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PMX.shaders.SimpleTextureShader.fragmentShader,
 			depthWrite: false
 
 		} );
@@ -253,16 +253,16 @@ pm.AppManager.prototype = {
 		};
 
 		// If shader id's have already been registered make sure this imported one has a correct id
-		if(pm.shaderCount > -1){ // Detect if pm.init() has been called
-			if(pm.clips[name]){
+		if(PMX.shaderCount > -1){ // Detect if PMX.init() has been called
+			if(PMX.clips[name]){
 
 				// Replacement
-				shader.id = pm.clips[name].id;
+				shader.id = PMX.clips[name].id;
 			}else{
 				
 				// New
-				pm.shaderCount++;
-				shader.id = pm.shaderCount;
+				PMX.shaderCount++;
+				shader.id = PMX.shaderCount;
 			}
 
 		}
@@ -281,14 +281,14 @@ pm.AppManager.prototype = {
 		//console.log(shader);
 		//console.log(grabTxt);
 
-		pm.clips[name] = shader;
+		PMX.clips[name] = shader;
 
 	},
 
 			
 	updateClips: function () {
 
-		for (var i = 0; i < pm.channels.channels.length; i++) { var channel = pm.channels.channels[i];
+		for (var i = 0; i < PMX.channels.channels.length; i++) { var channel = PMX.channels.channels[i];
 			
 			if(channel && channel.pods){
 
@@ -298,15 +298,15 @@ pm.AppManager.prototype = {
 
 						for (var u = 0; u < pod.clips.length; u++) { var clip = pod.clips[u];
 							
-							if(clip && pm.clips[clip.id]){
+							if(clip && PMX.clips[clip.id]){
 
 								// update uniform
-								pm.material.uniforms["_"+(i+1)+"_"+(e+1)+"_"+(u+1)+"_"+"time"].value += (clip.speed * pm.speed);
+								PMX.material.uniforms["_"+(i+1)+"_"+(e+1)+"_"+(u+1)+"_"+"time"].value += (clip.speed * PMX.speed);
 
 								// If the clip defined update function call it with proper clip addressing
-								var shader = pm.clips[clip.id];
-								if(shader && shader.update && pm.material){
-									shader.update("_" + (i+1) + "_" + (e+1) + "_" + (u+1), pm.material.uniforms);
+								var shader = PMX.clips[clip.id];
+								if(shader && shader.update && PMX.material){
+									shader.update("_" + (i+1) + "_" + (e+1) + "_" + (u+1), PMX.material.uniforms);
 								}
 							}
 						}
@@ -322,14 +322,14 @@ pm.AppManager.prototype = {
 		this.geoX = [];
 		this.geoY = [];
 		this.passIndex = [];
-		pm.pointGeometry = new THREE.Geometry();
+		PMX.pointGeometry = new THREE.Geometry();
 
-		// Update 'pm.pointGeometry' with all the known nodes on state
+		// Update 'PMX.pointGeometry' with all the known nodes on state
 		// Create attributes for each one to pass to the shader
 		var t = 0;
-		for ( e = 0; e < pm.ports.getPorts().length; e ++ ) { 
+		for ( e = 0; e < PMX.ports.getPorts().length; e ++ ) { 
 
-			var port = pm.ports.getPort(e + 1);
+			var port = PMX.ports.getPort(e + 1);
 
 			if(port && port.nodes){
 				for ( i = 0; i < port.nodes.length; i ++ ) { 
@@ -338,10 +338,10 @@ pm.AppManager.prototype = {
 					vertex.x = port.nodes[i].x || 0;
 					vertex.y = port.nodes[i].y || 0;
 					vertex.z = port.nodes[i].z || 0;
-					pm.pointGeometry.vertices.push( vertex );
+					PMX.pointGeometry.vertices.push( vertex );
 
 					// for each point push along x, y values to reference correct pixel in u_colorMaps
-					var imageSize = pm.simSize; 
+					var imageSize = PMX.simSize; 
 					var tx = (t+1) % imageSize;
 					if(tx === 0){
 						tx = imageSize;
@@ -360,7 +360,7 @@ pm.AppManager.prototype = {
 	generateCoordsMap: function () {
 
 		// Generate coordsMap data texture for all the nodes x,y,z
-		var a = new Float32Array( Math.pow(pm.simSize, 2) * 4 );
+		var a = new Float32Array( Math.pow(PMX.simSize, 2) * 4 );
 		var t = 0;
 
 		var minx = 100000000000;
@@ -375,10 +375,10 @@ pm.AppManager.prototype = {
 			var y = 0;
 			var z = 0;
 
-			if(pm.pointGeometry.vertices[t]){
-				x = pm.pointGeometry.vertices[t].x ;// / this.base;
-				y = pm.pointGeometry.vertices[t].y ;// / this.base;
-				z = pm.pointGeometry.vertices[t].z ;// / this.base;
+			if(PMX.pointGeometry.vertices[t]){
+				x = PMX.pointGeometry.vertices[t].x ;// / this.base;
+				y = PMX.pointGeometry.vertices[t].y ;// / this.base;
+				z = PMX.pointGeometry.vertices[t].z ;// / this.base;
 
 				minx = Math.min(minx, x);
 				maxx = Math.max(maxx, x);
@@ -399,20 +399,20 @@ pm.AppManager.prototype = {
 		}
 
 		// We always set the first Pod Position as the bounding box that fits all nodes
-		pm.channels.setPodPos(1, new pm.PodPosition(minx, miny, minz, maxx - minx, maxy - miny, maxz - minz));
+		PMX.channels.setPodPos(1, new PMX.PodPosition(minx, miny, minz, maxx - minx, maxy - miny, maxz - minz));
 
 		// Testing on pod pos #2
-		//pm.channels.setPodPos(2, new pm.PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
-		//pm.channels.setPodPos(2, new pm.PodPosition(-190, 140, 0, 1070, 575, 1));
+		//PMX.channels.setPodPos(2, new PMX.PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
+		//PMX.channels.setPodPos(2, new PMX.PodPosition(-190, 140, 0, 1070, 575, 1));
 
-		this.coordsMap = new THREE.DataTexture( a, pm.simSize, pm.simSize, THREE.RGBAFormat, THREE.FloatType );
+		this.coordsMap = new THREE.DataTexture( a, PMX.simSize, PMX.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.coordsMap.minFilter = THREE.NearestFilter;
 		this.coordsMap.magFilter = THREE.NearestFilter;
 		this.coordsMap.needsUpdate = true;
 		this.coordsMap.flipY = true;
 
 		// testing
-		this.altMap1 = new THREE.DataTexture( a, pm.simSize, pm.simSize, THREE.RGBAFormat, THREE.FloatType );
+		this.altMap1 = new THREE.DataTexture( a, PMX.simSize, PMX.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.altMap1.minFilter = THREE.NearestFilter;
 		this.altMap1.magFilter = THREE.NearestFilter;
 		this.altMap1.needsUpdate = true;
@@ -446,12 +446,12 @@ pm.AppManager.prototype = {
 		};
 
 
-		pm.pointMaterial = new THREE.ShaderMaterial( {
+		PMX.pointMaterial = new THREE.ShaderMaterial( {
 
-			uniforms:       merge(uniforms, pm.shaders.PointCloudShader.uniforms),
-			attributes:     merge(attributes, pm.shaders.PointCloudShader.attributes),
-			vertexShader:   pm.shaders.PointCloudShader.vertexShader,
-			fragmentShader: pm.shaders.PointCloudShader.fragmentShader,
+			uniforms:       merge(uniforms, PMX.shaders.PointCloudShader.uniforms),
+			attributes:     merge(attributes, PMX.shaders.PointCloudShader.attributes),
+			vertexShader:   PMX.shaders.PointCloudShader.vertexShader,
+			fragmentShader: PMX.shaders.PointCloudShader.fragmentShader,
 			depthTest:      false,
 			transparent:    true
 		});
@@ -459,25 +459,25 @@ pm.AppManager.prototype = {
 		var name = "PM Nodes";
 		if(this.sceneMain.getObjectByName(name)){
 			// If the pointCloud has already been added, remove it so we can add it fresh
-			this.sceneMain.remove( pm.pointCloud );
+			this.sceneMain.remove( PMX.pointCloud );
 		}
 
-		pm.pointCloud = new THREE.PointCloud( pm.pointGeometry, pm.pointMaterial );
-		pm.pointCloud.sortParticles = true;
-		pm.pointCloud.name = name;
+		PMX.pointCloud = new THREE.PointCloud( PMX.pointGeometry, PMX.pointMaterial );
+		PMX.pointCloud.sortParticles = true;
+		PMX.pointCloud.name = name;
 
-		if(pm.pointPosition){
-			pm.pointCloud.position.x = pm.pointPosition[0];
-			pm.pointCloud.position.y = pm.pointPosition[1];
-			pm.pointCloud.position.z = pm.pointPosition[2];
+		if(PMX.pointPosition){
+			PMX.pointCloud.position.x = PMX.pointPosition[0];
+			PMX.pointCloud.position.y = PMX.pointPosition[1];
+			PMX.pointCloud.position.z = PMX.pointPosition[2];
 		}
 
-		this.sceneMain.add( pm.pointCloud );
+		this.sceneMain.add( PMX.pointCloud );
 
-		if(pm.pointGeometry.vertices.length > 0){
+		if(PMX.pointGeometry.vertices.length > 0){
 
-			console.log("PM Nodes: " + pm.pointGeometry.vertices.length);
-			pm.ready = true;
+			console.log("PM Nodes: " + PMX.pointGeometry.vertices.length);
+			PMX.ready = true;
 
 		}
 
@@ -491,15 +491,15 @@ pm.AppManager.prototype = {
 			_random: { type: "f", value: Math.random() },
 			u_coordsMap: { type: "t", value: this.coordsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
-			u_mapSize: { type: "f", value: pm.simSize }
+			u_mapSize: { type: "f", value: PMX.simSize }
 		};
 
 		// Generate the source shader from the current loaded channels
-		var sourceShader = pm.channels.generateSourceShader();
+		var sourceShader = PMX.channels.generateSourceShader();
 		var sourceUniforms = "";
 
 
-		if(pm.usePodUniforms){
+		if(PMX.usePodUniforms){
 			uniforms.u_pos_id= { type: "i", value: 0 };
 			uniforms.u_pos_x = { type: "f", value: 0. };
 			uniforms.u_pos_y = { type: "f", value: 0. };
@@ -520,7 +520,7 @@ pm.AppManager.prototype = {
 		// Add the uniforms from the current loaded channels
 		for (var uniform in sourceShader.uniforms) {
 
-			var type = pm.getVariableTypeFromShorthand(sourceShader.uniforms[uniform].type);
+			var type = PMX.getVariableTypeFromShorthand(sourceShader.uniforms[uniform].type);
 
 			sourceUniforms += "uniform " + type + " " + uniform + ";\n";
 			uniforms[uniform] = sourceShader.uniforms[uniform];
@@ -539,13 +539,13 @@ pm.AppManager.prototype = {
 
 
 		// If the flag is to update fresh ignore the existing uniforms 
-		if(!pm.updateFresh){
+		if(!PMX.updateFresh){
 
 			// If the material already exists, transfer over the value of any uniforms that have remained
-			if(pm.material){
+			if(PMX.material){
 				for (uniform in uniforms) {
-					if(pm.material.uniforms[uniform]){
-						uniforms[uniform].value = pm.material.uniforms[uniform].value;
+					if(PMX.material.uniforms[uniform]){
+						uniforms[uniform].value = PMX.material.uniforms[uniform].value;
 					}
 				}
 			}
@@ -553,39 +553,39 @@ pm.AppManager.prototype = {
 
 
 		// Internal core shader is merged with the loaded shaders
-		this.fragmentShader = pm.MainShader.fragmentShader;
+		this.fragmentShader = PMX.MainShader.fragmentShader;
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERS", sourceShader.fragmentMain);
 
 		// Add ShaderUtils and uniforms at the top
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERFUNCTIONS", sourceShader.fragmentFunctions);
-		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERUTILS", pm.shaders.ShaderUtils + sourceUniforms);
+		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERUTILS", PMX.shaders.ShaderUtils + sourceUniforms);
 
 		this.fragmentShader = this.minFragmentShader(this.fragmentShader);
 
 		
 
 		// The main material object has uniforms that can be referenced and updated directly by the UI
-		pm.material = new THREE.ShaderMaterial( {
+		PMX.material = new THREE.ShaderMaterial( {
 			uniforms: uniforms,
-			vertexShader: pm.shaders.SimpleTextureShader.vertexShader,
+			vertexShader: PMX.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: this.fragmentShader
 		} );
 
 
 		// Update uniforms directly
-		pm.material.uniforms.u_coordsMap.value = this.coordsMap;
-		pm.material.uniforms.u_prevCMap.value = this.rtTextureB;
+		PMX.material.uniforms.u_coordsMap.value = this.coordsMap;
+		PMX.material.uniforms.u_prevCMap.value = this.rtTextureB;
 
 		if(this.altMap1){
-			pm.material.uniforms.u_altMap1.value = this.altMap1;
+			PMX.material.uniforms.u_altMap1.value = this.altMap1;
 		}
 		if(this.altMap2){
-			pm.material.uniforms.u_altMap2.value = this.altMap2;
+			PMX.material.uniforms.u_altMap2.value = this.altMap2;
 		}
 
 
 		//console.log(sourceShader);
-		//console.log(pm.material.uniforms);
+		//console.log(PMX.material.uniforms);
 		//console.log(this.fragmentShader);
 
 		// Main quad that gets rendered as the source shader
@@ -595,14 +595,14 @@ pm.AppManager.prototype = {
 			// If the quad has already been added, remove it so we can add it fresh
 			this.sceneRTT.remove(lookupObj);
 		}
-		var quad = new THREE.Mesh( this.plane, pm.material );
+		var quad = new THREE.Mesh( this.plane, PMX.material );
 		quad.position.z = -100;
 		quad.name = name;
 		this.sceneRTT.add( quad );
 
 		// TODO possible optimize : seems this would be faster to update and not create new quad each time, but looks slower actually
-		//pm.material.uniforms = uniforms;
-		//pm.material.needsUpdate = true;
+		//PMX.material.uniforms = uniforms;
+		//PMX.material.needsUpdate = true;
 
 	},
 

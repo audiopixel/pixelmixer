@@ -1,4 +1,4 @@
-pm.testJSON = [
+PMX.testJSON = [
     {
         "name": "TestChannel1",
         "type": 1,

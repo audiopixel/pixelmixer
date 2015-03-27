@@ -72,8 +72,8 @@
 
 					// ** Initialize API
 
-					pm.init(scene, renderer);
-					pm.setSize(glWidth, glHeight);
+					PMX.init(scene, renderer);
+					PMX.setSize(glWidth, glHeight);
 
 
 
@@ -86,24 +86,24 @@
 					var height = 20;
 					var pitch = 33;		// How far each pixel is spaced
 
-					pm.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
-					pm.updateNodePoints();
+					PMX.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
+					PMX.updateNodePoints();
 
 
 
 					// ** Add a shader to Channel 1
 
-					pm.simpleSetup({channel: 1, ids: ["SolidColor"]});
+					PMX.simpleSetup({channel: 1, ids: ["SolidColor"]});
 
 
 
 					// ** Set some param values on the Clip
 
 					// Set param1 on the clip to turn the color blue (for example this could be any ui setting params)
-					pm.set("p1", .7, 1, 1, 1); // Channel 1, Pod 1 Clip 1
+					PMX.set("p1", .7, 1, 1, 1); // Channel 1, Pod 1 Clip 1
 
 					// Set mix on the clip to be .9
-					pm.set("mix", .9, 1, 1, 1); // Channel 1, Pod 1 Clip 1
+					PMX.set("mix", .9, 1, 1, 1); // Channel 1, Pod 1 Clip 1
 
 
 
@@ -117,10 +117,10 @@
 				function animate() {
 
 					// Main update loop
-					if(pm.ready){
+					if(PMX.ready){
 
 						// Update the API
-						pm.update();
+						PMX.update();
 
 						// Update Three.js
 						controls.update();
@@ -138,7 +138,7 @@
 					glWidth = window.innerWidth;
 					glHeight = window.innerHeight;
 
-					pm.setSize(glWidth, glHeight);
+					PMX.setSize(glWidth, glHeight);
 
 					camera.aspect = glWidth / glHeight;
 					camera.updateProjectionMatrix();

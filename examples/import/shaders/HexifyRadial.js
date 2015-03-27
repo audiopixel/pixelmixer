@@ -1,6 +1,6 @@
 // http://glslsandbox.com/e#19474.0
 
-pm.clips.HexifyRadial = {
+PMX.clips.HexifyRadial = {
 
 	params: {
 

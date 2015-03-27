@@ -1,6 +1,6 @@
 // http://glslsandbox.com/e#19453.0
 
-pm.clips.SimpleSwirl = {
+PMX.clips.SimpleSwirl = {
 
 	params: {
 

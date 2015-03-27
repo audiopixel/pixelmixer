@@ -11,12 +11,12 @@
 *
 */
 
-pm.Clip = function (params) {
+PMX.Clip = function (params) {
 
 	this.id = params.id;
 	this.mix = params.mix 			|| 1;
-	this.blend = params.blend 		|| pm.BLEND.Add;
-	this.posMap = params.posMap 	|| pm.MAP_NORMAL;
+	this.blend = params.blend 		|| PMX.BLEND.Add;
+	this.posMap = params.posMap 	|| PMX.MAP_NORMAL;
 	this.speed = params.speed 		|| 1;
 
 	this.p1 = params.p1 || 0;
@@ -30,7 +30,7 @@ pm.Clip = function (params) {
 	this.p9 = params.p9 || 0;
 };
 
-pm.Clip.prototype = {
+PMX.Clip.prototype = {
 
 	setParams: function (p1, p2, p3, p4, p5, p6, p7, p8, p9) {
 		this.p1 = p1;

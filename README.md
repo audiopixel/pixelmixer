@@ -51,8 +51,8 @@ Each instance of a loaded shader has independent control values setup that you c
 scene = new THREE.Scene();
 renderer = new THREE.WebGLRenderer(); 
 
-ap.init(scene, renderer);
-ap.setSize(glWidth, glHeight);
+PMX.init(scene, renderer);
+PMX.setSize(glWidth, glHeight);
 
 ```
 #### 2. Add Nodes ####
@@ -62,8 +62,8 @@ It's also easy to import new node positions via JSON.
 
 ```
 // Add a simple grid of Nodes 
-ap.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
-ap.updateNodePoints();
+PMX.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
+PMX.updateNodePoints();
 
 ```
 #### 3. Add Shaders ####
@@ -73,7 +73,7 @@ ap.updateNodePoints();
 <script src="import/shaders/SolidColor.js"></script>
 
 // Add the Shader to Channel 1 (default fit to all nodes)
-ap.simpleSetup({channel: 1, ids: ["SolidColor"]});
+PMX.simpleSetup({channel: 1, ids: ["SolidColor"]});
 
 ```
 #### 4. Change values at runtime (Optional UI Layers) ####
@@ -83,10 +83,10 @@ Here we are setting values on the shader we just created.
 
 ```
 // Set param 1 on the clip to .7
-ap.set("p1", .7, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
+PMX.set("p1", .7, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 
 // Set mix on the clip to be .9
-ap.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
+PMX.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 
 ```
 

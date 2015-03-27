@@ -4,7 +4,7 @@
  */
 
 
-pm.clips.BareBones = {
+PMX.clips.BareBones = {
 
 	fragmentMain: [
 

@@ -7,7 +7,7 @@
  */
  
 
-pm.shaders.SimpleTextureShader = {
+PMX.shaders.SimpleTextureShader = {
 
 	uniforms: {
 

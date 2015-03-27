@@ -1,7 +1,7 @@
 // http://glslsandbox.com/e#17600.0
 // water turbulence effect by joltz0r 2013-07-04, improved 2013-07-07
 
-pm.clips.Water = {
+PMX.clips.Water = {
 
 	params: {
 

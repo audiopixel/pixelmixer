@@ -4,7 +4,7 @@
  */
 
 
-pm.clips.TestFrame = {
+PMX.clips.TestFrame = {
 
 	params: { // (optional uniforms)
 

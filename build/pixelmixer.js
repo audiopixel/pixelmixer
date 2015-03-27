@@ -2,85 +2,85 @@
 
 // ****** Platform ******
 
-var pm = { REVISION: '1' };		// Global object
-pm.ready = false;				
-pm.simSize;
+var PMX = { REVISION: '1' };		// Global object
+PMX.ready = false;				
+PMX.simSize;
 
-pm.shaders = {};				// Internal shaders 
-pm.clips = {}; 					// Loaded shaders as clips
-pm.imported = {}; 				// Currently imported port (and possibly node) data
+PMX.shaders = {};				// Internal shaders 
+PMX.clips = {}; 					// Loaded shaders as clips
+PMX.imported = {}; 				// Currently imported port (and possibly node) data
 
 
 // ****** Constants ******
 
 // Blend Constants
-pm.BLEND = {};
-pm.BLEND.OFF = 0;
-pm.BLEND.Add = 1;
-pm.BLEND.Subtract = 2;
-pm.BLEND.Darkest = 3;
-pm.BLEND.Lightest = 4;
-pm.BLEND.Difference = 5;
-pm.BLEND.Exclusion = 6;
-pm.BLEND.Multiply = 7;
-pm.BLEND.Screen = 8;
-pm.BLEND.Overlay = 9;
-pm.BLEND.HardLight = 10;
-pm.BLEND.SoftLight = 11;
-pm.BLEND.Dodge = 12;
-pm.BLEND.Burn = 13;
-pm.BLEND.LinearBurn = 14;
-pm.BLEND.LinearLight = 15;
-pm.BLEND.VividLight = 16;
-pm.BLEND.PinLight = 17;
-pm.BLEND.Fx = 1; // Use 'add' if this happens to get passed, all fx 'blending' happens outside blend()
+PMX.BLEND = {};
+PMX.BLEND.OFF = 0;
+PMX.BLEND.Add = 1;
+PMX.BLEND.Subtract = 2;
+PMX.BLEND.Darkest = 3;
+PMX.BLEND.Lightest = 4;
+PMX.BLEND.Difference = 5;
+PMX.BLEND.Exclusion = 6;
+PMX.BLEND.Multiply = 7;
+PMX.BLEND.Screen = 8;
+PMX.BLEND.Overlay = 9;
+PMX.BLEND.HardLight = 10;
+PMX.BLEND.SoftLight = 11;
+PMX.BLEND.Dodge = 12;
+PMX.BLEND.Burn = 13;
+PMX.BLEND.LinearBurn = 14;
+PMX.BLEND.LinearLight = 15;
+PMX.BLEND.VividLight = 16;
+PMX.BLEND.PinLight = 17;
+PMX.BLEND.Fx = 1; // Use 'add' if this happens to get passed, all fx 'blending' happens outside blend()
 
-pm.BLENDS = [ 'Add', 'Substract', 'Darkest', 'Lightest', 'Difference', 'Exclusion', 'Multiply', 'Screen','Overlay', 
+PMX.BLENDS = [ 'Add', 'Substract', 'Darkest', 'Lightest', 'Difference', 'Exclusion', 'Multiply', 'Screen','Overlay', 
 			'HardLight', 'SoftLight', 'Dodge', 'Burn', 'LinearBurn', 'LinearLight', 'VividLight', 'PinLight'];
 
 
-// pm.Port Type Constants
-pm.PORT_TYPE_OFF = 0;
-pm.PORT_TYPE_KINET_1 = 1; // strands
-pm.PORT_TYPE_KINET_2 = 2; // tiles
-pm.PORT_TYPE_KINET_3 = 3; // colorblasts
-pm.PORT_TYPE_KINET_4 = 4;
-pm.PORT_TYPE_DMX_1 = 5; // Movers, for testing
-pm.PORT_TYPE_DMX_2 = 6;
-pm.PORT_TYPE_DMX_3 = 7;
-pm.PORT_TYPE_LASER_1 = 8;
+// PMX.Port Type Constants
+PMX.PORT_TYPE_OFF = 0;
+PMX.PORT_TYPE_KINET_1 = 1; // strands
+PMX.PORT_TYPE_KINET_2 = 2; // tiles
+PMX.PORT_TYPE_KINET_3 = 3; // colorblasts
+PMX.PORT_TYPE_KINET_4 = 4;
+PMX.PORT_TYPE_DMX_1 = 5; // Movers, for testing
+PMX.PORT_TYPE_DMX_2 = 6;
+PMX.PORT_TYPE_DMX_3 = 7;
+PMX.PORT_TYPE_LASER_1 = 8;
 
 
-// pm.Channel Type Constants
-pm.CHANNEL_TYPE_OFF = 0;
-pm.CHANNEL_TYPE_ADD = 1;
-pm.CHANNEL_TYPE_FX = 2;
-pm.CHANNEL_TYPE_SCENE = 3;
+// PMX.Channel Type Constants
+PMX.CHANNEL_TYPE_OFF = 0;
+PMX.CHANNEL_TYPE_ADD = 1;
+PMX.CHANNEL_TYPE_FX = 2;
+PMX.CHANNEL_TYPE_SCENE = 3;
 
 
 // Pod Hardware Group Modes Constants
-pm.HARDWAREGROUP_OFF = 0;
-pm.HARDWAREGROUP_SOLO = 1;
-pm.HARDWAREGROUP_EXCLUDE = 2;
+PMX.HARDWAREGROUP_OFF = 0;
+PMX.HARDWAREGROUP_SOLO = 1;
+PMX.HARDWAREGROUP_EXCLUDE = 2;
 
 
 // Clip position map Constants
-pm.MAP_NORMAL = 0;
-pm.MAP_ALT1 = 1;
-pm.MAP_ALT2 = 2;
+PMX.MAP_NORMAL = 0;
+PMX.MAP_ALT1 = 1;
+PMX.MAP_ALT2 = 2;
 
 
 // Temporary Preset Management 
-pm.demoClipNames = ["TestFrame", "SolidColor", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
+PMX.demoClipNames = ["TestFrame", "SolidColor", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
 "SinSpiral", "SineParticles", "DiSinSwirl", "HexifyRadial", "SinCosTan"];
 
-pm.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
+PMX.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
 
 
 
 // ****** Internal Utils ******
 
-pm.getVariableTypeFromShorthand = function(shorthand){
+PMX.getVariableTypeFromShorthand = function(shorthand){
 	var type;
 	switch ( shorthand ) {
 		case "i": type = "int"; break;
@@ -95,51 +95,51 @@ pm.getVariableTypeFromShorthand = function(shorthand){
 };
 
 
-pm.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
-pm.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
-pm.usePodUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
+PMX.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
+PMX.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
+PMX.usePodUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
 
-pm.pointCloud = {};				// Main point cloud that displays node colors
-pm.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
-pm.pointMaterial = {};			// Shader of the point cloud that displays the node colors
-pm.pointSize = 20;				// The size of each point cloud sprite
-
-
-pm.material = false;			// Main shader referenced here, set false initially to flag that its not ready
-pm.shaderCount = -1;
+PMX.pointCloud = {};				// Main point cloud that displays node colors
+PMX.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
+PMX.pointMaterial = {};			// Shader of the point cloud that displays the node colors
+PMX.pointSize = 20;				// The size of each point cloud sprite
 
 
-pm.init = function(scene, renderer, maxNodeCount){
+PMX.material = false;			// Main shader referenced here, set false initially to flag that its not ready
+PMX.shaderCount = -1;
+
+
+PMX.init = function(scene, renderer, maxNodeCount){
 
 	// Tag each shader with a incremental id, for easy lookup later
-	pm.shaderCount = 0;
-	for (var property in pm.clips) {
-		if (pm.clips.hasOwnProperty(property)) {
-			pm.shaderCount++;
-			pm.clips[property].id = pm.shaderCount;
+	PMX.shaderCount = 0;
+	for (var property in PMX.clips) {
+		if (PMX.clips.hasOwnProperty(property)) {
+			PMX.shaderCount++;
+			PMX.clips[property].id = PMX.shaderCount;
 		}
 	}
 
 	// Maintain the lowest possible power of 2 texture size based on maxNodeCount
 	maxNodeCount = maxNodeCount || Math.pow(128, 2); 	// Default: 16384 (128*128)
-	pm.simSize = 4;										// Minimum: 16 (4*4)
-	while(Math.pow(pm.simSize, 2) < maxNodeCount){
-		pm.simSize *= 2;
+	PMX.simSize = 4;										// Minimum: 16 (4*4)
+	while(Math.pow(PMX.simSize, 2) < maxNodeCount){
+		PMX.simSize *= 2;
 	}
 
-	pm.ports = new pm.PortManager();
-	pm.hardware = new pm.HardwareManager();
-	pm.channels = new pm.ChannelManager();
-	pm.app = new pm.AppManager(scene, renderer);
+	PMX.ports = new PMX.PortManager();
+	PMX.hardware = new PMX.HardwareManager();
+	PMX.channels = new PMX.ChannelManager();
+	PMX.app = new PMX.AppManager(scene, renderer);
 
-	pm.ports.init();
-	pm.hardware.init();
-	pm.channels.init();
-	pm.app.init();
+	PMX.ports.init();
+	PMX.hardware.init();
+	PMX.channels.init();
+	PMX.app.init();
 
 	// If size not yet been defined, do it with some defaults
-	if(!pm.appSize){
-		pm.setSize(600, 400);
+	if(!PMX.appSize){
+		PMX.setSize(600, 400);
 	}
 
 
@@ -147,183 +147,183 @@ pm.init = function(scene, renderer, maxNodeCount){
 
 
 // Set this to store a [uniform float array] with specified length
-// Can be referenced later in shaders, and pm.set/get as 'data'
-pm.dataSetLength = null;
+// Can be referenced later in shaders, and PMX.set/get as 'data'
+PMX.dataSetLength = null;
 
 
-pm.updateShader = false;
-pm.updateFresh = false;
-pm.updateShaderLimiter = 0;
-pm.update = function() {
+PMX.updateShader = false;
+PMX.updateFresh = false;
+PMX.updateShaderLimiter = 0;
+PMX.update = function() {
 
 	//if(frameCount % 30 == 1){ // Slow framerate testing
 
-	if(!pm.app){
+	if(!PMX.app){
 
-		console.log("AP Error: Need to call pm.init before pm.update.");
+		console.log("AP Error: Need to call PMX.init before PMX.update.");
 
-	}else if(pm.ready){
+	}else if(PMX.ready){
 
 		// Update everything else if we don't have to update the shader this frame
-		if((!pm.updateShader || pm.updateShaderLimiter < 4) && pm.updateShaderLimiter > 0){
+		if((!PMX.updateShader || PMX.updateShaderLimiter < 4) && PMX.updateShaderLimiter > 0){
 
 			// ** Main loop update 
-			pm.app.update();
-			pm.ports.update();
-			pm.hardware.update();
-			pm.channels.update();
+			PMX.app.update();
+			PMX.ports.update();
+			PMX.hardware.update();
+			PMX.channels.update();
 
 		}else{
 
 			// Shader needs update
-			pm.app.updateMainSourceShader();
-			pm.app.update();
-			pm.updateShaderLimiter = 0;
-			pm.updateShader = false;
-			pm.updateFresh = false;
+			PMX.app.updateMainSourceShader();
+			PMX.app.update();
+			PMX.updateShaderLimiter = 0;
+			PMX.updateShader = false;
+			PMX.updateFresh = false;
 		}
-		pm.updateShaderLimiter++;
+		PMX.updateShaderLimiter++;
 
 	}
 };
 
 
-pm.pointPosition = [-400, -400, 0]; // Defaults
-pm.setPointPosition = function(x, y, z) {
-	pm.pointPosition = [x, y, z];
-	if(pm.pointCloud.position){
-		pm.pointCloud.position = {x: x, y: y, z: z};
+PMX.pointPosition = [-400, -400, 0]; // Defaults
+PMX.setPointPosition = function(x, y, z) {
+	PMX.pointPosition = [x, y, z];
+	if(PMX.pointCloud.position){
+		PMX.pointCloud.position = {x: x, y: y, z: z};
 	}
 };
 
-pm.appSize;
-pm.setSize = function(width, height) {
+PMX.appSize;
+PMX.setSize = function(width, height) {
 
-	pm.appSize = [width, height];
+	PMX.appSize = [width, height];
 
-	if(pm.app){
+	if(PMX.app){
 
-		pm.app.glWidth = width;
-		pm.app.glHeight = height;
+		PMX.app.glWidth = width;
+		PMX.app.glHeight = height;
 
-		if(pm.app.readPixels){
-			pm.app.pixels = new Uint8Array(4 * pm.app.glWidth * pm.app.glHeight);
+		if(PMX.app.readPixels){
+			PMX.app.pixels = new Uint8Array(4 * PMX.app.glWidth * PMX.app.glHeight);
 		}
 
-		pm.app.renderer.setSize( pm.app.glWidth, pm.app.glHeight );
+		PMX.app.renderer.setSize( PMX.app.glWidth, PMX.app.glHeight );
 
 		// Set point size relative to screen resolution
-		var v = pm.pointSize;
+		var v = PMX.pointSize;
 		v *= ((width * height) * .00001);
-		pm.pointMaterial.uniforms.u_pointSize.value = v;
+		PMX.pointMaterial.uniforms.u_pointSize.value = v;
 
 	}
 };
 
 
-pm.importShader = function (name, shaderTxt) {
+PMX.importShader = function (name, shaderTxt) {
 
-	pm.app.importShader(name, shaderTxt);
+	PMX.app.importShader(name, shaderTxt);
 
 };
 
 
-pm.generateShader = function () {
+PMX.generateShader = function () {
 
-	pm.app.updateMainSourceShader();
+	PMX.app.updateMainSourceShader();
 	
 };
 
 // Easy way to add clips to a pod that is fitted to all nodes
 // [ids], mix, channel
-pm.simpleSetup = function (params) {
+PMX.simpleSetup = function (params) {
 
 	params.mix = params.mix || 1;
 	params.channel = params.channel || 1;
 
 	var clips = [];
 	for (var i = 0; i < params.ids.length; i++) {
-		clips[i] = new pm.Clip({id: params.ids[i]});
+		clips[i] = new PMX.Clip({id: params.ids[i]});
 	};
 
 	var pods = [];
-	pods[0] = new pm.Pod({ clips: clips });
+	pods[0] = new PMX.Pod({ clips: clips });
 
-	var channel1 = new pm.Channel({ mix: params.mix, pods: pods });
-	pm.channels.setChannel(params.channel, channel1);
+	var channel1 = new PMX.Channel({ mix: params.mix, pods: pods });
+	PMX.channels.setChannel(params.channel, channel1);
 
-	pm.generateShader();
-
-};
-
-
-pm.updateNodePoints = function () {
-
-	pm.app.updateGeometry();
-	pm.app.generateCoordsMap();
-	pm.app.createNodePointCloud();
+	PMX.generateShader();
 
 };
 
-pm.get = function(uniform, channel, pod, clip) {
+
+PMX.updateNodePoints = function () {
+
+	PMX.app.updateGeometry();
+	PMX.app.generateCoordsMap();
+	PMX.app.createNodePointCloud();
+
+};
+
+PMX.get = function(uniform, channel, pod, clip) {
 	if(!channel){
-		return pm.material.uniforms[uniform].value;
+		return PMX.material.uniforms[uniform].value;
 	}else{
-		return pm.getUniform(uniform, channel, pod, clip).value;
+		return PMX.getUniform(uniform, channel, pod, clip).value;
 	}
 };
 
-pm.set = function(uniform, value, channel, pod, clip) {
+PMX.set = function(uniform, value, channel, pod, clip) {
 	if(!channel){
-		pm.material.uniforms[uniform].value = value;
+		PMX.material.uniforms[uniform].value = value;
 	}else{
-		pm.getUniform(uniform, channel, pod, clip).value = value;
-		pm.setObjProperty(uniform, value, channel, pod, clip);
+		PMX.getUniform(uniform, channel, pod, clip).value = value;
+		PMX.setObjProperty(uniform, value, channel, pod, clip);
 	}
 };
 
-pm.getUniform = function(uniform, channel, pod, clip) {
+PMX.getUniform = function(uniform, channel, pod, clip) {
 	var addy = "_" + channel;
 	if(pod){ addy += "_" + pod; 
 	if(clip){ addy += "_" + clip; }}
-	return pm.material.uniforms[addy + "_" + uniform];
+	return PMX.material.uniforms[addy + "_" + uniform];
 };
 
-pm.getObj = function(channel, pod, clip) {
-	var obj = pm.channels.channels[channel-1];
+PMX.getObj = function(channel, pod, clip) {
+	var obj = PMX.channels.channels[channel-1];
 	if(pod){ obj = obj.pods[pod-1]; 
 	if(clip){ obj = obj.clips[clip-1]; }}
 	return obj;
 };
 
-pm.setObj = function(newObj, channel, pod, clip) {
+PMX.setObj = function(newObj, channel, pod, clip) {
 	if(!pod){
-		pm.channels.channels[channel-1] = newObj;
+		PMX.channels.channels[channel-1] = newObj;
 	}else if(!clip){
-		pm.channels.channels[channel-1].pods[pod-1] = newObj;
+		PMX.channels.channels[channel-1].pods[pod-1] = newObj;
 	}else{
-		pm.channels.channels[channel-1].pods[pod-1].clips[clip-1] = newObj;
+		PMX.channels.channels[channel-1].pods[pod-1].clips[clip-1] = newObj;
 	}
 };
 
-pm.getObjProperty = function(property, channel, pod, clip) {
-	var obj = pm.getObj(channel, pod, clip);
+PMX.getObjProperty = function(property, channel, pod, clip) {
+	var obj = PMX.getObj(channel, pod, clip);
 	return obj[property];
 };
 
-pm.setObjProperty = function(property, value, channel, pod, clip) {
-	var obj = pm.getObj(channel, pod, clip);
+PMX.setObjProperty = function(property, value, channel, pod, clip) {
+	var obj = PMX.getObj(channel, pod, clip);
 	obj[property] = value;
 };
 
-pm.load = function(json){
-	pm.channels.channels = json;
-	pm.updateShader = true;
-	pm.updateFresh = true;
+PMX.load = function(json){
+	PMX.channels.channels = json;
+	PMX.updateShader = true;
+	PMX.updateFresh = true;
 };
 
-pm.stringify = function(){
-	return JSON.stringify(pm.channels.channels);
+PMX.stringify = function(){
+	return JSON.stringify(PMX.channels.channels);
 };
 /*
 *
@@ -331,7 +331,7 @@ pm.stringify = function(){
 *
 */
 
-pm.AppManager = function (scene, renderer) {
+PMX.AppManager = function (scene, renderer) {
 
 	this.glWidth = 0;
 	this.glHeight = 0;
@@ -366,8 +366,8 @@ pm.AppManager = function (scene, renderer) {
 	this.altMap1;
 	this.altMap2;
 
-	this.plane = new THREE.PlaneBufferGeometry( pm.simSize, pm.simSize );
-	pm.pointGeometry = new THREE.Geometry();
+	this.plane = new THREE.PlaneBufferGeometry( PMX.simSize, PMX.simSize );
+	PMX.pointGeometry = new THREE.Geometry();
 
 
 	// TODO
@@ -376,21 +376,21 @@ pm.AppManager = function (scene, renderer) {
 
 
 
-pm.AppManager.prototype = {
+PMX.AppManager.prototype = {
 
 	init: function () {
 
 		// We create two source textures and swap between them every frame, so we can always reference the last frame values
-		this.rtTextureA = new THREE.WebGLRenderTarget( pm.simSize, pm.simSize, {minFilter: THREE.NearestMipMapNearestFilter,magFilter: THREE.NearestFilter,format: THREE.RGBFormat});
+		this.rtTextureA = new THREE.WebGLRenderTarget( PMX.simSize, PMX.simSize, {minFilter: THREE.NearestMipMapNearestFilter,magFilter: THREE.NearestFilter,format: THREE.RGBFormat});
 		this.rtTextureB = this.rtTextureA.clone();
 
-		this.cameraRTT = new THREE.OrthographicCamera( pm.simSize / - 2, pm.simSize / 2, pm.simSize / 2, pm.simSize / - 2, -10000, 10000 );
+		this.cameraRTT = new THREE.OrthographicCamera( PMX.simSize / - 2, PMX.simSize / 2, PMX.simSize / 2, PMX.simSize / - 2, -10000, 10000 );
 		this.sceneRTT = new THREE.Scene();
 
 		
-		pm.pointGeometry = new THREE.Geometry();
+		PMX.pointGeometry = new THREE.Geometry();
 
-		pm.updateNodePoints();
+		PMX.updateNodePoints();
 		//this.updateMainSourceShader();
 
 		if(this.readPixels){
@@ -401,7 +401,7 @@ pm.AppManager.prototype = {
 
 	update: function () {
 
-		this.time += pm.speed;
+		this.time += PMX.speed;
 
 
 		//this.camera.position.x += ( mouseX - this.camera.position.x ) * 0.05;
@@ -411,21 +411,21 @@ pm.AppManager.prototype = {
 		//this.renderer.clear();
 		
 
-		if(this.render && pm.ready){
+		if(this.render && PMX.ready){
 
 			// Update uniforms
-			pm.material.uniforms._time.value = this.time;
-			pm.material.uniforms._random.value = Math.random();
+			PMX.material.uniforms._time.value = this.time;
+			PMX.material.uniforms._random.value = Math.random();
 
 			// Render first scene into texture
 			if(this.rtToggle){
-				pm.material.uniforms.u_prevCMap.value = this.rtTextureB;
+				PMX.material.uniforms.u_prevCMap.value = this.rtTextureB;
 				this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureA, true );
-				pm.pointMaterial.uniforms.u_colorMap.value = this.rtTextureA;
+				PMX.pointMaterial.uniforms.u_colorMap.value = this.rtTextureA;
 			}else{
-				pm.material.uniforms.u_prevCMap.value = this.rtTextureA;
+				PMX.material.uniforms.u_prevCMap.value = this.rtTextureA;
 				this.renderer.render( this.sceneRTT, this.cameraRTT, this.rtTextureB, true );
-				pm.pointMaterial.uniforms.u_colorMap.value = this.rtTextureB;
+				PMX.pointMaterial.uniforms.u_colorMap.value = this.rtTextureB;
 			}
 			this.rtToggle = !this.rtToggle;
 
@@ -467,13 +467,13 @@ pm.AppManager.prototype = {
 
 	addPlanesForTesting: function(){
 
-		testPlane = new THREE.PlaneBufferGeometry( pm.simSize * 2, pm.simSize * 2 );
+		testPlane = new THREE.PlaneBufferGeometry( PMX.simSize * 2, PMX.simSize * 2 );
 		
 		var materialScreen = new THREE.ShaderMaterial( {
 
 			uniforms: 		{u_texture:   { type: "t", value: this.rtTextureA }},
-			vertexShader: 	pm.shaders.SimpleTextureShader.vertexShader,
-			fragmentShader: pm.shaders.SimpleTextureShader.fragmentShader,
+			vertexShader: 	PMX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PMX.shaders.SimpleTextureShader.fragmentShader,
 			depthWrite: false
 
 		} );
@@ -485,8 +485,8 @@ pm.AppManager.prototype = {
 		materialScreen = new THREE.ShaderMaterial( {
 
 			uniforms: 		{u_texture:   { type: "t", value: this.rtTextureB }},
-			vertexShader: 	pm.shaders.SimpleTextureShader.vertexShader,
-			fragmentShader: pm.shaders.SimpleTextureShader.fragmentShader,
+			vertexShader: 	PMX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PMX.shaders.SimpleTextureShader.fragmentShader,
 			depthWrite: false
 
 		} );
@@ -498,8 +498,8 @@ pm.AppManager.prototype = {
 		materialScreen = new THREE.ShaderMaterial( {
 
 			uniforms: 		{u_texture:   { type: "t", value: this.coordsMap }},
-			vertexShader: 	pm.shaders.SimpleTextureShader.vertexShader,
-			fragmentShader: pm.shaders.SimpleTextureShader.fragmentShader,
+			vertexShader: 	PMX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PMX.shaders.SimpleTextureShader.fragmentShader,
 			depthWrite: false
 
 		} );
@@ -580,16 +580,16 @@ pm.AppManager.prototype = {
 		};
 
 		// If shader id's have already been registered make sure this imported one has a correct id
-		if(pm.shaderCount > -1){ // Detect if pm.init() has been called
-			if(pm.clips[name]){
+		if(PMX.shaderCount > -1){ // Detect if PMX.init() has been called
+			if(PMX.clips[name]){
 
 				// Replacement
-				shader.id = pm.clips[name].id;
+				shader.id = PMX.clips[name].id;
 			}else{
 				
 				// New
-				pm.shaderCount++;
-				shader.id = pm.shaderCount;
+				PMX.shaderCount++;
+				shader.id = PMX.shaderCount;
 			}
 
 		}
@@ -608,14 +608,14 @@ pm.AppManager.prototype = {
 		//console.log(shader);
 		//console.log(grabTxt);
 
-		pm.clips[name] = shader;
+		PMX.clips[name] = shader;
 
 	},
 
 			
 	updateClips: function () {
 
-		for (var i = 0; i < pm.channels.channels.length; i++) { var channel = pm.channels.channels[i];
+		for (var i = 0; i < PMX.channels.channels.length; i++) { var channel = PMX.channels.channels[i];
 			
 			if(channel && channel.pods){
 
@@ -625,15 +625,15 @@ pm.AppManager.prototype = {
 
 						for (var u = 0; u < pod.clips.length; u++) { var clip = pod.clips[u];
 							
-							if(clip && pm.clips[clip.id]){
+							if(clip && PMX.clips[clip.id]){
 
 								// update uniform
-								pm.material.uniforms["_"+(i+1)+"_"+(e+1)+"_"+(u+1)+"_"+"time"].value += (clip.speed * pm.speed);
+								PMX.material.uniforms["_"+(i+1)+"_"+(e+1)+"_"+(u+1)+"_"+"time"].value += (clip.speed * PMX.speed);
 
 								// If the clip defined update function call it with proper clip addressing
-								var shader = pm.clips[clip.id];
-								if(shader && shader.update && pm.material){
-									shader.update("_" + (i+1) + "_" + (e+1) + "_" + (u+1), pm.material.uniforms);
+								var shader = PMX.clips[clip.id];
+								if(shader && shader.update && PMX.material){
+									shader.update("_" + (i+1) + "_" + (e+1) + "_" + (u+1), PMX.material.uniforms);
 								}
 							}
 						}
@@ -649,14 +649,14 @@ pm.AppManager.prototype = {
 		this.geoX = [];
 		this.geoY = [];
 		this.passIndex = [];
-		pm.pointGeometry = new THREE.Geometry();
+		PMX.pointGeometry = new THREE.Geometry();
 
-		// Update 'pm.pointGeometry' with all the known nodes on state
+		// Update 'PMX.pointGeometry' with all the known nodes on state
 		// Create attributes for each one to pass to the shader
 		var t = 0;
-		for ( e = 0; e < pm.ports.getPorts().length; e ++ ) { 
+		for ( e = 0; e < PMX.ports.getPorts().length; e ++ ) { 
 
-			var port = pm.ports.getPort(e + 1);
+			var port = PMX.ports.getPort(e + 1);
 
 			if(port && port.nodes){
 				for ( i = 0; i < port.nodes.length; i ++ ) { 
@@ -665,10 +665,10 @@ pm.AppManager.prototype = {
 					vertex.x = port.nodes[i].x || 0;
 					vertex.y = port.nodes[i].y || 0;
 					vertex.z = port.nodes[i].z || 0;
-					pm.pointGeometry.vertices.push( vertex );
+					PMX.pointGeometry.vertices.push( vertex );
 
 					// for each point push along x, y values to reference correct pixel in u_colorMaps
-					var imageSize = pm.simSize; 
+					var imageSize = PMX.simSize; 
 					var tx = (t+1) % imageSize;
 					if(tx === 0){
 						tx = imageSize;
@@ -687,7 +687,7 @@ pm.AppManager.prototype = {
 	generateCoordsMap: function () {
 
 		// Generate coordsMap data texture for all the nodes x,y,z
-		var a = new Float32Array( Math.pow(pm.simSize, 2) * 4 );
+		var a = new Float32Array( Math.pow(PMX.simSize, 2) * 4 );
 		var t = 0;
 
 		var minx = 100000000000;
@@ -702,10 +702,10 @@ pm.AppManager.prototype = {
 			var y = 0;
 			var z = 0;
 
-			if(pm.pointGeometry.vertices[t]){
-				x = pm.pointGeometry.vertices[t].x ;// / this.base;
-				y = pm.pointGeometry.vertices[t].y ;// / this.base;
-				z = pm.pointGeometry.vertices[t].z ;// / this.base;
+			if(PMX.pointGeometry.vertices[t]){
+				x = PMX.pointGeometry.vertices[t].x ;// / this.base;
+				y = PMX.pointGeometry.vertices[t].y ;// / this.base;
+				z = PMX.pointGeometry.vertices[t].z ;// / this.base;
 
 				minx = Math.min(minx, x);
 				maxx = Math.max(maxx, x);
@@ -726,20 +726,20 @@ pm.AppManager.prototype = {
 		}
 
 		// We always set the first Pod Position as the bounding box that fits all nodes
-		pm.channels.setPodPos(1, new pm.PodPosition(minx, miny, minz, maxx - minx, maxy - miny, maxz - minz));
+		PMX.channels.setPodPos(1, new PMX.PodPosition(minx, miny, minz, maxx - minx, maxy - miny, maxz - minz));
 
 		// Testing on pod pos #2
-		//pm.channels.setPodPos(2, new pm.PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
-		//pm.channels.setPodPos(2, new pm.PodPosition(-190, 140, 0, 1070, 575, 1));
+		//PMX.channels.setPodPos(2, new PMX.PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
+		//PMX.channels.setPodPos(2, new PMX.PodPosition(-190, 140, 0, 1070, 575, 1));
 
-		this.coordsMap = new THREE.DataTexture( a, pm.simSize, pm.simSize, THREE.RGBAFormat, THREE.FloatType );
+		this.coordsMap = new THREE.DataTexture( a, PMX.simSize, PMX.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.coordsMap.minFilter = THREE.NearestFilter;
 		this.coordsMap.magFilter = THREE.NearestFilter;
 		this.coordsMap.needsUpdate = true;
 		this.coordsMap.flipY = true;
 
 		// testing
-		this.altMap1 = new THREE.DataTexture( a, pm.simSize, pm.simSize, THREE.RGBAFormat, THREE.FloatType );
+		this.altMap1 = new THREE.DataTexture( a, PMX.simSize, PMX.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.altMap1.minFilter = THREE.NearestFilter;
 		this.altMap1.magFilter = THREE.NearestFilter;
 		this.altMap1.needsUpdate = true;
@@ -773,12 +773,12 @@ pm.AppManager.prototype = {
 		};
 
 
-		pm.pointMaterial = new THREE.ShaderMaterial( {
+		PMX.pointMaterial = new THREE.ShaderMaterial( {
 
-			uniforms:       merge(uniforms, pm.shaders.PointCloudShader.uniforms),
-			attributes:     merge(attributes, pm.shaders.PointCloudShader.attributes),
-			vertexShader:   pm.shaders.PointCloudShader.vertexShader,
-			fragmentShader: pm.shaders.PointCloudShader.fragmentShader,
+			uniforms:       merge(uniforms, PMX.shaders.PointCloudShader.uniforms),
+			attributes:     merge(attributes, PMX.shaders.PointCloudShader.attributes),
+			vertexShader:   PMX.shaders.PointCloudShader.vertexShader,
+			fragmentShader: PMX.shaders.PointCloudShader.fragmentShader,
 			depthTest:      false,
 			transparent:    true
 		});
@@ -786,25 +786,25 @@ pm.AppManager.prototype = {
 		var name = "PM Nodes";
 		if(this.sceneMain.getObjectByName(name)){
 			// If the pointCloud has already been added, remove it so we can add it fresh
-			this.sceneMain.remove( pm.pointCloud );
+			this.sceneMain.remove( PMX.pointCloud );
 		}
 
-		pm.pointCloud = new THREE.PointCloud( pm.pointGeometry, pm.pointMaterial );
-		pm.pointCloud.sortParticles = true;
-		pm.pointCloud.name = name;
+		PMX.pointCloud = new THREE.PointCloud( PMX.pointGeometry, PMX.pointMaterial );
+		PMX.pointCloud.sortParticles = true;
+		PMX.pointCloud.name = name;
 
-		if(pm.pointPosition){
-			pm.pointCloud.position.x = pm.pointPosition[0];
-			pm.pointCloud.position.y = pm.pointPosition[1];
-			pm.pointCloud.position.z = pm.pointPosition[2];
+		if(PMX.pointPosition){
+			PMX.pointCloud.position.x = PMX.pointPosition[0];
+			PMX.pointCloud.position.y = PMX.pointPosition[1];
+			PMX.pointCloud.position.z = PMX.pointPosition[2];
 		}
 
-		this.sceneMain.add( pm.pointCloud );
+		this.sceneMain.add( PMX.pointCloud );
 
-		if(pm.pointGeometry.vertices.length > 0){
+		if(PMX.pointGeometry.vertices.length > 0){
 
-			console.log("PM Nodes: " + pm.pointGeometry.vertices.length);
-			pm.ready = true;
+			console.log("PM Nodes: " + PMX.pointGeometry.vertices.length);
+			PMX.ready = true;
 
 		}
 
@@ -818,15 +818,15 @@ pm.AppManager.prototype = {
 			_random: { type: "f", value: Math.random() },
 			u_coordsMap: { type: "t", value: this.coordsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
-			u_mapSize: { type: "f", value: pm.simSize }
+			u_mapSize: { type: "f", value: PMX.simSize }
 		};
 
 		// Generate the source shader from the current loaded channels
-		var sourceShader = pm.channels.generateSourceShader();
+		var sourceShader = PMX.channels.generateSourceShader();
 		var sourceUniforms = "";
 
 
-		if(pm.usePodUniforms){
+		if(PMX.usePodUniforms){
 			uniforms.u_pos_id= { type: "i", value: 0 };
 			uniforms.u_pos_x = { type: "f", value: 0. };
 			uniforms.u_pos_y = { type: "f", value: 0. };
@@ -847,7 +847,7 @@ pm.AppManager.prototype = {
 		// Add the uniforms from the current loaded channels
 		for (var uniform in sourceShader.uniforms) {
 
-			var type = pm.getVariableTypeFromShorthand(sourceShader.uniforms[uniform].type);
+			var type = PMX.getVariableTypeFromShorthand(sourceShader.uniforms[uniform].type);
 
 			sourceUniforms += "uniform " + type + " " + uniform + ";\n";
 			uniforms[uniform] = sourceShader.uniforms[uniform];
@@ -866,13 +866,13 @@ pm.AppManager.prototype = {
 
 
 		// If the flag is to update fresh ignore the existing uniforms 
-		if(!pm.updateFresh){
+		if(!PMX.updateFresh){
 
 			// If the material already exists, transfer over the value of any uniforms that have remained
-			if(pm.material){
+			if(PMX.material){
 				for (uniform in uniforms) {
-					if(pm.material.uniforms[uniform]){
-						uniforms[uniform].value = pm.material.uniforms[uniform].value;
+					if(PMX.material.uniforms[uniform]){
+						uniforms[uniform].value = PMX.material.uniforms[uniform].value;
 					}
 				}
 			}
@@ -880,39 +880,39 @@ pm.AppManager.prototype = {
 
 
 		// Internal core shader is merged with the loaded shaders
-		this.fragmentShader = pm.MainShader.fragmentShader;
+		this.fragmentShader = PMX.MainShader.fragmentShader;
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERS", sourceShader.fragmentMain);
 
 		// Add ShaderUtils and uniforms at the top
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERFUNCTIONS", sourceShader.fragmentFunctions);
-		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERUTILS", pm.shaders.ShaderUtils + sourceUniforms);
+		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERUTILS", PMX.shaders.ShaderUtils + sourceUniforms);
 
 		this.fragmentShader = this.minFragmentShader(this.fragmentShader);
 
 		
 
 		// The main material object has uniforms that can be referenced and updated directly by the UI
-		pm.material = new THREE.ShaderMaterial( {
+		PMX.material = new THREE.ShaderMaterial( {
 			uniforms: uniforms,
-			vertexShader: pm.shaders.SimpleTextureShader.vertexShader,
+			vertexShader: PMX.shaders.SimpleTextureShader.vertexShader,
 			fragmentShader: this.fragmentShader
 		} );
 
 
 		// Update uniforms directly
-		pm.material.uniforms.u_coordsMap.value = this.coordsMap;
-		pm.material.uniforms.u_prevCMap.value = this.rtTextureB;
+		PMX.material.uniforms.u_coordsMap.value = this.coordsMap;
+		PMX.material.uniforms.u_prevCMap.value = this.rtTextureB;
 
 		if(this.altMap1){
-			pm.material.uniforms.u_altMap1.value = this.altMap1;
+			PMX.material.uniforms.u_altMap1.value = this.altMap1;
 		}
 		if(this.altMap2){
-			pm.material.uniforms.u_altMap2.value = this.altMap2;
+			PMX.material.uniforms.u_altMap2.value = this.altMap2;
 		}
 
 
 		//console.log(sourceShader);
-		//console.log(pm.material.uniforms);
+		//console.log(PMX.material.uniforms);
 		//console.log(this.fragmentShader);
 
 		// Main quad that gets rendered as the source shader
@@ -922,14 +922,14 @@ pm.AppManager.prototype = {
 			// If the quad has already been added, remove it so we can add it fresh
 			this.sceneRTT.remove(lookupObj);
 		}
-		var quad = new THREE.Mesh( this.plane, pm.material );
+		var quad = new THREE.Mesh( this.plane, PMX.material );
 		quad.position.z = -100;
 		quad.name = name;
 		this.sceneRTT.add( quad );
 
 		// TODO possible optimize : seems this would be faster to update and not create new quad each time, but looks slower actually
-		//pm.material.uniforms = uniforms;
-		//pm.material.needsUpdate = true;
+		//PMX.material.uniforms = uniforms;
+		//PMX.material.needsUpdate = true;
 
 	},
 
@@ -966,14 +966,14 @@ pm.AppManager.prototype = {
  *
  */
 
-pm.ChannelManager = function () {
+PMX.ChannelManager = function () {
 
 	this.channels = [];
 	this.podpositions = [];
 
 };
 
-pm.ChannelManager.prototype = {
+PMX.ChannelManager.prototype = {
 
 	init: function () {
 
@@ -1010,7 +1010,7 @@ pm.ChannelManager.prototype = {
 
 
 			var fxChannel = false;
-			if(channel.type === pm.CHANNEL_TYPE_FX){
+			if(channel.type === PMX.CHANNEL_TYPE_FX){
 				fxChannel = true;
 			}
 
@@ -1047,7 +1047,7 @@ pm.ChannelManager.prototype = {
 
 									// Only update the res if we need to
 									var res = "vec2(" + podPos.w + ", " + podPos.h + ");";
-									if(pm.usePodUniforms){
+									if(PMX.usePodUniforms){
 										res = "vec2(getPodSize(" + pod.positionIds[o] + ").x, getPodSize(" + pod.positionIds[o] + ").y);";
 									}
 									if(lastKnownRes !== res){
@@ -1069,7 +1069,7 @@ pm.ChannelManager.prototype = {
 									var clip = pod.clips[u];
 									if(clip){
 
-										var shader = pm.clips[clip.id];
+										var shader = PMX.clips[clip.id];
 										if(shader){
 
 											if(!fragList[pod.clips[u].id]){
@@ -1114,7 +1114,7 @@ pm.ChannelManager.prototype = {
 
 												// If the clip defined params transfer default values over to the obj
 												for (var param in shader.params) {
-													pm.setObjProperty(param, shader.params[param].value, i+1, e+1, u+1);
+													PMX.setObjProperty(param, shader.params[param].value, i+1, e+1, u+1);
 													
 													// Create params with default values
 													uniforms[clip.address + "_" + param] = { type: "f", value: shader.params[param].value };
@@ -1134,7 +1134,7 @@ pm.ChannelManager.prototype = {
 												// Define uniforms for each clip
 												uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
 												uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
-												uniforms[clip.address + "_time"] = { type: "f", value: pm.app.time }; 
+												uniforms[clip.address + "_time"] = { type: "f", value: PMX.app.time }; 
 
 
 												// Pass along input param values if they are defined on clip
@@ -1146,7 +1146,7 @@ pm.ChannelManager.prototype = {
 												}
 
 												fragOutput = "";
-												if(clip.posMap == pm.MAP_ALT1 && pm.app.altMap1){
+												if(clip.posMap == PMX.MAP_ALT1 && PMX.app.altMap1){
 													fragOutput += "ap_xyz = offsetPos(ap_alt1, " + pod.positionIds[o] + ", ap_xyz.w);\n";
 												}
 
@@ -1159,7 +1159,7 @@ pm.ChannelManager.prototype = {
 
 												// ------------ Clip Mix Blend & Fx --------------
 
-												var fx = pm.clips[clip.id].fx;
+												var fx = PMX.clips[clip.id].fx;
 												if(u === 0){
 													
 													fragOutput += "ap_rgb = ap_rgb2; \n";
@@ -1275,16 +1275,16 @@ pm.ChannelManager.prototype = {
 		fragFuncOutput += fragFuncHelpers;
 
 		// Set alt map coordinates if they are defined
-		if(pm.app.altMap1){
+		if(PMX.app.altMap1){
 			output = "ap_alt1 = texture2D( u_altMap1, v_vUv);" + output;
 		}
-		if(pm.app.altMap2){
+		if(PMX.app.altMap2){
 			output = "ap_alt2 = texture2D( u_altMap2, v_vUv);" + output;
 		}
 
 		// Array of items we can set audio spectrum/waveform data to, or any data to
-		if(pm.dataSetLength && pm.dataSetLength > 0){
-			fragFuncOutput = "uniform float data[ " + pm.dataSetLength + " ]; \n" + fragFuncOutput;
+		if(PMX.dataSetLength && PMX.dataSetLength > 0){
+			fragFuncOutput = "uniform float data[ " + PMX.dataSetLength + " ]; \n" + fragFuncOutput;
 		}
 
 
@@ -1302,7 +1302,7 @@ pm.ChannelManager.prototype = {
 		// Pod Position function
 		var m = "";
 
-		if(pm.usePodUniforms){
+		if(PMX.usePodUniforms){
 			m += "if(d == u_pos_id){\n";
 				m += "p = vec3(u_pos_x, u_pos_y, u_pos_z);\n";
 			m += "}";
@@ -1314,7 +1314,7 @@ pm.ChannelManager.prototype = {
 			m += "}\n";
 		}
 
-		if(!pm.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
+		if(!PMX.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodPos(int d) { \n" + m + "}\n";
@@ -1322,7 +1322,7 @@ pm.ChannelManager.prototype = {
 		var output = m;
 		m = "";
 
-		if(pm.usePodUniforms){
+		if(PMX.usePodUniforms){
 			m += "if(d == u_pos_id){\n";
 				m += "p = vec3(u_pos_w, u_pos_h, u_pos_d);\n";
 			m += "}";
@@ -1335,14 +1335,14 @@ pm.ChannelManager.prototype = {
 			m += "}\n";
 		}
 
-		if(!pm.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
+		if(!PMX.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodSize(int d) { \n" + m + "}\n";
 
 		output += m;
 
-		if(pm.useTransforms){
+		if(PMX.useTransforms){
 
 			// Pod Offset (translation)
 			m = "";
@@ -1397,7 +1397,7 @@ pm.ChannelManager.prototype = {
 			output += "float t = x;\n";
 
 			// For performance reasons use a lighter and manual version of Matrix transforms
-			if(pm.useTransforms){
+			if(PMX.useTransforms){
 
 				// swap axis
 				output += "vec4 s = getPodScale(p);\n";
@@ -1491,7 +1491,7 @@ pm.ChannelManager.prototype = {
 		}
 		// If a pod does not yet exist create a default one with clip obj
 		if(!this.channels[channel-1].pods[pod-1]){
-			this.channels[channel-1].pods[pod-1] = new Pod(1, 1, pm.BLEND.Add, [clipObj]);
+			this.channels[channel-1].pods[pod-1] = new Pod(1, 1, PMX.BLEND.Add, [clipObj]);
 		}else{
 			// Todo transfer over existing data like mix, if it's not defined on new clip obj
 			this.channels[channel-1].pods[pod-1].clips[clip-1] = clipObj;
@@ -1514,11 +1514,11 @@ pm.ChannelManager.prototype = {
 *
 */
 
-pm.HardwareManager = function () {
+PMX.HardwareManager = function () {
 
 };
 
-pm.HardwareManager.prototype = {
+PMX.HardwareManager.prototype = {
 
 	init: function () {
 
@@ -1529,10 +1529,10 @@ pm.HardwareManager.prototype = {
 		//this.addSimpleNodeGrid(0, 220, 0, 32, 20, 33);
 
 		// Simulate Importing nodes from external file
-		//this.importNodes(pm.imported, 1, 350, 100, 500);
-		//pm.channels.setPodPos(2, new pm.PodPosition(-190, 140, -100, 1070, 575, 1000));
-		//pm.channels.setPodPos(2, new pm.PodPosition(-540, 140, -100, 700, 575, 1000));
-		//pm.channels.setPodPos(3, new pm.PodPosition(540, 140, -100, 700, 575, 1000));
+		//this.importNodes(PMX.imported, 1, 350, 100, 500);
+		//PMX.channels.setPodPos(2, new PMX.PodPosition(-190, 140, -100, 1070, 575, 1000));
+		//PMX.channels.setPodPos(2, new PMX.PodPosition(-540, 140, -100, 700, 575, 1000));
+		//PMX.channels.setPodPos(3, new PMX.PodPosition(540, 140, -100, 700, 575, 1000));
 
 	},
 
@@ -1562,7 +1562,7 @@ pm.HardwareManager.prototype = {
 		// Use the scale value defined in JS object unless one is passed as an argument instead
 		var _scale = scale || imported.scale; 
 
-		// Add node values to 'pm.ports' for each defined port
+		// Add node values to 'PMX.ports' for each defined port
 		for(var unit in imported.hardwareunit){
 
 			var _unit = imported.hardwareunit[unit];
@@ -1588,7 +1588,7 @@ pm.HardwareManager.prototype = {
 					_node.z += zOffset;
 
 				}
-				pm.ports.setNodes(_port.portid + portOffset, _port.nodes);
+				PMX.ports.setNodes(_port.portid + portOffset, _port.nodes);
 			}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 		}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 	},
@@ -1607,7 +1607,7 @@ pm.HardwareManager.prototype = {
 			}
 		}
 
-		pm.ports.setNodes(port, nodes);
+		PMX.ports.setNodes(port, nodes);
 	},
 
 	addTestPortsGrid: function (portStart, xOffset, yOffset) {
@@ -1629,8 +1629,8 @@ pm.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new pm.Port("port name " + port, pm.PORT_TYPE_KINET_1, null, null, nodes);
-			pm.ports.setPort(u + portStart, port);
+			var port = new PMX.Port("port name " + port, PMX.PORT_TYPE_KINET_1, null, null, nodes);
+			PMX.ports.setPort(u + portStart, port);
 
 			xS += xTOffset;
 			if((u + 2) % 5 == 1){
@@ -1652,8 +1652,8 @@ pm.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new pm.Port("port name " + port, pm.PORT_TYPE_KINET_1, null, null, nodes);
-			pm.ports.setPort(portStart, port);
+			var port = new PMX.Port("port name " + port, PMX.PORT_TYPE_KINET_1, null, null, nodes);
+			PMX.ports.setPort(portStart, port);
 	},
 
 	addTestPortsGrid3: function (portStart, xOffset, yOffset) {
@@ -1669,8 +1669,8 @@ pm.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new pm.Port("port name " + port, pm.PORT_TYPE_KINET_1, null, null, nodes);
-			pm.ports.setPort(portStart, port);
+			var port = new PMX.Port("port name " + port, PMX.PORT_TYPE_KINET_1, null, null, nodes);
+			PMX.ports.setPort(portStart, port);
 
 			nodes = [];
 			for ( e = 0; e < 70; e ++ ) { // Simulate a simple node grid for now
@@ -1686,8 +1686,8 @@ pm.HardwareManager.prototype = {
 					}
 				}
 			}
-			port = new pm.Port("port name " + port, pm.PORT_TYPE_KINET_1, null, null, nodes);
-			pm.ports.setPort(portStart + 1, port);
+			port = new PMX.Port("port name " + port, PMX.PORT_TYPE_KINET_1, null, null, nodes);
+			PMX.ports.setPort(portStart + 1, port);
 
 			nodes = [];
 			for ( e = 0; e < 70; e ++ ) { // Simulate a simple node grid for now
@@ -1703,8 +1703,8 @@ pm.HardwareManager.prototype = {
 					}
 				}
 			}
-			port = new pm.Port("port name " + port, pm.PORT_TYPE_KINET_1, null, null, nodes);
-			pm.ports.setPort(portStart + 2, port);
+			port = new PMX.Port("port name " + port, PMX.PORT_TYPE_KINET_1, null, null, nodes);
+			PMX.ports.setPort(portStart + 2, port);
 	},
 
 
@@ -1712,7 +1712,7 @@ pm.HardwareManager.prototype = {
 
 		// If a port slot is not defined just add it to the next open one
 		if(!port){
-			port = pm.ports.ports.length + 1;
+			port = PMX.ports.ports.length + 1;
 		}
 		
 
@@ -1737,12 +1737,12 @@ pm.HardwareManager.prototype = {
 				maxy = Math.max(maxy, node.y);
 			}
 		}
-		var portd = new pm.Port("port name " + port, pm.PORT_TYPE_KINET_1, null, null, nodes);
-		pm.ports.setPort(port, portd);
+		var portd = new PMX.Port("port name " + port, PMX.PORT_TYPE_KINET_1, null, null, nodes);
+		PMX.ports.setPort(port, portd);
 
 		// If we are not the first designated port set the pod position as a default (testing)
 		if(port > 1){
-			pm.channels.setPodPos(port, new pm.PodPosition(minx, miny, z, maxx - minx, maxy - miny, z+1));
+			PMX.channels.setPodPos(port, new PMX.PodPosition(minx, miny, z, maxx - minx, maxy - miny, z+1));
 		}
 
 	}
@@ -1760,13 +1760,13 @@ pm.HardwareManager.prototype = {
 *
 */
 
-pm.PortManager = function () {
+PMX.PortManager = function () {
 
 	this.ports = [];
 
 };
 
-pm.PortManager.prototype = {
+PMX.PortManager.prototype = {
 
 	init: function () {
 
@@ -1865,19 +1865,19 @@ pm.PortManager.prototype = {
 * Pods may also contain a set of Clips (shaders).
 *
 * @param name		String, Optional name.
-* @param type		Int, pm.CHANNEL_TYPE_ADD or pm.CHANNEL_TYPE_FX.
+* @param type		Int, PMX.CHANNEL_TYPE_ADD or PMX.CHANNEL_TYPE_FX.
 * @param mix		Int, overall mix control for entire Channel.
 * @param blend 		Int, 1-17 Blend modes specified in constants.
 * @param pods 		Pods[], Array of Pod objects. Pods may also contain Clips.
 *
 */
 
-pm.Channel = function (params) {
+PMX.Channel = function (params) {
 
 	this.name = params.name;
-	this.type = params.type 		|| pm.CHANNEL_TYPE_ADD;
+	this.type = params.type 		|| PMX.CHANNEL_TYPE_ADD;
 	this.mix = params.mix 			|| 0;
-	this.blend = params.blend 		|| pm.BLEND.Add;
+	this.blend = params.blend 		|| PMX.BLEND.Add;
 	this.pods = params.pods 		|| [];
 
 };
@@ -1894,12 +1894,12 @@ pm.Channel = function (params) {
 *
 */
 
-pm.Clip = function (params) {
+PMX.Clip = function (params) {
 
 	this.id = params.id;
 	this.mix = params.mix 			|| 1;
-	this.blend = params.blend 		|| pm.BLEND.Add;
-	this.posMap = params.posMap 	|| pm.MAP_NORMAL;
+	this.blend = params.blend 		|| PMX.BLEND.Add;
+	this.posMap = params.posMap 	|| PMX.MAP_NORMAL;
 	this.speed = params.speed 		|| 1;
 
 	this.p1 = params.p1 || 0;
@@ -1913,7 +1913,7 @@ pm.Clip = function (params) {
 	this.p9 = params.p9 || 0;
 };
 
-pm.Clip.prototype = {
+PMX.Clip.prototype = {
 
 	setParams: function (p1, p2, p3, p4, p5, p6, p7, p8, p9) {
 		this.p1 = p1;
@@ -1943,14 +1943,14 @@ pm.Clip.prototype = {
 */
 
 
-pm.Pod = function (params) {
+PMX.Pod = function (params) {
 	this.positionIds = params.positionIds || [1];
 	this.mix = params.mix || 1;
-	this.blend = params.blend || pm.BLEND.Add;
+	this.blend = params.blend || PMX.BLEND.Add;
 	this.clips = params.clips || [];
 
 	// TODO - this data should be packed into portsMap, useful for creating specific groups of nodes outside of xyz or port data
-	// this.hardwareGroupMode = hardwareGroupMode || pm.HARDWAREGROUP_OFF;			// Off, Exclude, or Solo Mode
+	// this.hardwareGroupMode = hardwareGroupMode || PMX.HARDWAREGROUP_OFF;			// Off, Exclude, or Solo Mode
 	// this.hardwareGroupIds = hardwareGroupIds || [];
 };
 /*
@@ -1976,7 +1976,7 @@ pm.Pod = function (params) {
 *
 */
 
-pm.PodPosition = function (x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs, flipmode) {
+PMX.PodPosition = function (x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs, flipmode) {
 
 	this.x = x || 0;
 	this.y = y || 0;
@@ -2010,7 +2010,7 @@ pm.PodPosition = function (x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs
 *
 */
 
-pm.Port = function (name, type, address, hardwarePort, nodes) {
+PMX.Port = function (name, type, address, hardwarePort, nodes) {
 
 	this.name = name;
 	this.type = type;
@@ -2026,7 +2026,7 @@ pm.Port = function (name, type, address, hardwarePort, nodes) {
  */
 
 
-pm.MainShader = {
+PMX.MainShader = {
 
 	fragmentShader: [
 		
@@ -2116,10 +2116,10 @@ pm.MainShader = {
  */
 
 
-pm.shaders.PointCloudShader = {
+PMX.shaders.PointCloudShader = {
 
 	uniforms: {
-		u_pointSize:  { type: 'f', value: pm.pointSize }, // This is re-set in pm.setSize()
+		u_pointSize:  { type: 'f', value: PMX.pointSize }, // This is re-set in PMX.setSize()
 		//u_colorMap:   { type: "t", value: null },
 		//u_texture:    { type: "t", value: null }
 	},
@@ -2182,7 +2182,7 @@ pm.shaders.PointCloudShader = {
  */
 
 
-pm.shaders.ShaderUtils = [
+PMX.shaders.ShaderUtils = [
 
 	"vec3 rgb2hsv(vec3 c){",
 	    "vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);",
@@ -2258,7 +2258,7 @@ pm.shaders.ShaderUtils = [
  */
  
 
-pm.shaders.SimpleTextureShader = {
+PMX.shaders.SimpleTextureShader = {
 
 	uniforms: {
 
