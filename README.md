@@ -27,7 +27,8 @@ Open Sourced under [MIT License](https://github.com/hepp/audiopixel3/blob/master
 
 [vs Vanilla GLSL Shader](https://github.com/hepp/audiopixel3#vs-vanilla-glsl-shader) |
 [Terminology](https://github.com/hepp/audiopixel3#terminology) |
-[About us](https://github.com/hepp/audiopixel3#about-us)
+[About us](https://github.com/hepp/audiopixel3#about-us) |
+[Contribute](https://github.com/hepp/audiopixel3#contribute)
 
 ---
 
@@ -201,3 +202,10 @@ We are releasing it to the world in the hopes that it can improve sound and inte
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/Emrg-N-See-2010.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/lorn-decibel-audiopixel.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/raindanceSnapshot1.png)
+
+
+---
+
+## Contribute ##
+
+Please feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API, please let us know. Better yet - take a stab at it yourself. We encourage you to fork and experiment with the code and these techniques. If you would like to contribute in whatever fashion, we would love to [hear from you.](http://audiopixel.com/contact)
