@@ -176,19 +176,15 @@ In our quest of optimizing lighting technology PixelMixer was born.
 We are releasing it to the world in hopes that it can improve sound responsive and interactive light art for all.
 
 
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-bigBounce_06.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/rick6.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel_festival_lights-585x390.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel_nexus2013.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel_Nexus_BurningMan_2012_17.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-bigBounce_06.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-SonicBloom_05.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel_Nexus_BurningMan_2012_17.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-Tipper-SF_03.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/blank_prod_santa_cruz_01_585.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-Tipper-SF_01.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/blank_prod_santa_cruz_01_585.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/Emrg-N-See-2010.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/EmrgNSee-VibeSquad-AudioPixel.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel_Nexus_BurningMan_2012_17.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/lorn-decibel.jpg.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/Lucidity-AudioWaska-AudioPixel.png)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/mac101_colorkinetics.png)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/raindanceSnapshot1.png)
