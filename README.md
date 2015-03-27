@@ -12,12 +12,12 @@ There are other advantages as well when compared to standard OpenGL pixel shader
 Live demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 
 
-####[Features](https://github.com/hepp/audiopixel3#features)####
-####[Steps to using API](https://github.com/hepp/audiopixel3#steps-to-using-api)####
-####[Possible Uses Include](https://github.com/hepp/audiopixel3#possible-uses-include)####
-####[Vs Vanilla GLSL Shader](https://github.com/hepp/audiopixel3#vs-vanilla-glsl-shader)####
-####[Terminology](https://github.com/hepp/audiopixel3#terminology)####
-####[About AudioPixel](https://github.com/hepp/audiopixel3#about-audiopixel)####
+[Features](https://github.com/hepp/audiopixel3#features)
+[Steps to using API](https://github.com/hepp/audiopixel3#steps-to-using-api)
+[Possible Uses Include](https://github.com/hepp/audiopixel3#possible-uses-include)
+[Vs Vanilla GLSL Shader](https://github.com/hepp/audiopixel3#vs-vanilla-glsl-shader)
+[Terminology](https://github.com/hepp/audiopixel3#terminology)
+[About AudioPixel](https://github.com/hepp/audiopixel3#about-audiopixel)
 
 ---
 
