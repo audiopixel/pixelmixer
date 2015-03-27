@@ -135,57 +135,6 @@ PMX.AppManager.prototype = {
 
 	},
 
-
-	///////////////// test
-
-	addPlanesForTesting: function(){
-
-		testPlane = new THREE.PlaneBufferGeometry( PMX.simSize * 2, PMX.simSize * 2 );
-		
-		var materialScreen = new THREE.ShaderMaterial( {
-
-			uniforms: 		{u_texture:   { type: "t", value: this.rtTextureA }},
-			vertexShader: 	PMX.shaders.SimpleTextureShader.vertexShader,
-			fragmentShader: PMX.shaders.SimpleTextureShader.fragmentShader,
-			depthWrite: false
-
-		} );
-
-		var quad = new THREE.Mesh( testPlane, materialScreen );
-		quad.position.x = -600;
-		this.sceneMain.add( quad );
-
-		materialScreen = new THREE.ShaderMaterial( {
-
-			uniforms: 		{u_texture:   { type: "t", value: this.rtTextureB }},
-			vertexShader: 	PMX.shaders.SimpleTextureShader.vertexShader,
-			fragmentShader: PMX.shaders.SimpleTextureShader.fragmentShader,
-			depthWrite: false
-
-		} );
-
-		quad = new THREE.Mesh( testPlane, materialScreen );
-		quad.position.x = -900;
-		this.sceneMain.add( quad );
-
-		materialScreen = new THREE.ShaderMaterial( {
-
-			uniforms: 		{u_texture:   { type: "t", value: this.coordsMap }},
-			vertexShader: 	PMX.shaders.SimpleTextureShader.vertexShader,
-			fragmentShader: PMX.shaders.SimpleTextureShader.fragmentShader,
-			depthWrite: false
-
-		} );
-
-		quad = new THREE.Mesh( testPlane, materialScreen );
-		quad.position.x = -1200;
-		this.sceneMain.add( quad );
-
-	},
-
-	/////////////////
-
-
 	importShader: function (name, shaderTxt) {
 
 		var brackStatus = 0;
@@ -456,8 +405,9 @@ PMX.AppManager.prototype = {
 			transparent:    true
 		});
 
-		var name = "PM Nodes";
+		var name = "PixelMixer Nodes";
 		if(this.sceneMain.getObjectByName(name)){
+			
 			// If the pointCloud has already been added, remove it so we can add it fresh
 			this.sceneMain.remove( PMX.pointCloud );
 		}
@@ -476,7 +426,7 @@ PMX.AppManager.prototype = {
 
 		if(PMX.pointGeometry.vertices.length > 0){
 
-			console.log("PM Nodes: " + PMX.pointGeometry.vertices.length);
+			console.log("PixelMixer Nodes: " + PMX.pointGeometry.vertices.length);
 			PMX.ready = true;
 
 		}
@@ -561,7 +511,6 @@ PMX.AppManager.prototype = {
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERUTILS", PMX.shaders.ShaderUtils + sourceUniforms);
 
 		this.fragmentShader = this.minFragmentShader(this.fragmentShader);
-
 		
 
 		// The main material object has uniforms that can be referenced and updated directly by the UI

@@ -17,6 +17,8 @@ Shader editor: [github/examples/shader_edit.html](https://github.com/hepp/audiop
 
 Load in additional WebGL shaders, such any of the ones found at [glslsandbox](http://glslsandbox.com/) or [shadertoy](https://www.shadertoy.com).
 
+Open Sourced under [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENSE).
+
 ---
 
 [Features](https://github.com/hepp/audiopixel3#features) |
