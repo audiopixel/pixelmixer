@@ -21,12 +21,11 @@ Load in additional WebGL shaders, such any of the ones found at [glslsandbox](ht
 
 [Features](https://github.com/hepp/audiopixel3#features) |
 [Steps to using API](https://github.com/hepp/audiopixel3#steps-to-using-api) |
-[Possible uses](https://github.com/hepp/audiopixel3#possible-uses)
+[Possible uses](https://github.com/hepp/audiopixel3#possible-uses) | 
 
 [vs Vanilla GLSL Shader](https://github.com/hepp/audiopixel3#vs-vanilla-glsl-shader) |
 [Terminology](https://github.com/hepp/audiopixel3#terminology) |
-[About us](https://github.com/hepp/audiopixel3#about-us) |
-[License](https://github.com/hepp/audiopixel3#license)
+[About us](https://github.com/hepp/audiopixel3#about-us)
 
 ---
 
@@ -116,7 +115,7 @@ Each instance of a loaded shader has independent uniforms setup for easy control
 * Animate particles / sprites / textures in any WebGL or Three.js project
 * Lighting conceptualize / architectural tool
 * Generate shaders that can be used in separate OpenGL applications
-* Run massive LED walls with dedicated server / gaming laptop, triggered by mobile MIDI / OSC API
+* Run high performance with dedicated server, triggered by mobile MIDI / OSC API
 
 
 
@@ -200,22 +199,3 @@ We are releasing it to the world in the hopes that it can improve sound and inte
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/Emrg-N-See-2010.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/lorn-decibel-audiopixel.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/raindanceSnapshot1.png)
-
-
----
-
-## License ##
-
-The MIT License
-
-Copyright 2010-2015 Hepp Maccoy audiopixel.com
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
