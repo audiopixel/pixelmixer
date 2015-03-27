@@ -3,11 +3,13 @@
 PixelMixer by AudioPixel is a visual engine optimized for performance that is able to generate, blend, and map OpenGL pixel shaders in 3D space.
 
 Runs in the browser using WebGL and Three.js, and is easy to add to any web application.
-The generated shaders can also be run in any OpenGL ES 2.0 environment (C / Java / IPhone / Android etc).
+The generated shaders can also be run in any OpenGL ES 2.0 environment (C / Java / IPhone / Android).
 
 The original goal in creating PixelMixer was to drive lighting and video projection equipment. It is capable of capturing all color / data values of 3D pixels at fast framerates, which can be used for communication to physical lighting equipment using protocols such as Video, UDP, & DMX. 
 
 There are other advantages as well when compared to standard OpenGL pixel shaders, as shown in the comparison table below.
+
+---
 
 Live demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 
@@ -17,15 +19,13 @@ Load in additional WebGL shaders, such any of the ones found at [glslsandbox](ht
 
 ---
 
-## Table of Contents ##
-
 [Features](https://github.com/hepp/audiopixel3#features) |
 [Steps to using API](https://github.com/hepp/audiopixel3#steps-to-using-api) |
 [Possible uses](https://github.com/hepp/audiopixel3#possible-uses)
 
 [vs Vanilla GLSL Shader](https://github.com/hepp/audiopixel3#vs-vanilla-glsl-shader) |
 [Terminology](https://github.com/hepp/audiopixel3#terminology) |
-[About AudioPixel](https://github.com/hepp/audiopixel3#about-audiopixel)
+[About us](https://github.com/hepp/audiopixel3#about-us)
 
 ---
 
@@ -175,7 +175,7 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 
 ---
 
-## About AudioPixel ##
+## About us ##
 
 ![AudioPixel Logo](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-web-grid.png)
 
@@ -186,7 +186,7 @@ We are on our 3rd revision of our in-house lighting software.
 
 In our quest of optimizing lighting technology PixelMixer was born.
 
-We are releasing it to the world in hopes that it will improve sound and interactive light art for all.
+We are releasing it to the world in the hopes that it can improve sound and interactive light art for all.
 
 
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-cubes1.jpg)
