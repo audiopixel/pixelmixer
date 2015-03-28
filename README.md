@@ -28,7 +28,7 @@ Open Sourced under [MIT License](https://github.com/hepp/audiopixel3/blob/master
 
 [Terminology](https://github.com/hepp/audiopixel3#terminology) |
 [Roadmap](https://github.com/hepp/audiopixel3#roadmap) |
-[Contribute](https://github.com/hepp/audiopixel3#contribute) |
+[Participate](https://github.com/hepp/audiopixel3#participate) |
 [About us](https://github.com/hepp/audiopixel3#about-us)
 
 ---
@@ -190,9 +190,13 @@ General list of features that are in the works and coming soon
 
 ---
 
-## Contribute ##
+## Participate ##
 
-Please feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API, please let us know. Better yet - also try and take a stab at it yourself. We encourage you to fork and experiment with the code and these techniques. We are also seeking beta testers, to try out some new advanced techniques, especially if you have lighting hardware to test with. If you would like to be involved in whatever fashion, we would love to [hear from you.](http://audiopixel.com/contact)
+[Contact us.](http://audiopixel.com/contact)
+
+Please feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API, or want to help build new features let us know - better yet fork the coe and take a stab at it yourself. We encourage you to experiment with these techniques.
+
+We are seeking beta testers, especially if you have lighting fixtures or other types of hardware to play with.
 
 ---
 
@@ -207,7 +211,7 @@ For 5+ years we have helped artists create interactive installations, programmed
 
 In our quest for optimizing AudioPixel's live programming techniques, PixelMixer was born.
 
-Our aim was to develop a platform that we could use for any installation or stage design we can dream up.
+Our aim was to develop a platform that we could use for any installation or stage design we could dream up.
 
 
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-cubes1.jpg)
