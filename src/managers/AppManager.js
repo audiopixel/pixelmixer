@@ -220,6 +220,7 @@ PX.AppManager.prototype = {
 			if(msg.localeCompare("uniform float random") > -1){return true;}
 			if(msg.localeCompare("uniform vec2 resolution") > -1){return true;}
 			if(msg.localeCompare("precision highp float") > -1){return true;}
+			if(msg.localeCompare("varying vec2 surfacePosition") > -1){return true;}
 			return false;
 		}
 

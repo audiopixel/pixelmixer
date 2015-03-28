@@ -23,6 +23,7 @@ PX.MainShader = {
 		"vec3 px_c = vec3(0.);",
 		"vec3 px_p = vec3(0.);",
 		"vec2 resolution;",
+		"vec2 surfacePosition = vec2(0.);",
 		"float random;",
 
 		"varying vec2 v_vUv;",
