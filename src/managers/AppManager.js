@@ -113,11 +113,11 @@ PX.AppManager.prototype = {
 				this.renderer.clear();
 
 				// Test if we are receiving colors
-				var receiving = false;
+				/*var receiving = false;
 				for (var i = 0; i < PX.pixels.length; i++) {
 					if(PX.pixels[i] > 0 && PX.pixels[i] < 255){ receiving = true; }
 				};
-				if(receiving){ console.log(receiving); };
+				if(receiving){ console.log(receiving); };*/
 
 			}
 

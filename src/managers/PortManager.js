@@ -31,7 +31,7 @@ PX.PortManager.prototype = {
 			for ( e = 0; e < PX.ports.getPorts().length; e ++ ) { 
 
 				var port = PX.ports.getPort(e + 1);
-				if(port && port.type && port.nodes){
+				if(port && port.broadcast && port.type && port.nodes){
 
 
 					// if we have a defined tech we can use it to broadcast
