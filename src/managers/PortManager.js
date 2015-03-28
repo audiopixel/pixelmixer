@@ -21,6 +21,33 @@ PX.PortManager.prototype = {
 
 	init: function () {
 
+		if(PX.broadcast){
+
+			// If broadcast is on loop each port
+			for ( e = 0; e < PX.ports.getPorts().length; e ++ ) { 
+
+				var port = PX.ports.getPort(e + 1);
+				if(port && port.broadcast && port.type && port.nodes){
+
+					// if we have a defined tech we can use it to broadcast
+					if(PX.techs[port.type]){
+
+						PX.techs[port.type].broadcast(port);
+
+					}
+
+				}
+			}
+		}
+
+		// Call init method on techs if they are defined
+		for (var tech in PX.techs) {
+
+			if(PX.techs[tech].init){
+
+				PX.techs[tech].init();
+			}
+		};
 	},
 
 	update: function () {
@@ -32,7 +59,6 @@ PX.PortManager.prototype = {
 
 				var port = PX.ports.getPort(e + 1);
 				if(port && port.broadcast && port.type && port.nodes){
-
 
 					// if we have a defined tech we can use it to broadcast
 					if(PX.techs[port.type]){
