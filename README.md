@@ -38,14 +38,14 @@ Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENS
 * Animate pixel shaders seamlessly across textures and point cloud particles 
 * Mix multiple pixel shaders together using various blend modes
 * Map shaders to any number of areas using 3D transformations
-* Blend multiple shaders into combined shaders
-* Capture color values for all 3D nodes at high framerates
-* Easily manipulate animations with incoming audio or data feeds
 * Import any GLSL fragment shader
-* Multiple position / index maps can be used to generate content (spoof gl_FragCoords per shader)
 * Enhance your shaders with helper methods / values not normally in GLSL
-* Preview channels in previz mode while still communicating main mix to hardware (coming soon)
-* HTML5 video input (coming soon)
+* Easily manipulate animations with incoming audio or data feeds
+* Multiple position / index maps can be used to generate mapped content
+* Capture color values for all 3D nodes at high framerates
+* Define networking data per port, broadcast UDP and more
+* Preview channels in previz mode while still communicating main mix to hardware (WIP)
+* HTML5 video input (WIP)
 
 
 ---
@@ -67,7 +67,7 @@ Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENS
 
 [View this in a simple example](https://github.com/hepp/audiopixel3/blob/master/examples/basic_example.html)
 
-[View more examples](https://github.com/hepp/audiopixel3/blob/master/examples/)
+[View all examples](https://github.com/hepp/audiopixel3/blob/master/examples/)
 
 
 #### 1. Include Libraries Pixelmixer.js and Three.js ####
@@ -195,7 +195,7 @@ General list of features that are in the works and coming soon
 
 ## Participate ##
 
-Please feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API, or want to help build new features let us know - better yet fork the code and take a stab at it yourself. We encourage you to experiment with these techniques.
+Feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API contact us. We encourage you to experiment with these techniques, fork the code and try things out, and we welcome new contributors.
 
 We are also seeking beta testers, especially if you have lighting fixtures or other hardware to play with.
 
