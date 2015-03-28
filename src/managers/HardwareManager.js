@@ -61,6 +61,11 @@ PMX.HardwareManager.prototype = {
 
 				var _port = _unit.ports[port];
 
+				if(!PMX.ports[_port.portid-1]){
+					// If a port is not defined create a default one
+					PMX.ports.setPort(_port.portid + portOffset, new PMX.Port());
+				}
+
 				for(var node in _port.nodes){
 
 					var _node = _port.nodes[node];
@@ -198,11 +203,11 @@ PMX.HardwareManager.prototype = {
 	},
 
 
-	addSimpleNodeGrid: function (x, y, z, width, height, pitch, port) {
+	addSimpleNodeGrid: function (x, y, z, width, height, pitch, portStart) {
 
 		// If a port slot is not defined just add it to the next open one
-		if(!port){
-			port = PMX.ports.ports.length + 1;
+		if(!portStart){
+			portStart = PMX.ports.ports.length + 1;
 		}
 		
 
@@ -227,12 +232,12 @@ PMX.HardwareManager.prototype = {
 				maxy = Math.max(maxy, node.y);
 			}
 		}
-		var portd = new PMX.Port("port name " + port, PMX.PORT_TYPE_KINET_1, null, null, nodes);
-		PMX.ports.setPort(port, portd);
+		var port = new PMX.Port("port name " + portStart, PMX.PORT_TYPE_KINET_1, null, null, nodes);
+		PMX.ports.setPort(port, port);
 
 		// If we are not the first designated port set the pod position as a default (testing)
-		if(port > 1){
-			PMX.channels.setPodPos(port, new PMX.PodPosition(minx, miny, z, maxx - minx, maxy - miny, z+1));
+		if(portStart > 1){
+			PMX.channels.setPodPos(portStart, new PMX.PodPosition(minx, miny, z, maxx - minx, maxy - miny, z+1));
 		}
 
 	}

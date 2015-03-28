@@ -1,19 +1,29 @@
 
 
+
+
+PMX.broadcast = true;	
+PMX.readPixels = true;	
+
 PMX.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
 PMX.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
 PMX.usePodUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
 
-PMX.pointCloud = {};				// Main point cloud that displays node colors
+PMX.pointCloud = {};			// Main point cloud that displays node colors
 PMX.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
 PMX.pointMaterial = {};			// Shader of the point cloud that displays the node colors
 PMX.pointSize = 20;				// The size of each point cloud sprite
 
-
 PMX.material = false;			// Main shader referenced here, set false initially to flag that its not ready
+
+
+
+
+
+
+// -------------------------------------------------------
+
 PMX.shaderCount = -1;
-
-
 PMX.init = function(scene, renderer, maxNodeCount){
 
 	// Tag each shader with a incremental id, for easy lookup later

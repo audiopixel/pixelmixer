@@ -2,15 +2,17 @@
 
 // ****** Platform ******
 
-var PMX = { REVISION: '1' };		// Global object
+var PMX = { REVISION: '1' };	// Global object
 PMX.ready = false;				
 PMX.simSize;
 
 PMX.shaders = {};				// Internal shaders 
-PMX.clips = {}; 					// Loaded shaders as clips
+PMX.clips = {}; 				// Loaded shaders as clips
 PMX.imported = {}; 				// Currently imported port (and possibly node) data
+PMX.techs = {};
 
-
+PMX.pixels;
+	
 // ****** Constants ******
 
 // Blend Constants

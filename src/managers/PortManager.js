@@ -6,6 +6,8 @@
 * 	All Nodes must be associated with a Port.
 *
 * 	Ports may also define network and addressing data.
+* 
+* 
 *
 */
 
@@ -22,6 +24,32 @@ PMX.PortManager.prototype = {
 	},
 
 	update: function () {
+
+		if(PMX.broadcast){
+
+			// If broadcast is on loop each port
+			for ( e = 0; e < PMX.ports.getPorts().length; e ++ ) { 
+
+				var port = PMX.ports.getPort(e + 1);
+				if(port && port.type && port.nodes){
+
+
+					// if we have a defined tech we can use it to broadcast
+					if(PMX.techs[port.type]){
+
+						PMX.techs[port.type].broadcast(port);
+
+					}
+
+				}
+			}
+		}
+
+		
+// tech: uses it's port/node increment as the id
+	// we then use that id as which 3 values we grab from pixels array
+	// tech.broadcast(portObject, nodeIndex, pixels array)
+
 
 	},
 

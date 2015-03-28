@@ -28,10 +28,8 @@ PMX.AppManager = function (scene, renderer) {
 	this.fragmentShader;
 
 	this.time = 0;
-	this.pixels;
 
 	this.render = true;
-	this.readPixels = false;
 
 	this.nodeTexture = THREE.ImageUtils.loadTexture( "images/nodeflare250.png" );
 
@@ -66,8 +64,8 @@ PMX.AppManager.prototype = {
 		PMX.updateNodePoints();
 		//this.updateMainSourceShader();
 
-		if(this.readPixels){
-			this.pixels = new Uint8Array(4 * this.glWidth * this.glHeight);
+		if(PMX.readPixels){
+			PMX.pixels = new Uint8Array(4 * Math.pow(PMX.simSize, 2));
 		}
 
 	},
@@ -106,22 +104,21 @@ PMX.AppManager.prototype = {
 
 
 			// Capture colormap for broadcast output
-			if(this.readPixels){
+			if(PMX.readPixels){
 
 				// Render full screen quad with generated texture
 				this.renderer.render( this.sceneRTT, this.cameraRTT );
 				var gl = this.renderer.getContext();
-				gl.readPixels(0, 0, this.glWidth, this.glHeight, gl.RGBA, gl.UNSIGNED_BYTE, this.pixels);
+				gl.readPixels(0, 0, PMX.simSize, PMX.simSize, gl.RGBA, gl.UNSIGNED_BYTE, PMX.pixels);
 				this.renderer.clear();
 
-				/*
 				// Test if we are receiving colors
 				var receiving = false;
-				for (var i = 0; i < this.pixels.length; i++) {
-					if(this.pixels[i] > 0 && this.pixels[i] < 255){ receiving = true; }
+				for (var i = 0; i < PMX.pixels.length; i++) {
+					if(PMX.pixels[i] > 0 && PMX.pixels[i] < 255){ receiving = true; }
 				};
 				if(receiving){ console.log(receiving); };
-				*/
+
 			}
 
 		}
@@ -288,6 +285,7 @@ PMX.AppManager.prototype = {
 					vertex.y = port.nodes[i].y || 0;
 					vertex.z = port.nodes[i].z || 0;
 					PMX.pointGeometry.vertices.push( vertex );
+					port.nodes[i].indexId = t;
 
 					// for each point push along x, y values to reference correct pixel in u_colorMaps
 					var imageSize = PMX.simSize; 
