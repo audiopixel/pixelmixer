@@ -15,9 +15,9 @@ Live demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 
 Shader editor: [github/examples/shader_edit.html](https://github.com/hepp/audiopixel3/blob/master/examples/shader_edit.html)
 
-Load in additional WebGL shaders, such any of the ones found at [glslsandbox](http://glslsandbox.com/) or [shadertoy](https://www.shadertoy.com).
+Load in additional WebGL shaders, such as any of the ones found at [glslsandbox](http://glslsandbox.com/) or [shadertoy](https://www.shadertoy.com).
 
-Open Sourced under [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENSE).
+Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENSE).
 
 ---
 
@@ -66,6 +66,7 @@ Open Sourced under [MIT License](https://github.com/hepp/audiopixel3/blob/master
 ## Steps to Run API ##
 
 [View this in a simple example](https://github.com/hepp/audiopixel3/blob/master/examples/basic_example.html)
+
 [View more examples](https://github.com/hepp/audiopixel3/blob/master/examples/)
 
 
@@ -75,9 +76,11 @@ Open Sourced under [MIT License](https://github.com/hepp/audiopixel3/blob/master
 <script src="pixelmixer.min.js"></script>
 <script src="three.min.js"></script>
 
+// Setup Three.js
 scene = new THREE.Scene();
 renderer = new THREE.WebGLRenderer(); 
 
+// Setup PixelMixer.js
 PX.init(scene, renderer);
 PX.setSize(glWidth, glHeight);
 
@@ -148,9 +151,9 @@ Shaders loaded into the API extend GLSL to achieve additional functionality:
 A Clip is simply a Shader with additional timing, scaling, and input controls. 
 Loading a Shader into a Clip allows us to play it back several times, at multiple sizes and animation speeds.
 
-A Pod is a way to group and mix Clips to be blended and positioned as one. Pods can then be blended into other Pods. Pods can also be represented many times over in many places. An example of this could be to take one Clip/Shader and display it in two different places, perhaps with the second instance mirrored or scaled. 
+A Pod is a way to group and mix Clips to be blended and positioned as one. Pods can then be blended into other Pods. Pods can also be represented many times over in many places. A simple example of would be to take one Pod and display it in two different places, perhaps with the second instance mirrored or scaled. 
 
-Once a Shader has been loaded into a Clip, it can be positioned in multiple places with a Pod, and then mixed into the main mix inside a Channel.
+Once a Shader has been loaded into a Clip, it can be positioned in multiple places with a Pod, and then mixed into the main mix with a Channel.
 
 
 
@@ -184,19 +187,19 @@ General list of features that are in the works and coming soon
 
 * Previz improvements
 * Mesh texture rendering (in addition to PointClouds)
-* Sprite Nodes render environment layer (emulate lit up surfaces)
-* Compatibility for using without Three.js 
+* Sprite nodes render environment layer (emulate lit up surfaces)
+* Use without Three.js mode
 * HTML5 Video Support
 
 ---
 
 ## Participate ##
 
-[Contact us.](http://audiopixel.com/contact)
-
 Please feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API, or want to help build new features let us know - better yet fork the code and take a stab at it yourself. We encourage you to experiment with these techniques.
 
-We are also seeking beta testers, especially if you have lighting fixtures or other types of hardware to play with.
+We are also seeking beta testers, especially if you have lighting fixtures or other hardware to play with.
+
+[Contact.](http://audiopixel.com/contact)
 
 ---
 
@@ -211,16 +214,13 @@ For 5+ years we have helped artists create interactive installations, programmed
 
 In our quest for optimizing AudioPixel's live programming techniques, PixelMixer was born.
 
-Our aim was to develop a platform that we could use for any installation or stage design we could dream up.
+Our aim was to develop a platform we could use for any installation or stage design we could dream up.
 
 
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-cubes1.jpg)
+![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/blank_prod_santa_cruz_01_585.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-Tipper-SF_01.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-SonicBloom_05.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/blank_prod_santa_cruz_01_585.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel_festival_lights-585x390.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/EmrgNSee-VibeSquad-AudioPixel.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel_Nexus_BurningMan_2012_17.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/Emrg-N-See-2010.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/lorn-decibel-audiopixel.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/raindanceSnapshot1.png)
