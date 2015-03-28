@@ -13,6 +13,7 @@
 
 PX.Channel = function (params) {
 
+	params = params || {};
 	this.name = params.name;
 	this.type = params.type 		|| PX.CHANNEL_TYPE_ADD;
 	this.mix = params.mix 			|| 0;

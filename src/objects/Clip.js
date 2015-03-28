@@ -13,6 +13,7 @@
 
 PX.Clip = function (params) {
 
+	params = params || {};
 	this.id = params.id;
 	this.mix = params.mix 			|| 1;
 	this.blend = params.blend 		|| PX.BLEND.Add;

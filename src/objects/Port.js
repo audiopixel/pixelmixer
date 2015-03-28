@@ -7,19 +7,22 @@
 * Note: For projects not broadcasting Nodes can all be in the first Port.
 *
 * @param name			String, Port name (optional)
-* @param type			
+* @param type			ID
+* @param broadcast		Boolean, If true (and PX.broadcast too) broadcast out using type protocol
 * @param address		String, Base network address (i.e. 10.0.0.1)
 * @param hardwarePort	Number, Port of network address
 * @param nodes			Object, Contains x, y, z, position coordinate properties
 *
 */
 
-PX.Port = function (name, type, address, hardwarePort, nodes) {
+PX.Port = function (params) {
 
-	this.name = name || "unnamed port";
-	this.type = type || "test";
-	this.address = address || "";
-	this.nodes = nodes || [];
-	this.hardwarePort = hardwarePort || 1;
+	params = 			params || {};
+	this.name = 		params.name || "unnamed port";
+	this.type = 		params.type || "test";
+	this.broadcast = 	params.broadcast || false;
+	this.address = 		params.address || "";
+	this.nodes = 		params.nodes || [];
+	this.hardwarePort = params.hardwarePort || 1;
 
 };

@@ -124,7 +124,7 @@ PX.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new PX.Port("port name " + port, PX.PORT_TYPE_KINET_1, null, null, nodes);
+			var port = new PX.Port({name: "port name " + port, nodes: nodes});
 			PX.ports.setPort(u + portStart, port);
 
 			xS += xTOffset;
@@ -147,7 +147,7 @@ PX.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new PX.Port("port name " + port, PX.PORT_TYPE_KINET_1, null, null, nodes);
+			var port = new PX.Port({name: "port name " + port, nodes: nodes});
 			PX.ports.setPort(portStart, port);
 	},
 
@@ -164,7 +164,7 @@ PX.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new PX.Port("port name " + port, PX.PORT_TYPE_KINET_1, null, null, nodes);
+			var port = new PX.Port({name: "port name " + port, nodes: nodes});
 			PX.ports.setPort(portStart, port);
 
 			nodes = [];
@@ -198,7 +198,7 @@ PX.HardwareManager.prototype = {
 					}
 				}
 			}
-			port = new PX.Port("port name " + port, PX.PORT_TYPE_KINET_1, null, null, nodes);
+			var port = new PX.Port({name: "port name " + port, nodes: nodes});
 			PX.ports.setPort(portStart + 2, port);
 	},
 
@@ -232,7 +232,7 @@ PX.HardwareManager.prototype = {
 				maxy = Math.max(maxy, node.y);
 			}
 		}
-		var port = new PX.Port("port name " + portStart, PX.PORT_TYPE_KINET_1, null, null, nodes);
+		var port = new PX.Port({name: "port name " + port, nodes: nodes});
 		PX.ports.setPort(portStart, port);
 
 		// If we are not the first designated port set the pod position as a default (testing)

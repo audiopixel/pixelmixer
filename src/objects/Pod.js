@@ -13,10 +13,12 @@
 
 
 PX.Pod = function (params) {
-	this.positionIds = params.positionIds || [1];
-	this.mix = params.mix || 1;
-	this.blend = params.blend || PX.BLEND.Add;
-	this.clips = params.clips || [];
+
+	params = 			params || {};
+	this.positionIds = 	params.positionIds || [1];
+	this.mix = 			params.mix || 1;
+	this.blend = 		params.blend || PX.BLEND.Add;
+	this.clips = 		params.clips || [];
 
 	// TODO - this data should be packed into portsMap, useful for creating specific groups of nodes outside of xyz or port data
 	// this.hardwareGroupMode = hardwareGroupMode || PX.HARDWAREGROUP_OFF;			// Off, Exclude, or Solo Mode
