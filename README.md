@@ -194,9 +194,9 @@ General list of features that are in the works and coming soon
 
 [Contact us.](http://audiopixel.com/contact)
 
-Please feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API, or want to help build new features let us know - better yet fork the coe and take a stab at it yourself. We encourage you to experiment with these techniques.
+Please feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API, or want to help build new features let us know - better yet fork the code and take a stab at it yourself. We encourage you to experiment with these techniques.
 
-We are seeking beta testers, especially if you have lighting fixtures or other types of hardware to play with.
+We are also seeking beta testers, especially if you have lighting fixtures or other types of hardware to play with.
 
 ---
 
