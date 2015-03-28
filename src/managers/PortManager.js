@@ -11,13 +11,13 @@
 *
 */
 
-PMX.PortManager = function () {
+PX.PortManager = function () {
 
 	this.ports = [];
 
 };
 
-PMX.PortManager.prototype = {
+PX.PortManager.prototype = {
 
 	init: function () {
 
@@ -25,19 +25,19 @@ PMX.PortManager.prototype = {
 
 	update: function () {
 
-		if(PMX.broadcast){
+		if(PX.broadcast){
 
 			// If broadcast is on loop each port
-			for ( e = 0; e < PMX.ports.getPorts().length; e ++ ) { 
+			for ( e = 0; e < PX.ports.getPorts().length; e ++ ) { 
 
-				var port = PMX.ports.getPort(e + 1);
+				var port = PX.ports.getPort(e + 1);
 				if(port && port.type && port.nodes){
 
 
 					// if we have a defined tech we can use it to broadcast
-					if(PMX.techs[port.type]){
+					if(PX.techs[port.type]){
 
-						PMX.techs[port.type].broadcast(port);
+						PX.techs[port.type].broadcast(port);
 
 					}
 

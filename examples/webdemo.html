@@ -101,18 +101,18 @@
 
 					// Initialize ap
 					var maxNodeCount = 10000;
-					PMX.nodeSprite = "images/nodeflare250.png";
-					PMX.init(scene, renderer, maxNodeCount);
-					PMX.pointSize = 10;
-					PMX.setSize(glWidth, glHeight);
-					//PMX.dataSetLength = 1024; // use this to pass audio data (or any data feed)
+					PX.nodeSprite = "images/nodeflare250.png";
+					PX.init(scene, renderer, maxNodeCount);
+					PX.pointSize = 10;
+					PX.setSize(glWidth, glHeight);
+					//PX.dataSetLength = 1024; // use this to pass audio data (or any data feed)
 
 					
 
 					// Specify defaults starting hardware
-					PMX.hardware.importNodes(PMX.imported, 1, 350, 100, 500);
-					PMX.channels.setPodPos(2, new PMX.PodPosition(-190, 140, -100, 1070, 575, 1000));
-					PMX.updateNodePoints();
+					PX.hardware.importNodes(PX.imported, 1, 350, 100, 500);
+					PX.channels.setPodPos(2, new PX.PodPosition(-190, 140, -100, 1070, 575, 1000));
+					PX.updateNodePoints();
 
 
 
@@ -134,9 +134,9 @@
 				function animate() {
 
 					// Main update loop
-					if(PMX.ready){
+					if(PX.ready){
 						stats.update();
-						PMX.update();
+						PX.update();
 						controls.update();
 						renderer.render( scene, camera );
 					}
@@ -151,7 +151,7 @@
 					glWidth = window.innerWidth;
 					glHeight = window.innerHeight;
 
-					PMX.setSize(glWidth, glHeight);
+					PX.setSize(glWidth, glHeight);
 
 					camera.aspect = glWidth / glHeight;
 					camera.updateProjectionMatrix();

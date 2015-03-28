@@ -3,7 +3,7 @@
 // bqq
 // modified by @hintz
 
-PMX.clips.SinSpiral = {
+PX.clips.SinSpiral = {
 
 	params: {
 

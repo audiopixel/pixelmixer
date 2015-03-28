@@ -78,8 +78,8 @@ Open Sourced under [MIT License](https://github.com/hepp/audiopixel3/blob/master
 scene = new THREE.Scene();
 renderer = new THREE.WebGLRenderer(); 
 
-PMX.init(scene, renderer);
-PMX.setSize(glWidth, glHeight);
+PX.init(scene, renderer);
+PX.setSize(glWidth, glHeight);
 
 ```
 #### 2. Add Nodes ####
@@ -89,8 +89,8 @@ It's also easy to import new node positions via JSON.
 
 ```
 // Add a simple grid of Nodes 
-PMX.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
-PMX.updateNodePoints();
+PX.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
+PX.updateNodePoints();
 
 ```
 #### 3. Add Shaders ####
@@ -100,7 +100,7 @@ PMX.updateNodePoints();
 <script src="import/shaders/SolidColor.js"></script>
 
 // Add the Shader to Channel 1 (default fit to all nodes)
-PMX.simpleSetup({channel: 1, ids: ["SolidColor"]});
+PX.simpleSetup({channel: 1, ids: ["SolidColor"]});
 
 ```
 #### 4. Change values at runtime (Optional UI Layers) ####
@@ -110,10 +110,10 @@ Here we are setting values on the shader we just created.
 
 ```
 // Set param 1 on the clip to .7
-PMX.set("p1", .7, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
+PX.set("p1", .7, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 
 // Set mix on the clip to be .9
-PMX.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
+PX.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 
 ```
 

@@ -3,7 +3,7 @@
   Daily an hour GLSL sketch by @chimanaco 11/30
 */
 
-PMX.clips.ColorSineBar = {
+PX.clips.ColorSineBar = {
 
 	params: {
 

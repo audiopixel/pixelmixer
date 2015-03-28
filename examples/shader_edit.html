@@ -100,8 +100,8 @@
 					});
 
 					code.on("change", function() {
-						PMX.importShader("ImportSpiral", code.getValue());
-						PMX.updateShader = true;
+						PX.importShader("ImportSpiral", code.getValue());
+						PX.updateShader = true;
 					});
 
 
@@ -124,8 +124,8 @@
 
 					// ** Initialize API
 
-					PMX.init(scene, renderer);
-					PMX.setSize(glWidth, glHeight);
+					PX.init(scene, renderer);
+					PX.setSize(glWidth, glHeight);
 
 
 
@@ -138,17 +138,17 @@
 					var height = 20;
 					var pitch = 33;		// How far each pixel is spaced
 
-					PMX.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
-					PMX.updateNodePoints();
+					PX.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
+					PX.updateNodePoints();
 
 
 
 					// ** Import shader from inline and add to Channel 1
 
 					var fragmentShader = document.getElementById( 'fs' ).textContent;
-					PMX.importShader("ImportSpiral", fragmentShader);
+					PX.importShader("ImportSpiral", fragmentShader);
 
-					PMX.simpleSetup({channel: 1, ids: ["ImportSpiral"]});
+					PX.simpleSetup({channel: 1, ids: ["ImportSpiral"]});
 
 
 
@@ -162,10 +162,10 @@
 				function animate() {
 
 					// Main update loop
-					if(PMX.ready){
+					if(PX.ready){
 
 						// Update the API
-						PMX.update();
+						PX.update();
 
 						// Update Three.js
 						controls.update();
@@ -183,7 +183,7 @@
 					glWidth = window.innerWidth;
 					glHeight = window.innerHeight;
 
-					PMX.setSize(glWidth, glHeight);
+					PX.setSize(glWidth, glHeight);
 
 					camera.aspect = glWidth / glHeight;
 					camera.updateProjectionMatrix();

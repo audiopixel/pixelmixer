@@ -3,7 +3,7 @@
  */
 
 
-PMX.clips.DiSinSwirl = {
+PX.clips.DiSinSwirl = {
 
 	params: { // (optional uniforms)
 

@@ -1,5 +1,5 @@
 
-PMX.techs.test = {
+PX.techs.test = {
 
 	broadcast: function (port, pixels) {
 

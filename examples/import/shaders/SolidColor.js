@@ -4,7 +4,7 @@
 **/
 
 
-PMX.clips.SolidColor = {
+PX.clips.SolidColor = {
 
 	params: {
 

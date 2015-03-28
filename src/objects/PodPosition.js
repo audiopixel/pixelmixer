@@ -21,7 +21,7 @@
 *
 */
 
-PMX.PodPosition = function (x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs, flipmode) {
+PX.PodPosition = function (x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs, flipmode) {
 
 	this.x = x || 0;
 	this.y = y || 0;

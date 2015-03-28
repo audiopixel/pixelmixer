@@ -7,10 +7,10 @@
  */
 
 
-PMX.shaders.PointCloudShader = {
+PX.shaders.PointCloudShader = {
 
 	uniforms: {
-		u_pointSize:  { type: 'f', value: PMX.pointSize }, // This is re-set in PMX.setSize()
+		u_pointSize:  { type: 'f', value: PX.pointSize }, // This is re-set in PX.setSize()
 		//u_colorMap:   { type: "t", value: null },
 		//u_texture:    { type: "t", value: null }
 	},

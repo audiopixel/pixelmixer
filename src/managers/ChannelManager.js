@@ -6,14 +6,14 @@
  *
  */
 
-PMX.ChannelManager = function () {
+PX.ChannelManager = function () {
 
 	this.channels = [];
 	this.podpositions = [];
 
 };
 
-PMX.ChannelManager.prototype = {
+PX.ChannelManager.prototype = {
 
 	init: function () {
 
@@ -50,7 +50,7 @@ PMX.ChannelManager.prototype = {
 
 
 			var fxChannel = false;
-			if(channel.type === PMX.CHANNEL_TYPE_FX){
+			if(channel.type === PX.CHANNEL_TYPE_FX){
 				fxChannel = true;
 			}
 
@@ -87,7 +87,7 @@ PMX.ChannelManager.prototype = {
 
 									// Only update the res if we need to
 									var res = "vec2(" + podPos.w + ", " + podPos.h + ");";
-									if(PMX.usePodUniforms){
+									if(PX.usePodUniforms){
 										res = "vec2(getPodSize(" + pod.positionIds[o] + ").x, getPodSize(" + pod.positionIds[o] + ").y);";
 									}
 									if(lastKnownRes !== res){
@@ -109,7 +109,7 @@ PMX.ChannelManager.prototype = {
 									var clip = pod.clips[u];
 									if(clip){
 
-										var shader = PMX.clips[clip.id];
+										var shader = PX.clips[clip.id];
 										if(shader){
 
 											if(!fragList[pod.clips[u].id]){
@@ -154,7 +154,7 @@ PMX.ChannelManager.prototype = {
 
 												// If the clip defined params transfer default values over to the obj
 												for (var param in shader.params) {
-													PMX.setObjProperty(param, shader.params[param].value, i+1, e+1, u+1);
+													PX.setObjProperty(param, shader.params[param].value, i+1, e+1, u+1);
 													
 													// Create params with default values
 													uniforms[clip.address + "_" + param] = { type: "f", value: shader.params[param].value };
@@ -174,7 +174,7 @@ PMX.ChannelManager.prototype = {
 												// Define uniforms for each clip
 												uniforms[clip.address + "_mix"] = { type: "f", value: clip.mix }; // TODO modulation uniforms 
 												uniforms[clip.address + "_blend"] = { type: "f", value: clip.blend }; 
-												uniforms[clip.address + "_time"] = { type: "f", value: PMX.app.time }; 
+												uniforms[clip.address + "_time"] = { type: "f", value: PX.app.time }; 
 
 
 												// Pass along input param values if they are defined on clip
@@ -186,7 +186,7 @@ PMX.ChannelManager.prototype = {
 												}
 
 												fragOutput = "";
-												if(clip.posMap == PMX.MAP_ALT1 && PMX.app.altMap1){
+												if(clip.posMap == PX.MAP_ALT1 && PX.app.altMap1){
 													fragOutput += "ap_xyz = offsetPos(ap_alt1, " + pod.positionIds[o] + ", ap_xyz.w);\n";
 												}
 
@@ -199,7 +199,7 @@ PMX.ChannelManager.prototype = {
 
 												// ------------ Clip Mix Blend & Fx --------------
 
-												var fx = PMX.clips[clip.id].fx;
+												var fx = PX.clips[clip.id].fx;
 												if(u === 0){
 													
 													fragOutput += "ap_rgb = ap_rgb2; \n";
@@ -315,16 +315,16 @@ PMX.ChannelManager.prototype = {
 		fragFuncOutput += fragFuncHelpers;
 
 		// Set alt map coordinates if they are defined
-		if(PMX.app.altMap1){
+		if(PX.app.altMap1){
 			output = "ap_alt1 = texture2D( u_altMap1, v_vUv);" + output;
 		}
-		if(PMX.app.altMap2){
+		if(PX.app.altMap2){
 			output = "ap_alt2 = texture2D( u_altMap2, v_vUv);" + output;
 		}
 
 		// Array of items we can set audio spectrum/waveform data to, or any data to
-		if(PMX.dataSetLength && PMX.dataSetLength > 0){
-			fragFuncOutput = "uniform float data[ " + PMX.dataSetLength + " ]; \n" + fragFuncOutput;
+		if(PX.dataSetLength && PX.dataSetLength > 0){
+			fragFuncOutput = "uniform float data[ " + PX.dataSetLength + " ]; \n" + fragFuncOutput;
 		}
 
 
@@ -342,7 +342,7 @@ PMX.ChannelManager.prototype = {
 		// Pod Position function
 		var m = "";
 
-		if(PMX.usePodUniforms){
+		if(PX.usePodUniforms){
 			m += "if(d == u_pos_id){\n";
 				m += "p = vec3(u_pos_x, u_pos_y, u_pos_z);\n";
 			m += "}";
@@ -354,7 +354,7 @@ PMX.ChannelManager.prototype = {
 			m += "}\n";
 		}
 
-		if(!PMX.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
+		if(!PX.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodPos(int d) { \n" + m + "}\n";
@@ -362,7 +362,7 @@ PMX.ChannelManager.prototype = {
 		var output = m;
 		m = "";
 
-		if(PMX.usePodUniforms){
+		if(PX.usePodUniforms){
 			m += "if(d == u_pos_id){\n";
 				m += "p = vec3(u_pos_w, u_pos_h, u_pos_d);\n";
 			m += "}";
@@ -375,14 +375,14 @@ PMX.ChannelManager.prototype = {
 			m += "}\n";
 		}
 
-		if(!PMX.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
+		if(!PX.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodSize(int d) { \n" + m + "}\n";
 
 		output += m;
 
-		if(PMX.useTransforms){
+		if(PX.useTransforms){
 
 			// Pod Offset (translation)
 			m = "";
@@ -437,7 +437,7 @@ PMX.ChannelManager.prototype = {
 			output += "float t = x;\n";
 
 			// For performance reasons use a lighter and manual version of Matrix transforms
-			if(PMX.useTransforms){
+			if(PX.useTransforms){
 
 				// swap axis
 				output += "vec4 s = getPodScale(p);\n";
@@ -531,7 +531,7 @@ PMX.ChannelManager.prototype = {
 		}
 		// If a pod does not yet exist create a default one with clip obj
 		if(!this.channels[channel-1].pods[pod-1]){
-			this.channels[channel-1].pods[pod-1] = new Pod(1, 1, PMX.BLEND.Add, [clipObj]);
+			this.channels[channel-1].pods[pod-1] = new Pod(1, 1, PX.BLEND.Add, [clipObj]);
 		}else{
 			// Todo transfer over existing data like mix, if it's not defined on new clip obj
 			this.channels[channel-1].pods[pod-1].clips[clip-1] = clipObj;

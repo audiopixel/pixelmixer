@@ -5,7 +5,7 @@
  */
 
 
-PMX.MainShader = {
+PX.MainShader = {
 
 	fragmentShader: [
 		

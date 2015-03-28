@@ -14,7 +14,7 @@
 *
 */
 
-PMX.Port = function (name, type, address, hardwarePort, nodes) {
+PX.Port = function (name, type, address, hardwarePort, nodes) {
 
 	this.name = name || "unnamed port";
 	this.type = type || "test";

@@ -1,6 +1,6 @@
 // http://glslsandbox.com/e#18004.0
 
-PMX.clips.SineParticles = {
+PX.clips.SineParticles = {
 
 	params: {
 

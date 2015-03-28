@@ -1,6 +1,6 @@
 // http://glslsandbox.com/e#18039.0
 
-PMX.clips.ColorSwirls = {
+PX.clips.ColorSwirls = {
 
 	params: {
 

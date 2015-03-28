@@ -1,6 +1,6 @@
 // http://glslsandbox.com/e#18326.3
 
-PMX.clips.LineCosSin = {
+PX.clips.LineCosSin = {
 
 	params: {
 

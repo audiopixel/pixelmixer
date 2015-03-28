@@ -2,87 +2,87 @@
 
 // ****** Platform ******
 
-var PMX = { REVISION: '1' };	// Global object
-PMX.ready = false;				
-PMX.simSize;
+var PX = { REVISION: '1' };	// Global object
+PX.ready = false;				
+PX.simSize;
 
-PMX.shaders = {};				// Internal shaders 
-PMX.clips = {}; 				// Loaded shaders as clips
-PMX.imported = {}; 				// Currently imported port (and possibly node) data
-PMX.techs = {};
+PX.shaders = {};				// Internal shaders 
+PX.clips = {}; 				// Loaded shaders as clips
+PX.imported = {}; 				// Currently imported port (and possibly node) data
+PX.techs = {};
 
-PMX.pixels;
+PX.pixels;
 	
 // ****** Constants ******
 
 // Blend Constants
-PMX.BLEND = {};
-PMX.BLEND.OFF = 0;
-PMX.BLEND.Add = 1;
-PMX.BLEND.Subtract = 2;
-PMX.BLEND.Darkest = 3;
-PMX.BLEND.Lightest = 4;
-PMX.BLEND.Difference = 5;
-PMX.BLEND.Exclusion = 6;
-PMX.BLEND.Multiply = 7;
-PMX.BLEND.Screen = 8;
-PMX.BLEND.Overlay = 9;
-PMX.BLEND.HardLight = 10;
-PMX.BLEND.SoftLight = 11;
-PMX.BLEND.Dodge = 12;
-PMX.BLEND.Burn = 13;
-PMX.BLEND.LinearBurn = 14;
-PMX.BLEND.LinearLight = 15;
-PMX.BLEND.VividLight = 16;
-PMX.BLEND.PinLight = 17;
-PMX.BLEND.Fx = 1; // Use 'add' if this happens to get passed, all fx 'blending' happens outside blend()
+PX.BLEND = {};
+PX.BLEND.OFF = 0;
+PX.BLEND.Add = 1;
+PX.BLEND.Subtract = 2;
+PX.BLEND.Darkest = 3;
+PX.BLEND.Lightest = 4;
+PX.BLEND.Difference = 5;
+PX.BLEND.Exclusion = 6;
+PX.BLEND.Multiply = 7;
+PX.BLEND.Screen = 8;
+PX.BLEND.Overlay = 9;
+PX.BLEND.HardLight = 10;
+PX.BLEND.SoftLight = 11;
+PX.BLEND.Dodge = 12;
+PX.BLEND.Burn = 13;
+PX.BLEND.LinearBurn = 14;
+PX.BLEND.LinearLight = 15;
+PX.BLEND.VividLight = 16;
+PX.BLEND.PinLight = 17;
+PX.BLEND.Fx = 1; // Use 'add' if this happens to get passed, all fx 'blending' happens outside blend()
 
-PMX.BLENDS = [ 'Add', 'Substract', 'Darkest', 'Lightest', 'Difference', 'Exclusion', 'Multiply', 'Screen','Overlay', 
+PX.BLENDS = [ 'Add', 'Substract', 'Darkest', 'Lightest', 'Difference', 'Exclusion', 'Multiply', 'Screen','Overlay', 
 			'HardLight', 'SoftLight', 'Dodge', 'Burn', 'LinearBurn', 'LinearLight', 'VividLight', 'PinLight'];
 
 
-// PMX.Port Type Constants
-PMX.PORT_TYPE_OFF = 0;
-PMX.PORT_TYPE_KINET_1 = 1; // strands
-PMX.PORT_TYPE_KINET_2 = 2; // tiles
-PMX.PORT_TYPE_KINET_3 = 3; // colorblasts
-PMX.PORT_TYPE_KINET_4 = 4;
-PMX.PORT_TYPE_DMX_1 = 5; // Movers, for testing
-PMX.PORT_TYPE_DMX_2 = 6;
-PMX.PORT_TYPE_DMX_3 = 7;
-PMX.PORT_TYPE_LASER_1 = 8;
+// PX.Port Type Constants
+PX.PORT_TYPE_OFF = 0;
+PX.PORT_TYPE_KINET_1 = 1; // strands
+PX.PORT_TYPE_KINET_2 = 2; // tiles
+PX.PORT_TYPE_KINET_3 = 3; // colorblasts
+PX.PORT_TYPE_KINET_4 = 4;
+PX.PORT_TYPE_DMX_1 = 5; // Movers, for testing
+PX.PORT_TYPE_DMX_2 = 6;
+PX.PORT_TYPE_DMX_3 = 7;
+PX.PORT_TYPE_LASER_1 = 8;
 
 
-// PMX.Channel Type Constants
-PMX.CHANNEL_TYPE_OFF = 0;
-PMX.CHANNEL_TYPE_ADD = 1;
-PMX.CHANNEL_TYPE_FX = 2;
-PMX.CHANNEL_TYPE_SCENE = 3;
+// PX.Channel Type Constants
+PX.CHANNEL_TYPE_OFF = 0;
+PX.CHANNEL_TYPE_ADD = 1;
+PX.CHANNEL_TYPE_FX = 2;
+PX.CHANNEL_TYPE_SCENE = 3;
 
 
 // Pod Hardware Group Modes Constants
-PMX.HARDWAREGROUP_OFF = 0;
-PMX.HARDWAREGROUP_SOLO = 1;
-PMX.HARDWAREGROUP_EXCLUDE = 2;
+PX.HARDWAREGROUP_OFF = 0;
+PX.HARDWAREGROUP_SOLO = 1;
+PX.HARDWAREGROUP_EXCLUDE = 2;
 
 
 // Clip position map Constants
-PMX.MAP_NORMAL = 0;
-PMX.MAP_ALT1 = 1;
-PMX.MAP_ALT2 = 2;
+PX.MAP_NORMAL = 0;
+PX.MAP_ALT1 = 1;
+PX.MAP_ALT2 = 2;
 
 
 // Temporary Preset Management 
-PMX.demoClipNames = ["TestFrame", "SolidColor", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
+PX.demoClipNames = ["TestFrame", "SolidColor", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
 "SinSpiral", "SineParticles", "DiSinSwirl", "HexifyRadial", "SinCosTan"];
 
-PMX.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
+PX.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
 
 
 
 // ****** Internal Utils ******
 
-PMX.getVariableTypeFromShorthand = function(shorthand){
+PX.getVariableTypeFromShorthand = function(shorthand){
 	var type;
 	switch ( shorthand ) {
 		case "i": type = "int"; break;

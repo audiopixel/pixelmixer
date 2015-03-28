@@ -3,7 +3,7 @@
  */
 
 
-PMX.clips.BasicTest = {
+PX.clips.BasicTest = {
 
 	fragmentMain: [
 		

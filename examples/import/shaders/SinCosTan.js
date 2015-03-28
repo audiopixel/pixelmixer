@@ -1,6 +1,6 @@
 // http://glslsandbox.com/e#17645.2
 
-PMX.clips.SinCosTan = {
+PX.clips.SinCosTan = {
 
 	params: {
 
