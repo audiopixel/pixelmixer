@@ -2,8 +2,8 @@
 
 
 
-PX.broadcast = true;	
-PX.readPixels = true;	
+PX.broadcast = false;	
+PX.readPixels = false;	
 
 PX.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
 PX.useTransforms = false;		// Pod transforms (swap axis, translate, scale)

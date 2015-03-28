@@ -31,16 +31,16 @@ PX.clips.TestFx = {
 
 
 		// let's convert to hsv
-		"ap_hsv = rgb2hsv(_fxIn);",
+		"px_hsv = rgb2hsv(_fxIn);",
 
 		// Offset the hue
-		"ap_hsv.x += _p1;",
-		"if(ap_hsv.x > 1.0){",
-			"ap_hsv.x -= 1.0;",
+		"px_hsv.x += _p1;",
+		"if(px_hsv.x > 1.0){",
+			"px_hsv.x -= 1.0;",
 		"}",
 
 		// Convert back to rgb
-		"vec3 c = hsv2rgb(ap_hsv);",
+		"vec3 c = hsv2rgb(px_hsv);",
 
 
 		"gl_FragColor = vec4(c.r, c.g, c.b, 1.0);" 

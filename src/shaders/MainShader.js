@@ -12,16 +12,16 @@ PX.MainShader = {
 		"#INCLUDESHADERUTILS",
 
 		"precision mediump float;",
-		"float ap_index;",
-		"vec4 ap_xyz;",
-		"vec4 ap_xyz2;",
-		"vec3 ap_lastRgb;",
-		"vec3 ap_rgb = vec3(0.);",
-		"vec3 ap_hsv;",
-		"vec3 ap_rgb2;",
-		"vec4 ap_rgbV4;",
-		"vec3 ap_c = vec3(0.);",
-		"vec3 ap_p = vec3(0.);",
+		"float px_index;",
+		"vec4 px_xyz;",
+		"vec4 px_xyz2;",
+		"vec3 px_lastRgb;",
+		"vec3 px_rgb = vec3(0.);",
+		"vec3 px_hsv;",
+		"vec3 px_rgb2;",
+		"vec4 px_rgbV4;",
+		"vec3 px_c = vec3(0.);",
+		"vec3 px_p = vec3(0.);",
 		"vec2 resolution;",
 		"float random;",
 
@@ -62,23 +62,23 @@ PX.MainShader = {
 			"random = rand(vec2(gl_FragCoord[0] * (gl_FragCoord[2] + 1.), gl_FragCoord[1] * _random) * (_time * 0.0001));",
 
 			// Black is default
-			"ap_rgb = vec3(0.0);",
+			"px_rgb = vec3(0.0);",
 			
 			//********************************************
 			
-			// ap_xyz: coordinates that get overwritten with each pod
-			// ap_xyz2: original reference coordinates that never get overwritten
-			"ap_xyz2 = ap_xyz = texture2D( u_coordsMap, v_vUv);",
-			"if(ap_xyz[3] == 0.0){ discard; }",
+			// px_xyz: coordinates that get overwritten with each pod
+			// px_xyz2: original reference coordinates that never get overwritten
+			"px_xyz2 = px_xyz = texture2D( u_coordsMap, v_vUv);",
+			"if(px_xyz[3] == 0.0){ discard; }",
 
-			"ap_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);",
-			"ap_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));",
+			"px_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);",
+			"px_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));",
 
 			//********************************************
 
 			"#INCLUDESHADERS",
 
-			"gl_FragColor = vec4(ap_c, 1.0);",
+			"gl_FragColor = vec4(px_c, 1.0);",
 
 		"}"
 

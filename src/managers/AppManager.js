@@ -476,12 +476,12 @@ PX.AppManager.prototype = {
 
 		// If we are using alt maps include the internal properties
 		if(this.altMap1){
-			sourceUniforms += "uniform sampler2D u_altMap1; vec4 ap_alt1; \n";
+			sourceUniforms += "uniform sampler2D u_altMap1; vec4 px_alt1; \n";
 			uniforms.u_altMap1 = { type: "t", value: this.altMap1 };
 		}
 
 		if(this.altMap2){
-			sourceUniforms += "uniform sampler2D u_altMap2; vec4 ap_alt2; \n";
+			sourceUniforms += "uniform sampler2D u_altMap2; vec4 px_alt2; \n";
 			uniforms.u_altMap2 = { type: "t", value: this.altMap2 };
 		}
 
@@ -556,8 +556,8 @@ PX.AppManager.prototype = {
 	// Minimize the fragment shader before it gets sent to gpu
 	minFragmentShader: function(frag){
 
-		frag = frag.replace(/ap_alt/g, "_0");
-		frag = frag.replace(/ap_/g, "_");
+		frag = frag.replace(/px_alt/g, "_0");
+		frag = frag.replace(/px_/g, "_");
 		frag = frag.replace(/_xyz/g, "_1");
 		frag = frag.replace(/hsv2rgb/g, "_2");
 		frag = frag.replace(/rgb2hsv/g, "_3");

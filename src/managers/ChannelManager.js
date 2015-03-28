@@ -95,12 +95,12 @@ PX.ChannelManager.prototype = {
 										output += "resolution = " + res + " \n";
 									}
 
-									// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // ap_xyz2 is the original real coordinates
-									output += "ap_xyz = offsetPos(ap_xyz2, " + pod.positionIds[o] + ", ap_xyz.w);\n";
+									// Offset the xyz coordinates with the pod's xy to get content to stretch and offset properly // px_xyz2 is the original real coordinates
+									output += "px_xyz = offsetPos(px_xyz2, " + pod.positionIds[o] + ", px_xyz.w);\n";
 								}
 
-								// Check to see if the nodes are in the position bounding box, if not don't render these clips // ap_xyz2 is the original real coordinates
-								output += "if(_pod_mix > 0. && checkBounds(ap_xyz2, "+pod.positionIds[o]+") > 0.){ \n";
+								// Check to see if the nodes are in the position bounding box, if not don't render these clips // px_xyz2 is the original real coordinates
+								output += "if(_pod_mix > 0. && checkBounds(px_xyz2, "+pod.positionIds[o]+") > 0.){ \n";
 
 
 								fxPod = true; // If the only clips that are in this pod are fx's then treat pod as a fx output and don't blend
@@ -143,7 +143,7 @@ PX.ChannelManager.prototype = {
 												fragFuncHelpers += "else if(id == " + shader.id + "){\n";
 												fragFuncHelpers += shader.fragmentMain.replace("gl_FragColor", "returnColor");
 												fragFuncHelpers += "\n";
-												fragFuncHelpers = fragFuncHelpers.replace(/gl_FragCoord/g, "ap_xyz");
+												fragFuncHelpers = fragFuncHelpers.replace(/gl_FragCoord/g, "px_xyz");
 												fragFuncHelpers += "\n}\n";
 												//fragFuncHelpers += "////////\n";
 											}
@@ -187,14 +187,14 @@ PX.ChannelManager.prototype = {
 
 												fragOutput = "";
 												if(clip.posMap == PX.MAP_ALT1 && PX.app.altMap1){
-													fragOutput += "ap_xyz = offsetPos(ap_alt1, " + pod.positionIds[o] + ", ap_xyz.w);\n";
+													fragOutput += "px_xyz = offsetPos(px_alt1, " + pod.positionIds[o] + ", px_xyz.w);\n";
 												}
 
-												fragOutput += "ap_rgb2 = superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
+												fragOutput += "px_rgb2 = superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
 
 												// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
-												//fragOutput = fragOutput.replace(/ap_fxOut/g, "ap_rgbV4");
-												fragOutput = fragOutput.replace(/gl_FragCoord/g, "ap_xyz");
+												//fragOutput = fragOutput.replace(/px_fxOut/g, "px_rgbV4");
+												fragOutput = fragOutput.replace(/gl_FragCoord/g, "px_xyz");
 
 
 												// ------------ Clip Mix Blend & Fx --------------
@@ -202,24 +202,24 @@ PX.ChannelManager.prototype = {
 												var fx = PX.clips[clip.id].fx;
 												if(u === 0){
 													
-													fragOutput += "ap_rgb = ap_rgb2; \n";
+													fragOutput += "px_rgb = px_rgb2; \n";
 													if(!fx && !fxChannel){
 														fxPod = fxChannel;
-														fragOutput += "ap_rgb = ap_rgb * (_clip_mix); \n";  // Clip mix for this shader
+														fragOutput += "px_rgb = px_rgb * (_clip_mix); \n";  // Clip mix for this shader
 													}else{
-														fragOutput += "ap_rgb = mix(ap_p, ap_rgb2, _clip_mix); \n";
+														fragOutput += "px_rgb = mix(px_p, px_rgb2, _clip_mix); \n";
 													}
 
 												}else{
 
 													if(fx || fxChannel){
 														// Fx clip: mix the original with the result of fx
-														fragOutput += "ap_rgb = mix(ap_rgb, ap_rgb2, _clip_mix); \n";
+														fragOutput += "px_rgb = mix(px_rgb, px_rgb2, _clip_mix); \n";
 
 													}else{
 														// Blend in the shader with ongoing mix
-														fragOutput += "ap_rgb2 = ap_rgb2 * (_clip_mix); \n";
-														fragOutput += "ap_rgb = blend(ap_rgb2, ap_rgb, _clip_blend); \n"; // Clip mix for this shader
+														fragOutput += "px_rgb2 = px_rgb2 * (_clip_mix); \n";
+														fragOutput += "px_rgb = blend(px_rgb2, px_rgb, _clip_blend); \n"; // Clip mix for this shader
 														fxPod = fxChannel;
 													}
 
@@ -231,9 +231,9 @@ PX.ChannelManager.prototype = {
 												
 												// For use by effects clips: set the incoming value from the last clip, or the last pod if we are the first clip
 												if(u === 0){
-													fragOutput = fragOutput.replace(/_fxIn/g, "ap_p");
+													fragOutput = fragOutput.replace(/_fxIn/g, "px_p");
 												}else{
-													fragOutput = fragOutput.replace(/_fxIn/g, "ap_rgb");
+													fragOutput = fragOutput.replace(/_fxIn/g, "px_rgb");
 												}
 
 												// Merge the clip fragment shaders as we move along
@@ -252,20 +252,20 @@ PX.ChannelManager.prototype = {
 								if(fxPod){
 
 									// Fx pod: mix the original with the result of fx_rgb, _pod_mix); \n";
-									output += "ap_p = mix(ap_p, ap_rgb, _pod_mix); \n";
+									output += "px_p = mix(px_p, px_rgb, _pod_mix); \n";
 
 								}else{
 
 									if(e === 0){
 
 										// If we are the very first pod mix output value, don't blend from previous pod
-										output += "ap_p = ap_rgb * (_pod_mix); \n";
+										output += "px_p = px_rgb * (_pod_mix); \n";
 
 									}else{
 
 										// Blend in last pod with current pod
-										output += "ap_rgb = ap_rgb * (_pod_mix); \n";
-										output += "ap_p = blend(ap_p, ap_rgb, _pod_blend); \n";
+										output += "px_rgb = px_rgb * (_pod_mix); \n";
+										output += "px_p = blend(px_p, px_rgb, _pod_blend); \n";
 									}
 								}
 								
@@ -289,15 +289,15 @@ PX.ChannelManager.prototype = {
 
 			if(i === 0){
 
-				output += "ap_c = ap_p = ap_p * (_channel_mix); \n";
+				output += "px_c = px_p = px_p * (_channel_mix); \n";
 
 			}else{
 
 				if(fxChannel){
-					output += "ap_c = mix(ap_c, ap_p, _channel_mix); \n";
+					output += "px_c = mix(px_c, px_p, _channel_mix); \n";
 				}else{
-					output += "ap_p = ap_p * (_channel_mix); \n";
-					output += "ap_c = blend(ap_c, ap_p, 1.); \n"; // Channels always blend using 'add'
+					output += "px_p = px_p * (_channel_mix); \n";
+					output += "px_c = blend(px_c, px_p, 1.); \n"; // Channels always blend using 'add'
 				}
 
 			}
@@ -316,10 +316,10 @@ PX.ChannelManager.prototype = {
 
 		// Set alt map coordinates if they are defined
 		if(PX.app.altMap1){
-			output = "ap_alt1 = texture2D( u_altMap1, v_vUv);" + output;
+			output = "px_alt1 = texture2D( u_altMap1, v_vUv);" + output;
 		}
 		if(PX.app.altMap2){
-			output = "ap_alt2 = texture2D( u_altMap2, v_vUv);" + output;
+			output = "px_alt2 = texture2D( u_altMap2, v_vUv);" + output;
 		}
 
 		// Array of items we can set audio spectrum/waveform data to, or any data to

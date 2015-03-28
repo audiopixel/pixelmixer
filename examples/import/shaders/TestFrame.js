@@ -43,10 +43,10 @@ PX.clips.TestFrame = {
 		*
 		* ****** Helper Properties:
 		* 
-		* float ap_index;								// Current node: index value (integer)
-		* vec4 ap_xyz;									// Current node: xyz coordinates (or other values to map to)
-		* vec3 ap_lastRgb;								// Current node: rgb value last frame. 4th value discard slot
-		* vec3 ap_rgb;									// Current node: rgb ouput value
+		* float px_index;								// Current node: index value (integer)
+		* vec4 px_xyz;									// Current node: xyz coordinates (or other values to map to)
+		* vec3 px_lastRgb;								// Current node: rgb value last frame. 4th value discard slot
+		* vec3 px_rgb;									// Current node: rgb ouput value
 		* 
 		* float time;									// Uniform: Animation speed, movement should be tied to this other inputs
 		* float random;								// Uniform: Random value (0-1)
