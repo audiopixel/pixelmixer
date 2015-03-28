@@ -208,7 +208,7 @@ PX.HardwareManager.prototype = {
 					}
 				}
 			}
-			port = new PX.Port("port name " + port, PX.PORT_TYPE_KINET_1, null, null, nodes);
+			port = new PX.Port({name: "port name " + port, nodes: nodes});
 			PX.ports.setPort(portStart + 1, port);
 
 			nodes = [];
@@ -225,7 +225,7 @@ PX.HardwareManager.prototype = {
 					}
 				}
 			}
-			var port = new PX.Port({name: "port name " + port, nodes: nodes});
+			port = new PX.Port({name: "port name " + port, nodes: nodes});
 			PX.ports.setPort(portStart + 2, port);
 	},
 
