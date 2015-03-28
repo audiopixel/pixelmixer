@@ -71,6 +71,8 @@ PX.updateFresh = false;
 PX.updateShaderLimiter = 0;
 PX.update = function() {
 
+	if(!PX.ready){return;}
+
 	//if(frameCount % 30 == 1){ // Slow framerate testing
 
 	if(!PX.app){
