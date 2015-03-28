@@ -11,6 +11,11 @@ PX.clips.DiSinSwirl = {
 
 	},
 	
+	constants: [
+
+		"#define pi    3.1415926535897932384626433832795 //pi",
+
+	],
 
 	fragmentMain: [ // Note we only need the Fragment shader and not the Vertex shader as well
 

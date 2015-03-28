@@ -46,6 +46,12 @@ PX.clips.LineCosSin = {
 		].join("\n")
 
 	],
+	
+	constants: [
+
+		"#define pi    3.1415926535897932384626433832795 //pi",
+
+	],
 
 	fragmentMain: [
 

@@ -31,6 +31,19 @@ PX.clips.ColorSwirls = {
 
 	],
 
+	constants: [
+
+		"#define picu  31.006276680299820175476315067101 //pi cubed, pi^3",
+		"#define twpi  6.283185307179586476925286766559  //two pi, 2*pi ",
+		"#define prpi  1.4396194958475906883364908049738 //pi root of pi",
+		"#define trpi  1.0471975511965977461542144610932 //one third of pi, pi/3",
+		"#define pi    3.1415926535897932384626433832795 //pi",
+		"#define lgpi  0.4971498726941338543512682882909 //log(pi)       ",
+		"#define rcpi  0.31830988618379067153776752674503// reciprocal of pi  , 1/pi  ",
+		"#define pisq  9.8696044010893586188344909998762 //pi squared, pi^2"
+
+	],
+
 	fragmentMain: [
 
 
