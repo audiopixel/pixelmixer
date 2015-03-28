@@ -1,9 +1,9 @@
 
 
-PixelMixer by AudioPixel is a visual engine optimized for performance that is able to generate, blend, and map OpenGL pixel shaders in 3D space.
+PixelMixer by AudioPixel is a visual engine optimized for performance that can generate, blend, and map OpenGL pixel shaders in 3D space.
 
-Runs in the browser using WebGL and Three.js, and is easy to add to any web application.
-The generated shaders can also be run in any OpenGL ES 2.0 environment (C / Java / IPhone / Android).
+Runs in the browser using HTML5 WebGL and [Three.js](http://threejs.org), and is easy to add to any web application.
+The generated shaders can also be used in any OpenGL ES 2.0 environment (C / Java / IPhone / Android).
 
 The original goal in creating PixelMixer was to drive lighting and video projection equipment. It is capable of capturing all color / data values of 3D pixels at fast framerates, which can be used for communication to physical lighting equipment using protocols such as Video, UDP, & DMX. 
 
@@ -21,18 +21,17 @@ Open Sourced under [MIT License](https://github.com/hepp/audiopixel3/blob/master
 
 ---
 
-[Features](https://github.com/hepp/audiopixel3#features) |
-[Steps to using API](https://github.com/hepp/audiopixel3#steps-to-using-api) |
+[Features](https://github.com/hepp/audiopixel3#features) | 
 [Possible uses](https://github.com/hepp/audiopixel3#possible-uses) | 
+[Steps to Run API](https://github.com/hepp/audiopixel3#steps-to-run-api) |
+[vs Vanilla GLSL Shader](https://github.com/hepp/audiopixel3#vs-vanilla-glsl-shader)
 
-[vs Vanilla GLSL Shader](https://github.com/hepp/audiopixel3#vs-vanilla-glsl-shader) |
 [Terminology](https://github.com/hepp/audiopixel3#terminology) |
-[About us](https://github.com/hepp/audiopixel3#about-us) |
-[Contribute](https://github.com/hepp/audiopixel3#contribute)
+[Roadmap](https://github.com/hepp/audiopixel3#roadmap) |
+[Contribute](https://github.com/hepp/audiopixel3#contribute) |
+[About us](https://github.com/hepp/audiopixel3#about-us)
 
 ---
-
-
 
 ## Features ##
 
@@ -51,13 +50,26 @@ Open Sourced under [MIT License](https://github.com/hepp/audiopixel3/blob/master
 
 ---
 
-## Steps to using API ##
+## Possible uses ##
+
+* Mixer for displaying pixel shaders in 3D space
+* VJ / control light shows 
+* Audio and data visualizations
+* Interactive art and light installations
+* Animate particles / sprites / textures in any WebGL or Three.js project
+* Lighting conceptualize / architectural tool
+* Generate shaders that can be used in separate OpenGL applications
+* Run high performance with dedicated server, triggered by mobile MIDI / OSC API
+
+---
+
+## Steps to Run API ##
 
 [View this in a simple example](https://github.com/hepp/audiopixel3/blob/master/examples/basic_example.html)
+[View more examples](https://github.com/hepp/audiopixel3/blob/master/examples/)
 
 
-
-#### 1. Include Libraries pixelmixer.js and three.js ####
+#### 1. Include Libraries Pixelmixer.js and Three.js ####
 
 ```
 <script src="pixelmixer.min.js"></script>
@@ -107,20 +119,8 @@ PMX.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 
 Each instance of a loaded shader has independent uniforms setup for easy control. Global values are also provided to all shaders that are ready to be populated with audio or any sort of data feed you provide. Easily enhance any loaded shaders to respond to the incoming values, and/or setup UI layers to control and change them directly. 
 
+
 ---
-
-## Possible uses ##
-
-* Mixer for displaying pixel shaders in 3D space
-* VJ / Control light shows 
-* Interactive art and light installations
-* Audio and data visualizations
-* Animate particles / sprites / textures in any WebGL or Three.js project
-* Lighting conceptualize / architectural tool
-* Generate shaders that can be used in separate OpenGL applications
-* Run high performance with dedicated server, triggered by mobile MIDI / OSC API
-
-
 
 ## vs Vanilla GLSL Shader ##
 Shaders loaded into the API extend GLSL to achieve additional functionality:
@@ -178,6 +178,24 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 
 ---
 
+## Roadmap ##
+
+General list of features that are in the works and coming soon
+
+* Previz improvements
+* Mesh texture rendering (in addition to PointClouds)
+* Sprite Nodes render environment layer (emulate lit up surfaces)
+* Compatibility for using without Three.js 
+* HTML5 Video Support
+
+---
+
+## Contribute ##
+
+Please feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API, please let us know. Better yet - also try and take a stab at it yourself. We encourage you to fork and experiment with the code and these techniques. We are also seeking beta testers, to try out some new advanced techniques, especially if you have lighting hardware to test with. If you would like to be involved in whatever fashion, we would love to [hear from you.](http://audiopixel.com/contact)
+
+---
+
 ## About us ##
 
 ![AudioPixel Logo](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-web-grid.png)
@@ -185,11 +203,11 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 
 AudioPixel develops custom lighting technology and sound-reactive visual programming.
 
-We are currently using the 3rd revision of our in-house lighting software, which has now been by used by dozens of artists at hundreds of performances and art installations around the world.
+For 5+ years we have helped artists create interactive installations, programmed nightclub lighting systems, toured with musicians, designed stages with custom lightshows for multi-day festivals, and lit up Burning Man art cars and sound camps.
 
-In our quest of optimizing lighting programming PixelMixer was born.
+In our quest for optimizing AudioPixel's live programming techniques, PixelMixer was born.
 
-Built to be a capable engine for any installation we would dream up, it is now be capable of so much more. We are releasing it to the world in the hopes that it can improve sound and interactive light art for all.
+Our aim was to develop a platform that we could use for any installation or stage design we can dream up.
 
 
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-cubes1.jpg)
@@ -202,10 +220,3 @@ Built to be a capable engine for any installation we would dream up, it is now b
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/Emrg-N-See-2010.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/lorn-decibel-audiopixel.jpg)
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/raindanceSnapshot1.png)
-
-
----
-
-## Contribute ##
-
-Please feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API, please let us know. Better yet - also try and take a stab at it yourself. We encourage you to fork and experiment with the code and these techniques. We are also seeking beta testers, and people to try out some new advanced techniques, especially if you have lighting hardware to test with. If you would like to be involved in whatever fashion, we would love to [hear from you.](http://audiopixel.com/contact)
