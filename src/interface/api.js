@@ -12,10 +12,9 @@ PX.pointGeometry = {};			// The geometry of the point cloud that displays the no
 PX.pointMaterial = {};			// Shader of the point cloud that displays the node colors
 PX.pointSize = 20;				// The size of each point cloud sprite
 
+PX.pointSprite; 
+
 PX.material = false;			// Main shader referenced here, set false initially to flag that its not ready
-
-PX.pointSprite;
-
 
 
 

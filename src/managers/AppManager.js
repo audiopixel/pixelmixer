@@ -25,13 +25,9 @@ PX.AppManager = function (scene, renderer) {
 	this.geoY = [];
 	this.passIndex = [];
 
-	this.fragmentShader;
-
-	this.time = 0;
-
 	this.render = true;
-
-	this.nodeTexture = THREE.ImageUtils.loadTexture( "images/nodeflare250.png" );
+	this.fragmentShader;
+	this.time = 0;
 
 	this.coordsMap;
 	this.altMap1;
@@ -214,7 +210,7 @@ PX.AppManager.prototype = {
 		}
 
 		function blackList(msg){
-			
+
 			msg = msg.trim();
 			msg = msg.replace(/ +(?= )/g,''); // remove multiple spaces
 			if(msg.indexOf("#ifdef GL_ES") > -1){return true;}
@@ -385,15 +381,22 @@ PX.AppManager.prototype = {
 			return obj3;
 		}
 		
-		var attributes = { // For each node we pass along it's index value and x, y in relation to the colorMaps
+		var attributes = { // For each node we pass along it's indenodx value and x, y in relation to the colorMaps
 			a_geoX:        { type: 'f', value: this.geoX },
 			a_geoY:        { type: 'f', value: this.geoY },
-			a_index:        { type: 'f', value: this.passIndex }
+			a_index:       { type: 'f', value: this.passIndex }
 		};
+
+		// Use image for sprite if defined, otherwise default to drawing a square
+		var useTexture = 0;
+		if(PX.pointSprite){
+			useTexture = 1;
+		}
 
 		var uniforms = {
 			u_colorMap:   { type: "t", value: this.rtTextureA },
-			u_texture:    { type: "t", value: this.nodeTexture }
+			u_texture:    { type: "t", value: THREE.ImageUtils.loadTexture( PX.pointSprite )},
+			u_useTexture: { type: "i", value: useTexture }
 		};
 
 

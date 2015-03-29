@@ -39,12 +39,13 @@ PX.shaders.PointCloudShader = {
 			"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
 			"gl_PointSize = u_pointSize * ( 300.0 / length( mvPosition.xyz ) );",
 			"gl_Position = projectionMatrix * mvPosition;",
-		"}",
+		"}"
 
 	].join("\n"),
 
 	fragmentShader: [
 
+		"uniform int u_useTexture;",
 		"uniform sampler2D u_texture;",
 		"uniform sampler2D u_colorMap;",
 
@@ -53,8 +54,12 @@ PX.shaders.PointCloudShader = {
 		"varying float v_index;",
 
 		"void main() {",
-			"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture, gl_PointCoord);",
-		"}",
+			"if(u_useTexture > 0) {",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture, gl_PointCoord);",
+			"}else{",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * vec4(1.);",
+			"}",
+		"}"
 
 	].join("\n")
 
