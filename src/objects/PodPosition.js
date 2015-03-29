@@ -21,21 +21,21 @@
 *
 */
 
-PX.PodPosition = function (x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs, flipmode) {
+PX.PodPosition = function (params) { // x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs, flipmode
 
-	this.x = x || 0;
-	this.y = y || 0;
-	this.z = z || 0;
-	this.w = width || 0;
-	this.h = height || 0;
-	this.d = depth || 0;
+	this.x = params.x || 0;
+	this.y = params.y || 0;
+	this.z = params.z || 0;
+	this.w = params.w || 0;
+	this.h = params.h || 0;
+	this.d = params.d || 0;
 
-	this.xt = xt || 0.5;
-	this.yt = yt || 0.5;
-	this.zt = zt || 0.5;
-	this.xs = xs || 0.5;
-	this.ys = ys || 0.5;
-	this.zs = zs || 0.5;
-	this.flipmode = flipmode || 0;
+	this.xt = params.xt || 0.5;
+	this.yt = params.yt || 0.5;
+	this.zt = params.zt || 0.5;
+	this.xs = params.xs || 0.5;
+	this.ys = params.ys || 0.5;
+	this.zs = params.zs || 0.5;
+	this.flipmode = params.flipmode || 0;
 
 };

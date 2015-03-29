@@ -139,18 +139,18 @@ function initUi(){
 		switch(v){
 			case PX.demoHardware[0]:
 
-				PX.channels.setPodPos(2, new PX.PodPosition(-190, 140, -1000, 1070, 575, 2000));
+				PX.channels.setPodPos(2, new PX.PodPosition({x: -190, y: 140, z: -1000, w: 1070, h: 575, d: 2000}));
 				PX.hardware.importNodes(PX.imported, 1, 0, 0, 0);
 				break;
 			case PX.demoHardware[1]:
 
-				PX.channels.setPodPos(2, new PX.PodPosition(-339, 30, -1000, 1378, 738, 2000));
+				PX.channels.setPodPos(2, new PX.PodPosition({x: -339, y: 30, z: -1000, w: 1378, h: 738, d: 2000}));
 				PX.hardware.addTestPortsGrid3(1, 0, 0);
 				break;
 
 			case PX.demoHardware[2]:
 
-				PX.channels.setPodPos(2, new PX.PodPosition(-190, 286, -1000, 1070, 242, 2000));
+				PX.channels.setPodPos(2, new PX.PodPosition({x: -190, y: 286, z: -1000, w: 1070, h: 242, d: 2000}));
 				PX.hardware.addTestPortsGrid(1, 0, 0);
 				break;
 

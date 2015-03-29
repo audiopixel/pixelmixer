@@ -353,11 +353,7 @@ PX.AppManager.prototype = {
 		}
 
 		// We always set the first Pod Position as the bounding box that fits all nodes
-		PX.channels.setPodPos(1, new PX.PodPosition(minx, miny, minz, maxx - minx, maxy - miny, maxz - minz));
-
-		// Testing on pod pos #2
-		//PX.channels.setPodPos(2, new PX.PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
-		//PX.channels.setPodPos(2, new PX.PodPosition(-190, 140, 0, 1070, 575, 1));
+		PX.channels.setPodPos(1, new PX.PodPosition({x: minx, y: miny, z: minz, w: maxx - minx, h: maxy - miny, d: maxz - minz}));
 
 		this.coordsMap = new THREE.DataTexture( a, PX.simSize, PX.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.coordsMap.minFilter = THREE.NearestFilter;

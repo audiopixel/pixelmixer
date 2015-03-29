@@ -20,9 +20,6 @@ PX.HardwareManager.prototype = {
 
 		// Simulate Importing nodes from external file
 		//this.importNodes(PX.imported, 1, 350, 100, 500);
-		//PX.channels.setPodPos(2, new PX.PodPosition(-190, 140, -100, 1070, 575, 1000));
-		//PX.channels.setPodPos(2, new PX.PodPosition(-540, 140, -100, 700, 575, 1000));
-		//PX.channels.setPodPos(3, new PX.PodPosition(540, 140, -100, 700, 575, 1000));
 
 	},
 
@@ -264,7 +261,7 @@ PX.HardwareManager.prototype = {
 
 		// If we are not the first designated port set the pod position as a default (testing)
 		if(portStart > 1){
-			PX.channels.setPodPos(portStart, new PX.PodPosition(minx, miny, z, maxx - minx, maxy - miny, z+1));
+			PX.channels.setPodPos(portStart, new PX.PodPosition({x: minx, y: miny, z: z, w: maxx - minx, h: maxy - miny, d: z+1}));
 		}
 
 	}
