@@ -230,7 +230,13 @@ PX.AppManager.prototype = {
 		PX.clips[name] = shader;
 
 	},
+		
+	// Overwrite if we want to do more granular time control per clip or anything more complex than incrementing
+	clipUpdateTime: function (clipObj, timeUniform, channel, pod, clip) {
 
+		timeUniform.value += (clipObj.speed * PX.speed);
+
+	},
 			
 	updateClips: function () {
 
@@ -246,8 +252,8 @@ PX.AppManager.prototype = {
 							
 							if(clip && PX.clips[clip.id]){
 
-								// update uniform
-								PX.material.uniforms["_"+(i+1)+"_"+(e+1)+"_"+(u+1)+"_"+"time"].value += (clip.speed * PX.speed);
+								// update time uniform
+								this.clipUpdateTime(clip, PX.material.uniforms["_"+(i+1)+"_"+(e+1)+"_"+(u+1)+"_"+"time"], i+1, e+1, u+1);
 
 								// If the clip defined update function call it with proper clip addressing
 								var shader = PX.clips[clip.id];
