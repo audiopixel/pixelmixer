@@ -557,13 +557,13 @@ PX.AppManager.prototype = {
 		}
 
 		function blackList(msg){
-			if(msg.localeCompare("#ifdef GL_ES") > -1){return true;}
-			if(msg.localeCompare("#endif") > -1){return true;}
-			if(msg.localeCompare("uniform float time") > -1){return true;}
-			if(msg.localeCompare("uniform float random") > -1){return true;}
-			if(msg.localeCompare("uniform vec2 resolution") > -1){return true;}
-			if(msg.localeCompare("precision highp float") > -1){return true;}
-			if(msg.localeCompare("varying vec2 surfacePosition") > -1){return true;}
+			if(msg.indexOf("#ifdef GL_ES") > -1){return true;}
+			if(msg.indexOf("#endif") > -1){return true;}
+			if(msg.indexOf("uniform float time") > -1){return true;}
+			if(msg.indexOf("uniform float random") > -1){return true;}
+			if(msg.indexOf("uniform vec2 resolution") > -1){return true;}
+			if(msg.indexOf("precision highp float") > -1){return true;}
+			if(msg.indexOf("varying vec2 surfacePosition") > -1){return true;}
 			return false;
 		}
 

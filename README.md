@@ -9,13 +9,11 @@ The original goal in creating PixelMixer was to drive lighting and video project
 
 ---
 
-Live demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
+Online demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 
-Shader editor: [github/examples/shader_edit.html](https://github.com/hepp/audiopixel3/blob/master/examples/shader_edit.html)
+Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/)
 
-Load in additional WebGL shaders, such as any of the ones found at [glslsandbox](http://glslsandbox.com/) or [shadertoy](https://www.shadertoy.com).
-
-Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENSE).
+Load in additional WebGL shaders, such as ones found at [glslsandbox](http://glslsandbox.com/) and [shadertoy](https://www.shadertoy.com).
 
 ---
 
@@ -217,6 +215,8 @@ In our quest for optimizing AudioPixel's live programming techniques, PixelMixer
 Our aim was to develop a platform we could use for any installation or stage design we could dream up.
 
 Now we are releasing it to the world in the hopes that it might benefit interactive light for all.
+
+Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENSE).
 
 
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-cubes1.jpg)
