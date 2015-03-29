@@ -47,7 +47,7 @@ PX.PortManager.prototype = {
 
 				PX.techs[tech].init();
 			}
-		};
+		}
 	},
 
 	update: function () {

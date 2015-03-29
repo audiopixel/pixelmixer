@@ -109,7 +109,7 @@ PX.HardwareManager.prototype = {
 			node.y = (array[(i * 3) + 1] * scale) + yOffset;
 			node.z = (array[(i * 3) + 2] * scale) + zOffset;
 			nodes[nodes.length] = node;
-		};
+		}
 
 		PX.ports.setNodes(portId, nodes);
 

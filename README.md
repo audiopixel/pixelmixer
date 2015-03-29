@@ -5,9 +5,7 @@ PixelMixer by AudioPixel is a visual engine optimized for performance that can g
 Runs in the browser using HTML5 WebGL and [Three.js](http://threejs.org), and is easy to add to any web application.
 The generated shaders can also be used in any OpenGL ES 2.0 environment (C / Java / IPhone / Android).
 
-The original goal in creating PixelMixer was to drive lighting and video projection equipment. It is capable of capturing all color / data values of 3D pixels at fast framerates, which can be used for communication to physical lighting equipment using protocols such as Video, UDP, & DMX. 
-
-There are other advantages as well when compared to standard OpenGL pixel shaders, as shown in the comparison table below.
+The original goal in creating PixelMixer was to drive lighting and video projection equipment. It is capable of capturing all color / data values of 3D pixels at fast framerates, which can be used for communication to physical lighting equipment using protocols such as Video, DMX, UDP, & Rest. 
 
 ---
 
@@ -23,13 +21,13 @@ Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENS
 
 [Features](https://github.com/hepp/audiopixel3#features) | 
 [Possible uses](https://github.com/hepp/audiopixel3#possible-uses) | 
-[Steps to Run API](https://github.com/hepp/audiopixel3#steps-to-run-api) |
+[Steps to using API](https://github.com/hepp/audiopixel3#steps-to-using-api) |
 [vs Vanilla GLSL Shader](https://github.com/hepp/audiopixel3#vs-vanilla-glsl-shader)
 
 [Terminology](https://github.com/hepp/audiopixel3#terminology) |
 [Roadmap](https://github.com/hepp/audiopixel3#roadmap) |
 [Participate](https://github.com/hepp/audiopixel3#participate) |
-[About us](https://github.com/hepp/audiopixel3#about-us)
+[About AudioPixel](https://github.com/hepp/audiopixel3#about-us)
 
 ---
 
@@ -38,7 +36,7 @@ Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENS
 * Animate pixel shaders seamlessly across textures and point cloud particles 
 * Mix multiple pixel shaders together using various blend modes
 * Map shaders to any number of areas using 3D transformations
-* Import any GLSL fragment shader
+* Import OpenGL ES 2.0 fragment shaders
 * Enhance your shaders with helper methods / values not normally in GLSL
 * Easily manipulate animations with incoming audio or data feeds
 * Multiple position / index maps can be used to generate mapped content
@@ -46,7 +44,6 @@ Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENS
 * Define networking data per port, broadcast UDP and more
 * Preview channels in previz mode while still communicating main mix to hardware (WIP)
 * HTML5 video input (WIP)
-
 
 ---
 
@@ -63,16 +60,19 @@ Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENS
 
 ---
 
-## Steps to Run API ##
+## Steps to using API ##
 
 [View this in a simple example](https://github.com/hepp/audiopixel3/blob/master/examples/basic_example.html)
 
 [View all examples](https://github.com/hepp/audiopixel3/blob/master/examples/)
 
+[How to run things locally](https://github.com/mrdoob/three.js/wiki/How-to-run-things-locally)
 
-#### 1. Include Libraries Pixelmixer.js and Three.js ####
+
+#### 1. Setup Pixelmixer.js and Three.js ####
 
 ```
+<!-- Include scripts -->
 <script src="pixelmixer.min.js"></script>
 <script src="three.min.js"></script>
 
@@ -151,7 +151,7 @@ Shaders loaded into the API extend GLSL to achieve additional functionality:
 A Clip is simply a Shader with additional timing, scaling, and input controls. 
 Loading a Shader into a Clip allows us to play it back several times, at multiple sizes and animation speeds.
 
-A Pod is a way to group and mix Clips to be blended and positioned as one. Pods can then be blended into other Pods. Pods can also be represented many times over in many places. A simple example of would be to take one Pod and display it in two different places, perhaps with the second instance mirrored or scaled. 
+A Pod is a way to group and mix Clips to be blended and positioned as one. Pods can then be blended into other Pods. Pods can also be represented many times over in many places. A simple example would be to take one Pod and display it in two different places, perhaps with the second instance mirrored or scaled. 
 
 Once a Shader has been loaded into a Clip, it can be positioned in multiple places with a Pod, and then mixed into the main mix with a Channel.
 
@@ -199,7 +199,7 @@ Feel free to use this API in your projects. If you have any problems, suggestion
 
 We are also seeking beta testers, especially if you have lighting fixtures or other hardware to play with.
 
-[Contact.](http://audiopixel.com/contact)
+[Contact](http://audiopixel.com/contact)
 
 ---
 
@@ -210,11 +210,13 @@ We are also seeking beta testers, especially if you have lighting fixtures or ot
 
 AudioPixel develops custom lighting technology and sound-reactive visual programming.
 
-For 5+ years we have helped artists create interactive installations, programmed nightclub lighting systems, toured with musicians, designed stages with custom lightshows for multi-day festivals, and lit up Burning Man art cars and sound camps.
+For 5+ years we have built our own lighting projects, helped artists create large scale interactive installations, programmed nightclub lighting systems, toured with musicians, designed stages with custom lightshows for multi-day festivals, and lit up Burning Man art cars and sound camps. Currently we are on the third revision of refining our in-house lighting software package.
 
 In our quest for optimizing AudioPixel's live programming techniques, PixelMixer was born.
 
 Our aim was to develop a platform we could use for any installation or stage design we could dream up.
+
+Now we are releasing it to the world in the hopes that it might benefit interactive light for all.
 
 
 ![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-cubes1.jpg)

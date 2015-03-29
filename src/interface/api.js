@@ -1,7 +1,5 @@
 
 
-
-
 PX.broadcast = false;	
 PX.readPixels = false;	
 
@@ -16,7 +14,7 @@ PX.pointSize = 20;				// The size of each point cloud sprite
 
 PX.material = false;			// Main shader referenced here, set false initially to flag that its not ready
 
-
+PX.pointSprite;
 
 
 
