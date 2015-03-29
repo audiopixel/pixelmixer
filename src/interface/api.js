@@ -17,7 +17,6 @@ PX.pointSprite;
 PX.material = false;			// Main shader referenced here, set false initially to flag that its not ready
 
 
-
 // -------------------------------------------------------
 
 PX.shaderCount = -1;
@@ -130,8 +129,16 @@ PX.setSize = function(width, height) {
 		var v = PX.pointSize;
 		v *= ((width * height) * .00001);
 		PX.pointMaterial.uniforms.u_pointSize.value = v;
-
 	}
+};
+
+
+PX.mouseX = 0;
+PX.mouseY = 0;
+PX.setMouse = function (x, y) {
+	PX.mouseX = x;
+	PX.mouseY = y;
+	PX.material.uniforms.mouse.value = new THREE.Vector2( x, y );
 };
 
 

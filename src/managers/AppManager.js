@@ -217,6 +217,7 @@ PX.AppManager.prototype = {
 			if(msg.indexOf("#endif") > -1){return true;}
 			if(msg.indexOf("uniform float time") > -1){return true;}
 			if(msg.indexOf("uniform float random") > -1){return true;}
+			if(msg.indexOf("uniform vec2 mouse") > -1){return true;}
 			if(msg.indexOf("uniform vec2 resolution") > -1){return true;}
 			if(msg.indexOf("precision highp float") > -1){return true;}
 			if(msg.indexOf("varying vec2 surfacePosition") > -1){return true;}
@@ -452,7 +453,8 @@ PX.AppManager.prototype = {
 			_random: { type: "f", value: Math.random() },
 			u_coordsMap: { type: "t", value: this.coordsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
-			u_mapSize: { type: "f", value: PX.simSize }
+			u_mapSize: { type: "f", value: PX.simSize },
+			mouse: { type: "v2", value: THREE.Vector2( PX.mouseX, PX.mouseY ) }
 		};
 
 		// Generate the source shader from the current loaded channels

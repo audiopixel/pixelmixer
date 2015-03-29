@@ -30,6 +30,7 @@ PX.MainShader = {
 		"uniform float _time;",
 		"uniform float _random;",
 		"uniform float u_mapSize;",
+		"uniform vec2 mouse;",
 		"uniform sampler2D u_coordsMap;",
 		"uniform sampler2D u_prevCMap;",
 		//uniform sampler2D u_portsMap;
@@ -42,7 +43,7 @@ PX.MainShader = {
 			"random = rand(vec2(gl_FragCoord[0] * (gl_FragCoord[2] + 1.), gl_FragCoord[1] * _random) * (_time * 0.0001));",
 
 			// Black is default
-			"px_rgb = vec3(0.0);",
+			"px_rgb = vec3(0.);",
 			
 			//********************************************
 			
