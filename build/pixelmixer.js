@@ -1,102 +1,5 @@
 
 
-// ****** Platform ******
-
-var PX = { REVISION: '1' };	// Global object
-PX.ready = false;				
-PX.simSize;
-
-PX.shaders = {};				// Internal shaders 
-PX.clips = {}; 				// Loaded shaders as clips
-PX.imported = {}; 				// Currently imported port (and possibly node) data
-PX.techs = {};
-
-PX.pixels;
-	
-// ****** Constants ******
-
-// Blend Constants
-PX.BLEND = {};
-PX.BLEND.OFF = 0;
-PX.BLEND.Add = 1;
-PX.BLEND.Subtract = 2;
-PX.BLEND.Darkest = 3;
-PX.BLEND.Lightest = 4;
-PX.BLEND.Difference = 5;
-PX.BLEND.Exclusion = 6;
-PX.BLEND.Multiply = 7;
-PX.BLEND.Screen = 8;
-PX.BLEND.Overlay = 9;
-PX.BLEND.HardLight = 10;
-PX.BLEND.SoftLight = 11;
-PX.BLEND.Dodge = 12;
-PX.BLEND.Burn = 13;
-PX.BLEND.LinearBurn = 14;
-PX.BLEND.LinearLight = 15;
-PX.BLEND.VividLight = 16;
-PX.BLEND.PinLight = 17;
-PX.BLEND.Fx = 1; // Use 'add' if this happens to get passed, all fx 'blending' happens outside blend()
-
-PX.BLENDS = [ 'Add', 'Substract', 'Darkest', 'Lightest', 'Difference', 'Exclusion', 'Multiply', 'Screen','Overlay', 
-			'HardLight', 'SoftLight', 'Dodge', 'Burn', 'LinearBurn', 'LinearLight', 'VividLight', 'PinLight'];
-
-
-// PX.Port Type Constants
-PX.PORT_TYPE_OFF = 0;
-PX.PORT_TYPE_KINET_1 = 1; // strands
-PX.PORT_TYPE_KINET_2 = 2; // tiles
-PX.PORT_TYPE_KINET_3 = 3; // colorblasts
-PX.PORT_TYPE_KINET_4 = 4;
-PX.PORT_TYPE_DMX_1 = 5; // Movers, for testing
-PX.PORT_TYPE_DMX_2 = 6;
-PX.PORT_TYPE_DMX_3 = 7;
-PX.PORT_TYPE_LASER_1 = 8;
-
-
-// PX.Channel Type Constants
-PX.CHANNEL_TYPE_OFF = 0;
-PX.CHANNEL_TYPE_ADD = 1;
-PX.CHANNEL_TYPE_FX = 2;
-PX.CHANNEL_TYPE_SCENE = 3;
-
-
-// Pod Hardware Group Modes Constants
-PX.HARDWAREGROUP_OFF = 0;
-PX.HARDWAREGROUP_SOLO = 1;
-PX.HARDWAREGROUP_EXCLUDE = 2;
-
-
-// Clip position map Constants
-PX.MAP_NORMAL = 0;
-PX.MAP_ALT1 = 1;
-PX.MAP_ALT2 = 2;
-
-
-// Temporary Preset Management 
-PX.demoClipNames = ["TestFrame", "SolidColor", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
-"SinSpiral", "SineParticles", "DiSinSwirl", "HexifyRadial", "SinCosTan"];
-
-PX.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
-
-
-
-// ****** Internal Utils ******
-
-PX.getVariableTypeFromShorthand = function(shorthand){
-	var type;
-	switch ( shorthand ) {
-		case "i": type = "int"; break;
-		case "f": type = "float"; break;
-		case "t": type = "sampler2D"; break;
-		case "v2": type = "vec2"; break;
-		case "v3": type = "vec3"; break;
-		case "v4": type = "vec4"; break;
-		// TODO add 'matrix' and 'array support'
-	}
-	return type;
-};
-
-
 PX.broadcast = false;	
 PX.readPixels = false;	
 
@@ -109,11 +12,9 @@ PX.pointGeometry = {};			// The geometry of the point cloud that displays the no
 PX.pointMaterial = {};			// Shader of the point cloud that displays the node colors
 PX.pointSize = 20;				// The size of each point cloud sprite
 
+PX.pointSprite; 
+
 PX.material = false;			// Main shader referenced here, set false initially to flag that its not ready
-
-PX.pointSprite;
-
-
 
 
 // -------------------------------------------------------
@@ -228,8 +129,16 @@ PX.setSize = function(width, height) {
 		var v = PX.pointSize;
 		v *= ((width * height) * .00001);
 		PX.pointMaterial.uniforms.u_pointSize.value = v;
-
 	}
+};
+
+
+PX.mouseX = 0;
+PX.mouseY = 0;
+PX.setMouse = function (x, y) {
+	PX.mouseX = x;
+	PX.mouseY = y;
+	PX.material.uniforms.mouse.value = new THREE.Vector2( x, y );
 };
 
 
@@ -341,6 +250,103 @@ PX.stringifyChannels = function(){
 PX.stringifyNodes = function(){
 	return JSON.stringify(PX.ports.ports);
 };
+
+
+// ****** Platform ******
+
+var PX = { REVISION: '1' };	// Global object
+PX.ready = false;				
+PX.simSize;
+
+PX.shaders = {};				// Internal shaders 
+PX.clips = {}; 				// Loaded shaders as clips
+PX.imported = {}; 				// Currently imported port (and possibly node) data
+PX.techs = {};
+
+PX.pixels;
+	
+// ****** Constants ******
+
+// Blend Constants
+PX.BLEND = {};
+PX.BLEND.OFF = 0;
+PX.BLEND.Add = 1;
+PX.BLEND.Subtract = 2;
+PX.BLEND.Darkest = 3;
+PX.BLEND.Lightest = 4;
+PX.BLEND.Difference = 5;
+PX.BLEND.Exclusion = 6;
+PX.BLEND.Multiply = 7;
+PX.BLEND.Screen = 8;
+PX.BLEND.Overlay = 9;
+PX.BLEND.HardLight = 10;
+PX.BLEND.SoftLight = 11;
+PX.BLEND.Dodge = 12;
+PX.BLEND.Burn = 13;
+PX.BLEND.LinearBurn = 14;
+PX.BLEND.LinearLight = 15;
+PX.BLEND.VividLight = 16;
+PX.BLEND.PinLight = 17;
+PX.BLEND.Fx = 1; // Use 'add' if this happens to get passed, all fx 'blending' happens outside blend()
+
+PX.BLENDS = [ 'Add', 'Substract', 'Darkest', 'Lightest', 'Difference', 'Exclusion', 'Multiply', 'Screen','Overlay', 
+			'HardLight', 'SoftLight', 'Dodge', 'Burn', 'LinearBurn', 'LinearLight', 'VividLight', 'PinLight'];
+
+
+// PX.Port Type Constants
+PX.PORT_TYPE_OFF = 0;
+PX.PORT_TYPE_KINET_1 = 1; // strands
+PX.PORT_TYPE_KINET_2 = 2; // tiles
+PX.PORT_TYPE_KINET_3 = 3; // colorblasts
+PX.PORT_TYPE_KINET_4 = 4;
+PX.PORT_TYPE_DMX_1 = 5; // Movers, for testing
+PX.PORT_TYPE_DMX_2 = 6;
+PX.PORT_TYPE_DMX_3 = 7;
+PX.PORT_TYPE_LASER_1 = 8;
+
+
+// PX.Channel Type Constants
+PX.CHANNEL_TYPE_OFF = 0;
+PX.CHANNEL_TYPE_ADD = 1;
+PX.CHANNEL_TYPE_FX = 2;
+PX.CHANNEL_TYPE_SCENE = 3;
+
+
+// Pod Hardware Group Modes Constants
+PX.HARDWAREGROUP_OFF = 0;
+PX.HARDWAREGROUP_SOLO = 1;
+PX.HARDWAREGROUP_EXCLUDE = 2;
+
+
+// Clip position map Constants
+PX.MAP_NORMAL = 0;
+PX.MAP_ALT1 = 1;
+PX.MAP_ALT2 = 2;
+
+
+// Temporary Preset Management 
+PX.demoClipNames = ["TestFrame", "SolidColor", "ColorSineBar", "ColorSwirls", "LineCosSin", "SimpleSwirl",
+"SinSpiral", "SineParticles", "DiSinSwirl", "HexifyRadial", "SinCosTan"];
+
+PX.demoHardware = ["ApHardwareTest", "Grid+zLayer", "RanZGrid"];
+
+
+
+// ****** Internal Utils ******
+
+PX.getVariableTypeFromShorthand = function(shorthand){
+	var type;
+	switch ( shorthand ) {
+		case "i": type = "int"; break;
+		case "f": type = "float"; break;
+		case "t": type = "sampler2D"; break;
+		case "v2": type = "vec2"; break;
+		case "v3": type = "vec3"; break;
+		case "v4": type = "vec4"; break;
+		// TODO add 'matrix' and 'array support'
+	}
+	return type;
+};
 /*
 *
 * Handles WebGL state and rendering responsibilities.
@@ -368,13 +374,9 @@ PX.AppManager = function (scene, renderer) {
 	this.geoY = [];
 	this.passIndex = [];
 
-	this.fragmentShader;
-
-	this.time = 0;
-
 	this.render = true;
-
-	this.nodeTexture = THREE.ImageUtils.loadTexture( "images/nodeflare250.png" );
+	this.fragmentShader;
+	this.time = 0;
 
 	this.coordsMap;
 	this.altMap1;
@@ -557,10 +559,14 @@ PX.AppManager.prototype = {
 		}
 
 		function blackList(msg){
+
+			msg = msg.trim();
+			msg = msg.replace(/ +(?= )/g,''); // remove multiple spaces
 			if(msg.indexOf("#ifdef GL_ES") > -1){return true;}
 			if(msg.indexOf("#endif") > -1){return true;}
 			if(msg.indexOf("uniform float time") > -1){return true;}
 			if(msg.indexOf("uniform float random") > -1){return true;}
+			if(msg.indexOf("uniform vec2 mouse") > -1){return true;}
 			if(msg.indexOf("uniform vec2 resolution") > -1){return true;}
 			if(msg.indexOf("precision highp float") > -1){return true;}
 			if(msg.indexOf("varying vec2 surfacePosition") > -1){return true;}
@@ -574,7 +580,13 @@ PX.AppManager.prototype = {
 		PX.clips[name] = shader;
 
 	},
+		
+	// Overwrite if we want to do more granular time control per clip or anything more complex than incrementing
+	clipUpdateTime: function (clipObj, timeUniform, channel, pod, clip) {
 
+		timeUniform.value += (clipObj.speed * PX.speed);
+
+	},
 			
 	updateClips: function () {
 
@@ -590,8 +602,8 @@ PX.AppManager.prototype = {
 							
 							if(clip && PX.clips[clip.id]){
 
-								// update uniform
-								PX.material.uniforms["_"+(i+1)+"_"+(e+1)+"_"+(u+1)+"_"+"time"].value += (clip.speed * PX.speed);
+								// update time uniform
+								this.clipUpdateTime(clip, PX.material.uniforms["_"+(i+1)+"_"+(e+1)+"_"+(u+1)+"_"+"time"], i+1, e+1, u+1);
 
 								// If the clip defined update function call it with proper clip addressing
 								var shader = PX.clips[clip.id];
@@ -690,11 +702,7 @@ PX.AppManager.prototype = {
 		}
 
 		// We always set the first Pod Position as the bounding box that fits all nodes
-		PX.channels.setPodPos(1, new PX.PodPosition(minx, miny, minz, maxx - minx, maxy - miny, maxz - minz));
-
-		// Testing on pod pos #2
-		//PX.channels.setPodPos(2, new PX.PodPosition(minx + 90, miny + 90, 0, maxx - minx - 180, maxy - miny - 180, 1));
-		//PX.channels.setPodPos(2, new PX.PodPosition(-190, 140, 0, 1070, 575, 1));
+		PX.channels.setPodPos(1, new PX.PodPosition({x: minx, y: miny, z: minz, w: maxx - minx, h: maxy - miny, d: maxz - minz}));
 
 		this.coordsMap = new THREE.DataTexture( a, PX.simSize, PX.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.coordsMap.minFilter = THREE.NearestFilter;
@@ -725,15 +733,22 @@ PX.AppManager.prototype = {
 			return obj3;
 		}
 		
-		var attributes = { // For each node we pass along it's index value and x, y in relation to the colorMaps
+		var attributes = { // For each node we pass along it's indenodx value and x, y in relation to the colorMaps
 			a_geoX:        { type: 'f', value: this.geoX },
 			a_geoY:        { type: 'f', value: this.geoY },
-			a_index:        { type: 'f', value: this.passIndex }
+			a_index:       { type: 'f', value: this.passIndex }
 		};
+
+		// Use image for sprite if defined, otherwise default to drawing a square
+		var useTexture = 0;
+		if(PX.pointSprite){
+			useTexture = 1;
+		}
 
 		var uniforms = {
 			u_colorMap:   { type: "t", value: this.rtTextureA },
-			u_texture:    { type: "t", value: this.nodeTexture }
+			u_texture:    { type: "t", value: THREE.ImageUtils.loadTexture( PX.pointSprite )},
+			u_useTexture: { type: "i", value: useTexture }
 		};
 
 
@@ -783,7 +798,8 @@ PX.AppManager.prototype = {
 			_random: { type: "f", value: Math.random() },
 			u_coordsMap: { type: "t", value: this.coordsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
-			u_mapSize: { type: "f", value: PX.simSize }
+			u_mapSize: { type: "f", value: PX.simSize },
+			mouse: { type: "v2", value: THREE.Vector2( PX.mouseX, PX.mouseY ) }
 		};
 
 		// Generate the source shader from the current loaded channels
@@ -1494,9 +1510,6 @@ PX.HardwareManager.prototype = {
 
 		// Simulate Importing nodes from external file
 		//this.importNodes(PX.imported, 1, 350, 100, 500);
-		//PX.channels.setPodPos(2, new PX.PodPosition(-190, 140, -100, 1070, 575, 1000));
-		//PX.channels.setPodPos(2, new PX.PodPosition(-540, 140, -100, 700, 575, 1000));
-		//PX.channels.setPodPos(3, new PX.PodPosition(540, 140, -100, 700, 575, 1000));
 
 	},
 
@@ -1738,7 +1751,7 @@ PX.HardwareManager.prototype = {
 
 		// If we are not the first designated port set the pod position as a default (testing)
 		if(portStart > 1){
-			PX.channels.setPodPos(portStart, new PX.PodPosition(minx, miny, z, maxx - minx, maxy - miny, z+1));
+			PX.channels.setPodPos(portStart, new PX.PodPosition({x: minx, y: miny, z: z, w: maxx - minx, h: maxy - miny, d: z+1}));
 		}
 
 	}
@@ -2030,22 +2043,22 @@ PX.Pod = function (params) {
 *
 */
 
-PX.PodPosition = function (x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs, flipmode) {
+PX.PodPosition = function (params) { // x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs, flipmode
 
-	this.x = x || 0;
-	this.y = y || 0;
-	this.z = z || 0;
-	this.w = width || 0;
-	this.h = height || 0;
-	this.d = depth || 0;
+	this.x = params.x || 0;
+	this.y = params.y || 0;
+	this.z = params.z || 0;
+	this.w = params.w || 0;
+	this.h = params.h || 0;
+	this.d = params.d || 0;
 
-	this.xt = xt || 0.5;
-	this.yt = yt || 0.5;
-	this.zt = zt || 0.5;
-	this.xs = xs || 0.5;
-	this.ys = ys || 0.5;
-	this.zs = zs || 0.5;
-	this.flipmode = flipmode || 0;
+	this.xt = params.xt || 0.5;
+	this.yt = params.yt || 0.5;
+	this.zt = params.zt || 0.5;
+	this.xs = params.xs || 0.5;
+	this.ys = params.ys || 0.5;
+	this.zs = params.zs || 0.5;
+	this.flipmode = params.flipmode || 0;
 
 };
 /*
@@ -2108,6 +2121,7 @@ PX.MainShader = {
 		"uniform float _time;",
 		"uniform float _random;",
 		"uniform float u_mapSize;",
+		"uniform vec2 mouse;",
 		"uniform sampler2D u_coordsMap;",
 		"uniform sampler2D u_prevCMap;",
 		//uniform sampler2D u_portsMap;
@@ -2120,7 +2134,7 @@ PX.MainShader = {
 			"random = rand(vec2(gl_FragCoord[0] * (gl_FragCoord[2] + 1.), gl_FragCoord[1] * _random) * (_time * 0.0001));",
 
 			// Black is default
-			"px_rgb = vec3(0.0);",
+			"px_rgb = vec3(0.);",
 			
 			//********************************************
 			
@@ -2185,12 +2199,13 @@ PX.shaders.PointCloudShader = {
 			"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
 			"gl_PointSize = u_pointSize * ( 300.0 / length( mvPosition.xyz ) );",
 			"gl_Position = projectionMatrix * mvPosition;",
-		"}",
+		"}"
 
 	].join("\n"),
 
 	fragmentShader: [
 
+		"uniform int u_useTexture;",
 		"uniform sampler2D u_texture;",
 		"uniform sampler2D u_colorMap;",
 
@@ -2199,8 +2214,12 @@ PX.shaders.PointCloudShader = {
 		"varying float v_index;",
 
 		"void main() {",
-			"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture, gl_PointCoord);",
-		"}",
+			"if(u_useTexture > 0) {",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture, gl_PointCoord);",
+			"}else{",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * vec4(1.);",
+			"}",
+		"}"
 
 	].join("\n")
 
