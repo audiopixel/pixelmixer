@@ -2,7 +2,7 @@
 var PX = { REVISION: '1' };	// Global object
 
 
-// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* Api: -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 PX.broadcast = false;	
@@ -177,9 +177,6 @@ PX.simpleSetup = function (params) {
 
 	var channel1 = new PX.Channel({ mix: params.mix, pods: pods });
 	PX.channels.setChannel(params.channel, channel1);
-
-	PX.generateShader();
-
 };
 
 
@@ -188,7 +185,6 @@ PX.updateNodePoints = function () {
 	PX.app.updateGeometry();
 	PX.app.generateCoordsMap();
 	PX.app.createNodePointCloud();
-
 };
 
 PX.get = function(uniform, channel, pod, clip) {
@@ -203,7 +199,16 @@ PX.set = function(uniform, value, channel, pod, clip) {
 	if(!channel){
 		PX.material.uniforms[uniform].value = value;
 	}else{
-		PX.getUniform(uniform, channel, pod, clip).value = value;
+		if(PX.material.uniforms){
+			PX.getUniform(uniform, channel, pod, clip).value = value;
+		}else{
+			//record this to get applied when things are ready
+			var addy = "_"+channel+"_"+pod+"_"+clip+"_"+uniform;
+			if(!PX.app.initialUniforms[addy]){
+				PX.app.initialUniforms[addy] = {};
+			}
+			PX.app.initialUniforms[addy].value = value;
+		}
 		PX.setObjProperty(uniform, value, channel, pod, clip);
 	}
 };
@@ -217,7 +222,7 @@ PX.getUniform = function(uniform, channel, pod, clip) {
 
 PX.getObj = function(channel, pod, clip) {
 	var obj = PX.channels.channels[channel-1];
-	if(pod){ obj = obj.pods[pod-1]; 
+	if(obj && pod){ obj = obj.pods[pod-1]; 
 	if(clip){ obj = obj.clips[clip-1]; }}
 	return obj;
 };
@@ -239,7 +244,9 @@ PX.getObjProperty = function(property, channel, pod, clip) {
 
 PX.setObjProperty = function(property, value, channel, pod, clip) {
 	var obj = PX.getObj(channel, pod, clip);
-	obj[property] = value;
+	if(obj){
+		obj[property] = value;
+	}
 };
 
 PX.load = function(json){
@@ -257,8 +264,6 @@ PX.stringifyNodes = function(){
 };
 
 
-
-// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* Internal: -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 

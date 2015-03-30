@@ -11,6 +11,7 @@ PX.AppManager = function (scene, renderer) {
 
 	this.sceneMain = scene;
 	this.renderer = renderer;
+	this.initialUniforms = {};
 
 	this.cameraRTT;
 	this.sceneRTT;
@@ -403,19 +404,19 @@ PX.AppManager.prototype = {
 
 	},
 
+	merge: function(obj1, obj2){
+		var obj3 = {};
+		for (var attrname in obj1) {
+			if(obj1[attrname]){ obj3[attrname] = obj1[attrname]; }
+		}
+		for (var attrname2 in obj2) {
+			if(obj2[attrname2]){ obj3[attrname2] = obj2[attrname2]; }
+		}
+		return obj3;
+	},
+
 	createNodePointCloud: function(){
 
-		
-		function merge(obj1, obj2){
-			var obj3 = {};
-			for (var attrname in obj1) {
-				if(obj1[attrname]){ obj3[attrname] = obj1[attrname]; }
-			}
-			for (var attrname2 in obj2) {
-				if(obj2[attrname2]){ obj3[attrname2] = obj2[attrname2]; }
-			}
-			return obj3;
-		}
 		
 		var attributes = { // For each node we pass along it's indenodx value and x, y in relation to the colorMaps
 			a_geoX:        { type: 'f', value: this.geoX },
@@ -438,8 +439,8 @@ PX.AppManager.prototype = {
 
 		PX.pointMaterial = new THREE.ShaderMaterial( {
 
-			uniforms:       merge(uniforms, PX.shaders.PointCloudShader.uniforms),
-			attributes:     merge(attributes, PX.shaders.PointCloudShader.attributes),
+			uniforms:       this.merge(uniforms, PX.shaders.PointCloudShader.uniforms),
+			attributes:     this.merge(attributes, PX.shaders.PointCloudShader.attributes),
 			vertexShader:   PX.shaders.PointCloudShader.vertexShader,
 			fragmentShader: PX.shaders.PointCloudShader.fragmentShader,
 			depthTest:      false,
@@ -511,11 +512,17 @@ PX.AppManager.prototype = {
 
 		// Add the uniforms from the current loaded channels
 		for (var uniform in sourceShader.uniforms) {
-
 			var type = PX.getVariableTypeFromShorthand(sourceShader.uniforms[uniform].type);
-
 			sourceUniforms += "uniform " + type + " " + uniform + ";\n";
 			uniforms[uniform] = sourceShader.uniforms[uniform];
+		}
+
+		// If uniforms are set before shader is generated, they have been recorded, unload them here
+		for (var uniform in this.initialUniforms) {
+			if(uniforms[uniform]){
+				uniforms[uniform].value = this.initialUniforms[uniform].value;
+				delete this.initialUniforms[uniform];
+			}
 		}
 
 		// If we are using alt maps include the internal properties

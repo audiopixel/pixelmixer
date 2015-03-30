@@ -481,7 +481,6 @@ PX.ChannelManager.prototype = {
 		if(msg.indexOf("rgb2hsv") > -1){return true;}
 		if(msg.indexOf("hsv2rgb") > -1){return true;}
 		if(msg.indexOf("blend") > -1){return true;}
-		if(msg.indexOf("rand") > -1){return true;}
 		return false;
 	}, 
 
