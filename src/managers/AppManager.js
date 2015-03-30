@@ -81,7 +81,7 @@ PX.AppManager.prototype = {
 		if(this.render && PX.ready){
 
 			// Update uniforms
-			PX.material.uniforms._time.value = this.time;
+			PX.material.uniforms.time.value = this.time;
 			PX.material.uniforms._random.value = Math.random();
 
 			// Render first scene into texture
@@ -171,6 +171,8 @@ PX.AppManager.prototype = {
 
 				if(grab){
 					l = l.replace(";", ";\n");
+					l = l.replace("surfacePosition", "(gl_FragCoord.xy/resolution.xy-.5)");
+
 
 					if(l.indexOf("//") > -1){
 						grabTxt += l + "\n";
@@ -229,15 +231,19 @@ PX.AppManager.prototype = {
 
 			msg = msg.trim();
 			msg = msg.replace(/ +(?= )/g,''); // remove multiple spaces
-			if(msg.indexOf("#ifdef GL_ES") > -1){return true;}
+			if(msg.indexOf("#ifdef GL_") > -1){return true;}
+			if(msg.indexOf("#else") > -1){return true;}
 			if(msg.indexOf("#endif") > -1){return true;}
 			if(msg.indexOf("uniform float time") > -1){return true;}
 			if(msg.indexOf("uniform float random") > -1){return true;}
 			if(msg.indexOf("uniform vec2 mouse") > -1){return true;}
 			if(msg.indexOf("uniform vec2 resolution") > -1){return true;}
 			if(msg.indexOf("precision highp float") > -1){return true;}
+			if(msg.indexOf("precision mediump float") > -1){return true;}
+			if(msg.indexOf("precision lowp float") > -1){return true;}
 			if(msg.indexOf("varying vec2 surfacePosition") > -1){return true;}
 			if(msg.indexOf("void main(") > -1){return true;}
+			if(msg.indexOf("define time") > -1){return true;}
 			return false;
 		}
 
@@ -462,12 +468,12 @@ PX.AppManager.prototype = {
 
 		// Internal core uniforms
 		var uniforms = {
-			_time: { type: "f", value: this.time },
+			time: { type: "f", value: this.time },
 			_random: { type: "f", value: Math.random() },
 			u_coordsMap: { type: "t", value: this.coordsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
 			u_mapSize: { type: "f", value: PX.simSize },
-			mouse: { type: "v2", value: THREE.Vector2( PX.mouseX, PX.mouseY ) }
+			mouse: { type: "v2", value: new THREE.Vector2( 0., 0. ) }
 		};
 
 		// Generate the source shader from the current loaded channels
@@ -536,7 +542,7 @@ PX.AppManager.prototype = {
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERFUNCTIONS", sourceShader.fragmentFunctions);
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERUTILS", PX.shaders.ShaderUtils + sourceUniforms);
 
-		//this.fragmentShader = this.minFragmentShader(this.fragmentShader);
+		this.fragmentShader = this.minFragmentShader(this.fragmentShader);
 		
 
 		// The main material object has uniforms that can be referenced and updated directly by the UI

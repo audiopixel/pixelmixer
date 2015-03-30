@@ -27,7 +27,7 @@ PX.MainShader = {
 		"float random;",
 
 		"varying vec2 v_vUv;",
-		"uniform float _time;",
+		"uniform float time;",
 		"uniform float _random;",
 		"uniform float u_mapSize;",
 		"uniform vec2 mouse;",
@@ -40,7 +40,7 @@ PX.MainShader = {
 
 		"void main() {",
 
-			"random = rand(vec2(gl_FragCoord[0] * (gl_FragCoord[2] + 1.), gl_FragCoord[1] * _random) * (_time * 0.0001));",
+			"random = rand(vec2(gl_FragCoord[0] * (gl_FragCoord[2] + 1.), gl_FragCoord[1] * _random) * (time * 0.0001));",
 
 			// Black is default
 			"px_rgb = vec3(0.);",

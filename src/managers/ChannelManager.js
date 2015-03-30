@@ -131,6 +131,7 @@ PX.ChannelManager.prototype = {
 
 														// Duplicate method checking - right now just checking based off the first 5 words of function
 														var name = shader.fragmentFunctions[v].trim();
+														
 														if(!this.isFunctionShaderUtil(name)){
 															name = nthWord(name, 1) + nthWord(name, 2) + nthWord(name, 3) + nthWord(name, 4) + nthWord(name, 5);
 															if(!fragFuncList[name]){
