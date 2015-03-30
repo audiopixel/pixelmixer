@@ -158,7 +158,12 @@ PX.AppManager.prototype = {
 				l = l.replace(";", ";\n");
 				l = l.replace("}", "}\n");
 				l = l.replace("{", "{\n");
-				grabTxt += l;
+
+				var lbreak = "";
+				if(l.indexOf("#") > -1){
+					lbreak = "\n";
+				}
+				grabTxt += l + lbreak;
 			}
 		};
 
