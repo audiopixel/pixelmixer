@@ -141,12 +141,15 @@ PX.AppManager.prototype = {
 		shader.constants = [];
 		shader.fragmentFunctions = [];
 
+		var areWeMainFunction = false;
+
 		// Split shader by line breaks
 		var results = shaderTxt.split("\n");
 		for (var i = 0; i < results.length; i++) {
 
 			var l = results[i].trim();
 			l = l.replace(/ +(?= )/g,''); // remove multiple spaces
+			l = l.replace("main (", "main("); // remove multiple spaces
 
 			if(l.length > 0){
 
@@ -161,17 +164,30 @@ PX.AppManager.prototype = {
 					grab = true;
 				}
 
+
+				if(l.indexOf("void main(") > -1){
+					areWeMainFunction = true;
+				}
+
 				if(grab){
-					grabTxt += l + "\n";
+					l = l.replace(";", ";\n");
+
+					if(l.indexOf("//") > -1){
+						grabTxt += l + "\n";
+					}else{
+						grabTxt += l;// + "\n";
+					}
 
 					// If we have a closed bracket while we are open, close
 					if(brackStatus === 0){
 						grab = false;
 
-						if(grabTxt.localeCompare("void main(") > -1){
+						if(areWeMainFunction){
 
 							// Main function: Grab text between main brackets and add it to the sorce method
 							shader.fragmentMain = grabTxt.slice(grabTxt.indexOf("{") + 1, grabTxt.lastIndexOf("}")); 
+
+							areWeMainFunction = false;
 
 						}else{
 
@@ -221,6 +237,7 @@ PX.AppManager.prototype = {
 			if(msg.indexOf("uniform vec2 resolution") > -1){return true;}
 			if(msg.indexOf("precision highp float") > -1){return true;}
 			if(msg.indexOf("varying vec2 surfacePosition") > -1){return true;}
+			if(msg.indexOf("void main(") > -1){return true;}
 			return false;
 		}
 
@@ -519,7 +536,7 @@ PX.AppManager.prototype = {
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERFUNCTIONS", sourceShader.fragmentFunctions);
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERUTILS", PX.shaders.ShaderUtils + sourceUniforms);
 
-		this.fragmentShader = this.minFragmentShader(this.fragmentShader);
+		//this.fragmentShader = this.minFragmentShader(this.fragmentShader);
 		
 
 		// The main material object has uniforms that can be referenced and updated directly by the UI
