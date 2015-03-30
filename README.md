@@ -219,10 +219,4 @@ Now we are releasing it to the world in the hopes that it might benefit interact
 Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENSE).
 
 
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-cubes1.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/blank_prod_santa_cruz_01_585.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-Tipper-SF_01.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/AudioPixel-SonicBloom_05.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel_festival_lights-585x390.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/Emrg-N-See-2010.jpg)
-![AudioPixel Show](https://github.com/hepp/audiopixel3/blob/master/docs/lorn-decibel-audiopixel.jpg)
+![AudioPixel Lighting](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-lighting.jpg)
