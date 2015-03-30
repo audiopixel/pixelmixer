@@ -131,12 +131,14 @@ PX.ChannelManager.prototype = {
 
 														// Duplicate method checking - right now just checking based off the first 5 words of function
 														var name = shader.fragmentFunctions[v].trim();
-														name = nthWord(name, 1) + nthWord(name, 2) + nthWord(name, 3) + nthWord(name, 4) + nthWord(name, 5);
-														if(!fragFuncList[name]){
-															fragFuncList[name] = true;
+														if(!this.isFunctionShaderUtil(name)){
+															name = nthWord(name, 1) + nthWord(name, 2) + nthWord(name, 3) + nthWord(name, 4) + nthWord(name, 5);
+															if(!fragFuncList[name]){
+																fragFuncList[name] = true;
 
-															// Add the helper function to be included at the top of the shader
-															fragFuncOutput += shader.fragmentFunctions[v] + "\n";
+																// Add the helper function to be included at the top of the shader
+																fragFuncOutput += shader.fragmentFunctions[v] + "\n";
+															}
 														}
 													}
 												}
@@ -471,6 +473,16 @@ PX.ChannelManager.prototype = {
 		//console.log(output);
 		return output;
 	},
+	
+	// Functions in shader utils - Don't define these shader util methods more then once
+	isFunctionShaderUtil: function (msg){
+
+		if(msg.indexOf("rgb2hsv") > -1){return true;}
+		if(msg.indexOf("hsv2rgb") > -1){return true;}
+		if(msg.indexOf("blend") > -1){return true;}
+		if(msg.indexOf("rand") > -1){return true;}
+		return false;
+	}, 
 
 	// ************* Channels ***********************
 
