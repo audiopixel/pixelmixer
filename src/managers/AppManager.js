@@ -141,15 +141,34 @@ PX.AppManager.prototype = {
 		shader.constants = [];
 		shader.fragmentFunctions = [];
 
-		var areWeMainFunction = false;
-
-		// Split shader by line breaks
+		// Reimplement line breaks
 		var results = shaderTxt.split("\n");
+		for (i = 0; i < results.length; i++) {
+
+			var l = results[i].trim();
+			l = l.replace(/ +(?= )/g,''); // remove multiple spaces
+
+			// Strip out comments if detected
+			if(l.indexOf("//") > -1){
+				l = l.substring(0, l.indexOf('//'));
+			}
+
+			if(l.length > 0){
+				l = l.replace("main (", "main("); // remove multiple spaces
+				l = l.replace(";", ";\n");
+				l = l.replace("}", "}\n");
+				l = l.replace("{", "{\n");
+				grabTxt += l;
+			}
+		};
+
+		// Break the formatted shader up into functions and constants
+		var results = grabTxt.split("\n");
+		grabTxt = "";
 		for (var i = 0; i < results.length; i++) {
 
 			var l = results[i].trim();
 			l = l.replace(/ +(?= )/g,''); // remove multiple spaces
-			l = l.replace("main (", "main("); // remove multiple spaces
 
 			if(l.length > 0){
 
@@ -164,32 +183,18 @@ PX.AppManager.prototype = {
 					grab = true;
 				}
 
-
-				if(l.indexOf("void main(") > -1){
-					areWeMainFunction = true;
-				}
-
 				if(grab){
-					l = l.replace(";", ";\n");
 					l = l.replace("surfacePosition", "(gl_FragCoord.xy/resolution.xy-.5)");
-
-
-					if(l.indexOf("//") > -1){
-						grabTxt += l + "\n";
-					}else{
-						grabTxt += l;// + "\n";
-					}
+					grabTxt += l + "\n";
 
 					// If we have a closed bracket while we are open, close
 					if(brackStatus === 0){
 						grab = false;
 
-						if(areWeMainFunction){
+						if(grabTxt.localeCompare("void main(") > -1){
 
 							// Main function: Grab text between main brackets and add it to the sorce method
 							shader.fragmentMain = grabTxt.slice(grabTxt.indexOf("{") + 1, grabTxt.lastIndexOf("}")); 
-
-							areWeMainFunction = false;
 
 						}else{
 
