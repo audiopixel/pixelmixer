@@ -130,10 +130,17 @@ PX.setSize = function(width, height) {
 
 		PX.app.renderer.setSize( PX.app.glWidth, PX.app.glHeight );
 
-		// Set point size relative to screen resolution
-		var v = PX.pointSize;
-		v *= ((width * height) * .00001);
-		PX.pointMaterial.uniforms.u_pointSize.value = v;
+		// Reset point size relative to screen resolution
+		PX.setPointSize(PX.pointSize);
+	}
+};
+
+
+PX.setPointSize = function(v) {
+	v *= ((PX.app.glWidth * PX.app.glHeight) * .00001);
+	PX.pointMaterial.uniforms.u_pointSize.value = v;
+	if(PX.pointSize <= 0){
+		PX.pointSize = v;
 	}
 };
 
@@ -170,7 +177,7 @@ PX.simpleSetup = function (params) {
 	var clips = [];
 	for (var i = 0; i < params.ids.length; i++) {
 		clips[i] = new PX.Clip({id: params.ids[i]});
-	};
+	}
 
 	var pods = [];
 	pods[0] = new PX.Pod({ clips: clips });
