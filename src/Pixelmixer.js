@@ -170,7 +170,7 @@ PX.simpleSetup = function (params) {
 	var clips = [];
 	for (var i = 0; i < params.ids.length; i++) {
 		clips[i] = new PX.Clip({id: params.ids[i]});
-	};
+	}
 
 	var pods = [];
 	pods[0] = new PX.Pod({ clips: clips });

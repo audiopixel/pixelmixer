@@ -133,6 +133,7 @@ PX.AppManager.prototype = {
 
 		var brackStatus = 0;
 		var grab = false;
+		var l = "";
 		var grabTxt = "";
 		var defintions = "";
 		var f = 0;
@@ -146,7 +147,7 @@ PX.AppManager.prototype = {
 		var results = shaderTxt.split("\n");
 		for (i = 0; i < results.length; i++) {
 
-			var l = results[i].trim();
+			l = results[i].trim();
 			l = l.replace(/ +(?= )/g,''); // remove multiple spaces
 
 			// Strip out comments if detected
@@ -166,14 +167,15 @@ PX.AppManager.prototype = {
 				}
 				grabTxt += l + lbreak;
 			}
-		};
+		}
 
 		// Break the formatted shader up into functions and constants
-		var results = grabTxt.split("\n");
+		results = grabTxt.split("\n");
 		grabTxt = "";
+		l = "";
 		for (var i = 0; i < results.length; i++) {
 
-			var l = results[i].trim();
+			l = results[i].trim();
 			l = l.replace(/ +(?= )/g,''); // remove multiple spaces
 
 			if(l.length > 0){
@@ -218,10 +220,8 @@ PX.AppManager.prototype = {
 					shader.constants[c] = l;
 					c++;
 				}
-
 			}
-
-		};
+		}
 
 		// If shader id's have already been registered make sure this imported one has a correct id
 		if(PX.shaderCount > -1){ // Detect if PX.init() has been called
@@ -518,7 +518,7 @@ PX.AppManager.prototype = {
 		}
 
 		// If uniforms are set before shader is generated, they have been recorded, unload them here
-		for (var uniform in this.initialUniforms) {
+		for (uniform in this.initialUniforms) {
 			if(uniforms[uniform]){
 				uniforms[uniform].value = this.initialUniforms[uniform].value;
 				delete this.initialUniforms[uniform];

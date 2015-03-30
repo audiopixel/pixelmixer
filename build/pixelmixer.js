@@ -2,7 +2,7 @@
 var PX = { REVISION: '1' };	// Global object
 
 
-// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* Api: -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 PX.broadcast = false;	
@@ -177,9 +177,6 @@ PX.simpleSetup = function (params) {
 
 	var channel1 = new PX.Channel({ mix: params.mix, pods: pods });
 	PX.channels.setChannel(params.channel, channel1);
-
-	PX.generateShader();
-
 };
 
 
@@ -188,7 +185,6 @@ PX.updateNodePoints = function () {
 	PX.app.updateGeometry();
 	PX.app.generateCoordsMap();
 	PX.app.createNodePointCloud();
-
 };
 
 PX.get = function(uniform, channel, pod, clip) {
@@ -203,7 +199,16 @@ PX.set = function(uniform, value, channel, pod, clip) {
 	if(!channel){
 		PX.material.uniforms[uniform].value = value;
 	}else{
-		PX.getUniform(uniform, channel, pod, clip).value = value;
+		if(PX.material.uniforms){
+			PX.getUniform(uniform, channel, pod, clip).value = value;
+		}else{
+			//record this to get applied when things are ready
+			var addy = "_"+channel+"_"+pod+"_"+clip+"_"+uniform;
+			if(!PX.app.initialUniforms[addy]){
+				PX.app.initialUniforms[addy] = {};
+			}
+			PX.app.initialUniforms[addy].value = value;
+		}
 		PX.setObjProperty(uniform, value, channel, pod, clip);
 	}
 };
@@ -217,7 +222,7 @@ PX.getUniform = function(uniform, channel, pod, clip) {
 
 PX.getObj = function(channel, pod, clip) {
 	var obj = PX.channels.channels[channel-1];
-	if(pod){ obj = obj.pods[pod-1]; 
+	if(obj && pod){ obj = obj.pods[pod-1]; 
 	if(clip){ obj = obj.clips[clip-1]; }}
 	return obj;
 };
@@ -239,7 +244,9 @@ PX.getObjProperty = function(property, channel, pod, clip) {
 
 PX.setObjProperty = function(property, value, channel, pod, clip) {
 	var obj = PX.getObj(channel, pod, clip);
-	obj[property] = value;
+	if(obj){
+		obj[property] = value;
+	}
 };
 
 PX.load = function(json){
@@ -257,8 +264,6 @@ PX.stringifyNodes = function(){
 };
 
 
-
-// *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* Internal: -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
@@ -369,6 +374,7 @@ PX.AppManager = function (scene, renderer) {
 
 	this.sceneMain = scene;
 	this.renderer = renderer;
+	this.initialUniforms = {};
 
 	this.cameraRTT;
 	this.sceneRTT;
@@ -439,7 +445,7 @@ PX.AppManager.prototype = {
 		if(this.render && PX.ready){
 
 			// Update uniforms
-			PX.material.uniforms._time.value = this.time;
+			PX.material.uniforms.time.value = this.time;
 			PX.material.uniforms._random.value = Math.random();
 
 			// Render first scene into texture
@@ -490,6 +496,7 @@ PX.AppManager.prototype = {
 
 		var brackStatus = 0;
 		var grab = false;
+		var l = "";
 		var grabTxt = "";
 		var defintions = "";
 		var f = 0;
@@ -499,11 +506,39 @@ PX.AppManager.prototype = {
 		shader.constants = [];
 		shader.fragmentFunctions = [];
 
-		// Split shader by line breaks
+		// Reimplement line breaks
 		var results = shaderTxt.split("\n");
+		for (i = 0; i < results.length; i++) {
+
+			l = results[i].trim();
+			l = l.replace(/ +(?= )/g,''); // remove multiple spaces
+
+			// Strip out comments if detected
+			if(l.indexOf("//") > -1){
+				l = l.substring(0, l.indexOf('//'));
+			}
+
+			if(l.length > 0){
+				l = l.replace("main (", "main("); // remove multiple spaces
+				l = l.replace(";", ";\n");
+				l = l.replace("}", "}\n");
+				l = l.replace("{", "{\n");
+
+				var lbreak = "";
+				if(l.indexOf("#") > -1){
+					lbreak = "\n";
+				}
+				grabTxt += l + lbreak;
+			}
+		}
+
+		// Break the formatted shader up into functions and constants
+		results = grabTxt.split("\n");
+		grabTxt = "";
+		l = "";
 		for (var i = 0; i < results.length; i++) {
 
-			var l = results[i].trim();
+			l = results[i].trim();
 			l = l.replace(/ +(?= )/g,''); // remove multiple spaces
 
 			if(l.length > 0){
@@ -520,6 +555,7 @@ PX.AppManager.prototype = {
 				}
 
 				if(grab){
+					l = l.replace("surfacePosition", "(gl_FragCoord.xy/resolution.xy-.5)");
 					grabTxt += l + "\n";
 
 					// If we have a closed bracket while we are open, close
@@ -547,10 +583,8 @@ PX.AppManager.prototype = {
 					shader.constants[c] = l;
 					c++;
 				}
-
 			}
-
-		};
+		}
 
 		// If shader id's have already been registered make sure this imported one has a correct id
 		if(PX.shaderCount > -1){ // Detect if PX.init() has been called
@@ -571,14 +605,19 @@ PX.AppManager.prototype = {
 
 			msg = msg.trim();
 			msg = msg.replace(/ +(?= )/g,''); // remove multiple spaces
-			if(msg.indexOf("#ifdef GL_ES") > -1){return true;}
+			if(msg.indexOf("#ifdef GL_") > -1){return true;}
+			if(msg.indexOf("#else") > -1){return true;}
 			if(msg.indexOf("#endif") > -1){return true;}
 			if(msg.indexOf("uniform float time") > -1){return true;}
 			if(msg.indexOf("uniform float random") > -1){return true;}
 			if(msg.indexOf("uniform vec2 mouse") > -1){return true;}
 			if(msg.indexOf("uniform vec2 resolution") > -1){return true;}
 			if(msg.indexOf("precision highp float") > -1){return true;}
+			if(msg.indexOf("precision mediump float") > -1){return true;}
+			if(msg.indexOf("precision lowp float") > -1){return true;}
 			if(msg.indexOf("varying vec2 surfacePosition") > -1){return true;}
+			if(msg.indexOf("void main(") > -1){return true;}
+			if(msg.indexOf("define time") > -1){return true;}
 			return false;
 		}
 
@@ -728,19 +767,19 @@ PX.AppManager.prototype = {
 
 	},
 
+	merge: function(obj1, obj2){
+		var obj3 = {};
+		for (var attrname in obj1) {
+			if(obj1[attrname]){ obj3[attrname] = obj1[attrname]; }
+		}
+		for (var attrname2 in obj2) {
+			if(obj2[attrname2]){ obj3[attrname2] = obj2[attrname2]; }
+		}
+		return obj3;
+	},
+
 	createNodePointCloud: function(){
 
-		
-		function merge(obj1, obj2){
-			var obj3 = {};
-			for (var attrname in obj1) {
-				if(obj1[attrname]){ obj3[attrname] = obj1[attrname]; }
-			}
-			for (var attrname2 in obj2) {
-				if(obj2[attrname2]){ obj3[attrname2] = obj2[attrname2]; }
-			}
-			return obj3;
-		}
 		
 		var attributes = { // For each node we pass along it's indenodx value and x, y in relation to the colorMaps
 			a_geoX:        { type: 'f', value: this.geoX },
@@ -763,8 +802,8 @@ PX.AppManager.prototype = {
 
 		PX.pointMaterial = new THREE.ShaderMaterial( {
 
-			uniforms:       merge(uniforms, PX.shaders.PointCloudShader.uniforms),
-			attributes:     merge(attributes, PX.shaders.PointCloudShader.attributes),
+			uniforms:       this.merge(uniforms, PX.shaders.PointCloudShader.uniforms),
+			attributes:     this.merge(attributes, PX.shaders.PointCloudShader.attributes),
 			vertexShader:   PX.shaders.PointCloudShader.vertexShader,
 			fragmentShader: PX.shaders.PointCloudShader.fragmentShader,
 			depthTest:      false,
@@ -803,12 +842,12 @@ PX.AppManager.prototype = {
 
 		// Internal core uniforms
 		var uniforms = {
-			_time: { type: "f", value: this.time },
+			time: { type: "f", value: this.time },
 			_random: { type: "f", value: Math.random() },
 			u_coordsMap: { type: "t", value: this.coordsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
 			u_mapSize: { type: "f", value: PX.simSize },
-			mouse: { type: "v2", value: THREE.Vector2( PX.mouseX, PX.mouseY ) }
+			mouse: { type: "v2", value: new THREE.Vector2( 0., 0. ) }
 		};
 
 		// Generate the source shader from the current loaded channels
@@ -836,11 +875,17 @@ PX.AppManager.prototype = {
 
 		// Add the uniforms from the current loaded channels
 		for (var uniform in sourceShader.uniforms) {
-
 			var type = PX.getVariableTypeFromShorthand(sourceShader.uniforms[uniform].type);
-
 			sourceUniforms += "uniform " + type + " " + uniform + ";\n";
 			uniforms[uniform] = sourceShader.uniforms[uniform];
+		}
+
+		// If uniforms are set before shader is generated, they have been recorded, unload them here
+		for (uniform in this.initialUniforms) {
+			if(uniforms[uniform]){
+				uniforms[uniform].value = this.initialUniforms[uniform].value;
+				delete this.initialUniforms[uniform];
+			}
 		}
 
 		// If we are using alt maps include the internal properties
@@ -1080,12 +1125,15 @@ PX.ChannelManager.prototype = {
 
 														// Duplicate method checking - right now just checking based off the first 5 words of function
 														var name = shader.fragmentFunctions[v].trim();
-														name = nthWord(name, 1) + nthWord(name, 2) + nthWord(name, 3) + nthWord(name, 4) + nthWord(name, 5);
-														if(!fragFuncList[name]){
-															fragFuncList[name] = true;
+														
+														if(!this.isFunctionShaderUtil(name)){
+															name = nthWord(name, 1) + nthWord(name, 2) + nthWord(name, 3) + nthWord(name, 4) + nthWord(name, 5);
+															if(!fragFuncList[name]){
+																fragFuncList[name] = true;
 
-															// Add the helper function to be included at the top of the shader
-															fragFuncOutput += shader.fragmentFunctions[v] + "\n";
+																// Add the helper function to be included at the top of the shader
+																fragFuncOutput += shader.fragmentFunctions[v] + "\n";
+															}
 														}
 													}
 												}
@@ -1420,6 +1468,15 @@ PX.ChannelManager.prototype = {
 		//console.log(output);
 		return output;
 	},
+	
+	// Functions in shader utils - Don't define these shader util methods more then once
+	isFunctionShaderUtil: function (msg){
+
+		if(msg.indexOf("rgb2hsv") > -1){return true;}
+		if(msg.indexOf("hsv2rgb") > -1){return true;}
+		if(msg.indexOf("blend") > -1){return true;}
+		return false;
+	}, 
 
 	// ************* Channels ***********************
 
@@ -2127,7 +2184,7 @@ PX.MainShader = {
 		"float random;",
 
 		"varying vec2 v_vUv;",
-		"uniform float _time;",
+		"uniform float time;",
 		"uniform float _random;",
 		"uniform float u_mapSize;",
 		"uniform vec2 mouse;",
@@ -2140,7 +2197,7 @@ PX.MainShader = {
 
 		"void main() {",
 
-			"random = rand(vec2(gl_FragCoord[0] * (gl_FragCoord[2] + 1.), gl_FragCoord[1] * _random) * (_time * 0.0001));",
+			"random = rand(vec2(gl_FragCoord[0] * (gl_FragCoord[2] + 1.), gl_FragCoord[1] * _random) * (time * 0.0001));",
 
 			// Black is default
 			"px_rgb = vec3(0.);",
