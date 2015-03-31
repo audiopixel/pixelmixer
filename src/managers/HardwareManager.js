@@ -85,6 +85,31 @@ PX.HardwareManager.prototype = {
 		}
 	},
 
+	importVertices: function (vertices, portId, xOffset, yOffset, zOffset, scale) {
+
+		xOffset = xOffset || 0;
+		yOffset = yOffset || 0;
+		zOffset = zOffset || 0;
+		scale = scale || 1.0;
+
+		if(!PX.ports[portId-1]){
+			// If a port is not defined create a default one
+			PX.ports.setPort(portId, new PX.Port());
+		}
+
+		var nodes = [];
+		for (var i = 0; i < vertices.length; i++) {
+
+			var node = {};
+			node.x = (vertices[i].x * scale) + xOffset;
+			node.y = (vertices[i].y * scale) + yOffset;
+			node.z = (vertices[i].z * scale) + zOffset;
+			nodes[i] = node;
+		}
+
+		PX.ports.setNodes(portId, nodes);
+	},
+
 	importNodeArray: function (array, portId, xOffset, yOffset, zOffset, scale) {
 
 		xOffset = xOffset || 0;
@@ -105,11 +130,10 @@ PX.HardwareManager.prototype = {
 			node.x = (array[(i * 3)] * scale) + xOffset;
 			node.y = (array[(i * 3) + 1] * scale) + yOffset;
 			node.z = (array[(i * 3) + 2] * scale) + zOffset;
-			nodes[nodes.length] = node;
+			nodes[i] = node;
 		}
 
 		PX.ports.setNodes(portId, nodes);
-
 	},
 
 	addTestGrid: function (port, xOffset, yOffset) {
