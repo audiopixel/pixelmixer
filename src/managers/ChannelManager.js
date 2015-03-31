@@ -87,7 +87,7 @@ PX.ChannelManager.prototype = {
 
 									// Only update the res if we need to
 									var res = "vec2(" + podPos.w + ", " + podPos.h + ");";
-									if(PX.usePodUniforms){
+									if(PX.usePosUniforms){
 										res = "vec2(getPodSize(" + pod.positionIds[o] + ").x, getPodSize(" + pod.positionIds[o] + ").y);";
 									}
 									if(lastKnownRes !== res){
@@ -345,7 +345,7 @@ PX.ChannelManager.prototype = {
 		// Pod Position function
 		var m = "";
 
-		if(PX.usePodUniforms){
+		if(PX.usePosUniforms){
 			m += "if(d == u_pos_id){\n";
 				m += "p = vec3(u_pos_x, u_pos_y, u_pos_z);\n";
 			m += "}";
@@ -357,7 +357,7 @@ PX.ChannelManager.prototype = {
 			m += "}\n";
 		}
 
-		if(!PX.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
+		if(!PX.usePosUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodPos(int d) { \n" + m + "}\n";
@@ -365,7 +365,7 @@ PX.ChannelManager.prototype = {
 		var output = m;
 		m = "";
 
-		if(PX.usePodUniforms){
+		if(PX.usePosUniforms){
 			m += "if(d == u_pos_id){\n";
 				m += "p = vec3(u_pos_w, u_pos_h, u_pos_d);\n";
 			m += "}";
@@ -378,7 +378,7 @@ PX.ChannelManager.prototype = {
 			m += "}\n";
 		}
 
-		if(!PX.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
+		if(!PX.usePosUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodSize(int d) { \n" + m + "}\n";

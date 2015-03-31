@@ -5,21 +5,19 @@ var PX = { REVISION: '1' };	// Global object
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* Api: -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-PX.broadcast = false;	
-PX.readPixels = false;	
+
+PX.readPixels = false;			// Turn this on if you need to receive color values of all the pixels
+PX.broadcast = false;			// Update any defined techs to broadcast with the lastest pixels
 
 PX.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
 PX.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
-PX.usePodUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
+PX.usePosUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
 
-PX.pointCloud = {};			// Main point cloud that displays node colors
+PX.pointCloud = {};				// Main point cloud that displays node colors
 PX.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
 PX.pointMaterial = {};			// Shader of the point cloud that displays the node colors
+PX.pointSprite; 				// String - relative file path to image to represent the point sprite
 PX.pointSize = 20;				// The size of each point cloud sprite
-
-PX.pointSprite; 
-
-PX.material = false;			// Main shader referenced here, set false initially to flag that its not ready
 
 
 // -------------------------------------------------------
@@ -273,6 +271,10 @@ PX.stringifyNodes = function(){
 
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* Internal: -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+
+PX.material = false;			// Main shader referenced here, set false initially to flag that its not ready
+
 
 // ****** Platform ******
 
