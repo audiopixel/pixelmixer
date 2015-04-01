@@ -25,7 +25,7 @@ Load in additional WebGL shaders, such as ones found at [glslsandbox](http://gls
 [Terminology](https://github.com/hepp/audiopixel3#terminology) |
 [Roadmap](https://github.com/hepp/audiopixel3#roadmap) |
 [Participate](https://github.com/hepp/audiopixel3#participate) |
-[About AudioPixel](https://github.com/hepp/audiopixel3#about-us)
+[About AudioPixel](https://github.com/hepp/audiopixel3#---)
 
 ---
 
@@ -181,19 +181,25 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 
 ## Roadmap ##
 
-General list of features that are in the works and coming soon
+List of features currently in the works / we could use help with:
 
-* Previz improvements
-* Mesh texture rendering (in addition to PointClouds)
-* Sprite nodes render environment layer (emulate lit up surfaces)
-* Use without Three.js mode
-* HTML5 Video Support
+* Shader editor - error messaging and graceful failure refreshing.
+* Previz improvements.
+* Full Mesh texture rendering. (in addition to PointClouds)
+* Sprites render masked architectural layer. (Nodes emulate lit up surfaces)
+* HTML5 video support.
+* Use without needing three.js.
+* Helper methods to facilitate pre-caching of shaders.
+* Optimized runtime player using pre-generated shaders.
+* Node Editor UI toolset to create and edit nodes in 3D.
 
 ---
 
 ## Participate ##
 
-Feel free to use this API in your projects. If you have any problems, suggestions, or ideas on how to improve this API contact us. We encourage you to experiment with these techniques, fork the code and try things out, and we welcome new contributors.
+We encourage you to experiment with these techniques, fork the code, or just try the examples out. We welcome new contributors wishing to help us tackle new development.
+
+In using this API if you have any problems, suggestions, or ideas on how to improve it, please contact us. There will be a forum soon, but for now we are fielding feedback directly via email. 
 
 We are also seeking beta testers, especially if you have lighting fixtures or other hardware to play with.
 
@@ -201,20 +207,22 @@ We are also seeking beta testers, especially if you have lighting fixtures or ot
 
 ---
 
-## About us ##
+## --- ##
 
 ![AudioPixel Logo](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-web-grid.png)
 
 
 AudioPixel develops custom lighting technology and sound-reactive visual programming.
 
-For 5+ years we have built our own lighting projects, helped artists create large scale interactive installations, programmed nightclub lighting systems, toured with musicians, designed stages with custom lightshows for multi-day festivals, and lit up Burning Man art cars and sound camps. Currently we are on the third revision of refining our in-house lighting software package.
+For 5+ years we have crafted original lighting projects, helped other artists build large-scale art installations, developed original software currently in use at nightclubs, and designed lighting systems for dozens of multi-day festivals. Somehow we have also managed to light up Burning Man with custom lit artcars and soundcamps each and every year since 2008. Currently we are on the third revision of our in-house lighting software.
 
 In our quest for optimizing AudioPixel's live programming techniques, PixelMixer was born.
 
-Our aim was to develop a platform we could use for any installation or stage design we could dream up.
+The aim was a platform we could use as the base for any installation or any stage design we could dream up.
 
-Now we are releasing it to the world in the hopes that it might benefit interactive light for all.
+Now here it is and is able to run on mobile devices, in embedded systems, and as part of native os applications.
+
+We are now releasing it to the world in the hopes that it might benefit interactive light for all.
 
 Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENSE).
 
