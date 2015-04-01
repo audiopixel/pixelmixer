@@ -11,7 +11,7 @@ The original goal in creating PixelMixer was to drive lighting and video project
 
 Online demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 
-Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/)
+Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/) [Source](https://github.com/audiopixel/pixelmixer-sandbox)
 
 Load in additional WebGL shaders, such as ones found at [glslsandbox](http://glslsandbox.com/) and [shadertoy](https://www.shadertoy.com).
 
@@ -25,7 +25,7 @@ Load in additional WebGL shaders, such as ones found at [glslsandbox](http://gls
 [Terminology](https://github.com/hepp/audiopixel3#terminology) |
 [Roadmap](https://github.com/hepp/audiopixel3#roadmap) |
 [Participate](https://github.com/hepp/audiopixel3#participate) |
-[About AudioPixel](https://github.com/hepp/audiopixel3#---)
+[About AudioPixel](https://github.com/hepp/audiopixel3#ap)
 
 ---
 
@@ -146,8 +146,8 @@ Shaders loaded into the API extend GLSL to achieve additional functionality:
 
 ## Terminology ##
 
-A Clip is simply a Shader with additional timing, scaling, and input controls. 
-Loading a Shader into a Clip allows us to play it back several times, at multiple sizes and animation speeds.
+A Clip is simply just a wrapper for Shaders that provides additional timing, scaling, and input controls. 
+Using a Shader as a Clip allows us to play it back at several instances, each with individual sizing and animation speeds - while also giving every instance independent input parameters.
 
 A Pod is a way to group and mix Clips to be blended and positioned as one. Pods can then be blended into other Pods. Pods can also be represented many times over in many places. A simple example would be to take one Pod and display it in two different places, perhaps with the second instance mirrored or scaled. 
 
@@ -207,7 +207,7 @@ We are also seeking beta testers, especially if you have lighting fixtures or ot
 
 ---
 
-## --- ##
+## AP ##
 
 ![AudioPixel Logo](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-web-grid.png)
 
