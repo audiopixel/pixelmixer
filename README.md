@@ -131,7 +131,6 @@ Shaders loaded into the API extend GLSL to achieve additional functionality:
 | Attributes and uniforms | x | x |
 | Z coordinate | x | |
 | Index value | x | |
-| Multiple coordinates per pixel | x | |
 | Last color value per pixel | x | |
 | Last color values for all pixels | x | |
 | Color blending algorithms | x | |
@@ -143,12 +142,11 @@ Shaders loaded into the API extend GLSL to achieve additional functionality:
 
 ## Terminology ##
 
-A Clip is simply a wrapper for Shaders that provides additional timing, scaling, and input controls. 
-Using a Shader in a Clip allows us to play it back several instances, each with individual sizing and animation speeds, while also giving every instance independent input parameters.
+A Clip is simply a wrapper for a Shader that provides additional timing, scaling, and input controls. Clips allow us to play back Shaders multiple times over as any number of separate instances, each with individual animation speeds and input parameters.
 
-A Pod is a way to group and mix several Clips to be blended and positioned as one. Pods can then be blended into other Pods. Pods can also be represented many times over in many places.
+A Pod is a way to group and mix any number of Clips to be blended and positioned as one. Pods can then be blended into other Pods. Pods can also be represented many times over in many places at different sizes and positions. 
 
-Once a Shader has been loaded into a Clip, it can be positioned in multiple places with a Pod, and then mixed into the main mix with a Channel.
+Once a Shader has been loaded into a Clip, it can be positioned in multiple places with a Pod, and then mixed into the main mix with a Channel. There can be any number of Channels each with their own mix of Pods containing Clips.
 
 
 
@@ -159,19 +157,19 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 
 **Shader**: A opengl glsl fragment shader that runs directly on the gpu.
 
-**Clip**: A clip is a shader harnessed in a playable form. Clips can play shaders back at different speeds and different positions.
+**Clip**: A Clip is a Shader harnessed in a playable form. Clips can play Shaders back at different speeds and different positions.
 
-**Clipfx**: A type of clip that does not blend, instead it analyses incoming values and outputs a new one.
+**Clipfx**: A type of Clip that does not blend, instead it analyses incoming values and outputs a new one.
 
-**Pod**: A group of clips that are to be positioned together, combined, and blended as one.
+**Pod**: A group of Clip(s) that are to be positioned together and blended as one.
 
-**Position-unit**: Defined coordinates that a pod can choose to populate into. Pod's can render to any number of position units to allow advanced mapping.
+**Position-unit**: Defined position coordinates that a Pod can reference. Pod's can render to any number of position units to allow advanced mapping.
 
-**Channel**: Main source of color and values (like dmx) to be assigned to nodes. Channels hold pods, which may also hold clips.
+**Channel**: A collection of Pods containing Clips, the output to be mixed onto Nodes.
 
-**Postfx**: A type of channel that takes the entire main mix and routes it through a set of clipfxs.
+**Postfx**: A type of Channel that takes the entire main mix and routes it through a set of Clipfxs.
 
-**Previz**: Render a to-be-displayed channel to preview on screen, while still outputting the main channel mix unaffected.
+**Previz**: Render a to-be-displayed Channel to preview on screen, while still outputting the main Channel mix unaffected.
 
 
 ---
@@ -215,12 +213,10 @@ For 5+ years we've developed original lighting projects, helped artists create l
 
 In our quest for optimizing AudioPixel's live programming techniques, PixelMixer was born.
 
-The original aim was to build a lightweight platform that could power any interactive art light installation we would dream up.
-
-Now we are releasing it to the world in the hopes that it might benefit interactive light for all.
+The original aim was to build a lightweight platform that could power any interactive art light installation we would dream up. Now we are releasing it to the world in the hopes that it might benefit interactive light for all.
 
 Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENSE).
 
-[audiopixel.com](http://audiopixel.com)
+[http://audiopixel.com](http://audiopixel.com)
 
 ![AudioPixel Lighting](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-lighting.jpg)
