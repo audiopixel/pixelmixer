@@ -2,10 +2,10 @@
 
 PixelMixer by AudioPixel is a visual engine optimized for performance that can generate, blend, and map OpenGL pixel shaders in 3D space.
 
-Runs in the browser using HTML5 WebGL and [Three.js](http://threejs.org), and is easy to add to any web application.
+Runs in the browser using HTML5 (WebGL) and [Three.js](http://threejs.org). It is simple to add to any web application.
 The generated shaders can also be used in any OpenGL ES 2.0 environment (C / Java / IPhone / Android).
 
-The original goal in creating PixelMixer was to drive lighting and video projection equipment. It is capable of capturing all color / data values of 3D pixels at fast framerates, which can be used for communication to physical lighting equipment using protocols such as Video, DMX, UDP, & Rest. 
+The original goal in creating PixelMixer was to drive lighting and video projection equipment. It is capable of capturing color / data values of all 3D nodes at fast framerates, which can be used for communication to physical lighting equipment using protocols such as UDP, REST, DMX, & Video. 
 
 ---
 
@@ -13,7 +13,7 @@ Online demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 
 Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/) [Source](https://github.com/audiopixel/pixelmixer-sandbox)
 
-Load in additional WebGL shaders, such as ones found at [glslsandbox](http://glslsandbox.com/) and [shadertoy](https://www.shadertoy.com).
+Load in additional shaders, such as ones found at [glslsandbox](http://glslsandbox.com/) and [shadertoy](https://www.shadertoy.com).
 
 ---
 
@@ -35,7 +35,6 @@ Load in additional WebGL shaders, such as ones found at [glslsandbox](http://gls
 * Mix multiple pixel shaders together using various blend modes
 * Map shaders to any number of areas using 3D transformations
 * Import OpenGL ES 2.0 fragment shaders
-* Enhance your shaders with helper methods / values not normally in GLSL
 * Easily manipulate animations with incoming audio or data feeds
 * Multiple position / index maps can be used to generate mapped content
 * Capture color values for all 3D nodes at high framerates
@@ -48,13 +47,11 @@ Load in additional WebGL shaders, such as ones found at [glslsandbox](http://gls
 ## Possible uses ##
 
 * Mixer for displaying pixel shaders in 3D space
-* VJ / control light shows 
-* Audio and data visualizations
-* Interactive art and light installations
+* VJ / Lighting for stage and architectural 
+* Engine for interactive art installations
+* Tool for audio and data visualizations
 * Animate particles / sprites / textures in any WebGL or Three.js project
-* Lighting conceptualize / architectural tool
-* Generate shaders that can be used in separate OpenGL applications
-* Run high performance with dedicated server, triggered by mobile MIDI / OSC API
+* Generate shaders to be used in separate OpenGL applications
 
 ---
 
@@ -118,7 +115,7 @@ PX.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
 
 ```
 
-Each instance of a loaded shader has independent uniforms setup for easy control. Global values are also provided to all shaders that are ready to be populated with audio or any sort of data feed you provide. Easily enhance any loaded shaders to respond to the incoming values, and/or setup UI layers to control and change them directly. 
+Each instance of a loaded shader has independent uniforms setup for easy control. Global values are also provided to all shaders that are ready to be populated with audio or any sort of data feed. Easily enhance loaded shaders to respond to the incoming parameters, and / or setup UI layers to control and change values directly. 
 
 
 ---
@@ -146,10 +143,10 @@ Shaders loaded into the API extend GLSL to achieve additional functionality:
 
 ## Terminology ##
 
-A Clip is simply just a wrapper for Shaders that provides additional timing, scaling, and input controls. 
-Using a Shader as a Clip allows us to play it back at several instances, each with individual sizing and animation speeds - while also giving every instance independent input parameters.
+A Clip is simply a wrapper for Shaders that provides additional timing, scaling, and input controls. 
+Using a Shader in a Clip allows us to play it back several instances, each with individual sizing and animation speeds, while also giving every instance independent input parameters.
 
-A Pod is a way to group and mix Clips to be blended and positioned as one. Pods can then be blended into other Pods. Pods can also be represented many times over in many places. A simple example would be to take one Pod and display it in two different places, perhaps with the second instance mirrored or scaled. 
+A Pod is a way to group and mix several Clips to be blended and positioned as one. Pods can then be blended into other Pods. Pods can also be represented many times over in many places.
 
 Once a Shader has been loaded into a Clip, it can be positioned in multiple places with a Pod, and then mixed into the main mix with a Channel.
 
@@ -197,7 +194,7 @@ List of features currently in the works / we could use help with:
 
 ## Participate ##
 
-We encourage you to experiment with these techniques, fork the code, or just try the examples out. We welcome new contributors wishing to help us tackle new development.
+We encourage you to experiment with these techniques, fork the code, or just try the examples out. We also welcome new contributors wishing to help us tackle new development.
 
 In using this API if you have any problems, suggestions, or ideas on how to improve it, please contact us. There will be a forum soon, but for now we are fielding feedback directly via email. 
 
@@ -214,17 +211,16 @@ We are also seeking beta testers, especially if you have lighting fixtures or ot
 
 AudioPixel develops custom lighting technology and sound-reactive visual programming.
 
-For 5+ years we have crafted original lighting projects, helped other artists build large-scale art installations, developed original software currently in use at nightclubs, and designed lighting systems for dozens of multi-day festivals. Somehow we have also managed to light up Burning Man with custom lit artcars and soundcamps each and every year since 2008. Currently we are on the third revision of our in-house lighting software.
+For 5+ years we've developed original lighting projects, helped artists create large-scale art installations, toured with musicians, developed custom software currently in use at nightclubs, and designed lighting for dozens of multi-day festivals. We also enjoy Burning Man where we've lit up artcars and sound camps each and every year since 2008. Currently we are on the third revision of our in-house lighting software.
 
 In our quest for optimizing AudioPixel's live programming techniques, PixelMixer was born.
 
-The aim was a platform we could use as the base for any installation or any stage design we could dream up.
+The original aim was to build a lightweight platform that could power any interactive art light installation we would dream up.
 
-Now here it is and is able to run on mobile devices, in embedded systems, and as part of native os applications.
-
-We are now releasing it to the world in the hopes that it might benefit interactive light for all.
+Now we are releasing it to the world in the hopes that it might benefit interactive light for all.
 
 Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENSE).
 
+[audiopixel.com](http://audiopixel.com)
 
 ![AudioPixel Lighting](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-lighting.jpg)
