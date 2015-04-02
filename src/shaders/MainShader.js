@@ -22,6 +22,7 @@ PX.MainShader = {
 		"vec4 px_rgbV4;",
 		"vec3 px_c = vec3(0.);",
 		"vec3 px_p = vec3(0.);",
+		"vec3 px_p2 = vec3(0.);",
 		"vec2 resolution;",
 		"vec2 surfacePosition = vec2(0.);",
 		"float random;",
@@ -44,7 +45,6 @@ PX.MainShader = {
 
 			// Black is default
 			"px_rgb = vec3(0.);",
-			"px_rgb2 = vec3(0.);",
 			
 			//********************************************
 			

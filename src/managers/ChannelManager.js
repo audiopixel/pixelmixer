@@ -187,8 +187,8 @@ PX.ChannelManager.prototype = {
 													fragOutput += "px_xyz = offsetPos(px_alt1, " + pod.positionIds[o] + ", px_xyz.w);\n";
 												}
 
-												fragOutput += "px_rgb2 = blend(px_rgb2, superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+"), 1.);";
-												//fragOutput += "px_rgb2 = superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
+												//fragOutput += "px_rgb2 = blend(px_rgb, superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+"), 1.);";
+												fragOutput += "px_rgb2 = superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
 
 												// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
 												//fragOutput = fragOutput.replace(/px_fxOut/g, "px_rgbV4");
@@ -348,7 +348,7 @@ PX.ChannelManager.prototype = {
 
 		//console.log(uniforms);
 		//console.log(fragFuncOutput);
-		console.log(output);
+		//console.log(output);
 
 		
 		return {uniforms: uniforms, fragmentFunctions: fragFuncOutput, fragmentMain: output + "\n"};

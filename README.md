@@ -25,7 +25,7 @@ Load in additional shaders, such as ones found at [glslsandbox](http://glslsandb
 [Terminology](https://github.com/hepp/audiopixel3#terminology) |
 [Roadmap](https://github.com/hepp/audiopixel3#roadmap) |
 [Participate](https://github.com/hepp/audiopixel3#participate) |
-[About AudioPixel](https://github.com/hepp/audiopixel3#ap)
+[About AudioPixel](https://github.com/hepp/audiopixel3#about-ap)
 
 ---
 
@@ -65,7 +65,7 @@ Load in additional shaders, such as ones found at [glslsandbox](http://glslsandb
 [How to run things locally](https://github.com/mrdoob/three.js/wiki/How-to-run-things-locally)
 
 
-#### 1. Setup Pixelmixer.js and Three.js ####
+#### 1. Setup PixelMixer.js and Three.js ####
 
 ```
 <!-- Include scripts -->
@@ -83,8 +83,8 @@ PX.setSize(glWidth, glHeight);
 ```
 #### 2. Add Nodes ####
 
-Import nodes with several auto generating methods included to draw simple grids at various sizes.
-It's also easy to import new node positions via CSV, JSON, Three.js mesh, or OBJ files.
+Import nodes using several auto-generating methods to draw simple grids at various sizes.
+It's also easy to import new node positions via JSON, Three.js mesh, or binary .obj files.
 
 ```
 // Add a simple grid of Nodes 
@@ -205,14 +205,14 @@ We are also seeking beta testers, especially if you have lighting fixtures or ot
 
 ---
 
-## AP ##
+## About AP ##
 
 ![AudioPixel Logo](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-web-grid.png)
 
 
 AudioPixel develops custom lighting technology and sound-reactive visual programming.
 
-For 5+ years we've crafted original lighting projects, helped artists build large-scale art installations, toured with musicians, developed custom software currently in use at nightclubs, and designed lighting for dozens of multi-day festivals. We also enjoy being a part of Burning Man, where we've lit up artcars and sound camps each and every year since 2008. Currently we are working on the third revision of our in-house lighting software.
+For 5+ years we've crafted original lighting projects, helped artists build large-scale art installations, toured with musicians, developed custom software currently in use at nightclubs, and designed lighting for dozens of multi-day festivals. We also enjoy Burning Man, where we've lit up artcars and sound camps each and every year since 2008. Currently we are working on the third revision of our in-house lighting software.
 
 In our quest for optimizing AudioPixel's live programming techniques, PixelMixer was born.
 
