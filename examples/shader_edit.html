@@ -141,14 +141,15 @@
 
 					// ** Add a simple grid of Nodes 
 
-					var x = -470;		// Position coordinates for the entire grid
-					var y = 120;
-					var z = -0;
-					var width = 52;		// How many pixels for the entire grid
-					var height = 20;
-					var pitch = 33;		// How far each pixel is spaced
+					var params = {};		// Position coordinates for the entire grid
+					params.x = -470;		
+					params.y = 120;
+					params.z = -0;
+					params.width = 52;		// How many pixels for the entire grid
+					params.height = 20;
+					params.pitch = 33;		// How far each pixel is spaced
 
-					PX.hardware.addSimpleNodeGrid(x, y, z, width, height, pitch);
+					PX.hardware.addSimpleNodeGrid(params);
 					PX.updateNodePoints();
 
 

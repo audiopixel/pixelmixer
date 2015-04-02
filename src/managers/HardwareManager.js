@@ -12,15 +12,6 @@ PX.HardwareManager.prototype = {
 
 	init: function () {
 
-		// Testing various configurations:
-
-		//this.addTestPortsGrid3(1, 0, 0);
-		//this.addSimpleNodeGrid(0, 0, 0, 30, 40, 33);
-		//this.addSimpleNodeGrid(0, 220, 0, 32, 20, 33);
-
-		// Simulate Importing nodes from external file
-		//this.importNodes(PX.imported, 1, 350, 100, 500);
-
 	},
 
 	update: function () {
@@ -85,56 +76,75 @@ PX.HardwareManager.prototype = {
 		}
 	},
 
-	importVertices: function (vertices, portId, xOffset, yOffset, zOffset, scale) {
+	/*
+	* Import nodes using a array of positions [x,y,z]
+	*
+	* @param port 		The port to load the nodes to.
+	* @param vertices 	The array of vertices to create node positions from.
+	*/
+	importVertices: function (params) {
 
-		xOffset = xOffset || 0;
-		yOffset = yOffset || 0;
-		zOffset = zOffset || 0;
-		scale = scale || 1.0;
-
-		if(!PX.ports[portId-1]){
+		if(!PX.ports[params.port-1]){
 			// If a port is not defined create a default one
-			PX.ports.setPort(portId, new PX.Port());
+			PX.ports.setPort(params.port, new PX.Port());
 		}
 
-		var nodes = [];
-		for (var i = 0; i < vertices.length; i++) {
-
-			var node = {};
-			node.x = (vertices[i].x * scale) + xOffset;
-			node.y = (vertices[i].y * scale) + yOffset;
-			node.z = (vertices[i].z * scale) + zOffset;
-			nodes[i] = node;
-		}
-
-		PX.ports.setNodes(portId, nodes);
+		PX.ports.setNodes(params.port, params.vertices);
 	},
 
-	importNodeArray: function (array, portId, xOffset, yOffset, zOffset, scale) {
 
-		xOffset = xOffset || 0;
-		yOffset = yOffset || 0;
-		zOffset = zOffset || 0;
-		scale = scale || 1.0;
+	/*
+	* Create a simple 2D grid of nodes at a pitch distance
+	*
+	* @param portStart 	The port to load these nodes into.
+	* @param x 			Translate position x for grid.
+	* @param y 			Translate position y for grid.
+	* @param z 			Translate position z for grid.
+	* @param width 		How many nodes wide.
+	* @param height 	How many nodes tall.
+	* @param pitch 		How far the nodes are spaces from each other.
+	* @param positionId If specified create position id from the min and max of grid
+	*/
+	addSimpleNodeGrid: function (params) {
 
-
-		if(!PX.ports[portId-1]){
-			// If a port is not defined create a default one
-			PX.ports.setPort(portId, new PX.Port());
+		// If a port slot is not defined just add it to the next open one
+		if(!params.port){
+			params.port = PX.ports.ports.length + 1;
 		}
+
+		var s = 100000000000;
+		var minx = s;
+		var maxx = -s;
+		var miny = s;
+		var maxy = -s;
 
 		var nodes = [];
-		for (var i = 0; i < array.length / 3; i++) {
+		for ( e = 0; e < params.width; e ++ ) { 
+			for ( i = 0; i < params.height; i ++ ) { 
 
-			var node = {};
-			node.x = (array[(i * 3)] * scale) + xOffset;
-			node.y = (array[(i * 3) + 1] * scale) + yOffset;
-			node.z = (array[(i * 3) + 2] * scale) + zOffset;
-			nodes[i] = node;
+				var node = {};
+				node.x = ((e * params.pitch) + params.x);
+				node.y = ((i * params.pitch) + params.y);
+				node.z = params.z;
+				nodes.push(node);
+
+				minx = Math.min(minx, node.x);
+				maxx = Math.max(maxx, node.x);
+				miny = Math.min(miny, node.y);
+				maxy = Math.max(maxy, node.y);
+			}
+		}
+		var port = new PX.Port({name: "port name " + port, nodes: nodes});
+		PX.ports.setPort(params.port, port);
+
+		// If we are not the first designated port set the pod position as a default (testing)
+		if(params.positionId > 1){
+			PX.channels.setPodPos(params.port, new PX.PodPosition({x: minx, y: miny, z: node.z, w: maxx - minx, h: maxy - miny, d: node.z+1}));
 		}
 
-		PX.ports.setNodes(portId, nodes);
 	},
+
+	// ----- testing ----
 
 	addTestGrid: function (port, xOffset, yOffset) {
 
@@ -248,46 +258,6 @@ PX.HardwareManager.prototype = {
 			}
 			port = new PX.Port({name: "port name " + port, nodes: nodes});
 			PX.ports.setPort(portStart + 2, port);
-	},
-
-
-	addSimpleNodeGrid: function (x, y, z, width, height, pitch, portStart) {
-
-		// If a port slot is not defined just add it to the next open one
-		if(!portStart){
-			portStart = PX.ports.ports.length + 1;
-		}
-		
-
-		var minx = 100000000000;
-		var maxx = 0;
-		var miny = 100000000000;
-		var maxy = 0;
-
-		var nodes = [];
-		for ( e = 0; e < width; e ++ ) { 
-			for ( i = 0; i < height; i ++ ) { 
-
-				var node = {};
-				node.x = ((e * pitch) + x);
-				node.y = ((i * pitch) + y);
-				node.z = z;
-				nodes.push(node);
-
-				minx = Math.min(minx, node.x);
-				maxx = Math.max(maxx, node.x);
-				miny = Math.min(miny, node.y);
-				maxy = Math.max(maxy, node.y);
-			}
-		}
-		var port = new PX.Port({name: "port name " + port, nodes: nodes});
-		PX.ports.setPort(portStart, port);
-
-		// If we are not the first designated port set the pod position as a default (testing)
-		if(portStart > 1){
-			PX.channels.setPodPos(portStart, new PX.PodPosition({x: minx, y: miny, z: z, w: maxx - minx, h: maxy - miny, d: z+1}));
-		}
-
 	}
 
 };

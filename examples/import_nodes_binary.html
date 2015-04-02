@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Basic Example</title>
+		<title>Import Binary Example</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link href="css/main.css" rel="stylesheet" />
@@ -11,6 +11,7 @@
 		<script src="libs/Detector.js"></script>
 		<script src="libs/three.min.js"></script>
 		<script src="libs/TrackballControls.js"></script>
+		<script src="libs/BinaryLoader.js"></script>
 
 
 		<!-- Import library -->
@@ -32,7 +33,7 @@
 
 
 		<!-- Import Shaders Here -->
-		<script src="import/shaders/SolidColor.js"></script>
+		<script src="import/shaders/SinSpiral.js"></script>
 
 
 		<script>
@@ -67,31 +68,50 @@
 					controls = new THREE.TrackballControls( camera, renderer.domElement);
 
 
-
 					// ** Initialize API
 
 					PX.init(scene, renderer);
+					PX.pointSize = 7;
 					PX.setSize(glWidth, glHeight);
-					PX.pointSprite = "images/nodeflare250.png";
-
 
 
 					// ** Add a simple grid of Nodes 
 
-					var x = 390;		
-					var y = 420;
-					var z = -0;
-					var scale = 1;
+					loader = new THREE.BinaryLoader( true );
+					document.body.appendChild( loader.statusDomElement );
 
-					var plane = new THREE.PlaneGeometry( 1000, 700, 30, 20 );
-					PX.hardware.importVertices(plane.vertices, 1, x, y, z, scale);
-					PX.updateNodePoints();
+					var callback = function( geometry ) {
 
+						for (var i = 0; i < geometry.vertices.length; i++) {
+
+							// Scale and reposition
+							var scale = 45;
+							geometry.vertices[i].x += 10;
+							geometry.vertices[i].y += 8;
+							geometry.vertices[i].z -= 3;
+
+							geometry.vertices[i].x *= scale;
+							geometry.vertices[i].y *= scale;
+							geometry.vertices[i].z *= scale;
+
+						}
+
+						PX.hardware.importVertices({vertices: geometry.vertices, port: 1});
+						PX.updateNodePoints();
+
+						loader.statusDomElement.style.display = "none";
+					};
+
+					loader.load( "obj/ninja/NinjaLo_bin.js", callback );
+					//loader.load( "obj/veyron/VeyronNoUv_bin.js", callback );
+
+					// We could also use any Three Native objects:
+					//var geometry = new THREE.PlaneGeometry( 1000, 700, 30, 20 );
 
 
 					// ** Add a shader to Channel 1
 
-					PX.simpleSetup({channel: 1, ids: ["SolidColor"]});
+					PX.simpleSetup({channel: 1, ids: ["SinSpiral"]});
 
 
 

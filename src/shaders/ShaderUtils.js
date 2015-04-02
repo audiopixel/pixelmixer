@@ -32,12 +32,13 @@ PX.shaders.ShaderUtils = [
 
 	"vec3 blend(vec3 c1, vec3 c2, float type)",
 	"{",
-		"if(type == 0.0){ return c1; }else						",// Off",
+		"if(type == 0.0){ return c1; }else						",// Off / Ignore",
 		"if(type == 1.0){ return c1 + c2; }else					",// Add",
+		"if(type == 18.0){ c2; }else",							// Replace
 		"if(type == 2.0){ return c1 - c2; }else					",// Subtract",
 		"if(type == 3.0){ return min(c1, c2); }else				",// Darkest",
 		"if(type == 4.0){ return max(c1, c2); }else				",// Lighest",
-		"if(type == 5.0){ return abs(c2 - c1); }else				",// DIFFERENCE",
+		"if(type == 5.0){ return abs(c2 - c1); }else			",// DIFFERENCE",
 		"if(type == 6.0){ return c1 + c2 - 2.0 * c1 * c2; }else	",// EXCLUSION",
 		"if(type == 7.0){ return c1 * c2; }else					",// Multiply",
 		"if(type == 8.0){ return (c1 + c2) - (c1 * c2); }else	",// Screen",

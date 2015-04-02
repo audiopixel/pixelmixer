@@ -9,9 +9,9 @@ The original goal in creating PixelMixer was to drive lighting and video project
 
 ---
 
-Online demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
+Online demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo).
 
-Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/) [Source](https://github.com/audiopixel/pixelmixer-sandbox)
+Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/). *[source](https://github.com/audiopixel/pixelmixer-sandbox)*
 
 Load in additional shaders, such as ones found at [glslsandbox](http://glslsandbox.com/) and [shadertoy](https://www.shadertoy.com).
 
@@ -38,7 +38,8 @@ Load in additional shaders, such as ones found at [glslsandbox](http://glslsandb
 * Easily manipulate animations with incoming audio or data feeds
 * Multiple position / index maps can be used to generate mapped content
 * Capture color values for all 3D nodes at high framerates
-* Define networking data per port, broadcast UDP and more
+* Define networking data per port, broadcast using various protocols
+* Easily create new broadcast protocols for any networked hardware
 * Preview channels in previz mode while still communicating main mix to hardware (WIP)
 * HTML5 video input (WIP)
 
@@ -83,7 +84,7 @@ PX.setSize(glWidth, glHeight);
 #### 2. Add Nodes ####
 
 Import nodes with several auto generating methods included to draw simple grids at various sizes.
-It's also easy to import new node positions via JSON.
+It's also easy to import new node positions via CSV, JSON, Three.js mesh, or OBJ files.
 
 ```
 // Add a simple grid of Nodes 
@@ -103,25 +104,26 @@ PX.simpleSetup({channel: 1, ids: ["SolidColor"]});
 ```
 #### 4. Change values at runtime (Optional UI Layers) ####
 
-Easily alter shaders while running, and assign params, mix and blend values to controllers. 
-Here we are setting values on the shader we just created.
+Easily alter shaders at runtime. Change parameters, opacity values, blends, and other properties, from UI layers or anything signal driven like midi controllers. 
+
+Set values on the shader we just loaded into Channel 1, Pod 1, Clip 1.
 
 ```
-// Set param 1 on the clip to .7
-PX.set("p1", .7, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
+// Set mix to be .9
+PX.set("mix", .9, 1, 1, 1); 
 
-// Set mix on the clip to be .9
-PX.set("mix", .9, 1, 1, 1); // Addressing Data: Channel 1, Pod 1, Clip 1
+// Set parameter 1 to .7
+PX.set("p1", .7, 1, 1, 1); 
 
 ```
 
-Each instance of a loaded shader has independent uniforms setup for easy control. Global values are also provided to all shaders that are ready to be populated with audio or any sort of data feed. Easily enhance loaded shaders to respond to the incoming parameters, and / or setup UI layers to control and change values directly. 
+Each instance of a loaded shader (Clip) has independent uniforms setup for easy control. Global values are also provided to all shaders that are ready to be populated with audio or any sort of data feed. It's also quite easy to enhance existing shaders to respond to any incoming parameters. 
 
 
 ---
 
 ## vs Vanilla GLSL Shader ##
-Shaders loaded into the API extend GLSL to achieve additional functionality:
+Shaders loaded into PixelMixer extend the OpenGL language to achieve additional functionality:
 
 | Feature | API | GLSL |
 |----------------- | -------------------- | --------------------- |
@@ -142,32 +144,33 @@ Shaders loaded into the API extend GLSL to achieve additional functionality:
 
 ## Terminology ##
 
-A Clip is simply a wrapper for a Shader that provides additional timing, scaling, and input controls. Clips allow us to play back Shaders multiple times over as any number of separate instances, each with individual animation speeds and input parameters.
+A Clip is simply a wrapper for a Shader that provides additional timing, scaling, and input controls. Clips allow us to play back a Shader multiple times over as any number of separate instances, each with independent animation speeds and input parameters.
 
 A Pod is a way to group and mix any number of Clips to be blended and positioned as one. Pods can then be blended into other Pods. Pods can also be represented many times over in many places at different sizes and positions. 
 
-Once a Shader has been loaded into a Clip, it can be positioned in multiple places with a Pod, and then mixed into the main mix with a Channel. There can be any number of Channels each with their own mix of Pods containing Clips.
+A Channel is a collection of Pods that are all mixed as one. 
+
+There can be any number of Channels, each with any number of Pods, each containing any number of Clips, each of which may load from any number of Shaders.
 
 
 
-
-**Node**: A single light unit or RGB pixel. Usually represented as a particle on screen, but can be represented in many ways.
+**Node**: A single hardware unit or RGB pixel. Usually represented as a particle on screen, but can be represented in many ways.
 
 **Port**: A group of Nodes. May also contain protocol and address data.
 
-**Shader**: A opengl glsl fragment shader that runs directly on the gpu.
+**Shader**: A OpenGL Shader that runs directly on the graphics card.
 
 **Clip**: A Clip is a Shader harnessed in a playable form. Clips can play Shaders back at different speeds and different positions.
 
-**Clipfx**: A type of Clip that does not blend, instead it analyses incoming values and outputs a new one.
+**ClipFX**: A type of Clip that does not blend, instead it analyses incoming values and outputs a new one.
 
 **Pod**: A group of Clip(s) that are to be positioned together and blended as one.
 
 **Position-unit**: Defined position coordinates that a Pod can reference. Pod's can render to any number of position units to allow advanced mapping.
 
-**Channel**: A collection of Pods containing Clips, the output to be mixed onto Nodes.
+**Channel**: A Channel is a collection of Pods that are all mixed as one.
 
-**Postfx**: A type of Channel that takes the entire main mix and routes it through a set of Clipfxs.
+**ChannelPostFX**: A type of Channel that takes the entire main mix and routes it through a set of ClipFXs.
 
 **Previz**: Render a to-be-displayed Channel to preview on screen, while still outputting the main Channel mix unaffected.
 
@@ -176,9 +179,9 @@ Once a Shader has been loaded into a Clip, it can be positioned in multiple plac
 
 ## Roadmap ##
 
-List of features currently in the works / we could use help with:
+List of features currently in the works / we welcome help with:
 
-* Shader editor - error messaging and graceful failure refreshing.
+* Shader editor error messaging and graceful failure refreshing.
 * Previz improvements.
 * Full Mesh texture rendering. (in addition to PointClouds)
 * Sprites render masked architectural layer. (Nodes emulate lit up surfaces)
@@ -192,9 +195,9 @@ List of features currently in the works / we could use help with:
 
 ## Participate ##
 
-We encourage you to experiment with these techniques, fork the code, or just try the examples out. We also welcome new contributors wishing to help us tackle new development.
+We encourage you to experiment with these techniques, fork the code, or just try the examples out. We also welcome new contributors wishing to help us tackle development.
 
-In using this API if you have any problems, suggestions, or ideas on how to improve it, please contact us. There will be a forum soon, but for now we are fielding feedback directly via email. 
+In using PixelMixer if you have any problems, suggestions, or ideas on how to improve it, please contact us. There will be a forum soon, but for now we are fielding feedback directly via email. 
 
 We are also seeking beta testers, especially if you have lighting fixtures or other hardware to play with.
 
@@ -209,7 +212,7 @@ We are also seeking beta testers, especially if you have lighting fixtures or ot
 
 AudioPixel develops custom lighting technology and sound-reactive visual programming.
 
-For 5+ years we've developed original lighting projects, helped artists create large-scale art installations, toured with musicians, developed custom software currently in use at nightclubs, and designed lighting for dozens of multi-day festivals. We also enjoy Burning Man where we've lit up artcars and sound camps each and every year since 2008. Currently we are on the third revision of our in-house lighting software.
+For 5+ years we've crafted original lighting projects, helped artists build large-scale art installations, toured with musicians, developed custom software currently in use at nightclubs, and designed lighting for dozens of multi-day festivals. We also enjoy being a part of Burning Man, where we've lit up artcars and sound camps each and every year since 2008. Currently we are working on the third revision of our in-house lighting software.
 
 In our quest for optimizing AudioPixel's live programming techniques, PixelMixer was born.
 

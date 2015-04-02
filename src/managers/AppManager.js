@@ -351,12 +351,13 @@ PX.AppManager.prototype = {
 		var a = new Float32Array( Math.pow(PX.simSize, 2) * 4 );
 		var t = 0;
 
-		var minx = 100000000000;
-		var maxx = 0;
-		var miny = 100000000000;
-		var maxy = 0;
-		var minz = 100000000000;
-		var maxz = 0;
+		var s = 100000000000;
+		var minx = s;
+		var maxx = -s;
+		var miny = s;
+		var maxy = -s;
+		var minz = s;
+		var maxz = -s;
 
 		for ( var k = 0, kl = a.length; k < kl; k += 4 ) {
 			var x = 0;
@@ -426,8 +427,10 @@ PX.AppManager.prototype = {
 
 		// Use image for sprite if defined, otherwise default to drawing a square
 		var useTexture = 0;
+		var transparent = false;
 		if(PX.pointSprite){
 			useTexture = 1;
+			transparent = true;
 		}
 
 		var uniforms = {
@@ -444,7 +447,7 @@ PX.AppManager.prototype = {
 			vertexShader:   PX.shaders.PointCloudShader.vertexShader,
 			fragmentShader: PX.shaders.PointCloudShader.fragmentShader,
 			depthTest:      false,
-			transparent:    true
+			transparent:    transparent
 		});
 
 		var name = "PixelMixer Nodes";
@@ -537,7 +540,7 @@ PX.AppManager.prototype = {
 		}
 
 
-		// If the flag is to update fresh ignore the existing uniforms 
+		// Don't update fresh each time and instead carry over existing uniforms
 		if(!PX.updateFresh){
 
 			// If the material already exists, transfer over the value of any uniforms that have remained
@@ -586,6 +589,7 @@ PX.AppManager.prototype = {
 		//console.log(PX.material.uniforms);
 		//console.log(this.fragmentShader);
 
+
 		// Main quad that gets rendered as the source shader
 		var name = "SourceQuad";
 		var lookupObj = this.sceneRTT.getObjectByName(name);
@@ -598,7 +602,7 @@ PX.AppManager.prototype = {
 		quad.name = name;
 		this.sceneRTT.add( quad );
 
-		// TODO possible optimize : seems this would be faster to update and not create new quad each time, but looks slower actually
+		// TODO possible optimize : seems this would be faster to update and not create new quad each time, but registers slower actually
 		//PX.material.uniforms = uniforms;
 		//PX.material.needsUpdate = true;
 

@@ -36,12 +36,6 @@ PX.ChannelManager.prototype = {
 		var lastKnownPos = {};
 		var lastKnownRes = "";
 
-		// Return the nth word of a string http://stackoverflow.com/a/11620169
-		function nthWord(str, n) {
-			var m = str.match(new RegExp('^(?:\\w+\\W+){' + --n + '}(\\w+)'));
-			return m && m[1];
-		}
-
 		// Now create the mixed down output
 		for (var i = 0; i < this.channels.length; i++) {
 
@@ -132,7 +126,7 @@ PX.ChannelManager.prototype = {
 														// Duplicate method checking - right now just checking based off the first 5 words of function
 														var name = shader.fragmentFunctions[v].trim();
 														
-														if(!this.isFunctionShaderUtil(name)){
+														if(!isFunctionShaderUtil(name)){
 															name = nthWord(name, 1) + nthWord(name, 2) + nthWord(name, 3) + nthWord(name, 4) + nthWord(name, 5);
 															if(!fragFuncList[name]){
 																fragFuncList[name] = true;
@@ -193,7 +187,8 @@ PX.ChannelManager.prototype = {
 													fragOutput += "px_xyz = offsetPos(px_alt1, " + pod.positionIds[o] + ", px_xyz.w);\n";
 												}
 
-												fragOutput += "px_rgb2 = superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
+												fragOutput += "px_rgb2 = blend(px_rgb2, superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+"), 1.);";
+												//fragOutput += "px_rgb2 = superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
 
 												// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
 												//fragOutput = fragOutput.replace(/px_fxOut/g, "px_rgbV4");
@@ -252,6 +247,7 @@ PX.ChannelManager.prototype = {
 								//  -------------- Pod Mix Blend & Fx --------------
 
 
+
 								if(fxPod){
 
 									// Fx pod: mix the original with the result of fx_rgb, _pod_mix); \n";
@@ -277,6 +273,10 @@ PX.ChannelManager.prototype = {
 								//output += "/////////////////////////////////-------------//-------------- \n";
 
 							}
+
+							//
+							// add together results
+							output += "/////////////////////////////////-------------//-------------- \n";
 
 						}
 
@@ -331,10 +331,24 @@ PX.ChannelManager.prototype = {
 		}
 
 
+		// Return the nth word of a string http://stackoverflow.com/a/11620169
+		function nthWord(str, n) {
+			var m = str.match(new RegExp('^(?:\\w+\\W+){' + --n + '}(\\w+)'));
+			return m && m[1];
+		}
+	
+		// Functions in shader utils - Don't define these shader util methods more then once
+		function isFunctionShaderUtil(msg){
+			if(msg.indexOf("rgb2hsv") > -1){return true;}
+			if(msg.indexOf("hsv2rgb") > -1){return true;}
+			if(msg.indexOf("blend") > -1){return true;}
+			return false;
+		}
+		
 
 		//console.log(uniforms);
 		//console.log(fragFuncOutput);
-		//console.log(output);
+		console.log(output);
 
 		
 		return {uniforms: uniforms, fragmentFunctions: fragFuncOutput, fragmentMain: output + "\n"};
@@ -474,15 +488,6 @@ PX.ChannelManager.prototype = {
 		//console.log(output);
 		return output;
 	},
-	
-	// Functions in shader utils - Don't define these shader util methods more then once
-	isFunctionShaderUtil: function (msg){
-
-		if(msg.indexOf("rgb2hsv") > -1){return true;}
-		if(msg.indexOf("hsv2rgb") > -1){return true;}
-		if(msg.indexOf("blend") > -1){return true;}
-		return false;
-	}, 
 
 	// ************* Channels ***********************
 

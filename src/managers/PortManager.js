@@ -66,17 +66,9 @@ PX.PortManager.prototype = {
 						PX.techs[port.type].broadcast(port);
 
 					}
-
 				}
 			}
 		}
-
-		
-// tech: uses it's port/node increment as the id
-	// we then use that id as which 3 values we grab from pixels array
-	// tech.broadcast(portObject, nodeIndex, pixels array)
-
-
 	},
 
 	// ************* Nodes ***********************
@@ -91,26 +83,6 @@ PX.PortManager.prototype = {
 
 	setNodes: function (portId, nodes) {
 		if(!this.ports[portId-1]){ this.ports[portId-1] = {}; }
-		this.ports[portId-1].nodes = nodes;
-	},
-
-	// Add some nodes with imposed uniform values
-	setNodesOffset: function (portId, nodes, offsetX, offsetY, offsetZ) {
-		if(!this.ports[portId-1]){ this.ports[portId-1] = {}; }
-		for (var i = 0; i < nodes.length; i++) {
-			nodes[i].x += offsetX;
-			nodes[i].y += offsetY;
-			nodes[i].z += offsetZ;
-		}
-		this.ports[portId-1].nodes = nodes;
-	},
-
-	// Add some nodes that only have x, y data, imposed with a uniform z value
-	setNodesFlat: function (portId, nodes, z) {
-		if(!this.ports[portId-1]){ this.ports[portId-1] = {}; }
-		for (var i = 0; i < nodes.length; i++) {
-			nodes[i].z = z;
-		}
 		this.ports[portId-1].nodes = nodes;
 	},
 

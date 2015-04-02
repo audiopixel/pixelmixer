@@ -32,7 +32,7 @@
 
 
 		<!-- Import Shaders Here -->
-		<script src="import/shaders/SolidColor.js"></script>
+		<script src="import/shaders/SinSpiral.js"></script>
 
 
 		<script>
@@ -51,6 +51,7 @@
 				function onLoad(){
 
 
+
 					// ** Standard Three.js setup
 
 					scene = new THREE.Scene();
@@ -63,7 +64,7 @@
 					container.appendChild( renderer.domElement ); 
 
 					camera = new THREE.PerspectiveCamera( 30, glWidth / glHeight, 1, 100000 );
-					camera.position.z = 2000;
+					camera.position.z = 4200;
 					controls = new THREE.TrackballControls( camera, renderer.domElement);
 
 
@@ -76,34 +77,34 @@
 
 
 
-					// ** Add a simple grid of Nodes 
+					// ** Add some Nodes in a 3x3 grid
 
-					var params = {};		// Position coordinates for the entire grid
-					params.x = -470;		
-					params.y = 120;
-					params.z = -0;
-					params.width = 52;		// How many pixels for the entire grid
-					params.height = 20;
-					params.pitch = 33;		// How far each pixel is spaced
+					var xOffset = -860;
+					var yOffset = -700;
+					var port = 2;
+					for (var i = 0; i < 3; i++) {
+						for (var e = 0; e < 3; e++) {
 
-					PX.hardware.addSimpleNodeGrid(params);
+							// Draw a grid that also defines a pod position id based on it's size
+							drawGridWithPodPosition(port, (i * 780) + xOffset, (e * 780) + yOffset);
+							port++;
+						}
+					}
 					PX.updateNodePoints();
 
 
 
 					// ** Add a shader to Channel 1
 
-					PX.simpleSetup({channel: 1, ids: ["SolidColor"]});
+					var clip = new PX.Clip({id: "SinSpiral"});
 
+					// Create a list of position id's that this pod should populate into
+					//var positionIds = [1, 3];
+					var positionIds = [1, 3, 5, 7, 9];
+					var pod = new PX.Pod({ clips: [clip], positionIds: positionIds });
 
-
-					// ** Set some param values on the Clip
-
-					// Set param1 on the clip to turn the color blue (for example this could be any ui setting params)
-					PX.set("p1", .7, 1, 1, 1); // Channel 1, Pod 1, Clip 1
-
-					// Set mix on the clip to be .9
-					PX.set("mix", .9, 1, 1, 1); // Channel 1, Pod 1, Clip 1
+					var channel1 = new PX.Channel({ mix: 1, pods: [pod] });
+					PX.channels.setChannel(1, channel1);
 
 
 
@@ -113,6 +114,28 @@
 
 
 				}
+
+
+				function drawGridWithPodPosition(port, x, y, z) {
+
+					var params = {};			// Position coordinates for the entire grid
+					params.x = x;		
+					params.y = y;
+					params.z = z;
+
+					params.width = 25;			// How many pixels for the entire grid
+					params.height = 25;
+
+					params.pitch = 30;			// How far each pixel is spaced
+					params.port = port;			// The port to populate nodes into
+
+					params.positionId = port;	// Create a position id sized to this grid
+
+
+					PX.hardware.addSimpleNodeGrid(params);
+
+				}
+
 
 				function animate() {
 

@@ -44,6 +44,7 @@ PX.MainShader = {
 
 			// Black is default
 			"px_rgb = vec3(0.);",
+			"px_rgb2 = vec3(0.);",
 			
 			//********************************************
 			

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Basic Example</title>
+		<title>Import Mesh Example</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link href="css/main.css" rel="stylesheet" />
@@ -11,6 +11,7 @@
 		<script src="libs/Detector.js"></script>
 		<script src="libs/three.min.js"></script>
 		<script src="libs/TrackballControls.js"></script>
+		<script src="libs/BinaryLoader.js"></script>
 
 
 		<!-- Import library -->
@@ -32,7 +33,7 @@
 
 
 		<!-- Import Shaders Here -->
-		<script src="import/shaders/SolidColor.js"></script>
+		<script src="import/shaders/SimpleSwirl.js"></script>
 
 
 		<script>
@@ -67,7 +68,6 @@
 					controls = new THREE.TrackballControls( camera, renderer.domElement);
 
 
-
 					// ** Initialize API
 
 					PX.init(scene, renderer);
@@ -76,41 +76,51 @@
 
 
 
-					// ** Add a simple grid of Nodes 
+					// ** Import 3D object
+					// (Any file types supported by Three.js can be loaded nodes this way)
 
-					var params = {};		// Position coordinates for the entire grid
-					params.x = -470;		
-					params.y = 120;
-					params.z = -0;
-					params.width = 52;		// How many pixels for the entire grid
-					params.height = 20;
-					params.pitch = 33;		// How far each pixel is spaced
+					var loader = new THREE.JSONLoader();
+					loader.load( 'obj/suzanne/suzanneHi.js', function ( geometry ) {
 
-					PX.hardware.addSimpleNodeGrid(params);
-					PX.updateNodePoints();
+						for (var i = 0; i < geometry.vertices.length; i++) {
+
+							// Scale and reposition
+							var scale = 6;
+							geometry.vertices[i].x += 75;
+							geometry.vertices[i].y += 80;
+							geometry.vertices[i].z += 20;
+
+							geometry.vertices[i].x *= scale;
+							geometry.vertices[i].y *= scale;
+							geometry.vertices[i].z *= scale;
+
+							geometry.vertices[i].z *= -1;
+
+						}
+
+						geometry.computeVertexNormals();
+
+						PX.hardware.importVertices({vertices: geometry.vertices, port: 1});
+						PX.updateNodePoints();
+
+					} );
+
+
+					// We could also use any Three Native objects:
+					//var geometry = new THREE.PlaneGeometry( 1000, 700, 30, 20 );
+					//PX.hardware.importVertices({vertices: geometry.vertices, port: 1});
 
 
 
 					// ** Add a shader to Channel 1
 
-					PX.simpleSetup({channel: 1, ids: ["SolidColor"]});
-
-
-
-					// ** Set some param values on the Clip
-
-					// Set param1 on the clip to turn the color blue (for example this could be any ui setting params)
-					PX.set("p1", .7, 1, 1, 1); // Channel 1, Pod 1, Clip 1
-
-					// Set mix on the clip to be .9
-					PX.set("mix", .9, 1, 1, 1); // Channel 1, Pod 1, Clip 1
+					PX.simpleSetup({channel: 1, ids: ["SimpleSwirl"]});
 
 
 
 					// ** Start the main loop
 
 					animate();
-
 
 				}
 

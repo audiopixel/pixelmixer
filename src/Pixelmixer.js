@@ -292,7 +292,8 @@ PX.pixels;
 
 // Blend Constants
 PX.BLEND = {};
-PX.BLEND.OFF = 0;
+PX.BLEND.OFF = -1;
+PX.BLEND.Replace = 0;
 PX.BLEND.Add = 1;
 PX.BLEND.Subtract = 2;
 PX.BLEND.Darkest = 3;
