@@ -292,8 +292,7 @@ PX.pixels;
 
 // Blend Constants
 PX.BLEND = {};
-PX.BLEND.OFF = -1;
-PX.BLEND.Replace = 0;
+PX.BLEND.OFF = 0;
 PX.BLEND.Add = 1;
 PX.BLEND.Subtract = 2;
 PX.BLEND.Darkest = 3;
@@ -311,7 +310,8 @@ PX.BLEND.LinearBurn = 14;
 PX.BLEND.LinearLight = 15;
 PX.BLEND.VividLight = 16;
 PX.BLEND.PinLight = 17;
-PX.BLEND.Fx = 1; // Use 'add' if this happens to get passed, all fx 'blending' happens outside blend()
+PX.BLEND.Replace = 18;
+PX.BLEND.Ignore = 19;
 
 PX.BLENDS = [ 'Add', 'Substract', 'Darkest', 'Lightest', 'Difference', 'Exclusion', 'Multiply', 'Screen','Overlay', 
 			'HardLight', 'SoftLight', 'Dodge', 'Burn', 'LinearBurn', 'LinearLight', 'VividLight', 'PinLight'];

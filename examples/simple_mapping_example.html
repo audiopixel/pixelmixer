@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Basic Example</title>
+		<title>Basic Mapping Example</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link href="css/main.css" rel="stylesheet" />
@@ -64,7 +64,7 @@
 					container.appendChild( renderer.domElement ); 
 
 					camera = new THREE.PerspectiveCamera( 30, glWidth / glHeight, 1, 100000 );
-					camera.position.z = 4200;
+					camera.position.z = 4400;
 					controls = new THREE.TrackballControls( camera, renderer.domElement);
 
 
@@ -80,7 +80,7 @@
 					// ** Add some Nodes in a 3x3 grid
 
 					var xOffset = -860;
-					var yOffset = -700;
+					var yOffset = -735;
 					var port = 2;
 					for (var i = 0; i < 3; i++) {
 						for (var e = 0; e < 3; e++) {

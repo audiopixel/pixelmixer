@@ -628,7 +628,7 @@ PX.AppManager.prototype = {
 		frag = frag.replace(/_lastRgb/g, "_94");
 		frag = frag.replace(/getPodScale/g, "_95");
 		frag = frag.replace(/getPodOffset/g, "_96");
-		return frag;
+		return frag.trim();
 		
 	}
 

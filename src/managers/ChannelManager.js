@@ -187,11 +187,9 @@ PX.ChannelManager.prototype = {
 													fragOutput += "px_xyz = offsetPos(px_alt1, " + pod.positionIds[o] + ", px_xyz.w);\n";
 												}
 
-												//fragOutput += "px_rgb2 = blend(px_rgb, superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+"), 1.);";
 												fragOutput += "px_rgb2 = superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
 
 												// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
-												//fragOutput = fragOutput.replace(/px_fxOut/g, "px_rgbV4");
 												fragOutput = fragOutput.replace(/gl_FragCoord/g, "px_xyz");
 
 
@@ -246,8 +244,6 @@ PX.ChannelManager.prototype = {
 							
 								//  -------------- Pod Mix Blend & Fx --------------
 
-
-
 								if(fxPod){
 
 									// Fx pod: mix the original with the result of fx_rgb, _pod_mix); \n";
@@ -258,7 +254,7 @@ PX.ChannelManager.prototype = {
 									if(e === 0){
 
 										// If we are the very first pod mix output value, don't blend from previous pod
-										output += "px_p = px_rgb * (_pod_mix); \n";
+										output += "px_p = blend(px_rgb * (_pod_mix), px_p, "+podPos.blend+".); \n";
 
 									}else{
 
@@ -273,10 +269,6 @@ PX.ChannelManager.prototype = {
 								//output += "/////////////////////////////////-------------//-------------- \n";
 
 							}
-
-							//
-							// add together results
-							output += "/////////////////////////////////-------------//-------------- \n";
 
 						}
 
