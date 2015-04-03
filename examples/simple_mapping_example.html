@@ -8,9 +8,12 @@
 		
 
 		<!-- Import standard three.js stuff -->
-		<script src="libs/Detector.js"></script>
 		<script src="libs/three.min.js"></script>
 		<script src="libs/TrackballControls.js"></script>
+
+		<script src="libs/Detector.js"></script>
+		<script src="libs/dat.gui.min.js"></script>
+		<script src="libs/stats.min.js"></script>
 
 
 		<!-- Import library -->
@@ -31,8 +34,22 @@
 		<script src="../src/shaders/SimpleTextureShader.js"></script>
 
 
-		<!-- Import Shaders Here -->
+		<!-- Import Shaders -->
+		<script src="import/shaders/SolidColor.js"></script>
+		<script src="import/shaders/TestFrame.js"></script>
+		<script src="import/shaders/DiSinSwirl.js"></script>
+		<script src="import/shaders/ColorSineBar.js"></script>
+		<script src="import/shaders/ColorSwirls.js"></script>
+		<script src="import/shaders/LineCosSin.js"></script>
+		<script src="import/shaders/SimpleSwirl.js"></script>
 		<script src="import/shaders/SinSpiral.js"></script>
+		<script src="import/shaders/SineParticles.js"></script>
+		<script src="import/shaders/Water.js"></script>
+		<script src="import/shaders/HexifyRadial.js"></script>
+		<script src="import/shaders/SinCosTan.js"></script>
+		<script src="import/shaders/HueFx.js"></script>
+		<script src="import/shaders/TestFx.js"></script>
+		<script src="import/shaders/BasicTest.js"></script>
 
 
 		<script>
@@ -47,6 +64,9 @@
 				var camera;
 				var controls;
 				var container;
+				var stats;
+
+				var guiData;
 
 				function onLoad(){
 
@@ -74,15 +94,15 @@
 					PX.init(scene, renderer);
 					PX.setSize(glWidth, glHeight);
 					PX.pointSprite = "images/nodeflare250.png";
-
+					PX.useTransforms = true;	
 
 
 					// ** Add some Nodes in a 3x3 grid
 
-					var xOffset = -860;
+					var xOffset = -1540;
 					var yOffset = -735;
 					var port = 2;
-					for (var i = 0; i < 3; i++) {
+					for (var i = 0; i < 5; i++) {
 						for (var e = 0; e < 3; e++) {
 
 							// Draw a grid that also defines a pod position id based on it's size
@@ -90,6 +110,7 @@
 							port++;
 						}
 					}
+
 					PX.updateNodePoints();
 
 
@@ -97,14 +118,59 @@
 					// ** Add a shader to Channel 1
 
 					var clip = new PX.Clip({id: "SinSpiral"});
+					var clip2 = new PX.Clip({blend: PX.BLEND.Burn, id: "SinSpiral"});
 
 					// Create a list of position id's that this pod should populate into
 					//var positionIds = [1, 3];
-					var positionIds = [1, 3, 5, 7, 9];
-					var pod = new PX.Pod({ clips: [clip], positionIds: positionIds });
+					var positionIds = [1, 3, 5, 7, 9, 11, 13, 15];
+					var pod = new PX.Pod({ clips: [clip, clip2], positionIds: positionIds });
 
 					var channel1 = new PX.Channel({ mix: 1, pods: [pod] });
 					PX.channels.setChannel(1, channel1);
+
+
+					// UI Layer
+					var gui = new dat.GUI();
+
+					guiData  = {
+						Channel1Mix:  1,
+						Scale:  1,
+						Shader:  1,
+						Mapping:  "setup1"
+
+					};
+
+					gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("mix", v, 1);  });
+
+					gui.add( { SnapToFront:function(){
+						controls.reset();
+					} } ,'SnapToFront');
+
+					gui.add( guiData, 'Shader', PX.demoClipNames).onChange(function (v) { uniformClipTypeChange(v, 1, 1, 1 ); });
+					gui.add( guiData, "Scale", 0.1, 1.0, 1.0 )  .onChange(function (v) { PX.set("p1", v, 1, 1, 1);  });
+
+					var mapping = ["setup1", "setup2", "setup3"];
+					gui.add( guiData, 'Mapping', mapping).onChange(function (v) {
+
+						switch(v){
+							case "setup1":
+								console.log("setup1");
+								break;
+
+							default: 
+							break;
+						}
+						//PX.updateShader = true;
+
+					});
+
+
+
+					// Display stats
+					stats = new Stats();
+					stats.domElement.style.position = 'absolute';
+					stats.domElement.style.top = '0px';
+					document.getElementById( 'container' ).appendChild( stats.domElement );
 
 
 
@@ -112,7 +178,23 @@
 
 					animate();
 
+				}
 
+				/*
+				* Trigger a clip type change - demo and testing for now // TODO dynamic UI listing
+				*/
+				function uniformClipTypeChange(clipName, channel, pod, clip) {
+
+					var clipId = 0;
+
+					if(clipName !== "OFF"){
+						clipId = PX.clips[clipName];
+					}
+
+					var clipObj = new PX.Clip({id: clipName});
+					PX.channels.setClip(channel, pod, clip, clipObj);
+
+					PX.updateShader = true;
 				}
 
 
@@ -141,6 +223,8 @@
 
 					// Main update loop
 					if(PX.ready){
+
+						stats.update();
 
 						// Update the API
 						PX.update();

@@ -562,7 +562,7 @@ PX.AppManager.prototype = {
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERFUNCTIONS", sourceShader.fragmentFunctions);
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERUTILS", PX.shaders.ShaderUtils + sourceUniforms);
 
-		this.fragmentShader = this.minFragmentShader(this.fragmentShader);
+		//this.fragmentShader = this.minFragmentShader(this.fragmentShader);
 		
 
 		// The main material object has uniforms that can be referenced and updated directly by the UI
@@ -587,7 +587,8 @@ PX.AppManager.prototype = {
 
 		//console.log(sourceShader);
 		//console.log(PX.material.uniforms);
-		//console.log(this.fragmentShader);
+		console.log(this.fragmentShader);
+		console.log("this.fragmentShader");
 
 
 		// Main quad that gets rendered as the source shader
