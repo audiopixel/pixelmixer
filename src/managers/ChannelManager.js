@@ -352,76 +352,204 @@ PX.ChannelManager.prototype = {
 		var m = "";
 
 		if(PX.usePosUniforms){
-			m += "if(d == u_pos_id){\n";
-				m += "p = vec3(u_pos_x, u_pos_y, u_pos_z);\n";
+			m += "if(d==u_pos_id){\n";
+				m += "p=vec3(u_pos_x, u_pos_y, u_pos_z);\n";
 			m += "}";
 		}
 
+	//========================================================
+
+	//---Position
+
 		for (var i = 0; i < this.podpositions.length; i++) {
-			m += "else if(d == " + (i+1) + "){\n";
-			m += "p = vec3("+this.podpositions[i].x+","+this.podpositions[i].y+","+this.podpositions[i].z+");\n";
-			m += "}\n";
+
+			if(isPosIdInPod(i+1)){
+				m += "else if(d==" + (i+1) + "){\n";
+				m += "p=vec3("+this.podpositions[i].x+","+this.podpositions[i].y+","+this.podpositions[i].z+");\n";
+				m += "}\n";
+			}
 		}
 
 		if(!PX.usePosUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
-		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
+		m = "vec3 p=vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodPos(int d) { \n" + m + "}\n";
 
 		var output = m;
 		m = "";
 
+	//---//Position
+
+
 		if(PX.usePosUniforms){
-			m += "if(d == u_pos_id){\n";
-				m += "p = vec3(u_pos_w, u_pos_h, u_pos_d);\n";
+			m += "if(d==u_pos_id){\n";
+				m += "p=vec3(u_pos_w, u_pos_h, u_pos_d);\n";
 			m += "}";
 		}
 
-		// Pod Size function
+	//---Size
+
+		// First create a dupe free list of objs that also have a list of any pos id's that have these values
+		var podObjs = [];
 		for (i = 0; i < this.podpositions.length; i++) {
-			m += "else if(d == " + (i+1) + "){\n";
-			m += "p = vec3("+this.podpositions[i].w+","+this.podpositions[i].h+","+this.podpositions[i].d+");\n";
+
+			if(isPosIdInPod(i+1)){
+				var pObj = {};
+				pObj.w = this.podpositions[i].w;
+				pObj.h = this.podpositions[i].h;
+				pObj.d = this.podpositions[i].d;
+				pObj.s = [];
+
+				var dupe = false;
+				for (var e = 0; e < podObjs.length; e++) {
+					if(podObjs[e].w === pObj.w && podObjs[e].h === pObj.h && podObjs[e].d === pObj.d){
+						dupe = true;
+						podObjs[e].s[podObjs[e].s.length] = i+1;
+						break;
+					}
+				}
+				if(!dupe){
+					pObj.s[0] = i+1;
+					podObjs[podObjs.length] = pObj;
+				}
+			}
+		}
+
+		// Pod Size function
+		for (i = 0; i < podObjs.length; i++) {
+
+			m += "else if(";
+			var ms = ""
+			for (var e = 0; e < podObjs[i].s.length; e++) {
+				podObjs[i].s[e];
+				ms += "||d==" + podObjs[i].s[e];
+			}
+
+			ms = ms.slice(2, ms.length); // cut the first '||' out 
+			m += ms + "){\n";
+			m += "p=vec3("+podObjs[i].w+","+podObjs[i].h+","+podObjs[i].d+");\n";
 			m += "}\n";
 		}
 
-		if(!PX.usePosUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
+		if(!PX.usePosUniforms){ m = m.slice(5, m.length) }; // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodSize(int d) { \n" + m + "}\n";
 
 		output += m;
 
+	//---//Size
+
+	//---Offset (translate)
+
 		if(PX.useTransforms){
 
-			// Pod Offset (translation)
 			m = "";
+			// First create a dupe free list of objs that also have a list of any pos id's that have these values
+			var podObjs = [];
 			for (i = 0; i < this.podpositions.length; i++) {
-				m += "else if(d == " + (i+1) + "){\n";
-				m += "p = vec3("+this.podpositions[i].xt+","+this.podpositions[i].yt+","+this.podpositions[i].zt+");\n";
+
+				if(isPosIdInPod(i+1)){
+					var pObj = {};
+					pObj.xt = this.podpositions[i].xt;
+					pObj.yt = this.podpositions[i].yt;
+					pObj.zt = this.podpositions[i].zt;
+					pObj.s = [];
+
+					var dupe = false;
+					for (var e = 0; e < podObjs.length; e++) {
+						if(podObjs[e].xt === pObj.xt && podObjs[e].yt === pObj.yt && podObjs[e].zt === pObj.zt){
+							dupe = true;
+							podObjs[e].s[podObjs[e].s.length] = i+1;
+							break;
+						}
+					}
+					if(!dupe){
+						pObj.s[0] = i+1;
+						podObjs[podObjs.length] = pObj;
+					}
+				}
+			}
+
+			// Pod Size function
+			for (i = 0; i < podObjs.length; i++) {
+
+				m += "else if(";
+				var ms = ""
+				for (var e = 0; e < podObjs[i].s.length; e++) {
+					podObjs[i].s[e];
+					ms += "||d==" + podObjs[i].s[e];
+				}
+
+				ms = ms.slice(2, ms.length); // cut the first '||' out 
+				m += ms + "){\n";
+				m += "p=vec3("+podObjs[i].xt+","+podObjs[i].yt+","+podObjs[i].zt+");\n";
 				m += "}\n";
 			}
 
-			m = m.slice(5, m.length); // cut the first 'else' out 
+			if(!PX.usePosUniforms){ m = m.slice(5, m.length) }; // cut the first 'else' out 
 			m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 			m += "return p; \n";
 			m = "vec3 getPodOffset(int d) { \n" + m + "}\n";
 
 			output += m;
 
-			// Pod Scale & Flipmode
+	//---//Offset (translate)
+	
+	//---Scale
+
 			m = "";
+			// First create a dupe free list of objs that also have a list of any pos id's that have these values
+			var podObjs = [];
 			for (i = 0; i < this.podpositions.length; i++) {
-				m += "else if(d == " + (i+1) + "){\n";
-				m += "p = vec4("+this.podpositions[i].xs+","+this.podpositions[i].ys+","+this.podpositions[i].zs+","+this.podpositions[i].flipmode+");\n";
+
+				if(isPosIdInPod(i+1)){
+					var pObj = {};
+					pObj.xs = this.podpositions[i].xs;
+					pObj.ys = this.podpositions[i].ys;
+					pObj.zs = this.podpositions[i].zs;
+					pObj.flipmode = this.podpositions[i].flipmode;
+					pObj.s = [];
+
+					var dupe = false;
+					for (var e = 0; e < podObjs.length; e++) {
+						if(podObjs[e].xs === pObj.xs && podObjs[e].ys === pObj.ys && podObjs[e].zs === pObj.zs && podObjs[e].flipmode === pObj.flipmode){
+							dupe = true;
+							podObjs[e].s[podObjs[e].s.length] = i+1;
+							break;
+						}
+					}
+					if(!dupe){
+						pObj.s[0] = i+1;
+						podObjs[podObjs.length] = pObj;
+					}
+				}
+			}
+
+			// Pod Size function
+			for (i = 0; i < podObjs.length; i++) {
+
+				m += "else if(";
+				var ms = ""
+				for (var e = 0; e < podObjs[i].s.length; e++) {
+					podObjs[i].s[e];
+					ms += "||d==" + podObjs[i].s[e];
+				}
+
+				ms = ms.slice(2, ms.length); // cut the first '||' out 
+				m += ms + "){\n";
+				m += "p=vec4("+podObjs[i].xs+","+podObjs[i].ys+","+podObjs[i].zs+","+podObjs[i].flipmode+");\n";
 				m += "}\n";
 			}
-			
-			m = m.slice(5, m.length); // cut the first 'else' out 
+
+			if(!PX.usePosUniforms){ m = m.slice(5, m.length) }; // cut the first 'else' out 
 			m = "vec4 p = vec4(0.,0.,0.,0.); \n" + m;
 			m += "return p; \n";
 			m = "vec4 getPodScale(int d) { \n" + m + "}\n";
 
 			output += m;
+
+	//---//Scale
 		}
 
 		// Method to check xyz+whd against another // TODO account for non rectangular shapes
@@ -476,6 +604,26 @@ PX.ChannelManager.prototype = {
 			output += "return vec4(x, y, z, w);\n";
 
 		output += "}\n";
+
+
+		// Check to see if a pod-position-id is in use in any loaded pod
+		function isPosIdInPod(posId){
+
+			for (var i = 0; i < PX.channels.channels.length; i++) { var channel = PX.channels.channels[i];
+				if(channel && channel.pods){
+					for (var e = 0; e < channel.pods.length; e++) { var pod = channel.pods[e];
+						if(pod){
+							for (var u = 0; u < pod.positionIds.length; u++) { var pos = pod.positionIds[u];
+								if(pos === posId){
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+			return false;
+		}
 
 		//console.log(output);
 		return output;

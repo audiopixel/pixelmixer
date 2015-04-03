@@ -587,8 +587,7 @@ PX.AppManager.prototype = {
 
 		//console.log(sourceShader);
 		//console.log(PX.material.uniforms);
-		console.log(this.fragmentShader);
-		console.log("this.fragmentShader");
+		//console.log(this.fragmentShader);
 
 
 		// Main quad that gets rendered as the source shader

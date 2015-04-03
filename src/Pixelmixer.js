@@ -10,7 +10,7 @@ PX.readPixels = false;			// Turn this on if you need to receive color values of 
 PX.broadcast = false;			// Update any defined techs to broadcast with the lastest pixels
 
 PX.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
-PX.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
+PX.useTransforms = true;		// Pod transforms (swap axis, translate, scale)
 PX.usePosUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
 
 PX.pointCloud = {};				// Main point cloud that displays node colors
