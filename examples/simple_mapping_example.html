@@ -99,10 +99,10 @@
 
 					// ** Add some Nodes in a 3x3 grid
 
-					var xOffset = -1540;
+					var xOffset = -760;
 					var yOffset = -735;
 					var port = 2;
-					for (var i = 0; i < 5; i++) {
+					for (var i = 0; i < 3; i++) {
 						for (var e = 0; e < 3; e++) {
 
 							// Draw a grid that also defines a pod position id based on it's size
@@ -111,6 +111,11 @@
 						}
 					}
 
+
+					drawGridWithPodPosition(port, -(2 * 780) + 25, yOffset, 0, 77);
+					port++;
+					drawGridWithPodPosition(port, (2 * 780) + 10, yOffset, 0, 77);
+
 					PX.updateNodePoints();
 
 
@@ -118,12 +123,12 @@
 					// ** Add a shader to Channel 1
 
 					var clip = new PX.Clip({id: "SinSpiral"});
-					var clip2 = new PX.Clip({blend: PX.BLEND.Burn, id: "SinSpiral"});
+					//var clip2 = new PX.Clip({blend: PX.BLEND.Burn, id: "SinSpiral"});
 
 					// Create a list of position id's that this pod should populate into
-					//var positionIds = [1, 3];
-					var positionIds = [1, 3, 5, 7, 11, 13, 15];
-					var pod = new PX.Pod({ clips: [clip, clip2], positionIds: positionIds });
+					var positionIds = [1, 3, 5, 7, 9, 11, 12];
+					//var positionIds = [1, 3, 5, 7, 11, 13, 15];
+					var pod = new PX.Pod({ clips: [clip, /*clip2*/], positionIds: positionIds });
 
 					var channel1 = new PX.Channel({ mix: 1, pods: [pod] });
 					PX.channels.setChannel(1, channel1);
@@ -198,7 +203,9 @@
 				}
 
 
-				function drawGridWithPodPosition(port, x, y, z) {
+				function drawGridWithPodPosition(port, x, y, z, height) {
+
+					height = height || 25;
 
 					var params = {};			// Position coordinates for the entire grid
 					params.x = x;		
@@ -206,7 +213,7 @@
 					params.z = z;
 
 					params.width = 25;			// How many pixels for the entire grid
-					params.height = 25;
+					params.height = height;
 
 					params.pitch = 30;			// How far each pixel is spaced
 					params.port = port;			// The port to populate nodes into
