@@ -253,8 +253,8 @@ PX.ChannelManager.prototype = {
 
 									if(e === 0){
 
-										// If we are the very first pod mix output value, don't blend from previous pod
-										output += "px_p = blend(px_rgb * (_pod_mix), px_p, "+podPos.blend+".); \n";
+										// If we are the very first pod mix output value, don't blend from previous pod just add
+										output += "px_p = (px_rgb * _pod_mix) + px_p; \n"; // This where we can apply different blends per podpos
 
 									}else{
 

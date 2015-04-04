@@ -5,7 +5,6 @@
 *
 * We use a lightweight and manual version of matrix transforms for performance reasons since we are calling this every fragment. 
 *
-* @param blend		Number, How to blend into other pos instances. Blend Id's defined on PixelMixer.js. 
 * @param x 			Number, the x coordinate of the pod.
 * @param y 			Number, the y coordinate of the pod.
 * @param z 			Number, the z coordinate of the pod.
@@ -23,8 +22,6 @@
 */
 
 PX.PodPosition = function (params) { 
-
-	this.blend = params.blend || 1;
 
 	this.x = params.x || 0;
 	this.y = params.y || 0;
