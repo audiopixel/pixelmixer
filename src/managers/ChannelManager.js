@@ -571,13 +571,27 @@ PX.ChannelManager.prototype = {
 			output += "float x = b.x - c.x;\n";
 			output += "float y = b.y - c.y;\n";
 			output += "float z = b.z - c.z;\n";
-			output += "float t = x;\n";
 
 			// For performance reasons use a lighter and manual version of Matrix transforms
 			if(PX.useTransforms){
 
-				// swap axis
+
+				output += "vec3 d = getPodOffset(p);\n";
+				output += "vec3 e = getPodSize(p);\n";
 				output += "vec4 s = getPodScale(p);\n";
+
+				// scale/flip/mirror: (magnitude of 8)
+				output += "x += (b.x - (e.x * .5 + c.x)) * (1.-(s.x * 2.))*8.;\n";
+				output += "y += (b.y - (e.y * .5 + c.y)) * (1.-(s.y * 2.))*8.;\n";
+				output += "z += (b.z - (e.z * .5 + c.z)) * (1.-(s.z * 2.))*8.;\n";
+
+				// translate: (magnitude of 8)
+				output += "x += (e.x * 8. * (d.x - .5));\n";
+				output += "y += (e.y * 8. * (d.y - .5));\n";
+				output += "z += (e.z * 8. * (d.z - .5));\n";
+				
+				// swap axis
+				output += "float t = x;\n";
 				output += "if(s.w == 1.){";
 					output += "x=y;y=t;\n";		// swap x-y
 				output += "}else if(s.w == 2.){";	
@@ -585,20 +599,6 @@ PX.ChannelManager.prototype = {
 				output += "}else if(s.w == 3.){";
 					output += "t=y;y=z;z=t;\n";	// swap y-z
 				output += "}\n";
-
-				output += "vec3 d = getPodOffset(p);\n";
-				output += "vec3 e = getPodSize(p);\n";
-
-				// translate: (magnitude of 8)
-				output += "x += (e.x * 8. * (d.x - .5));\n";
-				output += "y += (e.y * 8. * (d.y - .5));\n";
-				output += "z += (e.z * 8. * (d.z - .5));\n";
-
-				// scale/flip/mirror: (magnitude of 8)
-				output += "x += (b.x - (e.x * .5 + c.x)) * (1.-(s.x * 2.))*8.;\n";
-				output += "y += (b.y - (e.y * .5 + c.y)) * (1.-(s.y * 2.))*8.;\n";
-				output += "z += (b.z - (e.z * .5 + c.z)) * (1.-(s.z * 2.))*8.;\n";
-
 			}
 
 			output += "return vec4(x, y, z, w);\n";
@@ -656,7 +656,14 @@ PX.ChannelManager.prototype = {
 		delete this.channels[channelId-1].pods; // TODO optimize: most likely better to not use 'delete'
 	},
 
+	// ************* Pods ********************************
+
+	getPod: function (channelId, podId) {
+		return this.channels[channelId-1].pods[podId-1];
+	},
+
 	// ************* Pod Positions ***********************
+
 
 	setPodPos: function (podPositionId, podPositionObject) {
 		this.podpositions[podPositionId-1] = podPositionObject;
@@ -677,6 +684,31 @@ PX.ChannelManager.prototype = {
 
 	clearAllPodPos: function () {
 		this.podpositions = [];
+	},
+
+
+	setPodPosTransforms: function (params) {
+
+		var pos = this.getPodPos(params.id);
+		if(params.xt != null){pos.xt = params.xt;}
+		if(params.yt != null){pos.yt = params.yt;}
+		if(params.zt != null){pos.zt = params.zt;}
+		if(params.xs != null){pos.xs = params.xs;}
+		if(params.ys != null){pos.ys = params.ys;}
+		if(params.zs != null){pos.zs = params.zs;}
+		if(params.flipmode != null){pos.flipmode = params.flipmode;}
+	},
+
+	resetPodPosTransforms: function (podPositionId) {
+		this.setPodPosTransforms({id: podPositionId, 
+			xt: .5,
+			yt: .5,
+			zt: .5,
+			xs: .5,
+			ys: .5,
+			zs: .5,
+			flipmode: 0
+		});
 	},
 
 	// ************* Clips ***********************
