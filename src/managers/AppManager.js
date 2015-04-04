@@ -495,7 +495,7 @@ PX.AppManager.prototype = {
 		var sourceUniforms = "";
 
 
-		if(PX.usePosUniforms){
+		if(PX.usePodPosUniforms){
 			uniforms.u_pos_id= { type: "i", value: 0 };
 			uniforms.u_pos_x = { type: "f", value: 0. };
 			uniforms.u_pos_y = { type: "f", value: 0. };
