@@ -51,7 +51,7 @@ function initUi(){
 
 
 	// Tell the shader to update after we set some new state
-	PX.updateShader = true;
+	PX.updateShader();
 
 	// The list of state that the UI is representing (V) and setting (C)
 	guiData  = {
@@ -159,7 +159,7 @@ function initUi(){
 			break;
 		}
 		PX.updateNodePoints(); // only need to call this when we add nodes aftervit
-		PX.updateShader = true;
+		PX.updateShader();
 
 	});
 	f5.add( guiData, "Speed", 0.025, 0.4, 1.0 ).onChange(function (v) { PX.speed = v; });
@@ -202,5 +202,5 @@ function uniformClipTypeChange(clipName, channel, pod, clip) {
 	var clipObj = new PX.Clip({id: clipName});
 	PX.channels.setClip(channel, pod, clip, clipObj);
 
-	PX.updateShader = true;
+	PX.updateShader();
 }

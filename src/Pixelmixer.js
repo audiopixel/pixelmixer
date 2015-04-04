@@ -9,7 +9,7 @@ var PX = { REVISION: '1' };	// Global object
 PX.readPixels = false;			// Turn this on if you need to receive color values of all the pixels
 PX.broadcast = false;			// Update any defined techs to broadcast with the lastest pixels
 
-PX.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
+PX.speed = 0.03;				// How much we increase 'global time' per 'animation frame'
 PX.useTransforms = true;		// Pod transforms (swap axis, translate, scale)
 PX.usePosUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
 
@@ -126,7 +126,7 @@ PX.init = function(scene, renderer, maxNodeCount){
 PX.dataSetLength = null;
 
 
-PX.updateShader = false;
+PX.shaderNeedsUpdate = false;
 PX.updateFresh = false;
 PX.updateShaderLimiter = 0;
 PX.update = function() {
@@ -142,7 +142,7 @@ PX.update = function() {
 	}else if(PX.ready){
 
 		// Update everything else if we don't have to update the shader this frame
-		if((!PX.updateShader || PX.updateShaderLimiter < 4) && PX.updateShaderLimiter > 0){
+		if((!PX.shaderNeedsUpdate || PX.updateShaderLimiter < 2) && PX.updateShaderLimiter > 0){
 
 			// ** Main loop update 
 			PX.app.update();
@@ -155,14 +155,19 @@ PX.update = function() {
 			// Shader needs update
 			PX.app.updateMainSourceShader();
 			PX.app.update();
+			PX.ports.update();
 			PX.updateShaderLimiter = 0;
-			PX.updateShader = false;
+			PX.shaderNeedsUpdate = false;
 			PX.updateFresh = false;
 		}
 		PX.updateShaderLimiter++;
 
 	}
 };
+
+PX.updateShader = function() {
+	PX.shaderNeedsUpdate = true;
+}
 
 
 PX.pointPosition = [-400, -400, 0]; // Defaults
@@ -317,7 +322,7 @@ PX.setObjProperty = function(property, value, channel, pod, clip) {
 
 PX.load = function(json){
 	PX.channels.channels = json;
-	PX.updateShader = true;
+	PX.shaderNeedsUpdate = true;
 	PX.updateFresh = true;
 };
 

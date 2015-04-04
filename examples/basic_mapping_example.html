@@ -201,7 +201,7 @@
 						// Reapply transforms
 						switchLayout(v);
 						
-						PX.updateShader = true;
+						PX.updateShader();
 
 					});
 
@@ -242,7 +242,7 @@
 					var clipObj = new PX.Clip({id: clipName});
 					PX.channels.setClip(channel, pod, clip, clipObj);
 
-					PX.updateShader = true;
+					PX.updateShader();
 				}
 
 
