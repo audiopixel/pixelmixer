@@ -141,17 +141,20 @@ function initUi(){
 
 				PX.channels.setPodPos(2, new PX.PodPosition({x: -190, y: 140, z: -1000, w: 1070, h: 575, d: 2000}));
 				PX.hardware.importNodes(PX.imported, 1, 0, 0, 0);
+				PX.pointSize = 10;
 				break;
 			case PX.demoHardware[1]:
 
 				PX.channels.setPodPos(2, new PX.PodPosition({x: -339, y: 30, z: -1000, w: 1378, h: 738, d: 2000}));
 				PX.hardware.addTestPortsGrid3(1, 0, 0);
+				PX.pointSize = 18;
 				break;
 
 			case PX.demoHardware[2]:
 
 				PX.channels.setPodPos(2, new PX.PodPosition({x: -190, y: 286, z: -1000, w: 1070, h: 242, d: 2000}));
 				PX.hardware.addTestPortsGrid(1, 0, 0);
+				PX.pointSize = 20;
 				break;
 
 			default: 
@@ -163,7 +166,7 @@ function initUi(){
 
 	});
 	f5.add( guiData, "Speed", 0.025, 0.4, 1.0 ).onChange(function (v) { PX.speed = v; });
-	f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { PX.pointMaterial.uniforms.u_pointSize.value = v;  });
+	//f5.add( guiData, "PointSize", 45.0, 90.0, 1.0 ).onChange(function (v) { PX.pointMaterial.uniforms.u_pointSize.value = v;  });
 
 
 

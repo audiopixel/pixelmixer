@@ -6,6 +6,9 @@
 
 PX.HardwareManager = function () {
 
+	this.pointSizes = [PX.pointSize, 200, 50];
+	this.pointSprites = [PX.pointSprite];
+
 };
 
 PX.HardwareManager.prototype = {
@@ -259,6 +262,24 @@ PX.HardwareManager.prototype = {
 			}
 			port = new PX.Port({name: "port name " + port, nodes: nodes});
 			PX.ports.setPort(portStart + 2, port);
+	},
+
+	setCustomPointSprite: function (type, path) {
+		this.pointSprites[type] = path;
+	},
+
+	getCustomPointSprite: function (type) {
+		if(type === 0){ return PX.pointSprite; }
+		return this.pointSprites[type];
+	},
+
+	setCustomPointSize: function (type, size) {
+		this.pointSizes[type] = size;
+	},
+
+	getCustomPointSize: function (type) {
+		if(type === 0){ return PX.pointSize; }
+		return this.pointSizes[type];
 	}
 
 };

@@ -17,7 +17,7 @@ PX.pointCloud = {};				// Main point cloud that displays node colors
 PX.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
 PX.pointMaterial = {};			// Shader of the point cloud that displays the node colors
 PX.pointSprite; 				// String - relative file path to image to represent the point sprite
-PX.pointSize = 20;				// The size of each point cloud sprite
+PX.pointSize = 25;				// The size of each point cloud sprite
 
 
 
@@ -196,13 +196,16 @@ PX.setSize = function(width, height) {
 
 		// Reset point size relative to screen resolution
 		PX.setPointSize(PX.pointSize);
+
+		if(PX.pointMaterial){
+			PX.pointMaterial.uniforms.u_res.value = PX.app.glWidth / PX.app.glHeight;
+		}
 	}
 };
 
 
 PX.setPointSize = function(v) {
-	v *= ((PX.app.glWidth * PX.app.glHeight) * .00001);
-	PX.pointMaterial.uniforms.u_pointSize.value = v;
+
 	if(PX.pointSize <= 0){
 		PX.pointSize = v;
 	}

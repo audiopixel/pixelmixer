@@ -22,6 +22,8 @@ PX.AppManager = function (scene, renderer) {
 	this.controls;
 	this.camera;
 
+	this.pointSizes = [];
+	this.pointTypes = [];
 	this.geoX = [];
 	this.geoY = [];
 	this.passIndex = [];
@@ -307,6 +309,8 @@ PX.AppManager.prototype = {
 	updateGeometry: function () {
 
 		// Reset values and grab entire state fresh. Note this is only called once when hardware is added or removed
+		this.pointSizes = [];
+		this.pointTypes = [];
 		this.geoX = [];
 		this.geoY = [];
 		this.passIndex = [];
@@ -341,6 +345,13 @@ PX.AppManager.prototype = {
 						tx = imageSize;
 					}
 					var ty = ((t+2) - tx) / imageSize;
+					this.pointSizes.push(PX.hardware.getCustomPointSize(port.nodesType));
+
+					var type = port.nodesType;
+					if(!PX.pointSprite && type === 0){
+						type = -1; // if we don't have a sprite defined the default is no sprite
+					}
+					this.pointTypes.push(type);
 
 					this.geoX.push(tx / imageSize - 0.5 / imageSize);
 					this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
@@ -440,6 +451,8 @@ PX.AppManager.prototype = {
 
 		
 		var attributes = { // For each node we pass along it's indenodx value and x, y in relation to the colorMaps
+			a_pointSizes:  { type: 'f', value: this.pointSizes },
+			a_texId:  		{ type: 'f', value: this.pointTypes },
 			a_geoX:        { type: 'f', value: this.geoX },
 			a_geoY:        { type: 'f', value: this.geoY },
 			a_index:       { type: 'f', value: this.passIndex }
@@ -447,18 +460,23 @@ PX.AppManager.prototype = {
 
 		// Use image for sprite if defined, otherwise default to drawing a square
 		var useTexture = 0;
-		var transparent = false;
 		if(PX.pointSprite){
 			useTexture = 1;
-			transparent = true;
 		}
 
 		var uniforms = {
+			u_res:   { type: "f", value: PX.app.glWidth / PX.app.glHeight },
 			u_colorMap:   { type: "t", value: this.rtTextureA },
 			u_texture:    { type: "t", value: THREE.ImageUtils.loadTexture( PX.pointSprite )},
 			u_useTexture: { type: "i", value: useTexture }
 		};
 
+		// Add 2 custom sprite textures if they are defined
+		for (var i = 0; i < 2; i++) {
+			if(PX.hardware.getCustomPointSprite(i+1)){
+				uniforms["u_texture" + (i+1)] = { type: "t", value: THREE.ImageUtils.loadTexture( PX.hardware.getCustomPointSprite(i+1) ) };
+			}
+		}
 
 		PX.pointMaterial = new THREE.ShaderMaterial( {
 
@@ -467,7 +485,7 @@ PX.AppManager.prototype = {
 			vertexShader:   PX.shaders.PointCloudShader.vertexShader,
 			fragmentShader: PX.shaders.PointCloudShader.fragmentShader,
 			depthTest:      false,
-			transparent:    transparent
+			transparent:    true
 		});
 
 		var name = "PixelMixer Nodes";
