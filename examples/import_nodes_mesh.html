@@ -92,17 +92,14 @@
 
 						for (var i = 0; i < geometry.vertices.length; i++) {
 
-							// Scale and reposition
+							// Scale
 							var scale = 6;
-							geometry.vertices[i].x += 75;
-							geometry.vertices[i].y += 80;
-							geometry.vertices[i].z += 20;
 
 							geometry.vertices[i].x *= scale;
 							geometry.vertices[i].y *= scale;
 							geometry.vertices[i].z *= scale;
 
-							geometry.vertices[i].z *= -1;
+							geometry.vertices[i].z *= -1; // flip z
 
 						}
 

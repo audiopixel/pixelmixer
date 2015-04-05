@@ -170,7 +170,7 @@ PX.updateShader = function() {
 };
 
 
-PX.pointPosition = [-400, -400, 0]; // Defaults
+PX.pointPosition = [0, 0, 0]; // Defaults
 PX.setPointPosition = function(x, y, z) {
 	PX.pointPosition = [x, y, z];
 	if(PX.pointCloud.position){
