@@ -665,6 +665,40 @@ PX.ChannelManager.prototype = {
 
 	// ************* Pod Positions ***********************
 
+	// Create a new pod position that fits the nodes in a list of port(s)
+	podPosFromPorts: function (podPositionId, ports) {
+
+		var s = 100000000000;
+		var minx = s;
+		var maxx = -s;
+		var miny = s;
+		var maxy = -s;
+		var minz = s;
+		var maxz = -s;
+		var result = false;
+
+		for ( e = 0; e < ports.length; e ++ ) { 
+			var port = PX.ports.getPort(ports[e]);
+
+			if(port && port.nodes){
+				for ( i = 0; i < port.nodes.length; i ++ ) { 
+
+					var node = port.nodes[i];
+					minx = Math.min(minx, node.x);
+					maxx = Math.max(maxx, node.x);
+					miny = Math.min(miny, node.y);
+					maxy = Math.max(maxy, node.y);
+					minz = Math.min(minz, node.z);
+					maxz = Math.max(maxz, node.z);
+					result = true;
+				}
+			}
+		}
+
+		if(result){
+			this.podpositions[podPositionId-1] = new PX.PodPosition({x: minx, y: miny, z: minz, w: maxx - minx, h: maxy - miny, d: maxz - minz});
+		}
+	},
 
 	setPodPos: function (podPositionId, podPositionObject) {
 		this.podpositions[podPositionId-1] = podPositionObject;
