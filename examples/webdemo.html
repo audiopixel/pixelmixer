@@ -83,7 +83,12 @@
 
 				function onLoad(){
 
-					// Three.js setup
+
+					// ----------------
+
+
+					// **Three.js setup
+
 					scene = new THREE.Scene();
 
 					renderer = new THREE.WebGLRenderer( /*{ preserveDrawingBuffer: readPixels } */); // Some browsers might need preserveDrawingBuffer to readPixels
@@ -98,17 +103,19 @@
 					controls = new THREE.TrackballControls( camera, renderer.domElement);
 
 
-					// Initialize ap
+					// ----------------
+
+
+					// **Initialize PixelMixer
+
 					var maxNodeCount = 10000;
 					PX.init(scene, renderer, maxNodeCount);
 					PX.pointSize = 10;
 					PX.setSize(glWidth, glHeight);
 					PX.pointSprite = "images/nodeflare250.png";
 
-
 					//PX.dataSetLength = 1024; // use this to pass audio data (or any data feed)
 
-					
 
 					// Specify defaults starting hardware
 					PX.hardware.importNodes(PX.imported, 1, 350, 100, 500);
@@ -116,9 +123,11 @@
 					PX.updateNodePoints();
 
 
-
 					// Init UI, using dat.gui for now defined in "ui/datguiSetup1.js"
 					initUi();
+
+
+					// ----------------
 
 
 					// Display stats
@@ -126,6 +135,10 @@
 					stats.domElement.style.position = 'absolute';
 					stats.domElement.style.top = '0px';
 					document.getElementById( 'container' ).appendChild( stats.domElement );
+
+
+					// ----------------
+
 
 					// Start the main loop
 					animate();

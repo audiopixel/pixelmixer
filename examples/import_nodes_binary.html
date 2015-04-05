@@ -52,6 +52,9 @@
 				function onLoad(){
 
 
+					// ----------------
+
+
 					// ** Standard Three.js setup
 
 					scene = new THREE.Scene();
@@ -68,11 +71,17 @@
 					controls = new THREE.TrackballControls( camera, renderer.domElement);
 
 
-					// ** Initialize API
+					// ----------------
+
+
+					// ** Initialize PixelMixer
 
 					PX.init(scene, renderer);
 					PX.pointSize = 7;
 					PX.setSize(glWidth, glHeight);
+
+
+					// ----------------
 
 
 					// ** Add a simple grid of Nodes 
@@ -109,10 +118,15 @@
 					//var geometry = new THREE.PlaneGeometry( 1000, 700, 30, 20 );
 
 
+					// ----------------
+
+
 					// ** Add a shader to Channel 1
 
 					PX.simpleSetup({channel: 1, ids: ["SinSpiral"]});
 
+
+					// ----------------
 
 
 					// ** Start the main loop

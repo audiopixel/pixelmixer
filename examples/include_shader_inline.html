@@ -91,6 +91,9 @@
 				function onLoad(){
 
 
+					// ----------------
+
+
 					// ** Standard Three.js setup
 
 					scene = new THREE.Scene();
@@ -107,13 +110,18 @@
 					controls = new THREE.TrackballControls( camera, renderer.domElement);
 
 
+					// ----------------
 
-					// ** Initialize API
+
+
+					// ** Initialize PixelMixer
 
 					PX.init(scene, renderer);
 					PX.setSize(glWidth, glHeight);
 					PX.pointSprite = "images/nodeflare250.png";
 
+
+					// ----------------
 
 
 					// ** Add a simple grid of Nodes 
@@ -130,6 +138,8 @@
 					PX.updateNodePoints();
 
 
+					// ----------------
+
 
 					// ** Import shader from inline and add to Channel 1
 
@@ -138,6 +148,8 @@
 
 					PX.simpleSetup({channel: 1, ids: ["ImportSpiral"]});
 
+
+					// ----------------
 
 
 					// ** Start the main loop

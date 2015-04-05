@@ -18,7 +18,7 @@
 PX.Port = function (params) {
 
 	params = 			params || {};
-	this.name = 		params.name || "unnamed port";
+	this.name = 		params.name || "";
 	this.type = 		params.type || "test";
 	this.broadcast = 	params.broadcast || false;
 	this.address = 		params.address || "";

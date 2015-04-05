@@ -52,6 +52,9 @@
 				function onLoad(){
 
 
+					// ----------------
+
+
 					// ** Standard Three.js setup
 
 					scene = new THREE.Scene();
@@ -68,12 +71,17 @@
 					controls = new THREE.TrackballControls( camera, renderer.domElement);
 
 
-					// ** Initialize API
+					// ----------------
+
+
+					// ** Initialize PixelMixer
 
 					PX.init(scene, renderer);
 					PX.setSize(glWidth, glHeight);
 					PX.pointSprite = "images/nodeflare250.png";
 
+
+					// ----------------
 
 
 					// ** Import 3D object
@@ -111,11 +119,15 @@
 					//PX.hardware.importVertices({vertices: geometry.vertices, port: 1});
 
 
+					// ----------------
+
 
 					// ** Add a shader to Channel 1
 
 					PX.simpleSetup({channel: 1, ids: ["SimpleSwirl"]});
 
+
+					// ----------------
 
 
 					// ** Start the main loop

@@ -82,8 +82,17 @@ PX.PortManager.prototype = {
 	},
 
 	setNodes: function (portId, nodes) {
-		if(!this.ports[portId-1]){ this.ports[portId-1] = {}; }
+		if(!this.ports[portId-1]){
+			this.setPort(portId, new PX.Port({name: "Port " + portId}));
+		}
 		this.ports[portId-1].nodes = nodes;
+	},
+
+	addNode: function (portId, node) {
+		if(!this.ports[portId-1]){
+			this.setPort(portId, new PX.Port({name: "Port " + portId}));
+		}
+		this.ports[portId-1].nodes[this.ports[portId-1].nodes.length] = node;
 	},
 
 	clearNodes: function (portId) {

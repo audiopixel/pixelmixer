@@ -51,6 +51,9 @@
 				function onLoad(){
 
 
+					// ----------------
+
+
 					// ** Standard Three.js setup
 
 					scene = new THREE.Scene();
@@ -67,6 +70,8 @@
 					controls = new THREE.TrackballControls( camera, renderer.domElement);
 
 
+					// ----------------
+
 
 					// ** Initialize API
 
@@ -74,9 +79,11 @@
 					PX.setSize(glWidth, glHeight);
 
 					// Default sprite for all ports that are not tagged with a custom nodesType
-					PX.pointSize = 50;
+					PX.pointSize = 60;
 					PX.pointSprite = "images/lensflare8.png";
 
+
+					// ----------------
 
 
 					// ** Add a simple grid of Nodes 
@@ -127,21 +134,15 @@
 					PX.updateNodePoints();
 
 
+					// ----------------
+
 
 					// ** Add a shader to Channel 1
 
 					PX.simpleSetup({channel: 1, ids: ["SinSpiral"]});
 
 
-
-					// ** Set some param values on the Clip
-
-					// Set param1 on the clip to turn the color blue (for example this could be any ui setting params)
-					PX.set("p1", .7, 1, 1, 1); // Channel 1, Pod 1, Clip 1
-
-					// Set mix on the clip to be .9
-					PX.set("mix", .9, 1, 1, 1); // Channel 1, Pod 1, Clip 1
-
+					// ----------------
 
 
 					// ** Start the main loop

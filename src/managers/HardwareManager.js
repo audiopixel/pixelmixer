@@ -79,6 +79,40 @@ PX.HardwareManager.prototype = {
 		}
 	},
 
+
+	/*
+	* Import nodes using a csv format of [port, x, y, z]
+	* 
+	* If port is not yet defined it creates a new one
+	*
+	* @param imported 		The Array to import
+	* @param portOffset 	Optional value to offset the port values from.
+	* @param x 				Optional value to offset the x values from.
+	* @param y 				Optional value to offset the y values from.
+	* @param z 				Optional value to offset the z values from.
+	* @param scale 			Optional overwrite value to scale nodes from.
+	*/
+	importNodeArray: function (params) {
+		params.portOffset = params.portOffset || 0;
+		params.x = params.x || 0;
+		params.y = params.y || 0;
+		params.z = params.z || 0;
+		params.scale = params.scale || 1.0;
+
+		var node;
+		var nodes = [];
+		for ( var k = 0; k < params.nodes.length; k += 4 ) {
+
+			node = {};
+			node.x = (params.nodes[k + 1] * params.scale) + params.x;
+			node.y = (params.nodes[k + 2] * params.scale) + params.y;
+			node.z = (params.nodes[k + 3] * params.scale) + params.z;
+
+			PX.ports.addNode(params.nodes[k] + 1, node);
+		}
+
+	},
+
 	/*
 	* Import nodes using a array of positions [x,y,z]
 	*
@@ -87,6 +121,8 @@ PX.HardwareManager.prototype = {
 	*/
 	importVertices: function (params) {
 
+		var nodes = [];
+		var node = {};
 		if(!PX.ports[params.port-1]){
 			// If a port is not defined create a default one
 			PX.ports.setPort(params.port, new PX.Port());
@@ -138,7 +174,7 @@ PX.HardwareManager.prototype = {
 				maxy = Math.max(maxy, node.y);
 			}
 		}
-		var port = new PX.Port({name: "port name " + port, nodes: nodes});
+		var port = new PX.Port({name: "Port " + port, nodes: nodes});
 		PX.ports.setPort(params.port, port);
 
 		// If we are not the first designated port set the pod position as a default (testing)
@@ -186,7 +222,7 @@ PX.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new PX.Port({name: "port name " + port, nodes: nodes});
+			var port = new PX.Port({name: "Port " + port, nodes: nodes});
 			PX.ports.setPort(u + portStart, port);
 
 			xS += xTOffset;
@@ -209,7 +245,7 @@ PX.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new PX.Port({name: "port name " + port, nodes: nodes});
+			var port = new PX.Port({name: "Port " + port, nodes: nodes});
 			PX.ports.setPort(portStart, port);
 	},
 
@@ -226,7 +262,7 @@ PX.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new PX.Port({name: "port name " + port, nodes: nodes});
+			var port = new PX.Port({name: "Port " + port, nodes: nodes});
 			PX.ports.setPort(portStart, port);
 
 			nodes = [];
@@ -243,7 +279,7 @@ PX.HardwareManager.prototype = {
 					}
 				}
 			}
-			port = new PX.Port({name: "port name " + port, nodes: nodes});
+			port = new PX.Port({name: "Port " + port, nodes: nodes});
 			PX.ports.setPort(portStart + 1, port);
 
 			nodes = [];
@@ -260,7 +296,7 @@ PX.HardwareManager.prototype = {
 					}
 				}
 			}
-			port = new PX.Port({name: "port name " + port, nodes: nodes});
+			port = new PX.Port({name: "Port " + port, nodes: nodes});
 			PX.ports.setPort(portStart + 2, port);
 	},
 
