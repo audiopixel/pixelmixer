@@ -119,10 +119,11 @@ PX.HardwareManager.prototype = {
 		var maxy = -s;
 
 		var nodes = [];
+		var node = {};
 		for ( e = 0; e < params.width; e ++ ) { 
 			for ( i = 0; i < params.height; i ++ ) { 
 
-				var node = {};
+				node = {};
 				node.x = ((e * params.pitch) + params.x);
 				node.y = ((i * params.pitch) + params.y);
 				node.z = params.z;

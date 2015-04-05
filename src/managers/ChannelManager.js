@@ -350,6 +350,10 @@ PX.ChannelManager.prototype = {
 		
 		// Pod Position function
 		var m = "";
+		var pObj = {};
+		var dupe = false;
+		var e = 0;
+		var ms = "";
 
 		if(PX.usePodPosUniforms){
 			m += "if(d==u_pos_id){\n";
@@ -394,14 +398,14 @@ PX.ChannelManager.prototype = {
 		for (i = 0; i < this.podpositions.length; i++) {
 
 			if(isPosIdInPod(i+1)){
-				var pObj = {};
+				pObj = {};
 				pObj.w = this.podpositions[i].w;
 				pObj.h = this.podpositions[i].h;
 				pObj.d = this.podpositions[i].d;
 				pObj.s = [];
 
-				var dupe = false;
-				for (var e = 0; e < podObjs.length; e++) {
+				dupe = false;
+				for (e = 0; e < podObjs.length; e++) {
 					if(podObjs[e].w === pObj.w && podObjs[e].h === pObj.h && podObjs[e].d === pObj.d){
 						dupe = true;
 						podObjs[e].s[podObjs[e].s.length] = i+1;
@@ -419,10 +423,9 @@ PX.ChannelManager.prototype = {
 		for (i = 0; i < podObjs.length; i++) {
 
 			m += "else if(";
-			var ms = ""
-			for (var e = 0; e < podObjs[i].s.length; e++) {
-				podObjs[i].s[e];
-				ms += "||d==" + podObjs[i].s[e];
+			ms = "";
+			for (var u = 0; u < podObjs[i].s.length; u++) {
+				ms += "||d==" + podObjs[i].s[u];
 			}
 
 			ms = ms.slice(2, ms.length); // cut the first '||' out 
@@ -431,7 +434,7 @@ PX.ChannelManager.prototype = {
 			m += "}\n";
 		}
 
-		if(!PX.usePodPosUniforms){ m = m.slice(5, m.length) }; // cut the first 'else' out 
+		if(!PX.usePodPosUniforms){ m = m.slice(5, m.length); } // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodSize(int d) { \n" + m + "}\n";
@@ -446,18 +449,18 @@ PX.ChannelManager.prototype = {
 
 			m = "";
 			// First create a dupe free list of objs that also have a list of any pos id's that have these values
-			var podObjs = [];
+			podObjs = [];
 			for (i = 0; i < this.podpositions.length; i++) {
 
 				if(isPosIdInPod(i+1)){
-					var pObj = {};
+					pObj = {};
 					pObj.xt = this.podpositions[i].xt;
 					pObj.yt = this.podpositions[i].yt;
 					pObj.zt = this.podpositions[i].zt;
 					pObj.s = [];
 
-					var dupe = false;
-					for (var e = 0; e < podObjs.length; e++) {
+					dupe = false;
+					for (e = 0; e < podObjs.length; e++) {
 						if(podObjs[e].xt === pObj.xt && podObjs[e].yt === pObj.yt && podObjs[e].zt === pObj.zt){
 							dupe = true;
 							podObjs[e].s[podObjs[e].s.length] = i+1;
@@ -475,9 +478,8 @@ PX.ChannelManager.prototype = {
 			for (i = 0; i < podObjs.length; i++) {
 
 				m += "else if(";
-				var ms = ""
-				for (var e = 0; e < podObjs[i].s.length; e++) {
-					podObjs[i].s[e];
+				ms = "";
+				for (e = 0; e < podObjs[i].s.length; e++) {
 					ms += "||d==" + podObjs[i].s[e];
 				}
 
@@ -487,7 +489,7 @@ PX.ChannelManager.prototype = {
 				m += "}\n";
 			}
 
-			if(!PX.usePodPosUniforms){ m = m.slice(5, m.length) }; // cut the first 'else' out 
+			if(!PX.usePodPosUniforms){ m = m.slice(5, m.length); } // cut the first 'else' out 
 			m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 			m += "return p; \n";
 			m = "vec3 getPodOffset(int d) { \n" + m + "}\n";
@@ -500,19 +502,19 @@ PX.ChannelManager.prototype = {
 
 			m = "";
 			// First create a dupe free list of objs that also have a list of any pos id's that have these values
-			var podObjs = [];
+			podObjs = [];
 			for (i = 0; i < this.podpositions.length; i++) {
 
 				if(isPosIdInPod(i+1)){
-					var pObj = {};
+					pObj = {};
 					pObj.xs = this.podpositions[i].xs;
 					pObj.ys = this.podpositions[i].ys;
 					pObj.zs = this.podpositions[i].zs;
 					pObj.flipmode = this.podpositions[i].flipmode;
 					pObj.s = [];
 
-					var dupe = false;
-					for (var e = 0; e < podObjs.length; e++) {
+					dupe = false;
+					for (e = 0; e < podObjs.length; e++) {
 						if(podObjs[e].xs === pObj.xs && podObjs[e].ys === pObj.ys && podObjs[e].zs === pObj.zs && podObjs[e].flipmode === pObj.flipmode){
 							dupe = true;
 							podObjs[e].s[podObjs[e].s.length] = i+1;
@@ -530,9 +532,8 @@ PX.ChannelManager.prototype = {
 			for (i = 0; i < podObjs.length; i++) {
 
 				m += "else if(";
-				var ms = ""
-				for (var e = 0; e < podObjs[i].s.length; e++) {
-					podObjs[i].s[e];
+				ms = "";
+				for (e = 0; e < podObjs[i].s.length; e++) {
 					ms += "||d==" + podObjs[i].s[e];
 				}
 
@@ -542,7 +543,7 @@ PX.ChannelManager.prototype = {
 				m += "}\n";
 			}
 
-			if(!PX.usePodPosUniforms){ m = m.slice(5, m.length) }; // cut the first 'else' out 
+			if(!PX.usePodPosUniforms){ m = m.slice(5, m.length); } // cut the first 'else' out 
 			m = "vec4 p = vec4(0.,0.,0.,0.); \n" + m;
 			m += "return p; \n";
 			m = "vec4 getPodScale(int d) { \n" + m + "}\n";
@@ -690,13 +691,13 @@ PX.ChannelManager.prototype = {
 	setPodPosTransforms: function (params) {
 
 		var pos = this.getPodPos(params.id);
-		if(params.xt != null){pos.xt = params.xt;}
-		if(params.yt != null){pos.yt = params.yt;}
-		if(params.zt != null){pos.zt = params.zt;}
-		if(params.xs != null){pos.xs = params.xs;}
-		if(params.ys != null){pos.ys = params.ys;}
-		if(params.zs != null){pos.zs = params.zs;}
-		if(params.flipmode != null){pos.flipmode = params.flipmode;}
+		if(params.xt || params.xt < 1){pos.xt = params.xt;}
+		if(params.yt || params.yt < 1){pos.yt = params.yt;}
+		if(params.zt || params.zt < 1){pos.zt = params.zt;}
+		if(params.xs || params.xs < 1){pos.xs = params.xs;}
+		if(params.ys || params.ys < 1){pos.ys = params.ys;}
+		if(params.zs || params.zs < 1){pos.zs = params.zs;}
+		if(params.flipmode || params.flipmode < 1){pos.flipmode = params.flipmode;}
 	},
 
 	resetPodPosTransforms: function (podPositionId) {

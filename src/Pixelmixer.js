@@ -167,7 +167,7 @@ PX.update = function() {
 
 PX.updateShader = function() {
 	PX.shaderNeedsUpdate = true;
-}
+};
 
 
 PX.pointPosition = [-400, -400, 0]; // Defaults

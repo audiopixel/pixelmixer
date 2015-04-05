@@ -5,21 +5,80 @@ var PX = { REVISION: '1' };	// Global object
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* Api: -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-PX.broadcast = false;	
-PX.readPixels = false;	
 
-PX.speed = 0.07;				// How much we increase 'global time' per 'animation frame'
-PX.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
-PX.usePodUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
+PX.readPixels = false;			// Turn this on if you need to receive color values of all the pixels
+PX.broadcast = false;			// Update any defined techs to broadcast with the lastest pixels
 
-PX.pointCloud = {};			// Main point cloud that displays node colors
+PX.speed = 0.03;				// How much we increase 'global time' per 'animation frame'
+PX.useTransforms = true;		// Pod transforms (swap axis, translate, scale)
+PX.usePodPosUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
+
+PX.pointCloud = {};				// Main point cloud that displays node colors
 PX.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
 PX.pointMaterial = {};			// Shader of the point cloud that displays the node colors
+PX.pointSprite; 				// String - relative file path to image to represent the point sprite
 PX.pointSize = 20;				// The size of each point cloud sprite
 
-PX.pointSprite; 
 
-PX.material = false;			// Main shader referenced here, set false initially to flag that its not ready
+
+// ****** Constants ******
+
+// Blend Constants
+PX.BLEND = {};
+PX.BLEND.OFF = 0;
+PX.BLEND.Add = 1;
+PX.BLEND.Subtract = 2;
+PX.BLEND.Darkest = 3;
+PX.BLEND.Lightest = 4;
+PX.BLEND.Difference = 5;
+PX.BLEND.Exclusion = 6;
+PX.BLEND.Multiply = 7;
+PX.BLEND.Screen = 8;
+PX.BLEND.Overlay = 9;
+PX.BLEND.HardLight = 10;
+PX.BLEND.SoftLight = 11;
+PX.BLEND.Dodge = 12;
+PX.BLEND.Burn = 13;
+PX.BLEND.LinearBurn = 14;
+PX.BLEND.LinearLight = 15;
+PX.BLEND.VividLight = 16;
+PX.BLEND.PinLight = 17;
+PX.BLEND.Replace = 18;
+PX.BLEND.Ignore = 19;
+
+PX.BLENDS = [ 'Add', 'Substract', 'Darkest', 'Lightest', 'Difference', 'Exclusion', 'Multiply', 'Screen','Overlay', 
+			'HardLight', 'SoftLight', 'Dodge', 'Burn', 'LinearBurn', 'LinearLight', 'VividLight', 'PinLight'];
+
+
+// PX.Port Type Constants
+PX.PORT_TYPE_OFF = 0;
+PX.PORT_TYPE_KINET_1 = 1; // strands
+PX.PORT_TYPE_KINET_2 = 2; // tiles
+PX.PORT_TYPE_KINET_3 = 3; // colorblasts
+PX.PORT_TYPE_KINET_4 = 4;
+PX.PORT_TYPE_DMX_1 = 5; // Movers, for testing
+PX.PORT_TYPE_DMX_2 = 6;
+PX.PORT_TYPE_DMX_3 = 7;
+PX.PORT_TYPE_LASER_1 = 8;
+
+
+// PX.Channel Type Constants
+PX.CHANNEL_TYPE_OFF = 0;
+PX.CHANNEL_TYPE_ADD = 1;
+PX.CHANNEL_TYPE_FX = 2;
+PX.CHANNEL_TYPE_SCENE = 3;
+
+
+// Pod Hardware Group Modes Constants
+PX.HARDWAREGROUP_OFF = 0;
+PX.HARDWAREGROUP_SOLO = 1;
+PX.HARDWAREGROUP_EXCLUDE = 2;
+
+
+// Clip position map Constants
+PX.MAP_NORMAL = 0;
+PX.MAP_ALT1 = 1;
+PX.MAP_ALT2 = 2;
 
 
 // -------------------------------------------------------
@@ -67,7 +126,7 @@ PX.init = function(scene, renderer, maxNodeCount){
 PX.dataSetLength = null;
 
 
-PX.updateShader = false;
+PX.shaderNeedsUpdate = false;
 PX.updateFresh = false;
 PX.updateShaderLimiter = 0;
 PX.update = function() {
@@ -83,7 +142,7 @@ PX.update = function() {
 	}else if(PX.ready){
 
 		// Update everything else if we don't have to update the shader this frame
-		if((!PX.updateShader || PX.updateShaderLimiter < 4) && PX.updateShaderLimiter > 0){
+		if((!PX.shaderNeedsUpdate || PX.updateShaderLimiter < 2) && PX.updateShaderLimiter > 0){
 
 			// ** Main loop update 
 			PX.app.update();
@@ -96,13 +155,18 @@ PX.update = function() {
 			// Shader needs update
 			PX.app.updateMainSourceShader();
 			PX.app.update();
+			PX.ports.update();
 			PX.updateShaderLimiter = 0;
-			PX.updateShader = false;
+			PX.shaderNeedsUpdate = false;
 			PX.updateFresh = false;
 		}
 		PX.updateShaderLimiter++;
 
 	}
+};
+
+PX.updateShader = function() {
+	PX.shaderNeedsUpdate = true;
 };
 
 
@@ -258,7 +322,7 @@ PX.setObjProperty = function(property, value, channel, pod, clip) {
 
 PX.load = function(json){
 	PX.channels.channels = json;
-	PX.updateShader = true;
+	PX.shaderNeedsUpdate = true;
 	PX.updateFresh = true;
 };
 
@@ -274,6 +338,10 @@ PX.stringifyNodes = function(){
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* Internal: -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
+
+PX.material = false;			// Main shader referenced here, set false initially to flag that its not ready
+
+
 // ****** Platform ******
 
 PX.ready = false;				
@@ -285,64 +353,6 @@ PX.imported = {}; 				// Currently imported port (and possibly node) data
 PX.techs = {};
 
 PX.pixels;
-	
-// ****** Constants ******
-
-// Blend Constants
-PX.BLEND = {};
-PX.BLEND.OFF = 0;
-PX.BLEND.Add = 1;
-PX.BLEND.Subtract = 2;
-PX.BLEND.Darkest = 3;
-PX.BLEND.Lightest = 4;
-PX.BLEND.Difference = 5;
-PX.BLEND.Exclusion = 6;
-PX.BLEND.Multiply = 7;
-PX.BLEND.Screen = 8;
-PX.BLEND.Overlay = 9;
-PX.BLEND.HardLight = 10;
-PX.BLEND.SoftLight = 11;
-PX.BLEND.Dodge = 12;
-PX.BLEND.Burn = 13;
-PX.BLEND.LinearBurn = 14;
-PX.BLEND.LinearLight = 15;
-PX.BLEND.VividLight = 16;
-PX.BLEND.PinLight = 17;
-PX.BLEND.Fx = 1; // Use 'add' if this happens to get passed, all fx 'blending' happens outside blend()
-
-PX.BLENDS = [ 'Add', 'Substract', 'Darkest', 'Lightest', 'Difference', 'Exclusion', 'Multiply', 'Screen','Overlay', 
-			'HardLight', 'SoftLight', 'Dodge', 'Burn', 'LinearBurn', 'LinearLight', 'VividLight', 'PinLight'];
-
-
-// PX.Port Type Constants
-PX.PORT_TYPE_OFF = 0;
-PX.PORT_TYPE_KINET_1 = 1; // strands
-PX.PORT_TYPE_KINET_2 = 2; // tiles
-PX.PORT_TYPE_KINET_3 = 3; // colorblasts
-PX.PORT_TYPE_KINET_4 = 4;
-PX.PORT_TYPE_DMX_1 = 5; // Movers, for testing
-PX.PORT_TYPE_DMX_2 = 6;
-PX.PORT_TYPE_DMX_3 = 7;
-PX.PORT_TYPE_LASER_1 = 8;
-
-
-// PX.Channel Type Constants
-PX.CHANNEL_TYPE_OFF = 0;
-PX.CHANNEL_TYPE_ADD = 1;
-PX.CHANNEL_TYPE_FX = 2;
-PX.CHANNEL_TYPE_SCENE = 3;
-
-
-// Pod Hardware Group Modes Constants
-PX.HARDWAREGROUP_OFF = 0;
-PX.HARDWAREGROUP_SOLO = 1;
-PX.HARDWAREGROUP_EXCLUDE = 2;
-
-
-// Clip position map Constants
-PX.MAP_NORMAL = 0;
-PX.MAP_ALT1 = 1;
-PX.MAP_ALT2 = 2;
 
 
 // Temporary Preset Management 
@@ -721,12 +731,13 @@ PX.AppManager.prototype = {
 		var a = new Float32Array( Math.pow(PX.simSize, 2) * 4 );
 		var t = 0;
 
-		var minx = 100000000000;
-		var maxx = 0;
-		var miny = 100000000000;
-		var maxy = 0;
-		var minz = 100000000000;
-		var maxz = 0;
+		var s = 100000000000;
+		var minx = s;
+		var maxx = -s;
+		var miny = s;
+		var maxy = -s;
+		var minz = s;
+		var maxz = -s;
 
 		for ( var k = 0, kl = a.length; k < kl; k += 4 ) {
 			var x = 0;
@@ -796,8 +807,10 @@ PX.AppManager.prototype = {
 
 		// Use image for sprite if defined, otherwise default to drawing a square
 		var useTexture = 0;
+		var transparent = false;
 		if(PX.pointSprite){
 			useTexture = 1;
+			transparent = true;
 		}
 
 		var uniforms = {
@@ -814,7 +827,7 @@ PX.AppManager.prototype = {
 			vertexShader:   PX.shaders.PointCloudShader.vertexShader,
 			fragmentShader: PX.shaders.PointCloudShader.fragmentShader,
 			depthTest:      false,
-			transparent:    true
+			transparent:    transparent
 		});
 
 		var name = "PixelMixer Nodes";
@@ -862,7 +875,7 @@ PX.AppManager.prototype = {
 		var sourceUniforms = "";
 
 
-		if(PX.usePodUniforms){
+		if(PX.usePodPosUniforms){
 			uniforms.u_pos_id= { type: "i", value: 0 };
 			uniforms.u_pos_x = { type: "f", value: 0. };
 			uniforms.u_pos_y = { type: "f", value: 0. };
@@ -907,7 +920,7 @@ PX.AppManager.prototype = {
 		}
 
 
-		// If the flag is to update fresh ignore the existing uniforms 
+		// Don't update fresh each time and instead carry over existing uniforms
 		if(!PX.updateFresh){
 
 			// If the material already exists, transfer over the value of any uniforms that have remained
@@ -929,7 +942,7 @@ PX.AppManager.prototype = {
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERFUNCTIONS", sourceShader.fragmentFunctions);
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERUTILS", PX.shaders.ShaderUtils + sourceUniforms);
 
-		this.fragmentShader = this.minFragmentShader(this.fragmentShader);
+		//this.fragmentShader = this.minFragmentShader(this.fragmentShader);
 		
 
 		// The main material object has uniforms that can be referenced and updated directly by the UI
@@ -956,6 +969,7 @@ PX.AppManager.prototype = {
 		//console.log(PX.material.uniforms);
 		//console.log(this.fragmentShader);
 
+
 		// Main quad that gets rendered as the source shader
 		var name = "SourceQuad";
 		var lookupObj = this.sceneRTT.getObjectByName(name);
@@ -968,7 +982,7 @@ PX.AppManager.prototype = {
 		quad.name = name;
 		this.sceneRTT.add( quad );
 
-		// TODO possible optimize : seems this would be faster to update and not create new quad each time, but looks slower actually
+		// TODO possible optimize : seems this would be faster to update and not create new quad each time, but registers slower actually
 		//PX.material.uniforms = uniforms;
 		//PX.material.needsUpdate = true;
 
@@ -994,7 +1008,7 @@ PX.AppManager.prototype = {
 		frag = frag.replace(/_lastRgb/g, "_94");
 		frag = frag.replace(/getPodScale/g, "_95");
 		frag = frag.replace(/getPodOffset/g, "_96");
-		return frag;
+		return frag.trim();
 		
 	}
 
@@ -1036,12 +1050,6 @@ PX.ChannelManager.prototype = {
 		var fragOutput = "";
 		var lastKnownPos = {};
 		var lastKnownRes = "";
-
-		// Return the nth word of a string http://stackoverflow.com/a/11620169
-		function nthWord(str, n) {
-			var m = str.match(new RegExp('^(?:\\w+\\W+){' + --n + '}(\\w+)'));
-			return m && m[1];
-		}
 
 		// Now create the mixed down output
 		for (var i = 0; i < this.channels.length; i++) {
@@ -1088,7 +1096,7 @@ PX.ChannelManager.prototype = {
 
 									// Only update the res if we need to
 									var res = "vec2(" + podPos.w + ", " + podPos.h + ");";
-									if(PX.usePodUniforms){
+									if(PX.usePodPosUniforms){
 										res = "vec2(getPodSize(" + pod.positionIds[o] + ").x, getPodSize(" + pod.positionIds[o] + ").y);";
 									}
 									if(lastKnownRes !== res){
@@ -1133,7 +1141,7 @@ PX.ChannelManager.prototype = {
 														// Duplicate method checking - right now just checking based off the first 5 words of function
 														var name = shader.fragmentFunctions[v].trim();
 														
-														if(!this.isFunctionShaderUtil(name)){
+														if(!isFunctionShaderUtil(name)){
 															name = nthWord(name, 1) + nthWord(name, 2) + nthWord(name, 3) + nthWord(name, 4) + nthWord(name, 5);
 															if(!fragFuncList[name]){
 																fragFuncList[name] = true;
@@ -1197,7 +1205,6 @@ PX.ChannelManager.prototype = {
 												fragOutput += "px_rgb2 = superFunction(_clip_mix, "+ shader.id +", _fxIn, _clip_time, "+params[0]+","+params[1]+","+params[2]+","+params[3]+","+params[4]+","+params[5]+","+params[6]+","+params[7]+","+params[8]+");";
 
 												// Replace the standard GL color array with an internal one so that we can mix and merge, and then output to the standard when we are done
-												//fragOutput = fragOutput.replace(/px_fxOut/g, "px_rgbV4");
 												fragOutput = fragOutput.replace(/gl_FragCoord/g, "px_xyz");
 
 
@@ -1252,7 +1259,6 @@ PX.ChannelManager.prototype = {
 							
 								//  -------------- Pod Mix Blend & Fx --------------
 
-
 								if(fxPod){
 
 									// Fx pod: mix the original with the result of fx_rgb, _pod_mix); \n";
@@ -1262,8 +1268,8 @@ PX.ChannelManager.prototype = {
 
 									if(e === 0){
 
-										// If we are the very first pod mix output value, don't blend from previous pod
-										output += "px_p = px_rgb * (_pod_mix); \n";
+										// If we are the very first pod mix output value, don't blend from previous pod just add
+										output += "px_p = (px_rgb * _pod_mix) + px_p; \n"; // This where we can apply different blends per podpos
 
 									}else{
 
@@ -1332,6 +1338,20 @@ PX.ChannelManager.prototype = {
 		}
 
 
+		// Return the nth word of a string http://stackoverflow.com/a/11620169
+		function nthWord(str, n) {
+			var m = str.match(new RegExp('^(?:\\w+\\W+){' + --n + '}(\\w+)'));
+			return m && m[1];
+		}
+	
+		// Functions in shader utils - Don't define these shader util methods more then once
+		function isFunctionShaderUtil(msg){
+			if(msg.indexOf("rgb2hsv") > -1){return true;}
+			if(msg.indexOf("hsv2rgb") > -1){return true;}
+			if(msg.indexOf("blend") > -1){return true;}
+			return false;
+		}
+		
 
 		//console.log(uniforms);
 		//console.log(fragFuncOutput);
@@ -1345,78 +1365,207 @@ PX.ChannelManager.prototype = {
 		
 		// Pod Position function
 		var m = "";
+		var pObj = {};
+		var dupe = false;
+		var e = 0;
+		var ms = "";
 
-		if(PX.usePodUniforms){
-			m += "if(d == u_pos_id){\n";
-				m += "p = vec3(u_pos_x, u_pos_y, u_pos_z);\n";
+		if(PX.usePodPosUniforms){
+			m += "if(d==u_pos_id){\n";
+				m += "p=vec3(u_pos_x, u_pos_y, u_pos_z);\n";
 			m += "}";
 		}
 
+	//========================================================
+
+	//---Position
+
 		for (var i = 0; i < this.podpositions.length; i++) {
-			m += "else if(d == " + (i+1) + "){\n";
-			m += "p = vec3("+this.podpositions[i].x+","+this.podpositions[i].y+","+this.podpositions[i].z+");\n";
-			m += "}\n";
+
+			if(isPosIdInPod(i+1)){
+				m += "else if(d==" + (i+1) + "){\n";
+				m += "p=vec3("+this.podpositions[i].x+","+this.podpositions[i].y+","+this.podpositions[i].z+");\n";
+				m += "}\n";
+			}
 		}
 
-		if(!PX.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
-		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
+		if(!PX.usePodPosUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
+		m = "vec3 p=vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodPos(int d) { \n" + m + "}\n";
 
 		var output = m;
 		m = "";
 
-		if(PX.usePodUniforms){
-			m += "if(d == u_pos_id){\n";
-				m += "p = vec3(u_pos_w, u_pos_h, u_pos_d);\n";
+	//---//Position
+
+
+		if(PX.usePodPosUniforms){
+			m += "if(d==u_pos_id){\n";
+				m += "p=vec3(u_pos_w, u_pos_h, u_pos_d);\n";
 			m += "}";
 		}
 
-		// Pod Size function
+	//---Size
+
+		// First create a dupe free list of objs that also have a list of any pos id's that have these values
+		var podObjs = [];
 		for (i = 0; i < this.podpositions.length; i++) {
-			m += "else if(d == " + (i+1) + "){\n";
-			m += "p = vec3("+this.podpositions[i].w+","+this.podpositions[i].h+","+this.podpositions[i].d+");\n";
+
+			if(isPosIdInPod(i+1)){
+				pObj = {};
+				pObj.w = this.podpositions[i].w;
+				pObj.h = this.podpositions[i].h;
+				pObj.d = this.podpositions[i].d;
+				pObj.s = [];
+
+				dupe = false;
+				for (e = 0; e < podObjs.length; e++) {
+					if(podObjs[e].w === pObj.w && podObjs[e].h === pObj.h && podObjs[e].d === pObj.d){
+						dupe = true;
+						podObjs[e].s[podObjs[e].s.length] = i+1;
+						break;
+					}
+				}
+				if(!dupe){
+					pObj.s[0] = i+1;
+					podObjs[podObjs.length] = pObj;
+				}
+			}
+		}
+
+		// Pod Size function
+		for (i = 0; i < podObjs.length; i++) {
+
+			m += "else if(";
+			ms = "";
+			for (var u = 0; u < podObjs[i].s.length; u++) {
+				ms += "||d==" + podObjs[i].s[u];
+			}
+
+			ms = ms.slice(2, ms.length); // cut the first '||' out 
+			m += ms + "){\n";
+			m += "p=vec3("+podObjs[i].w+","+podObjs[i].h+","+podObjs[i].d+");\n";
 			m += "}\n";
 		}
 
-		if(!PX.usePodUniforms){ m = m.slice(5, m.length);} // cut the first 'else' out 
+		if(!PX.usePodPosUniforms){ m = m.slice(5, m.length); } // cut the first 'else' out 
 		m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 		m += "return p; \n";
 		m = "vec3 getPodSize(int d) { \n" + m + "}\n";
 
 		output += m;
 
+	//---//Size
+
+	//---Offset (translate)
+
 		if(PX.useTransforms){
 
-			// Pod Offset (translation)
 			m = "";
+			// First create a dupe free list of objs that also have a list of any pos id's that have these values
+			podObjs = [];
 			for (i = 0; i < this.podpositions.length; i++) {
-				m += "else if(d == " + (i+1) + "){\n";
-				m += "p = vec3("+this.podpositions[i].xt+","+this.podpositions[i].yt+","+this.podpositions[i].zt+");\n";
+
+				if(isPosIdInPod(i+1)){
+					pObj = {};
+					pObj.xt = this.podpositions[i].xt;
+					pObj.yt = this.podpositions[i].yt;
+					pObj.zt = this.podpositions[i].zt;
+					pObj.s = [];
+
+					dupe = false;
+					for (e = 0; e < podObjs.length; e++) {
+						if(podObjs[e].xt === pObj.xt && podObjs[e].yt === pObj.yt && podObjs[e].zt === pObj.zt){
+							dupe = true;
+							podObjs[e].s[podObjs[e].s.length] = i+1;
+							break;
+						}
+					}
+					if(!dupe){
+						pObj.s[0] = i+1;
+						podObjs[podObjs.length] = pObj;
+					}
+				}
+			}
+
+			// Pod Size function
+			for (i = 0; i < podObjs.length; i++) {
+
+				m += "else if(";
+				ms = "";
+				for (e = 0; e < podObjs[i].s.length; e++) {
+					ms += "||d==" + podObjs[i].s[e];
+				}
+
+				ms = ms.slice(2, ms.length); // cut the first '||' out 
+				m += ms + "){\n";
+				m += "p=vec3("+podObjs[i].xt+","+podObjs[i].yt+","+podObjs[i].zt+");\n";
 				m += "}\n";
 			}
 
-			m = m.slice(5, m.length); // cut the first 'else' out 
+			if(!PX.usePodPosUniforms){ m = m.slice(5, m.length); } // cut the first 'else' out 
 			m = "vec3 p = vec3(0.,0.,0.); \n" + m;
 			m += "return p; \n";
 			m = "vec3 getPodOffset(int d) { \n" + m + "}\n";
 
 			output += m;
 
-			// Pod Scale & Flipmode
+	//---//Offset (translate)
+	
+	//---Scale
+
 			m = "";
+			// First create a dupe free list of objs that also have a list of any pos id's that have these values
+			podObjs = [];
 			for (i = 0; i < this.podpositions.length; i++) {
-				m += "else if(d == " + (i+1) + "){\n";
-				m += "p = vec4("+this.podpositions[i].xs+","+this.podpositions[i].ys+","+this.podpositions[i].zs+","+this.podpositions[i].flipmode+");\n";
+
+				if(isPosIdInPod(i+1)){
+					pObj = {};
+					pObj.xs = this.podpositions[i].xs;
+					pObj.ys = this.podpositions[i].ys;
+					pObj.zs = this.podpositions[i].zs;
+					pObj.flipmode = this.podpositions[i].flipmode;
+					pObj.s = [];
+
+					dupe = false;
+					for (e = 0; e < podObjs.length; e++) {
+						if(podObjs[e].xs === pObj.xs && podObjs[e].ys === pObj.ys && podObjs[e].zs === pObj.zs && podObjs[e].flipmode === pObj.flipmode){
+							dupe = true;
+							podObjs[e].s[podObjs[e].s.length] = i+1;
+							break;
+						}
+					}
+					if(!dupe){
+						pObj.s[0] = i+1;
+						podObjs[podObjs.length] = pObj;
+					}
+				}
+			}
+
+			// Pod Size function
+			for (i = 0; i < podObjs.length; i++) {
+
+				m += "else if(";
+				ms = "";
+				for (e = 0; e < podObjs[i].s.length; e++) {
+					ms += "||d==" + podObjs[i].s[e];
+				}
+
+				ms = ms.slice(2, ms.length); // cut the first '||' out 
+				m += ms + "){\n";
+				m += "p=vec4("+podObjs[i].xs+","+podObjs[i].ys+","+podObjs[i].zs+","+podObjs[i].flipmode+");\n";
 				m += "}\n";
 			}
-			
-			m = m.slice(5, m.length); // cut the first 'else' out 
+
+			if(!PX.usePodPosUniforms){ m = m.slice(5, m.length); } // cut the first 'else' out 
 			m = "vec4 p = vec4(0.,0.,0.,0.); \n" + m;
 			m += "return p; \n";
 			m = "vec4 getPodScale(int d) { \n" + m + "}\n";
 
 			output += m;
+
+	//---//Scale
 		}
 
 		// Method to check xyz+whd against another // TODO account for non rectangular shapes
@@ -1438,13 +1587,27 @@ PX.ChannelManager.prototype = {
 			output += "float x = b.x - c.x;\n";
 			output += "float y = b.y - c.y;\n";
 			output += "float z = b.z - c.z;\n";
-			output += "float t = x;\n";
 
 			// For performance reasons use a lighter and manual version of Matrix transforms
 			if(PX.useTransforms){
 
-				// swap axis
+
+				output += "vec3 d = getPodOffset(p);\n";
+				output += "vec3 e = getPodSize(p);\n";
 				output += "vec4 s = getPodScale(p);\n";
+
+				// scale/flip/mirror: (magnitude of 8)
+				output += "x += (b.x - (e.x * .5 + c.x)) * (1.-(s.x * 2.))*8.;\n";
+				output += "y += (b.y - (e.y * .5 + c.y)) * (1.-(s.y * 2.))*8.;\n";
+				output += "z += (b.z - (e.z * .5 + c.z)) * (1.-(s.z * 2.))*8.;\n";
+
+				// translate: (magnitude of 8)
+				output += "x += (e.x * 8. * (d.x - .5));\n";
+				output += "y += (e.y * 8. * (d.y - .5));\n";
+				output += "z += (e.z * 8. * (d.z - .5));\n";
+				
+				// swap axis
+				output += "float t = x;\n";
 				output += "if(s.w == 1.){";
 					output += "x=y;y=t;\n";		// swap x-y
 				output += "}else if(s.w == 2.){";	
@@ -1452,38 +1615,35 @@ PX.ChannelManager.prototype = {
 				output += "}else if(s.w == 3.){";
 					output += "t=y;y=z;z=t;\n";	// swap y-z
 				output += "}\n";
-
-				output += "vec3 d = getPodOffset(p);\n";
-				output += "vec3 e = getPodSize(p);\n";
-
-				// translate: (magnitude of 8)
-				output += "x += (e.x * 8. * (d.x - .5));\n";
-				output += "y += (e.y * 8. * (d.y - .5));\n";
-				output += "z += (e.z * 8. * (d.z - .5));\n";
-
-				// scale/flip/mirror: (magnitude of 8)
-				output += "x += (b.x - (e.x * .5 + c.x)) * (1.-(s.x * 2.))*8.;\n";
-				output += "y += (b.y - (e.y * .5 + c.y)) * (1.-(s.y * 2.))*8.;\n";
-				output += "z += (b.z - (e.z * .5 + c.z)) * (1.-(s.z * 2.))*8.;\n";
-
 			}
 
 			output += "return vec4(x, y, z, w);\n";
 
 		output += "}\n";
 
+
+		// Check to see if a pod-position-id is in use in any loaded pod
+		function isPosIdInPod(posId){
+
+			for (var i = 0; i < PX.channels.channels.length; i++) { var channel = PX.channels.channels[i];
+				if(channel && channel.pods){
+					for (var e = 0; e < channel.pods.length; e++) { var pod = channel.pods[e];
+						if(pod){
+							for (var u = 0; u < pod.positionIds.length; u++) { var pos = pod.positionIds[u];
+								if(pos === posId){
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+			return false;
+		}
+
 		//console.log(output);
 		return output;
 	},
-	
-	// Functions in shader utils - Don't define these shader util methods more then once
-	isFunctionShaderUtil: function (msg){
-
-		if(msg.indexOf("rgb2hsv") > -1){return true;}
-		if(msg.indexOf("hsv2rgb") > -1){return true;}
-		if(msg.indexOf("blend") > -1){return true;}
-		return false;
-	}, 
 
 	// ************* Channels ***********************
 
@@ -1512,7 +1672,14 @@ PX.ChannelManager.prototype = {
 		delete this.channels[channelId-1].pods; // TODO optimize: most likely better to not use 'delete'
 	},
 
+	// ************* Pods ********************************
+
+	getPod: function (channelId, podId) {
+		return this.channels[channelId-1].pods[podId-1];
+	},
+
 	// ************* Pod Positions ***********************
+
 
 	setPodPos: function (podPositionId, podPositionObject) {
 		this.podpositions[podPositionId-1] = podPositionObject;
@@ -1533,6 +1700,31 @@ PX.ChannelManager.prototype = {
 
 	clearAllPodPos: function () {
 		this.podpositions = [];
+	},
+
+
+	setPodPosTransforms: function (params) {
+
+		var pos = this.getPodPos(params.id);
+		if(params.xt || params.xt < 1){pos.xt = params.xt;}
+		if(params.yt || params.yt < 1){pos.yt = params.yt;}
+		if(params.zt || params.zt < 1){pos.zt = params.zt;}
+		if(params.xs || params.xs < 1){pos.xs = params.xs;}
+		if(params.ys || params.ys < 1){pos.ys = params.ys;}
+		if(params.zs || params.zs < 1){pos.zs = params.zs;}
+		if(params.flipmode || params.flipmode < 1){pos.flipmode = params.flipmode;}
+	},
+
+	resetPodPosTransforms: function (podPositionId) {
+		this.setPodPosTransforms({id: podPositionId, 
+			xt: .5,
+			yt: .5,
+			zt: .5,
+			xs: .5,
+			ys: .5,
+			zs: .5,
+			flipmode: 0
+		});
 	},
 
 	// ************* Clips ***********************
@@ -1574,15 +1766,6 @@ PX.HardwareManager = function () {
 PX.HardwareManager.prototype = {
 
 	init: function () {
-
-		// Testing various configurations:
-
-		//this.addTestPortsGrid3(1, 0, 0);
-		//this.addSimpleNodeGrid(0, 0, 0, 30, 40, 33);
-		//this.addSimpleNodeGrid(0, 220, 0, 32, 20, 33);
-
-		// Simulate Importing nodes from external file
-		//this.importNodes(PX.imported, 1, 350, 100, 500);
 
 	},
 
@@ -1648,32 +1831,76 @@ PX.HardwareManager.prototype = {
 		}
 	},
 
-	importNodeArray: function (array, portId, xOffset, yOffset, zOffset, scale) {
+	/*
+	* Import nodes using a array of positions [x,y,z]
+	*
+	* @param port 		The port to load the nodes to.
+	* @param vertices 	The array of vertices to create node positions from.
+	*/
+	importVertices: function (params) {
 
-		xOffset = xOffset || 0;
-		yOffset = yOffset || 0;
-		zOffset = zOffset || 0;
-		scale = scale || 1.0;
-
-
-		if(!PX.ports[portId-1]){
+		if(!PX.ports[params.port-1]){
 			// If a port is not defined create a default one
-			PX.ports.setPort(portId, new PX.Port());
+			PX.ports.setPort(params.port, new PX.Port());
 		}
+
+		PX.ports.setNodes(params.port, params.vertices);
+	},
+
+
+	/*
+	* Create a simple 2D grid of nodes at a pitch distance
+	*
+	* @param portStart 	The port to load these nodes into.
+	* @param x 			Translate position x for grid.
+	* @param y 			Translate position y for grid.
+	* @param z 			Translate position z for grid.
+	* @param width 		How many nodes wide.
+	* @param height 	How many nodes tall.
+	* @param pitch 		How far the nodes are spaces from each other.
+	* @param positionId If specified create position id from the min and max of grid
+	*/
+	addSimpleNodeGrid: function (params) {
+
+		// If a port slot is not defined just add it to the next open one
+		if(!params.port){
+			params.port = PX.ports.ports.length + 1;
+		}
+
+		var s = 100000000000;
+		var minx = s;
+		var maxx = -s;
+		var miny = s;
+		var maxy = -s;
 
 		var nodes = [];
-		for (var i = 0; i < array.length / 3; i++) {
+		var node = {};
+		for ( e = 0; e < params.width; e ++ ) { 
+			for ( i = 0; i < params.height; i ++ ) { 
 
-			var node = {};
-			node.x = (array[(i * 3)] * scale) + xOffset;
-			node.y = (array[(i * 3) + 1] * scale) + yOffset;
-			node.z = (array[(i * 3) + 2] * scale) + zOffset;
-			nodes[nodes.length] = node;
+				node = {};
+				node.x = ((e * params.pitch) + params.x);
+				node.y = ((i * params.pitch) + params.y);
+				node.z = params.z;
+				nodes.push(node);
+
+				minx = Math.min(minx, node.x);
+				maxx = Math.max(maxx, node.x);
+				miny = Math.min(miny, node.y);
+				maxy = Math.max(maxy, node.y);
+			}
+		}
+		var port = new PX.Port({name: "port name " + port, nodes: nodes});
+		PX.ports.setPort(params.port, port);
+
+		// If we are not the first designated port set the pod position as a default (testing)
+		if(params.positionId > 1){
+			PX.channels.setPodPos(params.port, new PX.PodPosition({x: minx, y: miny, z: node.z, w: maxx - minx, h: maxy - miny, d: node.z+1}));
 		}
 
-		PX.ports.setNodes(portId, nodes);
-
 	},
+
+	// ----- testing ----
 
 	addTestGrid: function (port, xOffset, yOffset) {
 
@@ -1787,46 +2014,6 @@ PX.HardwareManager.prototype = {
 			}
 			port = new PX.Port({name: "port name " + port, nodes: nodes});
 			PX.ports.setPort(portStart + 2, port);
-	},
-
-
-	addSimpleNodeGrid: function (x, y, z, width, height, pitch, portStart) {
-
-		// If a port slot is not defined just add it to the next open one
-		if(!portStart){
-			portStart = PX.ports.ports.length + 1;
-		}
-		
-
-		var minx = 100000000000;
-		var maxx = 0;
-		var miny = 100000000000;
-		var maxy = 0;
-
-		var nodes = [];
-		for ( e = 0; e < width; e ++ ) { 
-			for ( i = 0; i < height; i ++ ) { 
-
-				var node = {};
-				node.x = ((e * pitch) + x);
-				node.y = ((i * pitch) + y);
-				node.z = z;
-				nodes.push(node);
-
-				minx = Math.min(minx, node.x);
-				maxx = Math.max(maxx, node.x);
-				miny = Math.min(miny, node.y);
-				maxy = Math.max(maxy, node.y);
-			}
-		}
-		var port = new PX.Port({name: "port name " + port, nodes: nodes});
-		PX.ports.setPort(portStart, port);
-
-		// If we are not the first designated port set the pod position as a default (testing)
-		if(portStart > 1){
-			PX.channels.setPodPos(portStart, new PX.PodPosition({x: minx, y: miny, z: z, w: maxx - minx, h: maxy - miny, d: z+1}));
-		}
-
 	}
 
 };
@@ -1899,17 +2086,9 @@ PX.PortManager.prototype = {
 						PX.techs[port.type].broadcast(port);
 
 					}
-
 				}
 			}
 		}
-
-		
-// tech: uses it's port/node increment as the id
-	// we then use that id as which 3 values we grab from pixels array
-	// tech.broadcast(portObject, nodeIndex, pixels array)
-
-
 	},
 
 	// ************* Nodes ***********************
@@ -1924,26 +2103,6 @@ PX.PortManager.prototype = {
 
 	setNodes: function (portId, nodes) {
 		if(!this.ports[portId-1]){ this.ports[portId-1] = {}; }
-		this.ports[portId-1].nodes = nodes;
-	},
-
-	// Add some nodes with imposed uniform values
-	setNodesOffset: function (portId, nodes, offsetX, offsetY, offsetZ) {
-		if(!this.ports[portId-1]){ this.ports[portId-1] = {}; }
-		for (var i = 0; i < nodes.length; i++) {
-			nodes[i].x += offsetX;
-			nodes[i].y += offsetY;
-			nodes[i].z += offsetZ;
-		}
-		this.ports[portId-1].nodes = nodes;
-	},
-
-	// Add some nodes that only have x, y data, imposed with a uniform z value
-	setNodesFlat: function (portId, nodes, z) {
-		if(!this.ports[portId-1]){ this.ports[portId-1] = {}; }
-		for (var i = 0; i < nodes.length; i++) {
-			nodes[i].z = z;
-		}
 		this.ports[portId-1].nodes = nodes;
 	},
 
@@ -2116,14 +2275,14 @@ PX.Pod = function (params) {
 *
 */
 
-PX.PodPosition = function (params) { // x, y, z, width, height, depth, xt, yt, zt, xs, ys, zs, flipmode
+PX.PodPosition = function (params) { 
 
 	this.x = params.x || 0;
 	this.y = params.y || 0;
 	this.z = params.z || 0;
 	this.w = params.w || 0;
 	this.h = params.h || 0;
-	this.d = params.d || 0;
+	this.d = params.d || 1;
 
 	this.xt = params.xt || 0.5;
 	this.yt = params.yt || 0.5;
@@ -2186,6 +2345,7 @@ PX.MainShader = {
 		"vec4 px_rgbV4;",
 		"vec3 px_c = vec3(0.);",
 		"vec3 px_p = vec3(0.);",
+		"vec3 px_p2 = vec3(0.);",
 		"vec2 resolution;",
 		"vec2 surfacePosition = vec2(0.);",
 		"float random;",
@@ -2332,32 +2492,33 @@ PX.shaders.ShaderUtils = [
 
 	"vec3 blend(vec3 c1, vec3 c2, float type)",
 	"{",
-		"if(type == 0.0){ return c1; }else						",// Off",
-		"if(type == 1.0){ return c1 + c2; }else					",// Add",
-		"if(type == 2.0){ return c1 - c2; }else					",// Subtract",
-		"if(type == 3.0){ return min(c1, c2); }else				",// Darkest",
-		"if(type == 4.0){ return max(c1, c2); }else				",// Lighest",
-		"if(type == 5.0){ return abs(c2 - c1); }else				",// DIFFERENCE",
-		"if(type == 6.0){ return c1 + c2 - 2.0 * c1 * c2; }else	",// EXCLUSION",
-		"if(type == 7.0){ return c1 * c2; }else					",// Multiply",
-		"if(type == 8.0){ return (c1 + c2) - (c1 * c2); }else	",// Screen",
+		"if(type == 1.){ return c1 + c2; }else					",// Add",
+		"if(type == 2.){ return c1 - c2; }else					",// Subtract",
+		"if(type == 3.){ return min(c1, c2); }else				",// Darkest",
+		"if(type == 4.){ return max(c1, c2); }else				",// Lighest",
+		"if(type == 5.){ return abs(c2 - c1); }else			",// DIFFERENCE",
+		"if(type == 6.){ return c1 + c2 - 2.0 * c1 * c2; }else	",// EXCLUSION",
+		"if(type == 7.){ return c1 * c2; }else					",// Multiply",
+		"if(type == 8.){ return (c1 + c2) - (c1 * c2); }else	",// Screen",
 		//"													// Overlay",
-		"if(type == 9.0){ return vec3((c2.r <= 0.5) ? (2.0 * c1.r * c2.r) : (1.0 - 2.0 * (1.0 - c2.r) * (1.0 - c1.r)),(c2.g <= 0.5) ? (2.0 * c1.g * c2.g) : (1.0 - 2.0 * (1.0 - c2.g) * (1.0 - c1.g)),(c2.b <= 0.5) ? (2.0 * c1.b * c2.b) : (1.0 - 2.0 * (1.0 - c2.b) * (1.0 - c1.b))); }else",
+		"if(type == 9.){ return vec3((c2.r <= 0.5) ? (2.0 * c1.r * c2.r) : (1.0 - 2.0 * (1.0 - c2.r) * (1.0 - c1.r)),(c2.g <= 0.5) ? (2.0 * c1.g * c2.g) : (1.0 - 2.0 * (1.0 - c2.g) * (1.0 - c1.g)),(c2.b <= 0.5) ? (2.0 * c1.b * c2.b) : (1.0 - 2.0 * (1.0 - c2.b) * (1.0 - c1.b))); }else",
 		//"													// HARD LIGHT",
-		"if(type == 10.0){ return vec3((c1.r <= 0.5) ? (2.0 * c1.r * c2.r) : (1.0 - 2.0 * (1.0 - c1.r) * (1.0 - c2.r)),(c1.g <= 0.5) ? (2.0 * c1.g * c2.g) : (1.0 - 2.0 * (1.0 - c1.g) * (1.0 - c2.g)),(c1.b <= 0.5) ? (2.0 * c1.b * c2.b) : (1.0 - 2.0 * (1.0 - c1.b) * (1.0 - c2.b))); }else",
+		"if(type == 10.){ return vec3((c1.r <= 0.5) ? (2.0 * c1.r * c2.r) : (1.0 - 2.0 * (1.0 - c1.r) * (1.0 - c2.r)),(c1.g <= 0.5) ? (2.0 * c1.g * c2.g) : (1.0 - 2.0 * (1.0 - c1.g) * (1.0 - c2.g)),(c1.b <= 0.5) ? (2.0 * c1.b * c2.b) : (1.0 - 2.0 * (1.0 - c1.b) * (1.0 - c2.b))); }else",
 		//"												// SOFT LIGHT",
-		"if(type == 11.0){ return vec3((c1.r <= 0.5) ? (c2.r - (1.0 - 2.0 * c1.r) * c2.r * (1.0 - c2.r)) : (((c1.r > 0.5) && (c2.r <= 0.25)) ? (c2.r + (2.0 * c1.r - 1.0) * (4.0 * c2.r * (4.0 * c2.r + 1.0) * (c2.r - 1.0) + 7.0 * c2.r)) : (c2.r + (2.0 * c1.r - 1.0) * (sqrt(c2.r) - c2.r))),(c1.g <= 0.5) ? (c2.g - (1.0 - 2.0 * c1.g) * c2.g * (1.0 - c2.g)) : (((c1.g > 0.5) && (c2.g <= 0.25)) ? (c2.g + (2.0 * c1.g - 1.0) * (4.0 * c2.g * (4.0 * c2.g + 1.0) * (c2.g - 1.0) + 7.0 * c2.g)) : (c2.g + (2.0 * c1.g - 1.0) * (sqrt(c2.g) - c2.g))),(c1.b <= 0.5) ? (c2.b - (1.0 - 2.0 * c1.b) * c2.b * (1.0 - c2.b)) : (((c1.b > 0.5) && (c2.b <= 0.25)) ? (c2.b + (2.0 * c1.b - 1.0) * (4.0 * c2.b * (4.0 * c2.b + 1.0) * (c2.b - 1.0) + 7.0 * c2.b)) : (c2.b + (2.0 * c1.b - 1.0) * (sqrt(c2.b) - c2.b)))); }else",
+		"if(type == 11.){ return vec3((c1.r <= 0.5) ? (c2.r - (1.0 - 2.0 * c1.r) * c2.r * (1.0 - c2.r)) : (((c1.r > 0.5) && (c2.r <= 0.25)) ? (c2.r + (2.0 * c1.r - 1.0) * (4.0 * c2.r * (4.0 * c2.r + 1.0) * (c2.r - 1.0) + 7.0 * c2.r)) : (c2.r + (2.0 * c1.r - 1.0) * (sqrt(c2.r) - c2.r))),(c1.g <= 0.5) ? (c2.g - (1.0 - 2.0 * c1.g) * c2.g * (1.0 - c2.g)) : (((c1.g > 0.5) && (c2.g <= 0.25)) ? (c2.g + (2.0 * c1.g - 1.0) * (4.0 * c2.g * (4.0 * c2.g + 1.0) * (c2.g - 1.0) + 7.0 * c2.g)) : (c2.g + (2.0 * c1.g - 1.0) * (sqrt(c2.g) - c2.g))),(c1.b <= 0.5) ? (c2.b - (1.0 - 2.0 * c1.b) * c2.b * (1.0 - c2.b)) : (((c1.b > 0.5) && (c2.b <= 0.25)) ? (c2.b + (2.0 * c1.b - 1.0) * (4.0 * c2.b * (4.0 * c2.b + 1.0) * (c2.b - 1.0) + 7.0 * c2.b)) : (c2.b + (2.0 * c1.b - 1.0) * (sqrt(c2.b) - c2.b)))); }else",
 		//"												// DODGE",
-		"if(type == 12.0){ return vec3((c1.r == 1.0) ? 1.0 : min(1.0, c2.r / (1.0 - c1.r)),(c1.g == 1.0) ? 1.0 : min(1.0, c2.g / (1.0 - c1.g)),(c1.b == 1.0) ? 1.0 : min(1.0, c2.b / (1.0 - c1.b))); }else",
+		"if(type == 12.){ return vec3((c1.r == 1.0) ? 1.0 : min(1.0, c2.r / (1.0 - c1.r)),(c1.g == 1.0) ? 1.0 : min(1.0, c2.g / (1.0 - c1.g)),(c1.b == 1.0) ? 1.0 : min(1.0, c2.b / (1.0 - c1.b))); }else",
 		//"													// Burn",
-		"if(type == 13.0){ return vec3((c1.r == 0.0) ? 0.0 : (1.0 - ((1.0 - c2.r) / c1.r)),(c1.g == 0.0) ? 0.0 : (1.0 - ((1.0 - c2.g) / c1.g)), (c1.b == 0.0) ? 0.0 : (1.0 - ((1.0 - c2.b) / c1.b))); }else",
-		"if(type == 14.0){ return (c1 + c2) - 1.0; }else",//			// LINEAR BURN",
-		"if(type == 15.0){ return 2.0 * c1 + c2 - 1.0; }else",//		// LINEAR LIGHT	",	
+		"if(type == 13.){ return vec3((c1.r == 0.0) ? 0.0 : (1.0 - ((1.0 - c2.r) / c1.r)),(c1.g == 0.0) ? 0.0 : (1.0 - ((1.0 - c2.g) / c1.g)), (c1.b == 0.0) ? 0.0 : (1.0 - ((1.0 - c2.b) / c1.b))); }else",
+		"if(type == 14.){ return (c1 + c2) - 1.0; }else",//			// LINEAR BURN",
+		"if(type == 15.){ return 2.0 * c1 + c2 - 1.0; }else",//		// LINEAR LIGHT	",	
 		//"													// VIVID LIGHT",
-		"if(type == 16.0){ return vec3((c1.r <= 0.5) ? (1.0 - (1.0 - c2.r) / (2.0 * c1.r)) : (c2.r / (2.0 * (1.0 - c1.r))),(c1.g <= 0.5) ? (1.0 - (1.0 - c2.g) / (2.0 * c1.g)) : (c2.g / (2.0 * (1.0 - c1.g))),(c1.b <= 0.5) ? (1.0 - (1.0 - c2.b) / (2.0 * c1.b)) : (c2.b / (2.0 * (1.0 - c1.b)))); }else",
-		//"											// PIN LIGHT",
-		"if(type == 17.0){ return vec3((c1.r > 0.5) ? max(c2.r, 2.0 * (c1.r - 0.5)) : min(c2.r, 2.0 * c1.r), (c1.r > 0.5) ? max(c2.g, 2.0 * (c1.g - 0.5)) : min(c2.g, 2.0 * c1.g),(c1.b > 0.5) ? max(c2.b, 2.0 * (c1.b - 0.5)) : min(c2.b, 2.0 * c1.b)); }else",
-		"{ return c1 + c2; }								",//		// Add (default)",
+		"if(type == 16.){ return vec3((c1.r <= 0.5) ? (1.0 - (1.0 - c2.r) / (2.0 * c1.r)) : (c2.r / (2.0 * (1.0 - c1.r))),(c1.g <= 0.5) ? (1.0 - (1.0 - c2.g) / (2.0 * c1.g)) : (c2.g / (2.0 * (1.0 - c1.g))),(c1.b <= 0.5) ? (1.0 - (1.0 - c2.b) / (2.0 * c1.b)) : (c2.b / (2.0 * (1.0 - c1.b)))); }else",
+		//"												// PIN LIGHT",
+		"if(type == 17.){ return vec3((c1.r > 0.5) ? max(c2.r, 2.0 * (c1.r - 0.5)) : min(c2.r, 2.0 * c1.r), (c1.r > 0.5) ? max(c2.g, 2.0 * (c1.g - 0.5)) : min(c2.g, 2.0 * c1.g),(c1.b > 0.5) ? max(c2.b, 2.0 * (c1.b - 0.5)) : min(c2.b, 2.0 * c1.b)); }else",
+		"if(type == 18.){return c1; }else						",// Replace",
+		"if(type == 19.){return c2; }else",						// Off / Ignore
+		"{ return c1 + c2; }								",  // Add (default)",
 	"}",
 /*
 	"vec3 nv(vec4 c)",
