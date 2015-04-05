@@ -23,6 +23,7 @@ PX.Port = function (params) {
 	this.broadcast = 	params.broadcast || false;
 	this.address = 		params.address || "";
 	this.nodes = 		params.nodes || [];
+	this.nodesType = 	params.nodesType || 0;
 	this.hardwarePort = params.hardwarePort || 1;
 
 };

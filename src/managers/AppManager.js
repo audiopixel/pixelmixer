@@ -31,6 +31,7 @@ PX.AppManager = function (scene, renderer) {
 	this.time = 0;
 
 	this.coordsMap;
+	this.portsMap;
 	this.altMap1;
 	this.altMap2;
 
@@ -311,9 +312,14 @@ PX.AppManager.prototype = {
 		this.passIndex = [];
 		PX.pointGeometry = new THREE.Geometry();
 
+
+		// Generate portsMap data texture for all the nodes x,y,z
+		var b = new Float32Array( Math.pow(PX.simSize, 2) * 4 );
+
 		// Update 'PX.pointGeometry' with all the known nodes on state
 		// Create attributes for each one to pass to the shader
 		var t = 0;
+		var k = 0;
 		for ( e = 0; e < PX.ports.getPorts().length; e ++ ) { 
 
 			var port = PX.ports.getPort(e + 1);
@@ -340,9 +346,23 @@ PX.AppManager.prototype = {
 					this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
 					this.passIndex.push(t);
 					t++;
+
+					b[ k     ] = e + 1;			// PortId
+					b[ k + 1 ] = i + 1; 		// NodeId
+					b[ k + 2 ] = port.nodesType;// NodeType
+
+					b[ k + 3 ] = 1;
+					k += 4;
 				}
 			}
 		}
+
+		// Create data texture from Portsmap Data
+		this.portsMap = new THREE.DataTexture( b, PX.simSize, PX.simSize, THREE.RGBAFormat, THREE.FloatType );
+		this.portsMap.minFilter = THREE.NearestFilter;
+		this.portsMap.magFilter = THREE.NearestFilter;
+		this.portsMap.needsUpdate = true;
+		this.portsMap.flipY = true;
 	},
 
 	generateCoordsMap: function () {
@@ -485,6 +505,7 @@ PX.AppManager.prototype = {
 			time: { type: "f", value: this.time },
 			_random: { type: "f", value: Math.random() },
 			u_coordsMap: { type: "t", value: this.coordsMap },
+			u_portsMap: { type: "t", value: this.portsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
 			u_mapSize: { type: "f", value: PX.simSize },
 			mouse: { type: "v2", value: new THREE.Vector2( 0., 0. ) }
@@ -575,6 +596,7 @@ PX.AppManager.prototype = {
 
 		// Update uniforms directly
 		PX.material.uniforms.u_coordsMap.value = this.coordsMap;
+		PX.material.uniforms.u_portsMap.value = this.portsMap;
 		PX.material.uniforms.u_prevCMap.value = this.rtTextureB;
 
 		if(this.altMap1){
@@ -631,5 +653,70 @@ PX.AppManager.prototype = {
 		return frag.trim();
 		
 	}
+
+
+	///////////////// test
+	/*
+	addPlanesForTesting: function(){
+
+		var y = -800;
+
+		testPlane = new THREE.PlaneBufferGeometry( PX.simSize * 2, PX.simSize * 2 );
+		
+		var materialScreen = new THREE.ShaderMaterial( {
+
+			uniforms: 		{u_texture:   { type: "t", value: this.rtTextureA }},
+			vertexShader: 	PX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PX.shaders.SimpleTextureShader.fragmentShader,
+			depthWrite: false
+
+		} );
+
+		var quad = new THREE.Mesh( testPlane, materialScreen );
+		quad.position.y = y;
+		this.sceneMain.add( quad );
+
+		materialScreen = new THREE.ShaderMaterial( {
+
+			uniforms: 		{u_texture:   { type: "t", value: this.rtTextureB }},
+			vertexShader: 	PX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PX.shaders.SimpleTextureShader.fragmentShader,
+			depthWrite: false
+
+		} );
+
+		quad = new THREE.Mesh( testPlane, materialScreen );
+		quad.position.y = y - 200;
+		this.sceneMain.add( quad );
+
+		materialScreen = new THREE.ShaderMaterial( {
+
+			uniforms: 		{u_texture:   { type: "t", value: this.coordsMap }},
+			vertexShader: 	PX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PX.shaders.SimpleTextureShader.fragmentShader,
+			depthWrite: false
+
+		} );
+
+		quad = new THREE.Mesh( testPlane, materialScreen );
+		quad.position.x = -500;
+		quad.position.y = y;
+		this.sceneMain.add( quad );
+
+		materialScreen = new THREE.ShaderMaterial( {
+
+			uniforms: 		{u_texture:   { type: "t", value: this.portsMap }},
+			vertexShader: 	PX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PX.shaders.SimpleTextureShader.fragmentShader,
+			depthWrite: false
+
+		} );
+
+		quad = new THREE.Mesh( testPlane, materialScreen );
+		quad.position.x = -500;
+		quad.position.y = y - 200;
+		this.sceneMain.add( quad );
+
+	}*/
 
 };

@@ -34,7 +34,7 @@ PX.MainShader = {
 		"uniform vec2 mouse;",
 		"uniform sampler2D u_coordsMap;",
 		"uniform sampler2D u_prevCMap;",
-		//uniform sampler2D u_portsMap;
+		"uniform sampler2D u_portsMap;",
 
 
 		"#INCLUDESHADERFUNCTIONS",
