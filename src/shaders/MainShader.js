@@ -27,6 +27,11 @@ PX.MainShader = {
 		"vec2 surfacePosition = vec2(0.);",
 		"float random;",
 
+		"float px_port;",
+		"float px_id;",
+		"float px_type;",
+
+
 		"varying vec2 v_vUv;",
 		"uniform float time;",
 		"uniform float _random;",
@@ -55,6 +60,11 @@ PX.MainShader = {
 
 			"px_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);",
 			"px_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));",
+
+			"px_c = vec3(texture2D( u_portsMap, v_vUv));",
+			"px_port = px_c.r;",
+			"px_id = px_c.g;",
+			"px_type = px_c.b;",
 
 			//********************************************
 

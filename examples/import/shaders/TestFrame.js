@@ -61,6 +61,11 @@ PX.clips.TestFrame = {
 		* vec3 blend(vec3 c1, vec3 c2, float type);		// Blend Modes (1-17)
 		* float rand(vec2 co);							// Random Generator	(vec2)
 		* float mix(float a, float b, float mix);		// Mix two floats
+
+		
+		"float px_port;",
+		"float px_id;",
+		"float px_type;",
 		* 
 		**/
 
