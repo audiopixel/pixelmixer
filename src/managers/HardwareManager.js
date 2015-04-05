@@ -107,6 +107,12 @@ PX.HardwareManager.prototype = {
 			node.x = (params.nodes[k + 1] * params.scale) + params.x;
 			node.y = (params.nodes[k + 2] * params.scale) + params.y;
 			node.z = (params.nodes[k + 3] * params.scale) + params.z;
+			nodes.push[node];
+
+			if(params.nodes[k] === 2){
+				//node.x += Math.random() * 1;
+			}
+				//console.log(params.nodes[k]);
 
 			PX.ports.addNode(params.nodes[k] + 1, node);
 		}

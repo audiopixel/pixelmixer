@@ -17,7 +17,7 @@
 * @param xs	 		Number, scale x coordinate of the content inside bounds of the pod.
 * @param ys	 		Number, scale y coordinate of the content inside bounds of the pod.
 * @param zs	 		Number, scale z coordinate of the content inside bounds of the pod.
-* @param flipmode	Number, 0: normal, 1: swap x-y, 2: swap x-z, 3: swap y-z.
+* @param swapaxis	Number, 0: normal, 1: swap x-y, 2: swap x-z, 3: swap y-z.
 *
 */
 
@@ -26,9 +26,9 @@ PX.PodPosition = function (params) {
 	this.x = params.x || 0;
 	this.y = params.y || 0;
 	this.z = params.z || 0;
-	this.w = params.w || 0;
-	this.h = params.h || 0;
-	this.d = params.d || 1;
+	this.w = Math.max(.1, params.w) || 1;
+	this.h = Math.max(.1, params.h) || 1;
+	this.d = Math.max(.1, params.d) || 1;
 
 	this.xt = params.xt || 0.5;
 	this.yt = params.yt || 0.5;
@@ -36,6 +36,6 @@ PX.PodPosition = function (params) {
 	this.xs = params.xs || 0.5;
 	this.ys = params.ys || 0.5;
 	this.zs = params.zs || 0.5;
-	this.flipmode = params.flipmode || 0;
+	this.swapaxis = params.swapaxis || 0;
 
 };

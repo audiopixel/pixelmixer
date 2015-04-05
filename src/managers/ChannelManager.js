@@ -510,12 +510,12 @@ PX.ChannelManager.prototype = {
 					pObj.xs = this.podpositions[i].xs;
 					pObj.ys = this.podpositions[i].ys;
 					pObj.zs = this.podpositions[i].zs;
-					pObj.flipmode = this.podpositions[i].flipmode;
+					pObj.swapaxis = this.podpositions[i].swapaxis;
 					pObj.s = [];
 
 					dupe = false;
 					for (e = 0; e < podObjs.length; e++) {
-						if(podObjs[e].xs === pObj.xs && podObjs[e].ys === pObj.ys && podObjs[e].zs === pObj.zs && podObjs[e].flipmode === pObj.flipmode){
+						if(podObjs[e].xs === pObj.xs && podObjs[e].ys === pObj.ys && podObjs[e].zs === pObj.zs && podObjs[e].swapaxis === pObj.swapaxis){
 							dupe = true;
 							podObjs[e].s[podObjs[e].s.length] = i+1;
 							break;
@@ -539,7 +539,7 @@ PX.ChannelManager.prototype = {
 
 				ms = ms.slice(2, ms.length); // cut the first '||' out 
 				m += ms + "){\n";
-				m += "p=vec4("+podObjs[i].xs+","+podObjs[i].ys+","+podObjs[i].zs+","+podObjs[i].flipmode+");\n";
+				m += "p=vec4("+podObjs[i].xs+","+podObjs[i].ys+","+podObjs[i].zs+","+podObjs[i].swapaxis+");\n";
 				m += "}\n";
 			}
 
@@ -678,6 +678,7 @@ PX.ChannelManager.prototype = {
 		var result = false;
 
 		for ( e = 0; e < ports.length; e ++ ) { 
+
 			var port = PX.ports.getPort(ports[e]);
 
 			if(port && port.nodes){
@@ -696,7 +697,7 @@ PX.ChannelManager.prototype = {
 		}
 
 		if(result){
-			this.podpositions[podPositionId-1] = new PX.PodPosition({x: minx, y: miny, z: minz, w: maxx - minx, h: maxy - miny, d: maxz - minz});
+			this.podpositions[podPositionId-1] = new PX.PodPosition({x: minx, y: miny, z: minz, w: (maxx - minx) + 1, h: maxy - miny, d: maxz - minz});
 		}
 	},
 
@@ -731,7 +732,7 @@ PX.ChannelManager.prototype = {
 		if(params.xs || params.xs < 1){pos.xs = params.xs;}
 		if(params.ys || params.ys < 1){pos.ys = params.ys;}
 		if(params.zs || params.zs < 1){pos.zs = params.zs;}
-		if(params.flipmode || params.flipmode < 1){pos.flipmode = params.flipmode;}
+		if(params.swapaxis || params.swapaxis < 1){pos.swapaxis = params.swapaxis;}
 	},
 
 	resetPodPosTransforms: function (podPositionId) {
@@ -742,7 +743,7 @@ PX.ChannelManager.prototype = {
 			xs: .5,
 			ys: .5,
 			zs: .5,
-			flipmode: 0
+			swapaxis: 0
 		});
 	},
 
