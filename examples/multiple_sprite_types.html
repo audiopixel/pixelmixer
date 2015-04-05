@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Multiple Sprites Example</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href="css/main.css" rel="stylesheet" />
+		
+
+		<!-- Import standard three.js stuff -->
+		<script src="libs/Detector.js"></script>
+		<script src="libs/three.min.js"></script>
+		<script src="libs/TrackballControls.js"></script>
+
+
+		<!-- Import library -->
+		<!-- <script src="../build/pixelmixer.min.js"></script> -->
+		<script src="../src/Pixelmixer.js"></script>
+		<script src="../src/managers/AppManager.js"></script>
+		<script src="../src/managers/PortManager.js"></script>
+		<script src="../src/managers/HardwareManager.js"></script>
+		<script src="../src/managers/ChannelManager.js"></script>
+		<script src="../src/objects/Port.js"></script>
+		<script src="../src/objects/Channel.js"></script>
+		<script src="../src/objects/Pod.js"></script>
+		<script src="../src/objects/Clip.js"></script>
+		<script src="../src/objects/PodPosition.js"></script>
+		<script src="../src/shaders/MainShader.js"></script>
+		<script src="../src/shaders/PointCloudShader.js"></script>
+		<script src="../src/shaders/ShaderUtils.js"></script>
+		<script src="../src/shaders/SimpleTextureShader.js"></script>
+
+
+		<!-- Import Shaders Here -->
+		<script src="import/shaders/SinSpiral.js"></script>
+
+
+		<script>
+
+			if ( !Detector.webgl ) { Detector.addGetWebGLMessage(); } else {
+
+				var glWidth = window.innerWidth;
+				var glHeight = window.innerHeight;
+
+				var scene;
+				var renderer;
+				var camera;
+				var controls;
+				var container;
+
+				function onLoad(){
+
+
+					// ** Standard Three.js setup
+
+					scene = new THREE.Scene();
+
+					renderer = new THREE.WebGLRenderer(); 
+					renderer.setSize( glWidth, glHeight );
+					renderer.autoClear = false;
+
+					container = document.getElementById( 'container' );
+					container.appendChild( renderer.domElement ); 
+
+					camera = new THREE.PerspectiveCamera( 30, glWidth / glHeight, 1, 100000 );
+					camera.position.z = 2000;
+					controls = new THREE.TrackballControls( camera, renderer.domElement);
+
+
+
+					// ** Initialize API
+
+					PX.init(scene, renderer);
+					PX.setSize(glWidth, glHeight);
+
+					// Default sprite for all ports that are not tagged with a custom nodesType
+					PX.pointSize = 50;
+					PX.pointSprite = "images/lensflare8.png";
+
+
+
+					// ** Add a simple grid of Nodes 
+
+					// Port 1
+					var params = {};		// Position coordinates for the entire grid
+					params.x = -470;		
+					params.y = 530;
+					params.z = -0;
+					params.width = 52;		// How many pixels for the entire grid
+					params.height = 5;
+					params.pitch = 33;		// How far each pixel is spaced
+					PX.hardware.addSimpleNodeGrid(params);
+
+
+					// Port 2
+					var params2 = {};		// Position coordinates for the entire grid
+					params2.x = -470;		
+					params2.y = 328;
+					params2.z = -0;
+					params2.width = 52;		// How many pixels for the entire grid
+					params2.height = 5;
+					params2.pitch = 33;		// How far each pixel is spaced
+					PX.hardware.addSimpleNodeGrid(params2);
+
+					// Define a custom sprite in type 1, and then associate that with port 2
+					PX.hardware.setCustomPointSize(1, 25);
+					PX.hardware.setCustomPointSprite(1, "images/ball.png");
+					PX.ports.getPort(2).nodesType = 1;
+
+
+					// Port 3
+					var params3 = {};		// Position coordinates for the entire grid
+					params3.x = -470;		
+					params3.y = 120;
+					params3.z = -0;
+					params3.width = 52;		// How many pixels for the entire grid
+					params3.height = 5;
+					params3.pitch = 33;		// How far each pixel is spaced
+					PX.hardware.addSimpleNodeGrid(params3);
+
+					// Define a custom sprite in type 2, and then associate that with port 3
+					PX.hardware.setCustomPointSize(2, 24);
+					PX.hardware.setCustomPointSprite(2, "images/fun1.png");
+					PX.ports.getPort(3).nodesType = 2;
+
+
+					PX.updateNodePoints();
+
+
+
+					// ** Add a shader to Channel 1
+
+					PX.simpleSetup({channel: 1, ids: ["SinSpiral"]});
+
+
+
+					// ** Set some param values on the Clip
+
+					// Set param1 on the clip to turn the color blue (for example this could be any ui setting params)
+					PX.set("p1", .7, 1, 1, 1); // Channel 1, Pod 1, Clip 1
+
+					// Set mix on the clip to be .9
+					PX.set("mix", .9, 1, 1, 1); // Channel 1, Pod 1, Clip 1
+
+
+
+					// ** Start the main loop
+
+					animate();
+
+
+				}
+
+				function animate() {
+
+					// Main update loop
+					if(PX.ready){
+
+						// Update the API
+						PX.update();
+
+						// Update Three.js
+						controls.update();
+						renderer.render( scene, camera );
+					}
+
+					// Keep repeating the animation loop
+					requestAnimationFrame( animate );
+				}
+
+
+				function onWindowResize() {
+
+					// Resize logic
+					glWidth = window.innerWidth;
+					glHeight = window.innerHeight;
+
+					PX.setSize(glWidth, glHeight);
+
+					camera.aspect = glWidth / glHeight;
+					camera.updateProjectionMatrix();
+					controls.handleResize();
+
+				}
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+		</script>
+
+	</head>
+
+	<body ontouchstart="" onload="onLoad()">
+
+		<div id="container"></div>
+
+	</body>
+
+</html>

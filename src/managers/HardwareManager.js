@@ -6,7 +6,7 @@
 
 PX.HardwareManager = function () {
 
-	this.pointSizes = [PX.pointSize, 200, 50];
+	this.pointSizes = [PX.pointSize, 50, 15];
 	this.pointSprites = [PX.pointSprite];
 
 };
