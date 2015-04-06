@@ -55,7 +55,9 @@ PX.clips.LineCosSin = {
 
 	fragmentMain: [
 
-		"vec2 p = (( gl_FragCoord.xy / resolution.xy ) - vec2(0.5, 0.5)) * (_p1 * 2.);",
+		"float t = max(_p1, .01);",
+		"vec2 p = (gl_FragCoord.xy / resolution.xy - .5)*0.99 * t;",
+		"p.x *= resolution.x / resolution.y;",
 		
 		//"look = (mouse-0.5)*2.0*pi;", // TODO add in mouse support
 		"vec2 look = vec2(.5,.5);",

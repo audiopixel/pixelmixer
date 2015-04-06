@@ -351,7 +351,9 @@ PX.AppManager.prototype = {
 					if(!PX.pointSprite && type === 0){
 						type = -1; // if we don't have a sprite defined the default is no sprite
 					}
-					this.pointTypes.push(type);
+					if(PX.hardware.getCustomPointSprite(type)){
+						this.pointTypes.push(type);
+					}
 
 					this.geoX.push(tx / imageSize - 0.5 / imageSize);
 					this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y

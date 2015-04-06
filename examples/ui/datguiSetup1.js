@@ -20,38 +20,6 @@ function initUi(){
 	// -------Create some Channels/Pods/Clips----------
 
 
-	// ** Channel 1
-
-	var clip1 = new PX.Clip({id: "LineCosSin"});
-	var clipfx1 = new PX.Clip({id: "TestFx", blend: PX.BLEND.Fx});
-
-	var clip2 = new PX.Clip({id: "ColorSineBar"});
-	var clipfx2 = new PX.Clip({id: "TestFx", blend: PX.BLEND.Fx});
-
-	// Create two pods each with a content clip and a fx clip inside it
-	var pods = [];
-	pods[1] = new PX.Pod({positionIds: [2], blend: PX.BLEND.LinearLight, clips: [clip1, clipfx1]});
-	pods[0] = new PX.Pod({positionIds: [1], clips: [clip2, clipfx2]});
-
-	// Add them both to the first channel
-	var channel1 = new PX.Channel({name: "TestChannel1", mix: 1, pods: pods});
-	PX.channels.setChannel(1, channel1);
-
-
-	// ** Channel 2 - Post FX Channel
-	
-	var pods2 = [];
-	var clipfx3 = new PX.Clip({id: "HueFx", blend: PX.BLEND.Fx});
-
-	pods2[0] = new PX.Pod({positionIds: [1], clips: [clipfx3]});
-
-	var channel2 = new PX.Channel({name: "Post FX1", type: PX.CHANNEL_TYPE_FX, mix: 1, pods: pods2});
-	PX.channels.setChannel(2, channel2);
-
-
-
-	// Tell the shader to update after we set some new state
-	PX.updateShader();
 
 	// The list of state that the UI is representing (V) and setting (C)
 	guiData  = {

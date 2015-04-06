@@ -114,6 +114,10 @@ PX.PortManager.prototype = {
 		return this.ports;
 	},
 
+	getPortCount: function () {
+		return this.ports.length;
+	},
+
 	// Add details to a existing port
 	addPortDetails: function (portId, port) {
 		if(!this.ports[portId-1]){ console.log("Error: Cannot add details to unexisting Port " + portId); return; }
