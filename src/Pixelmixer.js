@@ -1,5 +1,5 @@
 
-var PX = { REVISION: '1' };	// Global object
+var PX = { version: '0.1.0' };	// Global PixelMixer object
 
 
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -11,7 +11,7 @@ PX.broadcast = false;			// Update any defined techs to broadcast with the lastes
 
 PX.speed = 0.03;				// How much we increase 'global time' per 'animation frame'
 PX.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
-PX.usePodPosUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
+PX.usePodPosUniforms = false;	// Allow u_pos_id uniforms to update a pod position by id 
 
 PX.pointCloud = {};				// Main point cloud that displays node colors
 PX.pointGeometry = {};			// The geometry of the point cloud that displays the node colors

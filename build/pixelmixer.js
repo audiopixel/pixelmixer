@@ -1,5 +1,28 @@
+/*
+The MIT License
 
-var PX = { REVISION: '1' };	// Global object
+Copyright &copy; 2010-2015 Hepp Maccoy, AudioPixel, & PixelMixer.js Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+var PX = { version: '0.1.0' };	// Global PixelMixer object
 
 
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -10,14 +33,14 @@ PX.readPixels = false;			// Turn this on if you need to receive color values of 
 PX.broadcast = false;			// Update any defined techs to broadcast with the lastest pixels
 
 PX.speed = 0.03;				// How much we increase 'global time' per 'animation frame'
-PX.useTransforms = true;		// Pod transforms (swap axis, translate, scale)
-PX.usePodPosUniforms = false;		// Allow u_pos_id uniforms to update a pod position by id 
+PX.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
+PX.usePodPosUniforms = false;	// Allow u_pos_id uniforms to update a pod position by id 
 
 PX.pointCloud = {};				// Main point cloud that displays node colors
 PX.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
 PX.pointMaterial = {};			// Shader of the point cloud that displays the node colors
 PX.pointSprite; 				// String - relative file path to image to represent the point sprite
-PX.pointSize = 20;				// The size of each point cloud sprite
+PX.pointSize = 25;				// The size of each point cloud sprite
 
 
 
@@ -170,7 +193,7 @@ PX.updateShader = function() {
 };
 
 
-PX.pointPosition = [-400, -400, 0]; // Defaults
+PX.pointPosition = [0, 0, 0]; // Defaults
 PX.setPointPosition = function(x, y, z) {
 	PX.pointPosition = [x, y, z];
 	if(PX.pointCloud.position){
@@ -196,13 +219,16 @@ PX.setSize = function(width, height) {
 
 		// Reset point size relative to screen resolution
 		PX.setPointSize(PX.pointSize);
+
+		if(PX.pointMaterial){
+			PX.pointMaterial.uniforms.u_res.value = PX.app.glWidth / PX.app.glHeight;
+		}
 	}
 };
 
 
 PX.setPointSize = function(v) {
-	v *= ((PX.app.glWidth * PX.app.glHeight) * .00001);
-	PX.pointMaterial.uniforms.u_pointSize.value = v;
+
 	if(PX.pointSize <= 0){
 		PX.pointSize = v;
 	}
@@ -402,6 +428,8 @@ PX.AppManager = function (scene, renderer) {
 	this.controls;
 	this.camera;
 
+	this.pointSizes = [];
+	this.pointTypes = [];
 	this.geoX = [];
 	this.geoY = [];
 	this.passIndex = [];
@@ -411,6 +439,7 @@ PX.AppManager = function (scene, renderer) {
 	this.time = 0;
 
 	this.coordsMap;
+	this.portsMap;
 	this.altMap1;
 	this.altMap2;
 
@@ -686,14 +715,21 @@ PX.AppManager.prototype = {
 	updateGeometry: function () {
 
 		// Reset values and grab entire state fresh. Note this is only called once when hardware is added or removed
+		this.pointSizes = [];
+		this.pointTypes = [];
 		this.geoX = [];
 		this.geoY = [];
 		this.passIndex = [];
 		PX.pointGeometry = new THREE.Geometry();
 
+
+		// Generate portsMap data texture for all the nodes x,y,z
+		var b = new Float32Array( Math.pow(PX.simSize, 2) * 4 );
+
 		// Update 'PX.pointGeometry' with all the known nodes on state
 		// Create attributes for each one to pass to the shader
 		var t = 0;
+		var k = 0;
 		for ( e = 0; e < PX.ports.getPorts().length; e ++ ) { 
 
 			var port = PX.ports.getPort(e + 1);
@@ -715,14 +751,37 @@ PX.AppManager.prototype = {
 						tx = imageSize;
 					}
 					var ty = ((t+2) - tx) / imageSize;
+					this.pointSizes.push(PX.hardware.getCustomPointSize(port.nodesType));
+
+					var type = port.nodesType;
+					if(!PX.pointSprite && type === 0){
+						type = -1; // if we don't have a sprite defined the default is no sprite
+					}
+					if(PX.hardware.getCustomPointSprite(type)){
+						this.pointTypes.push(type);
+					}
 
 					this.geoX.push(tx / imageSize - 0.5 / imageSize);
 					this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
 					this.passIndex.push(t);
 					t++;
+
+					b[ k     ] = e + 1;			// PortId
+					b[ k + 1 ] = i + 1; 		// NodeId
+					b[ k + 2 ] = port.nodesType;// NodeType
+
+					b[ k + 3 ] = 1;
+					k += 4;
 				}
 			}
 		}
+
+		// Create data texture from Portsmap Data
+		this.portsMap = new THREE.DataTexture( b, PX.simSize, PX.simSize, THREE.RGBAFormat, THREE.FloatType );
+		this.portsMap.minFilter = THREE.NearestFilter;
+		this.portsMap.magFilter = THREE.NearestFilter;
+		this.portsMap.needsUpdate = true;
+		this.portsMap.flipY = true;
 	},
 
 	generateCoordsMap: function () {
@@ -800,6 +859,8 @@ PX.AppManager.prototype = {
 
 		
 		var attributes = { // For each node we pass along it's indenodx value and x, y in relation to the colorMaps
+			a_pointSizes:  { type: 'f', value: this.pointSizes },
+			a_texId:  		{ type: 'f', value: this.pointTypes },
 			a_geoX:        { type: 'f', value: this.geoX },
 			a_geoY:        { type: 'f', value: this.geoY },
 			a_index:       { type: 'f', value: this.passIndex }
@@ -807,18 +868,23 @@ PX.AppManager.prototype = {
 
 		// Use image for sprite if defined, otherwise default to drawing a square
 		var useTexture = 0;
-		var transparent = false;
 		if(PX.pointSprite){
 			useTexture = 1;
-			transparent = true;
 		}
 
 		var uniforms = {
+			u_res:   { type: "f", value: PX.app.glWidth / PX.app.glHeight },
 			u_colorMap:   { type: "t", value: this.rtTextureA },
 			u_texture:    { type: "t", value: THREE.ImageUtils.loadTexture( PX.pointSprite )},
 			u_useTexture: { type: "i", value: useTexture }
 		};
 
+		// Add 2 custom sprite textures if they are defined
+		for (var i = 0; i < 2; i++) {
+			if(PX.hardware.getCustomPointSprite(i+1)){
+				uniforms["u_texture" + (i+1)] = { type: "t", value: THREE.ImageUtils.loadTexture( PX.hardware.getCustomPointSprite(i+1) ) };
+			}
+		}
 
 		PX.pointMaterial = new THREE.ShaderMaterial( {
 
@@ -827,7 +893,7 @@ PX.AppManager.prototype = {
 			vertexShader:   PX.shaders.PointCloudShader.vertexShader,
 			fragmentShader: PX.shaders.PointCloudShader.fragmentShader,
 			depthTest:      false,
-			transparent:    transparent
+			transparent:    true
 		});
 
 		var name = "PixelMixer Nodes";
@@ -865,6 +931,7 @@ PX.AppManager.prototype = {
 			time: { type: "f", value: this.time },
 			_random: { type: "f", value: Math.random() },
 			u_coordsMap: { type: "t", value: this.coordsMap },
+			u_portsMap: { type: "t", value: this.portsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
 			u_mapSize: { type: "f", value: PX.simSize },
 			mouse: { type: "v2", value: new THREE.Vector2( 0., 0. ) }
@@ -955,6 +1022,7 @@ PX.AppManager.prototype = {
 
 		// Update uniforms directly
 		PX.material.uniforms.u_coordsMap.value = this.coordsMap;
+		PX.material.uniforms.u_portsMap.value = this.portsMap;
 		PX.material.uniforms.u_prevCMap.value = this.rtTextureB;
 
 		if(this.altMap1){
@@ -1011,6 +1079,71 @@ PX.AppManager.prototype = {
 		return frag.trim();
 		
 	}
+
+
+	///////////////// test
+	/*
+	addPlanesForTesting: function(){
+
+		var y = -800;
+
+		testPlane = new THREE.PlaneBufferGeometry( PX.simSize * 2, PX.simSize * 2 );
+		
+		var materialScreen = new THREE.ShaderMaterial( {
+
+			uniforms: 		{u_texture:   { type: "t", value: this.rtTextureA }},
+			vertexShader: 	PX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PX.shaders.SimpleTextureShader.fragmentShader,
+			depthWrite: false
+
+		} );
+
+		var quad = new THREE.Mesh( testPlane, materialScreen );
+		quad.position.y = y;
+		this.sceneMain.add( quad );
+
+		materialScreen = new THREE.ShaderMaterial( {
+
+			uniforms: 		{u_texture:   { type: "t", value: this.rtTextureB }},
+			vertexShader: 	PX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PX.shaders.SimpleTextureShader.fragmentShader,
+			depthWrite: false
+
+		} );
+
+		quad = new THREE.Mesh( testPlane, materialScreen );
+		quad.position.y = y - 200;
+		this.sceneMain.add( quad );
+
+		materialScreen = new THREE.ShaderMaterial( {
+
+			uniforms: 		{u_texture:   { type: "t", value: this.coordsMap }},
+			vertexShader: 	PX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PX.shaders.SimpleTextureShader.fragmentShader,
+			depthWrite: false
+
+		} );
+
+		quad = new THREE.Mesh( testPlane, materialScreen );
+		quad.position.x = -500;
+		quad.position.y = y;
+		this.sceneMain.add( quad );
+
+		materialScreen = new THREE.ShaderMaterial( {
+
+			uniforms: 		{u_texture:   { type: "t", value: this.portsMap }},
+			vertexShader: 	PX.shaders.SimpleTextureShader.vertexShader,
+			fragmentShader: PX.shaders.SimpleTextureShader.fragmentShader,
+			depthWrite: false
+
+		} );
+
+		quad = new THREE.Mesh( testPlane, materialScreen );
+		quad.position.x = -500;
+		quad.position.y = y - 200;
+		this.sceneMain.add( quad );
+
+	}*/
 
 };
 /*
@@ -1525,12 +1658,12 @@ PX.ChannelManager.prototype = {
 					pObj.xs = this.podpositions[i].xs;
 					pObj.ys = this.podpositions[i].ys;
 					pObj.zs = this.podpositions[i].zs;
-					pObj.flipmode = this.podpositions[i].flipmode;
+					pObj.swapaxis = this.podpositions[i].swapaxis;
 					pObj.s = [];
 
 					dupe = false;
 					for (e = 0; e < podObjs.length; e++) {
-						if(podObjs[e].xs === pObj.xs && podObjs[e].ys === pObj.ys && podObjs[e].zs === pObj.zs && podObjs[e].flipmode === pObj.flipmode){
+						if(podObjs[e].xs === pObj.xs && podObjs[e].ys === pObj.ys && podObjs[e].zs === pObj.zs && podObjs[e].swapaxis === pObj.swapaxis){
 							dupe = true;
 							podObjs[e].s[podObjs[e].s.length] = i+1;
 							break;
@@ -1554,7 +1687,7 @@ PX.ChannelManager.prototype = {
 
 				ms = ms.slice(2, ms.length); // cut the first '||' out 
 				m += ms + "){\n";
-				m += "p=vec4("+podObjs[i].xs+","+podObjs[i].ys+","+podObjs[i].zs+","+podObjs[i].flipmode+");\n";
+				m += "p=vec4("+podObjs[i].xs+","+podObjs[i].ys+","+podObjs[i].zs+","+podObjs[i].swapaxis+");\n";
 				m += "}\n";
 			}
 
@@ -1680,6 +1813,41 @@ PX.ChannelManager.prototype = {
 
 	// ************* Pod Positions ***********************
 
+	// Create a new pod position that fits the nodes in a list of port(s)
+	podPosFromPorts: function (podPositionId, ports) {
+
+		var s = 100000000000;
+		var minx = s;
+		var maxx = -s;
+		var miny = s;
+		var maxy = -s;
+		var minz = s;
+		var maxz = -s;
+		var result = false;
+
+		for ( e = 0; e < ports.length; e ++ ) { 
+
+			var port = PX.ports.getPort(ports[e]);
+
+			if(port && port.nodes){
+				for ( i = 0; i < port.nodes.length; i ++ ) { 
+
+					var node = port.nodes[i];
+					minx = Math.min(minx, node.x);
+					maxx = Math.max(maxx, node.x);
+					miny = Math.min(miny, node.y);
+					maxy = Math.max(maxy, node.y);
+					minz = Math.min(minz, node.z);
+					maxz = Math.max(maxz, node.z);
+					result = true;
+				}
+			}
+		}
+
+		if(result){
+			this.podpositions[podPositionId-1] = new PX.PodPosition({x: minx, y: miny, z: minz, w: (maxx - minx) + 1, h: maxy - miny, d: maxz - minz});
+		}
+	},
 
 	setPodPos: function (podPositionId, podPositionObject) {
 		this.podpositions[podPositionId-1] = podPositionObject;
@@ -1712,7 +1880,7 @@ PX.ChannelManager.prototype = {
 		if(params.xs || params.xs < 1){pos.xs = params.xs;}
 		if(params.ys || params.ys < 1){pos.ys = params.ys;}
 		if(params.zs || params.zs < 1){pos.zs = params.zs;}
-		if(params.flipmode || params.flipmode < 1){pos.flipmode = params.flipmode;}
+		if(params.swapaxis || params.swapaxis < 1){pos.swapaxis = params.swapaxis;}
 	},
 
 	resetPodPosTransforms: function (podPositionId) {
@@ -1723,7 +1891,7 @@ PX.ChannelManager.prototype = {
 			xs: .5,
 			ys: .5,
 			zs: .5,
-			flipmode: 0
+			swapaxis: 0
 		});
 	},
 
@@ -1760,6 +1928,9 @@ PX.ChannelManager.prototype = {
 */
 
 PX.HardwareManager = function () {
+
+	this.pointSizes = [PX.pointSize, 50, 15];
+	this.pointSprites = [PX.pointSprite];
 
 };
 
@@ -1831,6 +2002,46 @@ PX.HardwareManager.prototype = {
 		}
 	},
 
+
+	/*
+	* Import nodes using a csv format of [port, x, y, z]
+	* 
+	* If port is not yet defined it creates a new one
+	*
+	* @param imported 		The Array to import
+	* @param portOffset 	Optional value to offset the port values from.
+	* @param x 				Optional value to offset the x values from.
+	* @param y 				Optional value to offset the y values from.
+	* @param z 				Optional value to offset the z values from.
+	* @param scale 			Optional overwrite value to scale nodes from.
+	*/
+	importNodeArray: function (params) {
+		params.portOffset = params.portOffset || 0;
+		params.x = params.x || 0;
+		params.y = params.y || 0;
+		params.z = params.z || 0;
+		params.scale = params.scale || 1.0;
+
+		var node;
+		var nodes = [];
+		for ( var k = 0; k < params.nodes.length; k += 4 ) {
+
+			node = {};
+			node.x = (params.nodes[k + 1] * params.scale) + params.x;
+			node.y = (params.nodes[k + 2] * params.scale) + params.y;
+			node.z = (params.nodes[k + 3] * params.scale) + params.z;
+			nodes.push[node];
+
+			if(params.nodes[k] === 2){
+				//node.x += Math.random() * 1;
+			}
+				//console.log(params.nodes[k]);
+
+			PX.ports.addNode(params.nodes[k] + 1, node);
+		}
+
+	},
+
 	/*
 	* Import nodes using a array of positions [x,y,z]
 	*
@@ -1839,6 +2050,8 @@ PX.HardwareManager.prototype = {
 	*/
 	importVertices: function (params) {
 
+		var nodes = [];
+		var node = {};
 		if(!PX.ports[params.port-1]){
 			// If a port is not defined create a default one
 			PX.ports.setPort(params.port, new PX.Port());
@@ -1890,7 +2103,7 @@ PX.HardwareManager.prototype = {
 				maxy = Math.max(maxy, node.y);
 			}
 		}
-		var port = new PX.Port({name: "port name " + port, nodes: nodes});
+		var port = new PX.Port({name: "Port " + port, nodes: nodes});
 		PX.ports.setPort(params.port, port);
 
 		// If we are not the first designated port set the pod position as a default (testing)
@@ -1938,7 +2151,7 @@ PX.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new PX.Port({name: "port name " + port, nodes: nodes});
+			var port = new PX.Port({name: "Port " + port, nodes: nodes});
 			PX.ports.setPort(u + portStart, port);
 
 			xS += xTOffset;
@@ -1961,7 +2174,7 @@ PX.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new PX.Port({name: "port name " + port, nodes: nodes});
+			var port = new PX.Port({name: "Port " + port, nodes: nodes});
 			PX.ports.setPort(portStart, port);
 	},
 
@@ -1978,7 +2191,7 @@ PX.HardwareManager.prototype = {
 					nodes.push(node);
 				}
 			}
-			var port = new PX.Port({name: "port name " + port, nodes: nodes});
+			var port = new PX.Port({name: "Port " + port, nodes: nodes});
 			PX.ports.setPort(portStart, port);
 
 			nodes = [];
@@ -1995,7 +2208,7 @@ PX.HardwareManager.prototype = {
 					}
 				}
 			}
-			port = new PX.Port({name: "port name " + port, nodes: nodes});
+			port = new PX.Port({name: "Port " + port, nodes: nodes});
 			PX.ports.setPort(portStart + 1, port);
 
 			nodes = [];
@@ -2012,8 +2225,26 @@ PX.HardwareManager.prototype = {
 					}
 				}
 			}
-			port = new PX.Port({name: "port name " + port, nodes: nodes});
+			port = new PX.Port({name: "Port " + port, nodes: nodes});
 			PX.ports.setPort(portStart + 2, port);
+	},
+
+	setCustomPointSprite: function (type, path) {
+		this.pointSprites[type] = path;
+	},
+
+	getCustomPointSprite: function (type) {
+		if(type === 0){ return PX.pointSprite; }
+		return this.pointSprites[type];
+	},
+
+	setCustomPointSize: function (type, size) {
+		this.pointSizes[type] = size;
+	},
+
+	getCustomPointSize: function (type) {
+		if(type === 0){ return PX.pointSize; }
+		return this.pointSizes[type];
 	}
 
 };
@@ -2102,8 +2333,17 @@ PX.PortManager.prototype = {
 	},
 
 	setNodes: function (portId, nodes) {
-		if(!this.ports[portId-1]){ this.ports[portId-1] = {}; }
+		if(!this.ports[portId-1]){
+			this.setPort(portId, new PX.Port({name: "Port " + portId}));
+		}
 		this.ports[portId-1].nodes = nodes;
+	},
+
+	addNode: function (portId, node) {
+		if(!this.ports[portId-1]){
+			this.setPort(portId, new PX.Port({name: "Port " + portId}));
+		}
+		this.ports[portId-1].nodes[this.ports[portId-1].nodes.length] = node;
 	},
 
 	clearNodes: function (portId) {
@@ -2123,6 +2363,10 @@ PX.PortManager.prototype = {
 
 	getPorts: function () {
 		return this.ports;
+	},
+
+	getPortCount: function () {
+		return this.ports.length;
 	},
 
 	// Add details to a existing port
@@ -2271,7 +2515,7 @@ PX.Pod = function (params) {
 * @param xs	 		Number, scale x coordinate of the content inside bounds of the pod.
 * @param ys	 		Number, scale y coordinate of the content inside bounds of the pod.
 * @param zs	 		Number, scale z coordinate of the content inside bounds of the pod.
-* @param flipmode	Number, 0: normal, 1: swap x-y, 2: swap x-z, 3: swap y-z.
+* @param swapaxis	Number, 0: normal, 1: swap x-y, 2: swap x-z, 3: swap y-z.
 *
 */
 
@@ -2280,9 +2524,9 @@ PX.PodPosition = function (params) {
 	this.x = params.x || 0;
 	this.y = params.y || 0;
 	this.z = params.z || 0;
-	this.w = params.w || 0;
-	this.h = params.h || 0;
-	this.d = params.d || 1;
+	this.w = Math.max(.1, params.w) || 1;
+	this.h = Math.max(.1, params.h) || 1;
+	this.d = Math.max(.1, params.d) || 1;
 
 	this.xt = params.xt || 0.5;
 	this.yt = params.yt || 0.5;
@@ -2290,7 +2534,7 @@ PX.PodPosition = function (params) {
 	this.xs = params.xs || 0.5;
 	this.ys = params.ys || 0.5;
 	this.zs = params.zs || 0.5;
-	this.flipmode = params.flipmode || 0;
+	this.swapaxis = params.swapaxis || 0;
 
 };
 /*
@@ -2313,11 +2557,12 @@ PX.PodPosition = function (params) {
 PX.Port = function (params) {
 
 	params = 			params || {};
-	this.name = 		params.name || "unnamed port";
+	this.name = 		params.name || "";
 	this.type = 		params.type || "test";
 	this.broadcast = 	params.broadcast || false;
 	this.address = 		params.address || "";
 	this.nodes = 		params.nodes || [];
+	this.nodesType = 	params.nodesType || 0;
 	this.hardwarePort = params.hardwarePort || 1;
 
 };
@@ -2350,6 +2595,11 @@ PX.MainShader = {
 		"vec2 surfacePosition = vec2(0.);",
 		"float random;",
 
+		"float px_port;",
+		"float px_id;",
+		"float px_type;",
+
+
 		"varying vec2 v_vUv;",
 		"uniform float time;",
 		"uniform float _random;",
@@ -2357,7 +2607,7 @@ PX.MainShader = {
 		"uniform vec2 mouse;",
 		"uniform sampler2D u_coordsMap;",
 		"uniform sampler2D u_prevCMap;",
-		//uniform sampler2D u_portsMap;
+		"uniform sampler2D u_portsMap;",
 
 
 		"#INCLUDESHADERFUNCTIONS",
@@ -2378,6 +2628,11 @@ PX.MainShader = {
 
 			"px_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);",
 			"px_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));",
+
+			"px_c = vec3(texture2D( u_portsMap, v_vUv));",
+			"px_port = px_c.r;",
+			"px_id = px_c.g;",
+			"px_type = px_c.b;",
 
 			//********************************************
 
@@ -2403,7 +2658,6 @@ PX.MainShader = {
 PX.shaders.PointCloudShader = {
 
 	uniforms: {
-		u_pointSize:  { type: 'f', value: PX.pointSize }, // This is re-set in PX.setSize()
 		//u_colorMap:   { type: "t", value: null },
 		//u_texture:    { type: "t", value: null }
 	},
@@ -2416,21 +2670,25 @@ PX.shaders.PointCloudShader = {
 
 	vertexShader: [
 
-		"uniform float u_pointSize;",
+		"uniform float u_res;",
+		"attribute float a_pointSizes;",
 		"attribute float a_geoX;",
 		"attribute float a_geoY;",
 		"attribute float a_index;",
+		"attribute float a_texId;",
 		"varying float v_geoX;",
 		"varying float v_geoY;",
 		"varying float v_index;",
+		"varying float v_texId;",
 
 		"void main() {",
 			"v_geoX = a_geoX;",
 			"v_geoY = a_geoY;",
 			"v_index = a_index;",
+			"v_texId = a_texId;",
 
 			"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
-			"gl_PointSize = u_pointSize * ( 300.0 / length( mvPosition.xyz ) );",
+			"gl_PointSize = (a_pointSizes * ( 4000. /  length( mvPosition.xyz )  )) / u_res;",
 			"gl_Position = projectionMatrix * mvPosition;",
 		"}"
 
@@ -2440,15 +2698,23 @@ PX.shaders.PointCloudShader = {
 
 		"uniform int u_useTexture;",
 		"uniform sampler2D u_texture;",
+		"uniform sampler2D u_texture1;",
+		"uniform sampler2D u_texture2;",
 		"uniform sampler2D u_colorMap;",
 
 		"varying float v_geoX;",
 		"varying float v_geoY;",
 		"varying float v_index;",
+		"varying float v_texId;",
 
 		"void main() {",
-			"if(u_useTexture > 0) {",
-				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture, gl_PointCoord);",
+
+			"if(v_texId == 0.) {",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture, gl_PointCoord);", // default
+			"}else if(v_texId == 1.) {",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture1, gl_PointCoord);",
+			"}else if(v_texId == 2.) {",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture2, gl_PointCoord);",
 			"}else{",
 				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * vec4(1.);",
 			"}",
