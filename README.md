@@ -1,4 +1,3 @@
-http://audiopixel.com/webdemo/basic-mapping.html
 
 PixelMixer by AudioPixel is a visual engine optimized for performance that can generate, blend, and map OpenGL pixel shaders in 3D space.
 
@@ -9,11 +8,11 @@ The original goal in creating PixelMixer was to drive lighting and video project
 
 ---
 
-Online demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo).
+Online demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 
-Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/). *([source](https://github.com/audiopixel/pixelmixer-sandbox))*
+Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/)
 
-Mapping demo: [audiopixel.com/webdemo/basic-mapping.html](http://audiopixel.com/webdemo/basic-mapping.html).
+Mapping demo: [audiopixel.com/webdemo/basic-mapping.html](http://audiopixel.com/webdemo/basic-mapping.html)
 
 Load in additional shaders, such as ones found at [glslsandbox](http://glslsandbox.com/) and [shadertoy](https://www.shadertoy.com).
 
