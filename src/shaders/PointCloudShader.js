@@ -59,12 +59,12 @@ PX.shaders.PointCloudShader = {
 
 		"void main() {",
 
-			"if(v_texId == 0.) {",
-				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[0], gl_PointCoord);", // default
-			"}else if(v_texId == 1.) {",
+			"if(v_texId > 7.) {",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[2], gl_PointCoord);", // default
+			"}else if(v_texId > 5.) {",
 				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[1], gl_PointCoord);",
-			"}else if(v_texId == 2.) {",
-				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[2], gl_PointCoord);",
+			"}else if(v_texId > 3.) {",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[0], gl_PointCoord);",
 			"}else{",
 				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * vec4(1.);",
 			"}",

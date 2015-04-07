@@ -352,6 +352,7 @@ PX.AppManager.prototype = {
 						type = -1; // if we don't have a sprite defined the default is no sprite
 					}
 					if(PX.hardware.getCustomPointSprite(type)){
+						type = (type + 2)*2;
 						this.pointTypes.push(type);
 					}
 
