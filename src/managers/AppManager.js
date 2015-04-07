@@ -469,16 +469,17 @@ PX.AppManager.prototype = {
 		var uniforms = {
 			u_res:   { type: "f", value: PX.app.glWidth / PX.app.glHeight },
 			u_colorMap:   { type: "t", value: this.rtTextureA },
-			u_texture:    { type: "t", value: THREE.ImageUtils.loadTexture( PX.pointSprite )},
 			u_useTexture: { type: "i", value: useTexture }
 		};
 
-		// Add 2 custom sprite textures if they are defined
+		// Defaults to main texture, add 2 custom sprite textures also if they are defined
+		var textures = [THREE.ImageUtils.loadTexture( PX.pointSprite )];
 		for (var i = 0; i < 2; i++) {
 			if(PX.hardware.getCustomPointSprite(i+1)){
-				uniforms["u_texture" + (i+1)] = { type: "t", value: THREE.ImageUtils.loadTexture( PX.hardware.getCustomPointSprite(i+1) ) };
+				textures[i+1] = THREE.ImageUtils.loadTexture( PX.hardware.getCustomPointSprite(i+1) );
 			}
 		}
+		uniforms.u_texArray = { type: "tv", value: textures};
 
 		PX.pointMaterial = new THREE.ShaderMaterial( {
 

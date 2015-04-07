@@ -49,10 +49,8 @@ PX.shaders.PointCloudShader = {
 	fragmentShader: [
 
 		"uniform int u_useTexture;",
-		"uniform sampler2D u_texture;",
-		"uniform sampler2D u_texture1;",
-		"uniform sampler2D u_texture2;",
 		"uniform sampler2D u_colorMap;",
+		"uniform sampler2D u_texArray[ 3 ];",
 
 		"varying float v_geoX;",
 		"varying float v_geoY;",
@@ -62,11 +60,11 @@ PX.shaders.PointCloudShader = {
 		"void main() {",
 
 			"if(v_texId == 0.) {",
-				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture, gl_PointCoord);", // default
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[0], gl_PointCoord);", // default
 			"}else if(v_texId == 1.) {",
-				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture1, gl_PointCoord);",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[1], gl_PointCoord);",
 			"}else if(v_texId == 2.) {",
-				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture2, gl_PointCoord);",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[2], gl_PointCoord);",
 			"}else{",
 				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * vec4(1.);",
 			"}",
