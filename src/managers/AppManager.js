@@ -26,7 +26,6 @@ PX.AppManager = function (scene, renderer) {
 	this.pointTypes = [];
 	this.geoX = [];
 	this.geoY = [];
-	this.passIndex = [];
 
 	this.render = true;
 	this.fragmentShader;
@@ -313,7 +312,6 @@ PX.AppManager.prototype = {
 		this.pointTypes = [];
 		this.geoX = [];
 		this.geoY = [];
-		this.passIndex = [];
 		PX.pointGeometry = new THREE.Geometry();
 
 
@@ -358,7 +356,6 @@ PX.AppManager.prototype = {
 
 					this.geoX.push(tx / imageSize - 0.5 / imageSize);
 					this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
-					this.passIndex.push(t);
 					t++;
 
 					b[ k     ] = e + 1;			// PortId
@@ -457,8 +454,7 @@ PX.AppManager.prototype = {
 			a_pointSizes:  { type: 'f', value: this.pointSizes },
 			a_texId:  		{ type: 'f', value: this.pointTypes },
 			a_geoX:        { type: 'f', value: this.geoX },
-			a_geoY:        { type: 'f', value: this.geoY },
-			a_index:       { type: 'f', value: this.passIndex }
+			a_geoY:        { type: 'f', value: this.geoY }
 		};
 
 		// Use image for sprite if defined, otherwise default to drawing a square
