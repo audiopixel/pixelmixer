@@ -22,7 +22,6 @@ PX.MainShader = {
 		"vec4 px_rgbV4;",
 		"vec3 px_c = vec3(0.);",
 		"vec3 px_p = vec3(0.);",
-		"vec3 px_p2 = vec3(0.);",
 		"vec2 resolution;",
 		"vec2 surfacePosition = vec2(0.);",
 		"float random;",
@@ -49,7 +48,6 @@ PX.MainShader = {
 			"random = rand(vec2(gl_FragCoord[0] * (gl_FragCoord[2] + 1.), gl_FragCoord[1] * _random) * (time * 0.0001));",
 
 			// Black is default
-			"px_rgb = vec3(0.);",
 			
 			//********************************************
 			
@@ -61,10 +59,11 @@ PX.MainShader = {
 			"px_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);",
 			"px_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));",
 
-			"px_c = vec3(texture2D( u_portsMap, v_vUv));",
-			"px_port = px_c.r;",
-			"px_id = px_c.g;",
-			"px_type = px_c.b;",
+			"px_p = vec3(texture2D( u_portsMap, v_vUv));",
+			"px_port = px_p.r;",
+			"px_id = px_p.g;",
+			"px_type = px_p.b;",
+			"px_p = vec3(0.);",
 
 			//********************************************
 
