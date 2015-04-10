@@ -20,7 +20,7 @@ PX.datguiJson = {
         "Smooth": 0.41065995613304745,
         "PreAmp": 0,
         "Hardware": "ApHardwareTest",
-        "Speed": 0.06137960303180161,
+        "Speed": 0.02,
         "PointSize": 90
       }
     },
@@ -43,7 +43,7 @@ PX.datguiJson = {
         "Smooth": 0.5079215246908745,
         "PreAmp": 0,
         "Hardware": "ApHardwareTest",
-        "Speed": 0.05874380949965428,
+        "Speed": 0.02874380949965428,
         "PointSize": 79.73627448493824
       }
     },
@@ -66,7 +66,7 @@ PX.datguiJson = {
         "Smooth": 0.9293883217747917,
         "PreAmp": 0,
         "Hardware": "ApHardwareTest",
-        "Speed": 0.06137960303180161,
+        "Speed": 0.03137960303180161,
         "PointSize": 90
       }
     },
@@ -89,7 +89,7 @@ PX.datguiJson = {
         "Smooth": 0,
         "PreAmp": 0,
         "Hardware": "Grid+zLayer",
-        "Speed": 0.06137960303180161,
+        "Speed": 0.02137960303180161,
         "PointSize": 90
       }
     },
@@ -112,7 +112,7 @@ PX.datguiJson = {
         "Smooth": 0,
         "PreAmp": 1,
         "Hardware": "Grid+zLayer",
-        "Speed": 0.06137960303180161,
+        "Speed": 0.02137960303180161,
         "PointSize": 90
       }
     },
@@ -135,7 +135,7 @@ PX.datguiJson = {
         "Smooth": 0,
         "PreAmp": 0.6836981009733873,
         "Hardware": "Grid+zLayer",
-        "Speed": 0.06137960303180161,
+        "Speed": 0.02137960303180161,
         "PointSize": 90
       }
     },
@@ -158,7 +158,7 @@ PX.datguiJson = {
         "Smooth": 0.3350120694769598,
         "PreAmp": 0.7829445995017823,
         "Hardware": "Grid+zLayer",
-        "Speed": 0.05874380949965428,
+        "Speed": 0.02874380949965428,
         "PointSize": 79.73627448493824
       }
     },
@@ -181,7 +181,7 @@ PX.datguiJson = {
         "Smooth": 0.3458189104278295,
         "PreAmp": 0.6947254896987646,
         "Hardware": "RanZGrid",
-        "Speed": 0.059625900088035845,
+        "Speed": 0.029625900088035845,
         "PointSize": 90
       }
     },
@@ -204,7 +204,7 @@ PX.datguiJson = {
         "Smooth": 0,
         "PreAmp": 0,
         "Hardware": "RanZGrid",
-        "Speed": 0.06137960303180161,
+        "Speed": 0.02137960303180161,
         "PointSize": 90
       }
     },
@@ -227,7 +227,7 @@ PX.datguiJson = {
         "Smooth": 0,
         "PreAmp": 1,
         "Hardware": "RanZGrid",
-        "Speed": 0.059625900088035845,
+        "Speed": 0.029625900088035845,
         "PointSize": 90
       }
     }

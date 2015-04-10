@@ -9,7 +9,7 @@ var PX = { version: '0.1.0' };	// Global PixelMixer object
 PX.readPixels = false;			// Turn this on if you need to receive color values of all the pixels
 PX.broadcast = false;			// Update any defined techs to broadcast with the lastest pixels
 
-PX.speed = 0.03;				// How much we increase 'global time' per 'animation frame'
+PX.speed = 0.02;				// How much we increase 'global time' per 'animation frame'
 PX.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
 PX.usePodPosUniforms = false;	// Allow u_pos_id uniforms to update a pod position by id 
 
