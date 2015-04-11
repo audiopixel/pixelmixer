@@ -1,0 +1,12 @@
+{
+  "manifest_version": 2,
+  "name": "Chrome App",
+  "description": "PixelMixer Test.",
+  "version": "1",
+  "minimum_chrome_version": "23",
+  "app": {
+    "background": {
+      "scripts": ["main.js"]
+    }
+  }
+}
