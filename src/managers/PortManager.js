@@ -14,31 +14,13 @@
 PX.PortManager = function () {
 
 	this.ports = [];
+	this.tests = 0;
 
 };
 
 PX.PortManager.prototype = {
 
 	init: function () {
-
-		if(PX.broadcast){
-
-			// If broadcast is on loop each port
-			for ( e = 0; e < PX.ports.getPorts().length; e ++ ) { 
-
-				var port = PX.ports.getPort(e + 1);
-				if(port && port.broadcast && port.type && port.nodes){
-
-					// if we have a defined tech we can use it to broadcast
-					if(PX.techs[port.type]){
-
-						PX.techs[port.type].broadcast(port);
-
-					}
-
-				}
-			}
-		}
 
 		// Call init method on techs if they are defined
 		for (var tech in PX.techs) {
@@ -48,11 +30,26 @@ PX.PortManager.prototype = {
 				PX.techs[tech].init();
 			}
 		}
+
 	},
 
 	update: function () {
 
-		if(PX.broadcast){
+		this.updateTechs();
+	},
+
+	updateTechs: function () {
+
+		if(PX.broadcast && PX.readPixels){
+
+			/*
+			if(this.tests < 25){
+				console.log(PX.pixels);
+				console.log("PX.pixels");
+				this.tests++;
+			}*/
+			
+			var t = PX.pixels.length / 4;
 
 			// If broadcast is on loop each port
 			for ( e = 0; e < PX.ports.getPorts().length; e ++ ) { 
@@ -61,9 +58,17 @@ PX.PortManager.prototype = {
 				if(port && port.broadcast && port.type && port.nodes){
 
 					// if we have a defined tech we can use it to broadcast
-					if(PX.techs[port.type]){
+					var te = PX.techs[port.type];
+					if(te && te.broadcast){
 
-						PX.techs[port.type].broadcast(port);
+						for ( i = 0; i < port.nodes.length; i ++ ) { 
+
+							t--;
+							//console.log(PX.pixels[(t*4)]);
+						}
+
+
+						te.update(port);
 
 					}
 				}

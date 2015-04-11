@@ -35,6 +35,7 @@ PX.AppManager = function (scene, renderer) {
 	this.portsMap;
 	this.altMap1;
 	this.altMap2;
+	this.gl;
 
 	this.plane = new THREE.PlaneBufferGeometry( PX.simSize, PX.simSize );
 	PX.pointGeometry = new THREE.Geometry();
@@ -65,6 +66,7 @@ PX.AppManager.prototype = {
 
 		if(PX.readPixels){
 			PX.pixels = new Uint8Array(4 * Math.pow(PX.simSize, 2));
+			this.gl = this.renderer.getContext();
 		}
 
 	},
@@ -102,22 +104,11 @@ PX.AppManager.prototype = {
 			this.updateClips();
 
 
-			// Capture colormap for broadcast output
+			// Capture colormap for broadcast output and store it in PX.pixels
 			if(PX.readPixels){
-
-				// Render full screen quad with generated texture
-				this.renderer.render( this.sceneRTT, this.cameraRTT );
-				var gl = this.renderer.getContext();
-				gl.readPixels(0, 0, PX.simSize, PX.simSize, gl.RGBA, gl.UNSIGNED_BYTE, PX.pixels);
-				this.renderer.clear();
-
-				// Test if we are receiving colors
-				/*var receiving = false;
-				for (var i = 0; i < PX.pixels.length; i++) {
-					if(PX.pixels[i] > 0 && PX.pixels[i] < 255){ receiving = true; }
-				};
-				if(receiving){ console.log(receiving); };*/
-
+this.renderer.render( this.sceneRTT, this.cameraRTT );
+				this.gl.readPixels(0, 0, PX.simSize, PX.simSize, this.gl.RGBA, this.gl.UNSIGNED_BYTE, PX.pixels);
+				//console.log(PX.pixels);
 			}
 
 		}
@@ -355,7 +346,7 @@ PX.AppManager.prototype = {
 					}
 
 					this.geoX.push(tx / imageSize - 0.5 / imageSize);
-					this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
+					this.geoY.push(1. - ty / imageSize - 0.5 / imageSize);
 					t++;
 
 					b[ k     ] = e + 1;			// PortId
