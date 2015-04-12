@@ -103,6 +103,7 @@ PX.PortManager.prototype = {
 	// ************* Ports ***********************
 
 	setPort: function (portId, portObject) {
+		portObject.id = portId;
 		this.ports[portId-1] = portObject;
 	},
 

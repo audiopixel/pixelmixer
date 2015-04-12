@@ -25,5 +25,6 @@ PX.Port = function (params) {
 	this.nodes = 		params.nodes || [];
 	this.nodesType = 	params.nodesType || 0;
 	this.hardwarePort = params.hardwarePort || 1;
+	this.id =			params.id || -1;
 
 };

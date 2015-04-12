@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Read Pixels Example</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href="css/main.css" rel="stylesheet" />
+		
+
+		<!-- Import standard three.js stuff -->
+		<script src="libs/Detector.js"></script>
+		<script src="libs/three.min.js"></script>
+		<script src="libs/TrackballControls.js"></script>
+
+
+		<!-- Import library -->
+		<!-- <script src="../build/pixelmixer.min.js"></script> -->
+		<script src="../src/Pixelmixer.js"></script>
+		<script src="../src/managers/AppManager.js"></script>
+		<script src="../src/managers/PortManager.js"></script>
+		<script src="../src/managers/HardwareManager.js"></script>
+		<script src="../src/managers/ChannelManager.js"></script>
+		<script src="../src/objects/Port.js"></script>
+		<script src="../src/objects/Channel.js"></script>
+		<script src="../src/objects/Pod.js"></script>
+		<script src="../src/objects/Clip.js"></script>
+		<script src="../src/objects/PodPosition.js"></script>
+		<script src="../src/shaders/MainShader.js"></script>
+		<script src="../src/shaders/PointCloudShader.js"></script>
+		<script src="../src/shaders/ShaderUtils.js"></script>
+		<script src="../src/shaders/SimpleTextureShader.js"></script>
+
+
+		<!-- Import Shaders -->
+		<script src="import/shaders/SimpleSwirl.js"></script>
+
+
+		<!-- Import a 'Broadcast Tech' to define how to use the RGB values -->
+		<script src="import/broadcast/testBroadcast.js"></script>
+		<script src="ui/datguiSetup1.js"></script>
+
+
+		<script>
+
+			if ( !Detector.webgl ) { Detector.addGetWebGLMessage(); } else {
+
+				var glWidth = window.innerWidth;
+				var glHeight = window.innerHeight;
+
+				var scene;
+				var renderer;
+				var camera;
+				var controls;
+				var container;
+
+				function onLoad(){
+
+
+					// ----------------
+
+
+					// ** Standard Three.js setup
+
+					scene = new THREE.Scene();
+
+					renderer = new THREE.WebGLRenderer(); 
+					renderer.setSize( glWidth, glHeight );
+					renderer.autoClear = false;
+
+					container = document.getElementById( 'container' );
+					container.appendChild( renderer.domElement ); 
+
+					camera = new THREE.PerspectiveCamera( 30, glWidth / glHeight, 1, 100000 );
+					camera.position.z = 2000;
+					controls = new THREE.TrackballControls( camera, renderer.domElement);
+
+
+					// ----------------
+
+
+					// ** Initialize PixelMixer
+
+					PX.broadcast = true;
+					PX.readPixels = true;
+					PX.init(scene, renderer);
+					PX.setSize(glWidth, glHeight);
+					PX.pointSprite = "images/nodeflare250.png";
+
+
+					// ----------------
+
+
+					// ** Add a simple grid of Nodes 
+
+					var params = {};		// Position coordinates for the entire grid
+					params.x = -850;		
+					params.y = -300;
+					params.z = -0;
+					params.width = 52;		// How many pixels for the entire grid
+					params.height = 20;
+					params.pitch = 33;		// How far each pixel is spaced
+
+					PX.hardware.addSimpleNodeGrid(params);
+
+
+					// This tells the 'testBroadcast' tech to broadcast the color values of the port we just created
+					PX.ports.getPort(1).type = "testBroadcastType";
+					PX.ports.getPort(1).broadcast = true;
+
+					PX.updateNodePoints();
+
+
+					// ----------------
+
+
+					// ** Add a shader to Channel 1
+
+					PX.simpleSetup({channel: 1, ids: ["SimpleSwirl"]});
+
+
+					// ----------------
+
+
+					// ** Start the main loop
+
+					animate();
+
+
+				}
+
+				function animate() {
+
+					// Main update loop
+
+					if(PX.ready){
+
+						PX.update();
+						controls.update();
+						renderer.render( scene, camera );
+
+
+						// ** Capture RGB values
+						// In addition to using Tech's to capture RGB values, we can also access it directly:
+						
+						//console.log(PX.pixels);
+
+					}
+
+					requestAnimationFrame( animate );
+				}
+
+
+				function onWindowResize() {
+
+					// Resize logic
+					glWidth = window.innerWidth;
+					glHeight = window.innerHeight;
+
+					PX.setSize(glWidth, glHeight);
+
+					camera.aspect = glWidth / glHeight;
+					camera.updateProjectionMatrix();
+					controls.handleResize();
+
+				}
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+		</script>
+
+	</head>
+
+	<body ontouchstart="" onload="onLoad()">
+
+		<div id="container"></div>
+
+	</body>
+
+</html>
