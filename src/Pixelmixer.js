@@ -86,11 +86,13 @@ PX.MAP_ALT2 = 2;
 PX.shaderCount = -1;
 PX.init = function(scene, renderer, params){
 
+	PX.broadcast = params.broadcast || PX.broadcast;
+	PX.readPixels = params.readPixels || PX.readPixels;
 	PX.pointSize = params.pointSize || PX.pointSize;
 	PX.pointSprite = params.pointSprite || PX.pointSprite;
 	PX.useTransforms = params.useTransforms || PX.useTransforms;
 
-	// Tag each shader with a incremental id, for easy lookup later
+	// Tag each loaded shader with a incremental id, for easy lookup later
 	PX.shaderCount = 0;
 	for (var property in PX.clips) {
 		if (PX.clips.hasOwnProperty(property)) {

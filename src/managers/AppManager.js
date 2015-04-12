@@ -360,7 +360,7 @@ PX.AppManager.prototype = {
 		this.portsMap.minFilter = THREE.NearestFilter;
 		this.portsMap.magFilter = THREE.NearestFilter;
 		this.portsMap.needsUpdate = true;
-		this.portsMap.flipY = !true;
+		this.portsMap.flipY = false;
 	},
 
 	generateCoordsMap: function () {
@@ -412,14 +412,14 @@ PX.AppManager.prototype = {
 		this.coordsMap.minFilter = THREE.NearestFilter;
 		this.coordsMap.magFilter = THREE.NearestFilter;
 		this.coordsMap.needsUpdate = true;
-		this.coordsMap.flipY = !true;
+		this.coordsMap.flipY = false;
 
 		// testing
 		this.altMap1 = new THREE.DataTexture( a, PX.simSize, PX.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.altMap1.minFilter = THREE.NearestFilter;
 		this.altMap1.magFilter = THREE.NearestFilter;
 		this.altMap1.needsUpdate = true;
-		this.altMap1.flipY = !true;
+		this.altMap1.flipY = false;
 
 	},
 
@@ -496,7 +496,9 @@ PX.AppManager.prototype = {
 
 		if(PX.pointGeometry.vertices.length > 0){
 
-			console.log("PixelMixer Nodes: " + PX.pointGeometry.vertices.length);
+			if(!PX.ready){
+				console.log("PixelMixer v" + PX.version + ", SimSize: " + PX.simSize + "x" +  PX.simSize + ", Nodes: " + PX.pointGeometry.vertices.length);
+			}
 			PX.ready = true;
 
 		}
