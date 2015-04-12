@@ -80,11 +80,8 @@
 
 					// ** Initialize PixelMixer
 
-					PX.broadcast = true;
-					PX.readPixels = true;
-					PX.init(scene, renderer);
+					PX.init(scene, renderer, { broadcast: true, readPixels: true, pointSprite: "images/nodeflare250.png" });
 					PX.setSize(glWidth, glHeight);
-					PX.pointSprite = "images/nodeflare250.png";
 
 
 					// ----------------

@@ -75,13 +75,9 @@
 
 					// ** Initialize API
 
-					PX.init(scene, renderer);
+					PX.init(scene, renderer, { pointSize: 60, pointSprite: "images/lensflare8.png" });
 					PX.setSize(glWidth, glHeight);
 					PX.setPointPosition(-400, -400, 0);
-
-					// Default sprite for all ports that are not tagged with a custom nodesType
-					PX.pointSize = 60;
-					PX.pointSprite = "images/lensflare8.png";
 
 
 					// ----------------

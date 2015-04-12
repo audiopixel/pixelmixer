@@ -96,11 +96,9 @@
 
 					// ** Initialize PixelMixer
 
-					PX.init(scene, renderer);
+					PX.init(scene, renderer, { pointSprite: "images/nodeflare250.png", useTransforms: true });
 					PX.setSize(glWidth, glHeight);
 					PX.setPointPosition(-400, -400, 0);
-					PX.pointSprite = "images/nodeflare250.png";
-					PX.useTransforms = true;	
 
 
 					// ----------------

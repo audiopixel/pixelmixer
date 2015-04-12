@@ -84,7 +84,11 @@ PX.MAP_ALT2 = 2;
 // -------------------------------------------------------
 
 PX.shaderCount = -1;
-PX.init = function(scene, renderer, maxNodeCount){
+PX.init = function(scene, renderer, params){
+
+	PX.pointSize = params.pointSize || PX.pointSize;
+	PX.pointSprite = params.pointSprite || PX.pointSprite;
+	PX.useTransforms = params.useTransforms || PX.useTransforms;
 
 	// Tag each shader with a incremental id, for easy lookup later
 	PX.shaderCount = 0;
@@ -96,9 +100,9 @@ PX.init = function(scene, renderer, maxNodeCount){
 	}
 
 	// Maintain the lowest possible power of 2 texture size based on maxNodeCount
-	maxNodeCount = maxNodeCount || Math.pow(128, 2); 	// Default: 16384 (128*128)
+	params.maxNodeCount = params.maxNodeCount || Math.pow(128, 2); 	// Default: 16384 (128*128)
 	PX.simSize = 4;										// Minimum: 16 (4*4)
-	while(Math.pow(PX.simSize, 2) < maxNodeCount){
+	while(Math.pow(PX.simSize, 2) < params.maxNodeCount){
 		PX.simSize *= 2;
 	}
 
