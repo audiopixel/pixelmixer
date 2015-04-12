@@ -1,26 +1,3 @@
-/*
-The MIT License
-
-Copyright &copy; 2010-2015 Hepp Maccoy, AudioPixel, & PixelMixer.js Contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
 
 var PX = { version: '0.1.0' };	// Global PixelMixer object
 
@@ -32,7 +9,7 @@ var PX = { version: '0.1.0' };	// Global PixelMixer object
 PX.readPixels = false;			// Turn this on if you need to receive color values of all the pixels
 PX.broadcast = false;			// Update any defined techs to broadcast with the lastest pixels
 
-PX.speed = 0.03;				// How much we increase 'global time' per 'animation frame'
+PX.speed = 0.02;				// How much we increase 'global time' per 'animation frame'
 PX.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
 PX.usePodPosUniforms = false;	// Allow u_pos_id uniforms to update a pod position by id 
 
@@ -107,9 +84,15 @@ PX.MAP_ALT2 = 2;
 // -------------------------------------------------------
 
 PX.shaderCount = -1;
-PX.init = function(scene, renderer, maxNodeCount){
+PX.init = function(scene, renderer, params){
 
-	// Tag each shader with a incremental id, for easy lookup later
+	PX.broadcast = params.broadcast || PX.broadcast;
+	PX.readPixels = params.readPixels || PX.readPixels;
+	PX.pointSize = params.pointSize || PX.pointSize;
+	PX.pointSprite = params.pointSprite || PX.pointSprite;
+	PX.useTransforms = params.useTransforms || PX.useTransforms;
+
+	// Tag each loaded shader with a incremental id, for easy lookup later
 	PX.shaderCount = 0;
 	for (var property in PX.clips) {
 		if (PX.clips.hasOwnProperty(property)) {
@@ -119,9 +102,9 @@ PX.init = function(scene, renderer, maxNodeCount){
 	}
 
 	// Maintain the lowest possible power of 2 texture size based on maxNodeCount
-	maxNodeCount = maxNodeCount || Math.pow(128, 2); 	// Default: 16384 (128*128)
+	params.maxNodeCount = params.maxNodeCount || Math.pow(128, 2); 	// Default: 16384 (128*128)
 	PX.simSize = 4;										// Minimum: 16 (4*4)
-	while(Math.pow(PX.simSize, 2) < maxNodeCount){
+	while(Math.pow(PX.simSize, 2) < params.maxNodeCount){
 		PX.simSize *= 2;
 	}
 
@@ -432,7 +415,6 @@ PX.AppManager = function (scene, renderer) {
 	this.pointTypes = [];
 	this.geoX = [];
 	this.geoY = [];
-	this.passIndex = [];
 
 	this.render = true;
 	this.fragmentShader;
@@ -442,6 +424,7 @@ PX.AppManager = function (scene, renderer) {
 	this.portsMap;
 	this.altMap1;
 	this.altMap2;
+	this.gl;
 
 	this.plane = new THREE.PlaneBufferGeometry( PX.simSize, PX.simSize );
 	PX.pointGeometry = new THREE.Geometry();
@@ -472,6 +455,7 @@ PX.AppManager.prototype = {
 
 		if(PX.readPixels){
 			PX.pixels = new Uint8Array(4 * Math.pow(PX.simSize, 2));
+			this.gl = this.renderer.getContext();
 		}
 
 	},
@@ -508,25 +492,10 @@ PX.AppManager.prototype = {
 
 			this.updateClips();
 
-
-			// Capture colormap for broadcast output
+			// Capture colormap for broadcast output and store it in PX.pixels
 			if(PX.readPixels){
-
-				// Render full screen quad with generated texture
-				this.renderer.render( this.sceneRTT, this.cameraRTT );
-				var gl = this.renderer.getContext();
-				gl.readPixels(0, 0, PX.simSize, PX.simSize, gl.RGBA, gl.UNSIGNED_BYTE, PX.pixels);
-				this.renderer.clear();
-
-				// Test if we are receiving colors
-				/*var receiving = false;
-				for (var i = 0; i < PX.pixels.length; i++) {
-					if(PX.pixels[i] > 0 && PX.pixels[i] < 255){ receiving = true; }
-				};
-				if(receiving){ console.log(receiving); };*/
-
+				this.gl.readPixels(0, 0, PX.simSize, PX.simSize, this.gl.RGBA, this.gl.UNSIGNED_BYTE, PX.pixels);
 			}
-
 		}
 
 	},
@@ -719,7 +688,6 @@ PX.AppManager.prototype = {
 		this.pointTypes = [];
 		this.geoX = [];
 		this.geoY = [];
-		this.passIndex = [];
 		PX.pointGeometry = new THREE.Geometry();
 
 
@@ -758,12 +726,12 @@ PX.AppManager.prototype = {
 						type = -1; // if we don't have a sprite defined the default is no sprite
 					}
 					if(PX.hardware.getCustomPointSprite(type)){
+						type = (type + 2)*2;
 						this.pointTypes.push(type);
 					}
 
 					this.geoX.push(tx / imageSize - 0.5 / imageSize);
-					this.geoY.push(1.0 - ty / imageSize - 0.5 / imageSize); // flip y
-					this.passIndex.push(t);
+					this.geoY.push(ty / imageSize + 0.5 / imageSize);
 					t++;
 
 					b[ k     ] = e + 1;			// PortId
@@ -781,7 +749,7 @@ PX.AppManager.prototype = {
 		this.portsMap.minFilter = THREE.NearestFilter;
 		this.portsMap.magFilter = THREE.NearestFilter;
 		this.portsMap.needsUpdate = true;
-		this.portsMap.flipY = true;
+		this.portsMap.flipY = false;
 	},
 
 	generateCoordsMap: function () {
@@ -833,14 +801,14 @@ PX.AppManager.prototype = {
 		this.coordsMap.minFilter = THREE.NearestFilter;
 		this.coordsMap.magFilter = THREE.NearestFilter;
 		this.coordsMap.needsUpdate = true;
-		this.coordsMap.flipY = true;
+		this.coordsMap.flipY = false;
 
 		// testing
 		this.altMap1 = new THREE.DataTexture( a, PX.simSize, PX.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.altMap1.minFilter = THREE.NearestFilter;
 		this.altMap1.magFilter = THREE.NearestFilter;
 		this.altMap1.needsUpdate = true;
-		this.altMap1.flipY = true;
+		this.altMap1.flipY = false;
 
 	},
 
@@ -862,8 +830,7 @@ PX.AppManager.prototype = {
 			a_pointSizes:  { type: 'f', value: this.pointSizes },
 			a_texId:  		{ type: 'f', value: this.pointTypes },
 			a_geoX:        { type: 'f', value: this.geoX },
-			a_geoY:        { type: 'f', value: this.geoY },
-			a_index:       { type: 'f', value: this.passIndex }
+			a_geoY:        { type: 'f', value: this.geoY }
 		};
 
 		// Use image for sprite if defined, otherwise default to drawing a square
@@ -875,16 +842,17 @@ PX.AppManager.prototype = {
 		var uniforms = {
 			u_res:   { type: "f", value: PX.app.glWidth / PX.app.glHeight },
 			u_colorMap:   { type: "t", value: this.rtTextureA },
-			u_texture:    { type: "t", value: THREE.ImageUtils.loadTexture( PX.pointSprite )},
 			u_useTexture: { type: "i", value: useTexture }
 		};
 
-		// Add 2 custom sprite textures if they are defined
+		// Defaults to main texture, add 2 custom sprite textures also if they are defined
+		var textures = [THREE.ImageUtils.loadTexture( PX.pointSprite )];
 		for (var i = 0; i < 2; i++) {
 			if(PX.hardware.getCustomPointSprite(i+1)){
-				uniforms["u_texture" + (i+1)] = { type: "t", value: THREE.ImageUtils.loadTexture( PX.hardware.getCustomPointSprite(i+1) ) };
+				textures[i+1] = THREE.ImageUtils.loadTexture( PX.hardware.getCustomPointSprite(i+1) );
 			}
 		}
+		uniforms.u_texArray = { type: "tv", value: textures};
 
 		PX.pointMaterial = new THREE.ShaderMaterial( {
 
@@ -917,7 +885,9 @@ PX.AppManager.prototype = {
 
 		if(PX.pointGeometry.vertices.length > 0){
 
-			console.log("PixelMixer Nodes: " + PX.pointGeometry.vertices.length);
+			if(!PX.ready){
+				console.log("PixelMixer v" + PX.version + ", SimSize: " + PX.simSize + "x" +  PX.simSize + ", Nodes: " + PX.pointGeometry.vertices.length);
+			}
 			PX.ready = true;
 
 		}
@@ -1009,7 +979,7 @@ PX.AppManager.prototype = {
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERFUNCTIONS", sourceShader.fragmentFunctions);
 		this.fragmentShader = this.fragmentShader.replace("#INCLUDESHADERUTILS", PX.shaders.ShaderUtils + sourceUniforms);
 
-		//this.fragmentShader = this.minFragmentShader(this.fragmentShader);
+		this.fragmentShader = this.minFragmentShader(this.fragmentShader);
 		
 
 		// The main material object has uniforms that can be referenced and updated directly by the UI
@@ -2265,31 +2235,13 @@ PX.HardwareManager.prototype = {
 PX.PortManager = function () {
 
 	this.ports = [];
+	this.tests = 0;
 
 };
 
 PX.PortManager.prototype = {
 
 	init: function () {
-
-		if(PX.broadcast){
-
-			// If broadcast is on loop each port
-			for ( e = 0; e < PX.ports.getPorts().length; e ++ ) { 
-
-				var port = PX.ports.getPort(e + 1);
-				if(port && port.broadcast && port.type && port.nodes){
-
-					// if we have a defined tech we can use it to broadcast
-					if(PX.techs[port.type]){
-
-						PX.techs[port.type].broadcast(port);
-
-					}
-
-				}
-			}
-		}
 
 		// Call init method on techs if they are defined
 		for (var tech in PX.techs) {
@@ -2299,22 +2251,40 @@ PX.PortManager.prototype = {
 				PX.techs[tech].init();
 			}
 		}
+
 	},
 
 	update: function () {
 
-		if(PX.broadcast){
+		this.updateTechs();
+	},
 
-			// If broadcast is on loop each port
+	updateTechs: function () {
+
+		if(PX.broadcast && PX.readPixels){
+
+			var index = 0;
 			for ( e = 0; e < PX.ports.getPorts().length; e ++ ) { 
 
 				var port = PX.ports.getPort(e + 1);
 				if(port && port.broadcast && port.type && port.nodes){
 
 					// if we have a defined tech we can use it to broadcast
-					if(PX.techs[port.type]){
+					var te = PX.techs[port.type];
+					if(te && te.broadcast){
 
-						PX.techs[port.type].broadcast(port);
+						var rgb = [];
+						for ( i = 0; i < port.nodes.length; i ++ ) {
+
+							rgb.push(PX.pixels[(index*4)    ]);
+							rgb.push(PX.pixels[(index*4) + 1]);
+							rgb.push(PX.pixels[(index*4) + 2]);
+
+							index++;
+						}
+
+						// Send port object and just the rgb values for this port
+						te.broadcastPort(port, rgb);
 
 					}
 				}
@@ -2354,6 +2324,7 @@ PX.PortManager.prototype = {
 	// ************* Ports ***********************
 
 	setPort: function (portId, portObject) {
+		portObject.id = portId;
 		this.ports[portId-1] = portObject;
 	},
 
@@ -2564,6 +2535,7 @@ PX.Port = function (params) {
 	this.nodes = 		params.nodes || [];
 	this.nodesType = 	params.nodesType || 0;
 	this.hardwarePort = params.hardwarePort || 1;
+	this.id =			params.id || -1;
 
 };
 /**
@@ -2590,7 +2562,6 @@ PX.MainShader = {
 		"vec4 px_rgbV4;",
 		"vec3 px_c = vec3(0.);",
 		"vec3 px_p = vec3(0.);",
-		"vec3 px_p2 = vec3(0.);",
 		"vec2 resolution;",
 		"vec2 surfacePosition = vec2(0.);",
 		"float random;",
@@ -2617,7 +2588,6 @@ PX.MainShader = {
 			"random = rand(vec2(gl_FragCoord[0] * (gl_FragCoord[2] + 1.), gl_FragCoord[1] * _random) * (time * 0.0001));",
 
 			// Black is default
-			"px_rgb = vec3(0.);",
 			
 			//********************************************
 			
@@ -2629,10 +2599,11 @@ PX.MainShader = {
 			"px_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);",
 			"px_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));",
 
-			"px_c = vec3(texture2D( u_portsMap, v_vUv));",
-			"px_port = px_c.r;",
-			"px_id = px_c.g;",
-			"px_type = px_c.b;",
+			"px_p = vec3(texture2D( u_portsMap, v_vUv));",
+			"px_port = px_p.r;",
+			"px_id = px_p.g;",
+			"px_type = px_p.b;",
+			"px_p = vec3(0.);",
 
 			//********************************************
 
@@ -2657,34 +2628,20 @@ PX.MainShader = {
 
 PX.shaders.PointCloudShader = {
 
-	uniforms: {
-		//u_colorMap:   { type: "t", value: null },
-		//u_texture:    { type: "t", value: null }
-	},
-
-	attributes: { 
-		//a_geoX:        { type: 'fv1', value: null },
-		//a_geoY:        { type: 'fv1', value: null },
-		//a_index:        { type: 'fv1', value: null }
-	},
-
 	vertexShader: [
 
 		"uniform float u_res;",
 		"attribute float a_pointSizes;",
 		"attribute float a_geoX;",
 		"attribute float a_geoY;",
-		"attribute float a_index;",
 		"attribute float a_texId;",
 		"varying float v_geoX;",
 		"varying float v_geoY;",
-		"varying float v_index;",
 		"varying float v_texId;",
 
 		"void main() {",
 			"v_geoX = a_geoX;",
 			"v_geoY = a_geoY;",
-			"v_index = a_index;",
 			"v_texId = a_texId;",
 
 			"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
@@ -2697,24 +2654,21 @@ PX.shaders.PointCloudShader = {
 	fragmentShader: [
 
 		"uniform int u_useTexture;",
-		"uniform sampler2D u_texture;",
-		"uniform sampler2D u_texture1;",
-		"uniform sampler2D u_texture2;",
 		"uniform sampler2D u_colorMap;",
+		"uniform sampler2D u_texArray[ 3 ];",
 
 		"varying float v_geoX;",
 		"varying float v_geoY;",
-		"varying float v_index;",
 		"varying float v_texId;",
 
 		"void main() {",
 
-			"if(v_texId == 0.) {",
-				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture, gl_PointCoord);", // default
-			"}else if(v_texId == 1.) {",
-				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture1, gl_PointCoord);",
-			"}else if(v_texId == 2.) {",
-				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texture2, gl_PointCoord);",
+			"if(v_texId > 7.) {",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[2], gl_PointCoord);", // default
+			"}else if(v_texId > 5.) {",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[1], gl_PointCoord);",
+			"}else if(v_texId > 3.) {",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[0], gl_PointCoord);",
 			"}else{",
 				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * vec4(1.);",
 			"}",
