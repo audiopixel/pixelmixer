@@ -8,5 +8,6 @@
     "background": {
       "scripts": ["main.js"]
     }
-  }
+  },
+  "sockets": { "udp": { "send": "*", "bind": "*"} }
 }
