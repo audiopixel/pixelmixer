@@ -8,7 +8,7 @@ PX.techs.testBroadcastType = {
 		console.log("init ");
 	},
 
-	update: function (port, pixels) {
+	broadcastPort: function (port, pixels) {
 
 		// TODO simulate broadcasting nodes in this port
 

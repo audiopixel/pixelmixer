@@ -103,14 +103,10 @@ PX.AppManager.prototype = {
 
 			this.updateClips();
 
-
 			// Capture colormap for broadcast output and store it in PX.pixels
 			if(PX.readPixels){
-this.renderer.render( this.sceneRTT, this.cameraRTT );
 				this.gl.readPixels(0, 0, PX.simSize, PX.simSize, this.gl.RGBA, this.gl.UNSIGNED_BYTE, PX.pixels);
-				//console.log(PX.pixels);
 			}
-
 		}
 
 	},
@@ -346,7 +342,7 @@ this.renderer.render( this.sceneRTT, this.cameraRTT );
 					}
 
 					this.geoX.push(tx / imageSize - 0.5 / imageSize);
-					this.geoY.push(1. - ty / imageSize - 0.5 / imageSize);
+					this.geoY.push(ty / imageSize + 0.5 / imageSize);
 					t++;
 
 					b[ k     ] = e + 1;			// PortId
@@ -364,7 +360,7 @@ this.renderer.render( this.sceneRTT, this.cameraRTT );
 		this.portsMap.minFilter = THREE.NearestFilter;
 		this.portsMap.magFilter = THREE.NearestFilter;
 		this.portsMap.needsUpdate = true;
-		this.portsMap.flipY = true;
+		this.portsMap.flipY = !true;
 	},
 
 	generateCoordsMap: function () {
@@ -416,14 +412,14 @@ this.renderer.render( this.sceneRTT, this.cameraRTT );
 		this.coordsMap.minFilter = THREE.NearestFilter;
 		this.coordsMap.magFilter = THREE.NearestFilter;
 		this.coordsMap.needsUpdate = true;
-		this.coordsMap.flipY = true;
+		this.coordsMap.flipY = !true;
 
 		// testing
 		this.altMap1 = new THREE.DataTexture( a, PX.simSize, PX.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.altMap1.minFilter = THREE.NearestFilter;
 		this.altMap1.magFilter = THREE.NearestFilter;
 		this.altMap1.needsUpdate = true;
-		this.altMap1.flipY = true;
+		this.altMap1.flipY = !true;
 
 	},
 

@@ -42,16 +42,7 @@ PX.PortManager.prototype = {
 
 		if(PX.broadcast && PX.readPixels){
 
-			/*
-			if(this.tests < 25){
-				console.log(PX.pixels);
-				console.log("PX.pixels");
-				this.tests++;
-			}*/
-			
-			var t = PX.pixels.length / 4;
-
-			// If broadcast is on loop each port
+			var index = 0;
 			for ( e = 0; e < PX.ports.getPorts().length; e ++ ) { 
 
 				var port = PX.ports.getPort(e + 1);
@@ -61,14 +52,18 @@ PX.PortManager.prototype = {
 					var te = PX.techs[port.type];
 					if(te && te.broadcast){
 
-						for ( i = 0; i < port.nodes.length; i ++ ) { 
+						var rgb = [];
+						for ( i = 0; i < port.nodes.length; i ++ ) {
 
-							t--;
-							//console.log(PX.pixels[(t*4)]);
+							rgb.push(PX.pixels[(index*4)    ]);
+							rgb.push(PX.pixels[(index*4) + 1]);
+							rgb.push(PX.pixels[(index*4) + 2]);
+
+							index++;
 						}
 
-
-						te.update(port);
+						// Send port object and just the rgb values for this port
+						te.broadcastPort(port, rgb);
 
 					}
 				}
