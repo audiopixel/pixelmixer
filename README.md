@@ -1,7 +1,7 @@
 
 PixelMixer by AudioPixel is a visual engine optimized for performance that can generate, blend, and map OpenGL pixel shaders in 3D space.
 
-Runs in the browser using HTML5 (WebGL) and [Three.js](http://threejs.org). It is simple to add to any web application.
+The API runs in any browser using HTML5 (WebGL) and [Three.js](http://threejs.org). It is simple to add to any web application.
 The generated shaders can also be used in any OpenGL ES 2.0 environment (C / Java / IPhone / Android).
 
 The original goal in creating PixelMixer was to drive lighting and video projection equipment. It is capable of capturing color / data values of all 3D nodes at fast framerates, which can be used for communication to physical lighting equipment using protocols such as UDP, REST, DMX, & Video. 
@@ -18,15 +18,15 @@ Load in additional shaders, such as ones found at [glslsandbox](http://glslsandb
 
 ---
 
-[Features](https://github.com/hepp/audiopixel3#features) | 
-[Possible uses](https://github.com/hepp/audiopixel3#possible-uses) | 
-[Steps to using API](https://github.com/hepp/audiopixel3#steps-to-using-api) |
-[vs Vanilla GLSL Shader](https://github.com/hepp/audiopixel3#vs-vanilla-glsl-shader)
+[Features](https://github.com/audiopixel/pixelmixer#features) | 
+[Possible uses](https://github.com/audiopixel/pixelmixer#possible-uses) | 
+[Steps to using API](https://github.com/audiopixel/pixelmixer#steps-to-using-api) |
+[vs Vanilla GLSL Shader](https://github.com/audiopixel/pixelmixer#vs-vanilla-glsl-shader)
 
-[Terminology](https://github.com/hepp/audiopixel3#terminology) |
-[Roadmap](https://github.com/hepp/audiopixel3#roadmap) |
-[Participate](https://github.com/hepp/audiopixel3#participate) |
-[About AudioPixel](https://github.com/hepp/audiopixel3#about-ap)
+[Terminology](https://github.com/audiopixel/pixelmixer#terminology) |
+[Roadmap](https://github.com/audiopixel/pixelmixer#roadmap) |
+[Participate](https://github.com/audiopixel/pixelmixer#participate) |
+[About AudioPixel](https://github.com/audiopixel/pixelmixer#about-ap)
 
 ---
 
@@ -59,9 +59,9 @@ Load in additional shaders, such as ones found at [glslsandbox](http://glslsandb
 
 ## Steps to using API ##
 
-[View this in a simple example](https://github.com/hepp/audiopixel3/blob/master/examples/basic_example.html)
+[View this in a simple example](https://github.com/audiopixel/pixelmixer/blob/master/examples/basic_example.html)
 
-[View all examples](https://github.com/hepp/audiopixel3/blob/master/examples/)
+[View all examples](https://github.com/audiopixel/pixelmixer/blob/master/examples/)
 
 [How to run things locally](https://github.com/mrdoob/three.js/wiki/How-to-run-things-locally)
 
@@ -119,27 +119,6 @@ PX.set("p1", .7, 1, 1, 1);
 ```
 
 Each instance of a loaded shader (Clip) has independent uniforms setup for easy control. Global values are also provided to all shaders that are ready to be populated with audio or any sort of data feed. It's also quite easy to enhance existing shaders to respond to any incoming parameters. 
-
-
----
-
-## vs Vanilla GLSL Shader ##
-Shaders loaded into PixelMixer extend the OpenGL language to achieve additional functionality:
-
-| Feature | API | GLSL |
-|----------------- | -------------------- | --------------------- |
-| GPU accelerated | x | x |
-| GPU optimized Math methods | x | x |
-| X,Y coordinates | x | x |
-| Attributes and uniforms | x | x |
-| Z coordinate | x | |
-| Index value | x | |
-| Last color value per pixel | x | |
-| Last color values for all pixels | x | |
-| Color blending algorithms | x | |
-| Random values | x | |
-| Accompanying init & update methods | x | |
-| Hardware port / light unit info | x | |
 
 ---
 
@@ -208,7 +187,7 @@ We are also seeking beta testers, especially if you have lighting fixtures or ot
 
 ## About AP ##
 
-![AudioPixel Logo](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-web-grid.png)
+![AudioPixel Logo](https://github.com/audiopixel/pixelmixer/blob/master/docs/audiopixel-web-grid.png)
 
 
 AudioPixel develops custom lighting technology and sound-reactive visual programming.
@@ -219,8 +198,8 @@ In our quest for optimizing AudioPixel's live programming techniques, PixelMixer
 
 The original aim was to build a lightweight platform that could power any interactive art light installation we would dream up. Now we are releasing it to the world in the hopes that it might benefit interactive light for all.
 
-Open Source [MIT License](https://github.com/hepp/audiopixel3/blob/master/LICENSE).
+Open Source [MIT License](https://github.com/audiopixel/pixelmixer/blob/master/LICENSE).
 
 [http://audiopixel.com](http://audiopixel.com)
 
-![AudioPixel Lighting](https://github.com/hepp/audiopixel3/blob/master/docs/audiopixel-lighting.jpg)
+![AudioPixel Lighting](https://github.com/audiopixel/pixelmixer/blob/master/docs/audiopixel-lighting.jpg)
