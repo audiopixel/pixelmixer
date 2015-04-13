@@ -109,11 +109,13 @@ PX.MAP_ALT2 = 2;
 PX.shaderCount = -1;
 PX.init = function(scene, renderer, params){
 
+	PX.speed = params.speed || PX.speed;
 	PX.broadcast = params.broadcast || PX.broadcast;
 	PX.readPixels = params.readPixels || PX.readPixels;
 	PX.pointSize = params.pointSize || PX.pointSize;
 	PX.pointSprite = params.pointSprite || PX.pointSprite;
 	PX.useTransforms = params.useTransforms || PX.useTransforms;
+	PX.usePodPosUniforms = params.usePodPosUniforms || PX.usePodPosUniforms;
 
 	// Tag each loaded shader with a incremental id, for easy lookup later
 	PX.shaderCount = 0;
@@ -166,7 +168,7 @@ PX.update = function() {
 
 	if(!PX.app){
 
-		console.log("AP Error: Need to call PX.init before PX.update.");
+		console.log("PixelMixer Error: Need to call PX.init before PX.update.");
 
 	}else if(PX.ready){
 
@@ -1377,7 +1379,7 @@ PX.ChannelManager.prototype = {
 												output += fragOutput;
 											}
 										}else{
-											console.log("AP Error - shader not found: " + clip.id);
+											console.log("PixelMixer Error - shader not found: " + clip.id);
 										}
 									}
 

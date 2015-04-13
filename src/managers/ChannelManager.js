@@ -236,7 +236,7 @@ PX.ChannelManager.prototype = {
 												output += fragOutput;
 											}
 										}else{
-											console.log("AP Error - shader not found: " + clip.id);
+											console.log("PixelMixer Error - shader not found: " + clip.id);
 										}
 									}
 
