@@ -317,11 +317,6 @@ PX.ChannelManager.prototype = {
 			output = "px_alt2 = texture2D( u_altMap2, v_vUv);" + output;
 		}
 
-		// Array of items we can set audio spectrum/waveform data to, or any data to
-		if(PX.dataSetLength && PX.dataSetLength > 0){
-			fragFuncOutput = "uniform float data[ " + PX.dataSetLength + " ]; \n" + fragFuncOutput;
-		}
-
 
 		// Return the nth word of a string http://stackoverflow.com/a/11620169
 		function nthWord(str, n) {

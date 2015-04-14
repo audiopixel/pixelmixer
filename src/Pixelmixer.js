@@ -129,11 +129,6 @@ PX.init = function(scene, renderer, params){
 };
 
 
-// Set this to store a [uniform float array] with specified length
-// Can be referenced later in shaders, and PX.set/get as 'data'
-PX.dataSetLength = null;
-
-
 PX.shaderNeedsUpdate = false;
 PX.updateFresh = false;
 PX.updateShaderLimiter = 0;
