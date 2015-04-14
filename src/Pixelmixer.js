@@ -256,6 +256,10 @@ PX.simpleSetup = function (params) {
 	PX.channels.setChannel(params.channel, channel1);
 };
 
+PX.updateData = function (data1, data2, data3) {
+
+	PX.app.generateDataMap(data1, data2, data3);
+};
 
 PX.updateNodePoints = function () {
 

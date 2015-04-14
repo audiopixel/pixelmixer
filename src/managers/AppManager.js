@@ -33,6 +33,7 @@ PX.AppManager = function (scene, renderer) {
 
 	this.coordsMap;
 	this.portsMap;
+	this.dataMap;
 	this.altMap1;
 	this.altMap2;
 	this.gl;
@@ -40,9 +41,6 @@ PX.AppManager = function (scene, renderer) {
 	this.plane = new THREE.PlaneBufferGeometry( PX.simSize, PX.simSize );
 	PX.pointGeometry = new THREE.Geometry();
 
-
-	// TODO
-	//this.portsMap;
 };
 
 
@@ -414,12 +412,46 @@ PX.AppManager.prototype = {
 		this.coordsMap.needsUpdate = true;
 		this.coordsMap.flipY = false;
 
-		// testing
-		this.altMap1 = new THREE.DataTexture( a, PX.simSize, PX.simSize, THREE.RGBAFormat, THREE.FloatType );
-		this.altMap1.minFilter = THREE.NearestFilter;
-		this.altMap1.magFilter = THREE.NearestFilter;
-		this.altMap1.needsUpdate = true;
-		this.altMap1.flipY = false;
+	},
+
+	generateDataMap: function (data1, data2, data3) {
+
+		// Generate 32x32 texture, that can hold 3 sets of 1024 floats
+		var a = new Float32Array( 4096 ); // Math.pow(32, 2) * 4
+
+		var v1;
+		var v2;
+		var v3;
+		var t = 0;
+
+		for ( var k = 0, kl = a.length; k < kl; k += 4 ) {
+
+			v1 = 0; v2 = 0; v3 = 0;
+			if(data1 && data1[t]){ v1 = data1[t]; }
+			if(data2 && data2[t]){ v2 = data2[t]; }
+			if(data3 && data3[t]){ v3 = data3[t]; }
+
+			a[ k + 0 ] = v1;
+			a[ k + 1 ] = v2;
+			a[ k + 2 ] = v3;
+
+			if(v1 + v2 + v3 === 0){
+				a[ k + 3 ] = 0;
+			}else{
+				a[ k + 3 ] = 1;
+			}
+			t++;
+		}
+
+		this.dataMap = new THREE.DataTexture( a, 32, 32, THREE.RGBAFormat, THREE.FloatType );
+		this.dataMap.minFilter = THREE.NearestFilter;
+		this.dataMap.magFilter = THREE.NearestFilter;
+		this.dataMap.needsUpdate = true;
+		this.dataMap.flipY = false;
+
+		if(PX.material){
+			PX.material.uniforms.dataTexture.value = this.dataMap;
+		}
 
 	},
 
@@ -510,12 +542,13 @@ PX.AppManager.prototype = {
 		// Internal core uniforms
 		var uniforms = {
 			time: { type: "f", value: this.time },
+			mouse: { type: "v2", value: new THREE.Vector2( 0., 0. ) },
 			_random: { type: "f", value: Math.random() },
+			dataTexture: { type: "t", value: null },
 			u_coordsMap: { type: "t", value: this.coordsMap },
 			u_portsMap: { type: "t", value: this.portsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
-			u_mapSize: { type: "f", value: PX.simSize },
-			mouse: { type: "v2", value: new THREE.Vector2( 0., 0. ) }
+			u_mapSize: { type: "f", value: PX.simSize }
 		};
 
 		// Generate the source shader from the current loaded channels

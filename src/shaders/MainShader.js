@@ -36,6 +36,7 @@ PX.MainShader = {
 		"uniform float _random;",
 		"uniform float u_mapSize;",
 		"uniform vec2 mouse;",
+		"uniform sampler2D dataTexture;",
 		"uniform sampler2D u_coordsMap;",
 		"uniform sampler2D u_prevCMap;",
 		"uniform sampler2D u_portsMap;",
