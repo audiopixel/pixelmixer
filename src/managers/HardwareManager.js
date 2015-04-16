@@ -164,6 +164,12 @@ PX.HardwareManager.prototype = {
 		var maxy = -s;
 
 		var nodes = [];
+		var newPort = true;
+		if(PX.ports.getPort(params.port)){
+			nodes = PX.ports.getPort(params.port).nodes;
+			newPort = false;
+		}
+
 		var node = {};
 		for ( e = 0; e < params.width; e ++ ) { 
 			for ( i = 0; i < params.height; i ++ ) { 
@@ -180,8 +186,11 @@ PX.HardwareManager.prototype = {
 				maxy = Math.max(maxy, node.y);
 			}
 		}
-		var port = new PX.Port({name: "Port " + port, nodes: nodes});
-		PX.ports.setPort(params.port, port);
+		
+		if(newPort){
+			var port = new PX.Port({name: "Port " + port, nodes: nodes});
+			PX.ports.setPort(params.port, port);
+		}
 
 		// If we are not the first designated port set the pod position as a default (testing)
 		if(params.positionId > 1){
