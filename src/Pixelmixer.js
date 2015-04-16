@@ -19,7 +19,8 @@ PX.pointMaterial = {};			// Shader of the point cloud that displays the node col
 PX.pointSprite; 				// String - relative file path to image to represent the point sprite
 PX.pointSize = 25;				// The size of each point cloud sprite
 
-
+PX.mouseX = 0;					// Mouse X & Y sent as mouse uniform object when these are updated
+PX.mouseY = 0;
 
 // ****** Constants ******
 
@@ -277,9 +278,26 @@ PX.get = function(uniform, channel, pod, clip) {
 };
 
 PX.set = function(uniform, value, channel, pod, clip) {
-	if(!channel){
+
+	var m = false;
+	if(uniform === "mouse.x"){
+		PX.mouseX = value; m = true;
+
+	}else if(uniform === "mouse.y"){
+		PX.mouseY = value; m = true;
+
+	}else if(uniform === "speed"){
+		if(clip){
+			PX.getObj(channel, pod, clip).speed = value;
+		}else{
+			PX.speed = value;
+		}
+	}else if(!channel){
 		PX.material.uniforms[uniform].value = value;
 	}else{
+		if(uniform === "mix"){
+			value = Math.max(0, Math.min(1, value));
+		}
 		if(PX.material.uniforms){
 			PX.getUniform(uniform, channel, pod, clip).value = value;
 		}else{
@@ -291,6 +309,9 @@ PX.set = function(uniform, value, channel, pod, clip) {
 			PX.app.initialUniforms[addy].value = value;
 		}
 		PX.setObjProperty(uniform, value, channel, pod, clip);
+	}
+	if(m && PX.material.uniforms){
+		PX.material.uniforms.mouse.value = new THREE.Vector2( PX.mouseX, PX.mouseY );
 	}
 };
 
