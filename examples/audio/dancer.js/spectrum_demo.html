@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>PixelMixer Audio Example</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href="../../css/main.css" rel="stylesheet" />
+		
+
+		<!-- Import standard three.js stuff -->
+		<script src="../../libs/Detector.js"></script>
+		<script src="../../libs/three.min.js"></script>
+		<script src="../../libs/TrackballControls.js"></script>
+		<script src="../../libs/dat.gui.min.js"></script>
+
+
+		<!-- Import library -->
+		<script src="../../../build/pixelmixer.min.js"></script>
+
+
+		<!-- Import Shaders Here -->
+		<script src="../../import/shaders/SolidColor.js"></script>
+		<script src="../../import/shaders/TestFrame.js"></script>
+		<script src="../../import/shaders/DiSinSwirl.js"></script>
+		<script src="../../import/shaders/ColorSineBar.js"></script>
+		<script src="../../import/shaders/ColorSwirls.js"></script>
+		<script src="../../import/shaders/LineCosSin.js"></script>
+		<script src="../../import/shaders/SimpleSwirl.js"></script>
+		<script src="../../import/shaders/SinSpiral.js"></script>
+		<script src="../../import/shaders/SineParticles.js"></script>
+		<script src="../../import/shaders/Water.js"></script>
+		<script src="../../import/shaders/HexifyRadial.js"></script>
+		<script src="../../import/shaders/SinCosTan.js"></script>
+		<script src="../../import/shaders/HueFx.js"></script>
+		<script src="../../import/shaders/BasicTest.js"></script>
+
+		<script src="../../import/shaders/SimpleSpectrum.js"></script>
+
+
+		<script>
+
+			if ( !Detector.webgl ) { Detector.addGetWebGLMessage(); } else {
+
+				var glWidth = window.innerWidth;
+				var glHeight = window.innerHeight;
+
+				var scene;
+				var renderer;
+				var camera;
+				var controls;
+				var container;
+				var guiData;
+				var mouse = {};
+
+				function onLoad(){
+
+
+					// ----------------
+
+
+					// ** Standard Three.js setup
+
+					scene = new THREE.Scene();
+
+					renderer = new THREE.WebGLRenderer(); 
+					renderer.setSize( glWidth, glHeight );
+					renderer.autoClear = false;
+
+					container = document.getElementById( 'container' );
+					container.appendChild( renderer.domElement ); 
+
+					camera = new THREE.PerspectiveCamera( 30, glWidth / glHeight, 1, 100000 );
+					camera.position.z = 2000;
+					controls = new THREE.TrackballControls( camera, renderer.domElement);
+
+
+					// ----------------
+
+
+					// ** Initialize PixelMixer
+
+					PX.init(scene, renderer, { maxNodeCount: 2000, pointSize: 30, pointSprite: "../../images/nodeflare250.png" });
+					PX.setSize(glWidth, glHeight);
+					
+
+					// ----------------
+
+
+					// ** Add a simple grid of Nodes 
+
+					var params = {};		// Position coordinates for the entire grid
+					params.x = -870;		
+					params.y = -300;
+					params.z = -0;
+					params.width = 52;		// How many pixels for the entire grid
+					params.height = 20;
+					params.pitch = 33;		// How far each pixel is spaced
+
+					PX.hardware.addSimpleNodeGrid(params);
+					PX.updateNodePoints();
+
+
+					// ----------------
+
+
+					// ** Add a shader to Channel 1
+
+					PX.simpleSetup({ channel: 1, ids: [ "ColorSineBar", "SimpleSpectrum", "HueFx"] });
+					PX.set("mix", 0, 1, 1, 1); 
+					PX.set("speed", 0.25, 1, 1, 1);
+					PX.set("blend", PX.BLEND.Difference, 1, 1, 2); 
+
+					// ----------------
+
+
+					// ** UI Layer
+
+					var gui = new dat.GUI({
+						//load: PX.datguiJson,
+						//preset: 'Spiral 1'
+					});
+
+					guiData  = {
+						Channel1Mix:  1,
+						Amp:  .5,
+						FlipMode:  0,
+						Start:  0,
+						End:  1,
+						Green:  1,
+						Blue:  .1,
+
+						Hue:  0,
+						HueClamp:  1,
+						Saturation:  0,
+						SatClamp:  1,
+						Smooth:  0,
+						PreAmpOnKick:  .5,
+
+						Mix:  0,
+						Scale:  .5,
+						//Speed:  .2,
+						Shader:  "ColorSineBar",
+						Blend:  "Difference"
+					};
+
+					// Add preset controls
+					//gui.remember(guiData);
+
+					gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("mix", v, 1);  });
+
+
+					gui.add( { PlayPauseAudio:function(){
+
+						if (window.dancer.isPlaying()) {
+							window.dancer.pause();
+						}else{
+							window.dancer.play();
+						}
+
+					} } ,'PlayPauseAudio');
+
+					gui.add( { SnapToFront:function(){
+
+						controls.reset();
+
+					} } ,'SnapToFront');
+					
+
+					var f3 = gui.addFolder('Spectrum');     f3.open();
+					f3.add( guiData, "Amp", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p1", v, 1, 1, 2);  });
+					f3.add( guiData, "FlipMode", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p2", v, 1, 1, 2);  });
+					f3.add( guiData, "Start", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p3", v, 1, 1, 2);  });
+					f3.add( guiData, "End", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p4", v, 1, 1, 2);  });
+					f3.add( guiData, "Green", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p5", v, 1, 1, 2);  });
+					f3.add( guiData, "Blue", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p6", v, 1, 1, 2);  });
+
+					var f2 = gui.addFolder('Shader 2');    //  f2.open();
+					f2.add( guiData, 'Mix', 0.0, 1.0, 1.0).onChange(function (v) { PX.set("mix", v, 1, 1, 1);  });
+					f2.add( guiData, 'Scale', 0.0, 1.0, 1.0).onChange(function (v) { PX.set("p1", v, 1, 1, 1);  });
+					//f2.add( guiData, 'Speed', 0.0, 1.0, 1.0).onChange(function (v) { PX.set("speed", v, 1, 1, 1);  });
+					f2.add( guiData, 'Shader', PX.demoClipNames).onChange(function (v) { uniformClipTypeChange(v, 1, 1, 1 ); });
+					f2.add( guiData, 'Blend', PX.BLENDS ).onChange(function (v) { uniformBlendChange(v, 1, 1, 2); });
+
+					var f1 = gui.addFolder('Post FX');      f1.open();
+					f1.add( guiData, "Hue", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p1", v, 1, 1, 3);  });
+					f1.add( guiData, "HueClamp", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p2", v, 1, 1, 3);  });
+					f1.add( guiData, "Saturation", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p3", v, 1, 1, 3);  });
+					f1.add( guiData, "SatClamp", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p4", v, 1, 1, 3);  });
+					f1.add( guiData, "Smooth", 0.0, .98, 1.0 )  .onChange(function (v) { PX.set("p5", v, 1, 1, 3);  });
+					f1.add( guiData, "PreAmpOnKick", 0.0, 1.0, 1.0 )  .onChange(function (v) { kickAmp = v;  });
+
+					// ----------------
+
+					var kickAmp = .5;
+					kick = dancer.createKick({
+						
+						onKick: function() {
+							PX.set("p6", 2 * kickAmp, 1, 1, 3);
+						},
+						offKick: function() {
+							PX.set("p6", 0, 1, 1, 3);
+						}
+						
+					}).on();
+
+
+
+					// ** Start the main loop
+
+					animate();
+
+
+				}
+
+				function animate() {
+
+					// Main update loop
+					if(PX.ready){
+
+						if (window.dancer && window.dancer.isPlaying()) {
+
+							PX.updateData( window.dancer.getSpectrum() );
+
+						}
+
+						// Update the API
+						PX.update();
+
+						// Update Three.js
+						controls.update();
+						renderer.render( scene, camera );
+					}
+
+					// Keep repeating the animation loop
+					requestAnimationFrame( animate );
+				}
+
+
+				function onWindowResize() {
+
+					// Resize logic
+					glWidth = window.innerWidth;
+					glHeight = window.innerHeight;
+
+					PX.setSize(glWidth, glHeight);
+
+					camera.aspect = glWidth / glHeight;
+					camera.updateProjectionMatrix();
+					controls.handleResize();
+
+				}
+				window.addEventListener( 'resize', onWindowResize, false );
+
+
+				function onDocumentMouseMove( event ) {
+
+					event.preventDefault();
+					mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+					mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+					//PX.set("p6", mouse.x, 1, 1, 2); 
+					PX.set("mouse.x", mouse.x); 
+				}
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+				/*
+				* Trigger a clip type change - demo and testing for now // TODO dynamic UI listing
+				*/
+				function uniformClipTypeChange(clipName, channel, pod, clip) {
+
+					var clipId = 0;
+
+					if(clipName !== "OFF"){
+						clipId = PX.clips[clipName];
+					}
+
+					var clipObj = new PX.Clip({id: clipName});
+					PX.channels.setClip(channel, pod, clip, clipObj);
+
+					PX.updateShader();
+				}
+				function uniformBlendChange(guiItem, channel, pod, clip) { 
+					for (var i = 0; i < 17; i++) {
+						if(guiItem === PX.BLENDS[i]){
+							PX.set("blend", (i+1) + ".", channel, pod, clip);
+							return;
+						}
+					};
+				}
+
+			}
+
+		</script>
+
+	</head>
+
+	<body ontouchstart="" onload="onLoad()">
+
+
+		<div id="loading">Loading . . .</div>
+		
+		<!-- Dancer.js -->
+		<script src="src/dancer.js"></script>
+		<script src="src/support.js"></script>
+		<script src="src/kick.js"></script>
+		<script src="src/adapterWebAudio.js"></script>
+		<script src="src/adapterMoz.js"></script>
+		<script src="src/adapterFlash.js"></script>
+		<script src="lib/fft.js"></script>
+		<script src="lib/flash_detect.js"></script>
+		<script src="plugins/dancer.fft.js"></script>
+		<script src="js/player.js"></script>
+
+		<div id="container"></div>
+
+	</body>
+
+</html>

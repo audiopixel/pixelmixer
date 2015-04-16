@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>PixelMixer Audio Example</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href="../../css/main.css" rel="stylesheet" />
+		
+
+		<!-- Import standard three.js stuff -->
+		<script src="../../libs/Detector.js"></script>
+		<script src="../../libs/three.min.js"></script>
+		<script src="../../libs/TrackballControls.js"></script>
+		<script src="../../libs/dat.gui.min.js"></script>
+
+
+		<!-- Import library -->
+		<script src="../../../build/pixelmixer.min.js"></script>
+
+
+		<!-- Import Shaders Here -->
+		<script src="../../import/shaders/SimpleSpectrum.js"></script>
+
+
+		<script>
+
+			if ( !Detector.webgl ) { Detector.addGetWebGLMessage(); } else {
+
+				var glWidth = window.innerWidth;
+				var glHeight = window.innerHeight;
+
+				var scene;
+				var renderer;
+				var camera;
+				var controls;
+				var container;
+				var guiData;
+
+				function onLoad(){
+
+
+					// ----------------
+
+
+					// ** Standard Three.js setup
+
+					scene = new THREE.Scene();
+
+					renderer = new THREE.WebGLRenderer(); 
+					renderer.setSize( glWidth, glHeight );
+					renderer.autoClear = false;
+
+					container = document.getElementById( 'container' );
+					container.appendChild( renderer.domElement ); 
+
+					camera = new THREE.PerspectiveCamera( 30, glWidth / glHeight, 1, 100000 );
+					camera.position.z = 7500;
+					controls = new THREE.TrackballControls( camera, renderer.domElement);
+
+
+					// ----------------
+
+
+					// ** Initialize PixelMixer
+
+					PX.init(scene, renderer, { pointSize: 30, pointSprite: "../../images/nodeflare250.png" });
+					PX.setSize(glWidth, glHeight);
+					
+
+					// ----------------
+
+
+					// ** Add a simple grid of Nodes 
+
+					var params = {};		// Position coordinates for the entire grid
+					params.x = -4750;		
+					params.y = -300;
+					params.z = -0;
+					params.width = 480;		// How many pixels for the entire grid
+					params.height = 30;
+					params.pitch = 20;		// How far each pixel is spaced
+
+					PX.hardware.addSimpleNodeGrid(params);
+					PX.updateNodePoints();
+
+
+					// ----------------
+
+
+					// ** Add a shader to Channel 1
+
+					PX.simpleSetup({channel: 1, ids: ["SimpleSpectrum"]});
+
+
+					// ----------------
+
+
+					// ** UI Layer
+
+					var gui = new dat.GUI();
+
+					guiData  = {
+						Channel1Mix:  1,
+						Amp:  .5,
+						FlipMode:  0,
+						Start:  0,
+						End:  1,
+						Green:  1,
+						Blue:  .1
+					};
+
+					gui.add( guiData, "Channel1Mix", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("mix", v, 1);  });
+
+					gui.add( { PlayPauseAudio:function(){
+
+						if (window.dancer.isPlaying()) {
+							window.dancer.pause();
+						}else{
+							window.dancer.play();
+						}
+
+					} } ,'PlayPauseAudio');
+
+
+					var f3 = gui.addFolder('Spectrum');   //  f3.open();
+					f3.add( guiData, "Amp", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p1", v, 1, 1, 1);  });
+					f3.add( guiData, "FlipMode", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p2", v, 1, 1, 1);  });
+					f3.add( guiData, "Start", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p3", v, 1, 1, 1);  });
+					f3.add( guiData, "End", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p4", v, 1, 1, 1);  });
+					f3.add( guiData, "Green", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p5", v, 1, 1, 1);  });
+					f3.add( guiData, "Blue", 0.0, 1.0, 1.0 )  .onChange(function (v) { PX.set("p6", v, 1, 1, 1);  });
+
+
+					// ----------------
+
+
+					kick = dancer.createKick({
+						/*
+						onKick: function() {
+							console.log("-==2");
+						},
+						offKick: function() {
+							console.log("-==1");
+						}
+						*/
+					}).on();
+
+
+					// ** Start the main loop
+
+					animate();
+
+
+				}
+
+				function animate() {
+
+					// Main update loop
+					if(PX.ready){
+
+						if (window.dancer && window.dancer.isPlaying()) {
+
+							PX.updateData( window.dancer.getSpectrum() );
+
+						}
+
+						// Update the API
+						PX.update();
+
+						// Update Three.js
+						controls.update();
+						renderer.render( scene, camera );
+					}
+
+					// Keep repeating the animation loop
+					requestAnimationFrame( animate );
+				}
+
+
+				function onWindowResize() {
+
+					// Resize logic
+					glWidth = window.innerWidth;
+					glHeight = window.innerHeight;
+
+					PX.setSize(glWidth, glHeight);
+
+					camera.aspect = glWidth / glHeight;
+					camera.updateProjectionMatrix();
+					controls.handleResize();
+
+				}
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+		</script>
+
+	</head>
+
+	<body ontouchstart="" onload="onLoad()">
+
+
+		<div id="loading">Loading . . .</div>
+		
+		<!-- Dancer.js -->
+		<script src="src/dancer.js"></script>
+		<script src="src/support.js"></script>
+		<script src="src/kick.js"></script>
+		<script src="src/adapterWebAudio.js"></script>
+		<script src="src/adapterMoz.js"></script>
+		<script src="src/adapterFlash.js"></script>
+		<script src="lib/fft.js"></script>
+		<script src="lib/flash_detect.js"></script>
+		<script src="plugins/dancer.fft.js"></script>
+		<script src="js/player.js"></script>
+
+		<div id="container"></div>
+
+	</body>
+
+</html>
