@@ -542,7 +542,7 @@ PX.AppManager.prototype = {
 		// Internal core uniforms
 		var uniforms = {
 			time: { type: "f", value: this.time },
-			mouse: { type: "v2", value: new THREE.Vector2( 0., 0. ) },
+			mouse: { type: "v2", value: new THREE.Vector2( PX.mouseX, PX.mouseY ) },
 			_random: { type: "f", value: Math.random() },
 			dataTexture: { type: "t", value: null },
 			u_coordsMap: { type: "t", value: this.coordsMap },
