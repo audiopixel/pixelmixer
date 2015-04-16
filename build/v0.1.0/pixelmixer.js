@@ -1,26 +1,3 @@
-/*
-The MIT License
-
-Copyright &copy; 2010-2015 Hepp Maccoy, AudioPixel, & PixelMixer.js Contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
 
 var PX = { version: '0.1.0' };	// Global PixelMixer object
 
@@ -42,7 +19,8 @@ PX.pointMaterial = {};			// Shader of the point cloud that displays the node col
 PX.pointSprite; 				// String - relative file path to image to represent the point sprite
 PX.pointSize = 25;				// The size of each point cloud sprite
 
-
+PX.mouseX = 0;					// Mouse X & Y sent as mouse uniform object when these are updated
+PX.mouseY = 0;
 
 // ****** Constants ******
 
@@ -150,11 +128,6 @@ PX.init = function(scene, renderer, params){
 
 
 };
-
-
-// Set this to store a [uniform float array] with specified length
-// Can be referenced later in shaders, and PX.set/get as 'data'
-PX.dataSetLength = null;
 
 
 PX.shaderNeedsUpdate = false;
@@ -284,6 +257,10 @@ PX.simpleSetup = function (params) {
 	PX.channels.setChannel(params.channel, channel1);
 };
 
+PX.updateData = function (data1, data2, data3) {
+
+	PX.app.generateDataMap(data1, data2, data3);
+};
 
 PX.updateNodePoints = function () {
 
@@ -301,9 +278,26 @@ PX.get = function(uniform, channel, pod, clip) {
 };
 
 PX.set = function(uniform, value, channel, pod, clip) {
-	if(!channel){
+
+	var m = false;
+	if(uniform === "mouse.x"){
+		PX.mouseX = value; m = true;
+
+	}else if(uniform === "mouse.y"){
+		PX.mouseY = value; m = true;
+
+	}else if(uniform === "speed"){
+		if(clip){
+			PX.getObj(channel, pod, clip).speed = value;
+		}else{
+			PX.speed = value;
+		}
+	}else if(!channel){
 		PX.material.uniforms[uniform].value = value;
 	}else{
+		if(uniform === "mix"){
+			value = Math.max(0, Math.min(1, value));
+		}
 		if(PX.material.uniforms){
 			PX.getUniform(uniform, channel, pod, clip).value = value;
 		}else{
@@ -315,6 +309,9 @@ PX.set = function(uniform, value, channel, pod, clip) {
 			PX.app.initialUniforms[addy].value = value;
 		}
 		PX.setObjProperty(uniform, value, channel, pod, clip);
+	}
+	if(m && PX.material.uniforms){
+		PX.material.uniforms.mouse.value = new THREE.Vector2( PX.mouseX, PX.mouseY );
 	}
 };
 
@@ -447,6 +444,7 @@ PX.AppManager = function (scene, renderer) {
 
 	this.coordsMap;
 	this.portsMap;
+	this.dataMap;
 	this.altMap1;
 	this.altMap2;
 	this.gl;
@@ -454,9 +452,6 @@ PX.AppManager = function (scene, renderer) {
 	this.plane = new THREE.PlaneBufferGeometry( PX.simSize, PX.simSize );
 	PX.pointGeometry = new THREE.Geometry();
 
-
-	// TODO
-	//this.portsMap;
 };
 
 
@@ -828,12 +823,46 @@ PX.AppManager.prototype = {
 		this.coordsMap.needsUpdate = true;
 		this.coordsMap.flipY = false;
 
-		// testing
-		this.altMap1 = new THREE.DataTexture( a, PX.simSize, PX.simSize, THREE.RGBAFormat, THREE.FloatType );
-		this.altMap1.minFilter = THREE.NearestFilter;
-		this.altMap1.magFilter = THREE.NearestFilter;
-		this.altMap1.needsUpdate = true;
-		this.altMap1.flipY = false;
+	},
+
+	generateDataMap: function (data1, data2, data3) {
+
+		// Generate 32x32 texture, that can hold 3 sets of 1024 floats
+		var a = new Float32Array( 4096 ); // Math.pow(32, 2) * 4
+
+		var v1;
+		var v2;
+		var v3;
+		var t = 0;
+
+		for ( var k = 0, kl = a.length; k < kl; k += 4 ) {
+
+			v1 = 0; v2 = 0; v3 = 0;
+			if(data1 && data1[t]){ v1 = data1[t]; }
+			if(data2 && data2[t]){ v2 = data2[t]; }
+			if(data3 && data3[t]){ v3 = data3[t]; }
+
+			a[ k + 0 ] = v1;
+			a[ k + 1 ] = v2;
+			a[ k + 2 ] = v3;
+
+			if(v1 + v2 + v3 === 0){
+				a[ k + 3 ] = 0;
+			}else{
+				a[ k + 3 ] = 1;
+			}
+			t++;
+		}
+
+		this.dataMap = new THREE.DataTexture( a, 32, 32, THREE.RGBAFormat, THREE.FloatType );
+		this.dataMap.minFilter = THREE.NearestFilter;
+		this.dataMap.magFilter = THREE.NearestFilter;
+		this.dataMap.needsUpdate = true;
+		this.dataMap.flipY = false;
+
+		if(PX.material){
+			PX.material.uniforms.dataTexture.value = this.dataMap;
+		}
 
 	},
 
@@ -924,12 +953,13 @@ PX.AppManager.prototype = {
 		// Internal core uniforms
 		var uniforms = {
 			time: { type: "f", value: this.time },
+			mouse: { type: "v2", value: new THREE.Vector2( PX.mouseX, PX.mouseY ) },
 			_random: { type: "f", value: Math.random() },
+			dataTexture: { type: "t", value: null },
 			u_coordsMap: { type: "t", value: this.coordsMap },
 			u_portsMap: { type: "t", value: this.portsMap },
 			u_prevCMap: { type: "t", value: this.rtTextureB },
-			u_mapSize: { type: "f", value: PX.simSize },
-			mouse: { type: "v2", value: new THREE.Vector2( 0., 0. ) }
+			u_mapSize: { type: "f", value: PX.simSize }
 		};
 
 		// Generate the source shader from the current loaded channels
@@ -1071,6 +1101,7 @@ PX.AppManager.prototype = {
 		frag = frag.replace(/_lastRgb/g, "_94");
 		frag = frag.replace(/getPodScale/g, "_95");
 		frag = frag.replace(/getPodOffset/g, "_96");
+		frag = frag.replace(/getTexData/g, "_97");
 		return frag.trim();
 		
 	}
@@ -1458,11 +1489,6 @@ PX.ChannelManager.prototype = {
 		}
 		if(PX.app.altMap2){
 			output = "px_alt2 = texture2D( u_altMap2, v_vUv);" + output;
-		}
-
-		// Array of items we can set audio spectrum/waveform data to, or any data to
-		if(PX.dataSetLength && PX.dataSetLength > 0){
-			fragFuncOutput = "uniform float data[ " + PX.dataSetLength + " ]; \n" + fragFuncOutput;
 		}
 
 
@@ -2082,6 +2108,12 @@ PX.HardwareManager.prototype = {
 		var maxy = -s;
 
 		var nodes = [];
+		var newPort = true;
+		if(PX.ports.getPort(params.port)){
+			nodes = PX.ports.getPort(params.port).nodes;
+			newPort = false;
+		}
+
 		var node = {};
 		for ( e = 0; e < params.width; e ++ ) { 
 			for ( i = 0; i < params.height; i ++ ) { 
@@ -2098,8 +2130,11 @@ PX.HardwareManager.prototype = {
 				maxy = Math.max(maxy, node.y);
 			}
 		}
-		var port = new PX.Port({name: "Port " + port, nodes: nodes});
-		PX.ports.setPort(params.port, port);
+		
+		if(newPort){
+			var port = new PX.Port({name: "Port " + port, nodes: nodes});
+			PX.ports.setPort(params.port, port);
+		}
 
 		// If we are not the first designated port set the pod position as a default (testing)
 		if(params.positionId > 1){
@@ -2601,6 +2636,7 @@ PX.MainShader = {
 		"uniform float _random;",
 		"uniform float u_mapSize;",
 		"uniform vec2 mouse;",
+		"uniform sampler2D dataTexture;",
 		"uniform sampler2D u_coordsMap;",
 		"uniform sampler2D u_prevCMap;",
 		"uniform sampler2D u_portsMap;",
