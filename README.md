@@ -1,7 +1,4 @@
 
-[![Foo](https://github.com/audiopixel/pixelmixer/blob/master/docs/images/pixelmixer-vimeo.png)](https://vimeo.com/125231156)
-
-
 PixelMixer by AudioPixel is a visual engine optimized for performance that can generate, blend, and map OpenGL pixel shaders in 3D space.
 
 The API runs in any browser using HTML5 (WebGL) and [Three.js](http://threejs.org). It is simple to add to any web application.
@@ -10,6 +7,8 @@ The generated shaders can also be used in any OpenGL ES 2.0 environment (C / Jav
 The original goal in creating PixelMixer was to drive lighting and video projection equipment. It is capable of capturing color / data values of all 3D nodes at fast framerates, which can be used for communication to physical lighting equipment using protocols such as UDP, REST, DMX, & Video. 
 
 ---
+
+[![Foo](https://github.com/audiopixel/pixelmixer/blob/master/docs/images/pixelmixer-vimeo.png)](https://vimeo.com/125231156)
 
 Online demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
 
@@ -23,8 +22,7 @@ Load in additional shaders, such as ones found at [glslsandbox](http://glslsandb
 
 [Features](https://github.com/audiopixel/pixelmixer#features) | 
 [Possible uses](https://github.com/audiopixel/pixelmixer#possible-uses) | 
-[Steps to using API](https://github.com/audiopixel/pixelmixer#steps-to-using-api) |
-[vs Vanilla GLSL Shader](https://github.com/audiopixel/pixelmixer#vs-vanilla-glsl-shader)
+[Steps to using API](https://github.com/audiopixel/pixelmixer#steps-to-using-api)
 
 [Terminology](https://github.com/audiopixel/pixelmixer#terminology) |
 [Roadmap](https://github.com/audiopixel/pixelmixer#roadmap) |
