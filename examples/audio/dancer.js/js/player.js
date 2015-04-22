@@ -1,7 +1,7 @@
 (function() {
 
 	var
-		AUDIO_FILE = 'songs/zircon_devils_spirit',
+		AUDIO_FILE = 'songs/aphex_twin_-_28_organ',
 		dancer, kick;
 
 	/*
@@ -27,7 +27,7 @@
 	dancer
 		.load({
 			src: AUDIO_FILE,
-			codecs: ['ogg']
+			codecs: ['mp3']
 		});
 
 	Dancer.isSupported() || loaded();
