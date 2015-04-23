@@ -23,6 +23,7 @@
 
 PX.PodPosition = function (params) { 
 
+	params = params || {};
 	this.x = params.x || 0;
 	this.y = params.y || 0;
 	this.z = params.z || 0;

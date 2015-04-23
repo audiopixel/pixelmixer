@@ -85,7 +85,7 @@ PX.HardwareManager.prototype = {
 	* 
 	* If port is not yet defined it creates a new one
 	*
-	* @param imported 		The Array to import
+	* @param nodes 			The Array to import
 	* @param portOffset 	Optional value to offset the port values from.
 	* @param x 				Optional value to offset the x values from.
 	* @param y 				Optional value to offset the y values from.
@@ -93,6 +93,8 @@ PX.HardwareManager.prototype = {
 	* @param scale 			Optional overwrite value to scale nodes from.
 	*/
 	importNodeArray: function (params) {
+
+		params = params || {};
 		params.portOffset = params.portOffset || 0;
 		params.x = params.x || 0;
 		params.y = params.y || 0;
@@ -109,11 +111,6 @@ PX.HardwareManager.prototype = {
 			node.z = (params.nodes[k + 3] * params.scale) + params.z;
 			nodes.push[node];
 
-			if(params.nodes[k] === 2){
-				//node.x += Math.random() * 1;
-			}
-				//console.log(params.nodes[k]);
-
 			PX.ports.addNode(params.nodes[k] + 1, node);
 		}
 
@@ -129,6 +126,7 @@ PX.HardwareManager.prototype = {
 
 		var nodes = [];
 		var node = {};
+		params = params || {};
 		if(!PX.ports[params.port-1]){
 			// If a port is not defined create a default one
 			PX.ports.setPort(params.port, new PX.Port());
@@ -152,6 +150,7 @@ PX.HardwareManager.prototype = {
 	*/
 	addSimpleNodeGrid: function (params) {
 
+		params = params || {};
 		// If a port slot is not defined just add it to the next open one
 		if(!params.port){
 			params.port = PX.ports.ports.length + 1;

@@ -709,6 +709,17 @@ PX.ChannelManager.prototype = {
 		return this.podpositions[podPositionId-1];
 	},
 
+	duplicatePodPos: function (podPositionId, newId) {
+		var obj = this.getPodPos(podPositionId);
+		var copy = new PX.PodPosition();
+		for (var attr in obj) {
+			if (obj.hasOwnProperty(attr)){
+				copy[attr] = obj[attr];
+			}
+		}
+		this.setPodPos(newId, copy);
+	},
+
 	clearPodPos: function (podPositionId) {
 		delete this.podpositions[podPositionId-1]; // TODO optimize: most likely better to not use 'delete'
 	},
@@ -721,6 +732,7 @@ PX.ChannelManager.prototype = {
 	setPodPosTransforms: function (params) {
 
 		var pos = this.getPodPos(params.id);
+		params = params || {};
 		if(params.xt || params.xt < 1){pos.xt = params.xt;}
 		if(params.yt || params.yt < 1){pos.yt = params.yt;}
 		if(params.zt || params.zt < 1){pos.zt = params.zt;}
