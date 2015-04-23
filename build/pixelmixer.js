@@ -1,26 +1,3 @@
-/*
-The MIT License
-
-Copyright &copy; 2010-2015 Hepp Maccoy, AudioPixel, & PixelMixer.js Contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
 
 var PX = { version: '0.1.0' };	// Global PixelMixer object
 
@@ -1906,6 +1883,17 @@ PX.ChannelManager.prototype = {
 		return this.podpositions[podPositionId-1];
 	},
 
+	duplicatePodPos: function (podPositionId, newId) {
+		var obj = this.getPodPos(podPositionId);
+		var copy = new PX.PodPosition();
+		for (var attr in obj) {
+			if (obj.hasOwnProperty(attr)){
+				copy[attr] = obj[attr];
+			}
+		}
+		this.setPodPos(newId, copy);
+	},
+
 	clearPodPos: function (podPositionId) {
 		delete this.podpositions[podPositionId-1]; // TODO optimize: most likely better to not use 'delete'
 	},
@@ -1918,6 +1906,7 @@ PX.ChannelManager.prototype = {
 	setPodPosTransforms: function (params) {
 
 		var pos = this.getPodPos(params.id);
+		params = params || {};
 		if(params.xt || params.xt < 1){pos.xt = params.xt;}
 		if(params.yt || params.yt < 1){pos.yt = params.yt;}
 		if(params.zt || params.zt < 1){pos.zt = params.zt;}
@@ -2052,7 +2041,7 @@ PX.HardwareManager.prototype = {
 	* 
 	* If port is not yet defined it creates a new one
 	*
-	* @param imported 		The Array to import
+	* @param nodes 			The Array to import
 	* @param portOffset 	Optional value to offset the port values from.
 	* @param x 				Optional value to offset the x values from.
 	* @param y 				Optional value to offset the y values from.
@@ -2060,6 +2049,8 @@ PX.HardwareManager.prototype = {
 	* @param scale 			Optional overwrite value to scale nodes from.
 	*/
 	importNodeArray: function (params) {
+
+		params = params || {};
 		params.portOffset = params.portOffset || 0;
 		params.x = params.x || 0;
 		params.y = params.y || 0;
@@ -2076,11 +2067,6 @@ PX.HardwareManager.prototype = {
 			node.z = (params.nodes[k + 3] * params.scale) + params.z;
 			nodes.push[node];
 
-			if(params.nodes[k] === 2){
-				//node.x += Math.random() * 1;
-			}
-				//console.log(params.nodes[k]);
-
 			PX.ports.addNode(params.nodes[k] + 1, node);
 		}
 
@@ -2096,6 +2082,7 @@ PX.HardwareManager.prototype = {
 
 		var nodes = [];
 		var node = {};
+		params = params || {};
 		if(!PX.ports[params.port-1]){
 			// If a port is not defined create a default one
 			PX.ports.setPort(params.port, new PX.Port());
@@ -2119,6 +2106,7 @@ PX.HardwareManager.prototype = {
 	*/
 	addSimpleNodeGrid: function (params) {
 
+		params = params || {};
 		// If a port slot is not defined just add it to the next open one
 		if(!params.port){
 			params.port = PX.ports.ports.length + 1;
@@ -2575,6 +2563,7 @@ PX.Pod = function (params) {
 
 PX.PodPosition = function (params) { 
 
+	params = params || {};
 	this.x = params.x || 0;
 	this.y = params.y || 0;
 	this.z = params.z || 0;
