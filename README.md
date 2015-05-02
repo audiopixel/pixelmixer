@@ -1,20 +1,22 @@
 
-PixelMixer by AudioPixel is a visual engine optimized for performance that can generate, blend, and map OpenGL pixel shaders in 3D space.
+PixelMixer is a visual engine that generates, blends, and maps pixel shaders into 3D space.
 
-The API runs in any browser using HTML5 (WebGL) and [Three.js](http://threejs.org). It is simple to add to any web application.
+Capable of capturing color (or pure data) values of OpenGL 3D points and mapped textures at fast framerates, and includes tools for optimizing color for use on LED and lighting displays.
+
+A simple internal plug-in system allows you to add new '[broadcast techs](https://github.com/audiopixel/pixelmixer/tree/master/examples/import/techs)' which can be used for communication to physical lighting equipment using protocols such as UDP, REST, DMX, & Video. 
+
+The API runs in any browser using HTML5 (WebGL) and [Three.js](http://threejs.org). It is [easy](https://github.com/audiopixel/pixelmixer/blob/master/examples/basic_example.html) to add to any web application.
 The generated shaders can also be used in any OpenGL ES 2.0 environment (C / Java / IPhone / Android).
-
-The original goal in creating PixelMixer was to drive lighting and video projection equipment. It is capable of capturing color / data values of all 3D nodes at fast framerates, which can be used for communication to physical lighting equipment using protocols such as UDP, REST, DMX, & Video. 
 
 ---
 
-[![Foo](https://github.com/audiopixel/pixelmixer/blob/master/docs/images/pixelmixer-vimeo.png)](https://vimeo.com/125231156)
+[![VimeoLink](https://github.com/audiopixel/pixelmixer/blob/master/docs/images/pixelmixer-vimeo.png)](https://vimeo.com/125231156)
 
-Online demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo)
+Online demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo) | *[source](https://github.com/audiopixel/pixelmixer/blob/master/examples/webdemo.html)*
 
-Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/)
+Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/) | *[source](https://github.com/audiopixel/pixelmixer-sandbox)*
 
-Mapping demo: [audiopixel.com/webdemo/basic-mapping.html](http://audiopixel.com/webdemo/basic-mapping.html)
+Mapping demo: [audiopixel.com/webdemo/basic-mapping.html](http://audiopixel.com/webdemo/basic-mapping.html) | *[source](https://github.com/audiopixel/pixelmixer/blob/master/examples/basic_mapping_example.html)*
 
 Load in additional shaders, such as ones found at [glslsandbox](http://glslsandbox.com/) and [shadertoy](https://www.shadertoy.com).
 
@@ -33,15 +35,15 @@ Load in additional shaders, such as ones found at [glslsandbox](http://glslsandb
 
 ## Features ##
 
-* Animate pixel shaders seamlessly across textures and point cloud particles 
-* Mix multiple pixel shaders together using various blend modes
+* Animate shaders seamlessly across textures and point cloud particles 
+* Mix multiple shaders together using various blend modes
 * Map shaders to any number of areas using 3D transformations
-* Import OpenGL ES 2.0 fragment shaders
+* Capture color / data values at high framerates
+* Import any OpenGL ES 2.0 pixel shaders
 * Easily manipulate animations with incoming audio or data feeds
 * Multiple position / index maps can be used to generate mapped content
-* Capture color values for all 3D nodes at high framerates
 * Define networking data per port, broadcast using various protocols
-* Easily create new broadcast protocols for any networked hardware
+* A simple plug-in system to define new network broadcast or color capturing protocols
 * Preview channels in previz mode while still communicating main mix to hardware (WIP)
 * HTML5 video input (WIP)
 
@@ -49,12 +51,11 @@ Load in additional shaders, such as ones found at [glslsandbox](http://glslsandb
 
 ## Possible uses ##
 
-* Mixer for displaying pixel shaders in 3D space
-* VJ / Lighting for stage and architectural 
-* Engine for interactive art installations
-* Tool for audio and data visualizations
-* Animate particles / sprites / textures in any WebGL or Three.js project
+* Mixer for mapping pixel shaders into 3D space
+* Control LED and lighting equipment directly
+* Animate particles / sprites / textures in WebGL and Three.js projects
 * Generate shaders to be used in separate OpenGL applications
+* Tool for interactive art, stage, architectural, conceptual
 
 ---
 
@@ -153,7 +154,7 @@ There can be any number of Channels, each with any number of Pods, each containi
 
 **ChannelPostFX**: A type of Channel that takes the entire main mix and routes it through a set of ClipFXs.
 
-**Previz**: Render a to-be-displayed Channel to preview on screen, while still outputting the main Channel mix unaffected.
+**Previz**: Render a to-be-displayed Channel to preview on screen, while still sending the main Channel mix unaffected.
 
 
 ---
@@ -162,12 +163,12 @@ There can be any number of Channels, each with any number of Pods, each containi
 
 List of features currently in the works / we welcome help with:
 
-* Shader editor error messaging and graceful failure refreshing.
+* Shader editor improvements.
 * Previz improvements.
 * Full Mesh texture rendering. (in addition to PointClouds)
 * Sprites render masked architectural layer. (Nodes emulate lit up surfaces)
 * HTML5 video support.
-* Use without needing three.js.
+* Dependency on three.js optional.
 * Helper methods to facilitate pre-caching of shaders.
 * Optimized runtime player using pre-generated shaders.
 * Node Editor UI toolset to create and edit nodes in 3D.
@@ -177,8 +178,6 @@ List of features currently in the works / we welcome help with:
 ## Participate ##
 
 We encourage you to experiment with these techniques, fork the code, or just try the examples out. We also welcome new contributors wishing to help us tackle development.
-
-In using PixelMixer if you have any problems, suggestions, or ideas on how to improve it, please contact us. There will be a forum soon, but for now we are fielding feedback directly via email. 
 
 We are also seeking beta testers, especially if you have lighting fixtures or other hardware to play with.
 
@@ -199,7 +198,7 @@ In our quest for optimizing AudioPixel's live programming techniques, PixelMixer
 
 The original aim was to build a lightweight platform that could power any interactive art light installation we would dream up. Now we are releasing it to the world in the hopes that it might benefit interactive light for all.
 
-Open Source [MIT License](https://github.com/audiopixel/pixelmixer/blob/master/LICENSE).
+Open Source MIT License
 
 [http://audiopixel.com](http://audiopixel.com)
 
