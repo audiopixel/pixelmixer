@@ -23,7 +23,6 @@
 
 		<!-- Import a 'Broadcast Tech' to define how to use the RGB values -->
 		<script src="import/techs/testBroadcast.js"></script>
-		<script src="import/ui/datguiSetup1.js"></script>
 
 
 		<script>
@@ -87,7 +86,7 @@
 
 
 					// This tells the 'testBroadcast' tech to broadcast the color values of the port we just created
-					PX.ports.getPort(1).type = "testBroadcastType";
+					PX.ports.getPort(1).type = "testBroadcast";
 					PX.ports.getPort(1).broadcast = true;
 
 					PX.updateNodePoints();

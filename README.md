@@ -1,11 +1,11 @@
 
 PixelMixer is a visual engine that generates, blends, and maps pixel shaders into 3D space.
 
-Capable of capturing color (or pure data) values of OpenGL 3D points and mapped textures at fast framerates, and includes tools for optimizing color for use on LED and lighting displays.
+Easily broadcast color (or pure data) values of OpenGL 3D points and mapped textures at fast framerates. Tools are included that optimize color and animations for display on LED and lighting fixtures.
 
 A simple internal plug-in system allows you to add new '[broadcast techs](https://github.com/audiopixel/pixelmixer/tree/master/examples/import/techs)' which can be used for communication to physical lighting equipment using protocols such as UDP, REST, DMX, & Video. 
 
-The API runs in any browser using HTML5 (WebGL) and [Three.js](http://threejs.org). It is [easy](https://github.com/audiopixel/pixelmixer/blob/master/examples/basic_example.html) to add to any web application.
+The API runs in any browser using HTML5 (WebGL) and [Three.js](http://threejs.org). It is [easy](https://github.com/audiopixel/pixelmixer#steps-to-using-api) to add to any web application.
 The generated shaders can also be used in any OpenGL ES 2.0 environment (C / Java / IPhone / Android).
 
 ---
@@ -14,7 +14,7 @@ The generated shaders can also be used in any OpenGL ES 2.0 environment (C / Jav
 
 Online demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo) | *[source](https://github.com/audiopixel/pixelmixer/blob/master/examples/webdemo.html)*
 
-Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/) | *[source](https://github.com/audiopixel/pixelmixer-sandbox)*
+Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/) | *[source](https://github.com/audiopixel/pixelmixer-sandbox)*
 
 Mapping demo: [audiopixel.com/webdemo/basic-mapping.html](http://audiopixel.com/webdemo/basic-mapping.html) | *[source](https://github.com/audiopixel/pixelmixer/blob/master/examples/basic_mapping_example.html)*
 
@@ -124,6 +124,21 @@ Each instance of a loaded shader (Clip) has independent uniforms setup for easy 
 
 ---
 
+#### 5. Capture colors (Optional) ####
+RGB values are available every frame using PX.pixels(). You can also define specific protocols to be broadcasted per port. Write new protocols as [reusable techs](https://github.com/audiopixel/pixelmixer/tree/master/examples/import/techs), or load in existing ones. Below are the steps to implement the '[testBroadcast](https://github.com/audiopixel/pixelmixer/blob/master/examples/import/techs/testBroadcast.js)' tech. See this in a [example](https://github.com/audiopixel/pixelmixer/blob/master/examples/readpixels.html).
+```
+<!-- Import a 'Broadcast Tech' to define how to use the RGB values -->
+<script src="import/techs/testBroadcast.js"></script>
+
+// Pass in true for 'broadcast' & 'readPixels' parameters when we call init().
+PX.init(scene, renderer, { broadcast: true, readPixels: true });
+
+// Each port can define a different tech (DMX and UDP lights could use different ports for example).
+PX.ports.getPort(1).type = "testBroadcastType";
+PX.ports.getPort(1).broadcast = true;
+```
+---
+
 ## Terminology ##
 
 A Clip is simply a wrapper for a Shader that provides additional timing, scaling, and input controls. Clips allow us to play back a Shader multiple times over as any number of separate instances, each with independent animation speeds and input parameters.
@@ -140,7 +155,7 @@ There can be any number of Channels, each with any number of Pods, each containi
 
 **Port**: A group of Nodes. May also contain protocol and address data.
 
-**Shader**: A OpenGL Shader that runs directly on the graphics card.
+**Shader**: A OpenGL ES 2.0 fragment (pixel) shader that runs directly on the GPU.
 
 **Clip**: A Clip is a Shader harnessed in a playable form. Clips can play Shaders back at different speeds and different positions.
 
