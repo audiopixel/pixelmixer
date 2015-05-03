@@ -122,10 +122,9 @@ PX.set("p1", .7, 1, 1, 1);
 
 Each instance of a loaded shader (Clip) has independent uniforms setup for easy control. Global values are also provided to all shaders that are ready to be populated with audio or any sort of data feed. It's also quite easy to enhance existing shaders to respond to any incoming parameters. 
 
----
-
 #### 5. Capture colors (Optional) ####
 RGB values are available every frame using PX.pixels(). You can also define specific protocols to be broadcasted per port. Write new protocols as [reusable techs](https://github.com/audiopixel/pixelmixer/tree/master/examples/import/techs), or load in existing ones. Below are the steps to implement the '[testBroadcast](https://github.com/audiopixel/pixelmixer/blob/master/examples/import/techs/testBroadcast.js)' tech. See this in a [example](https://github.com/audiopixel/pixelmixer/blob/master/examples/readpixels.html).
+
 ```
 <!-- Import a 'Broadcast Tech' to define how to use the RGB values -->
 <script src="import/techs/testBroadcast.js"></script>
@@ -133,10 +132,12 @@ RGB values are available every frame using PX.pixels(). You can also define spec
 // Pass in true for 'broadcast' & 'readPixels' parameters when we call init().
 PX.init(scene, renderer, { broadcast: true, readPixels: true });
 
-// Each port can define a different tech (DMX and UDP lights could use different ports for example).
-PX.ports.getPort(1).type = "testBroadcastType";
+// Each port can define a different tech
+// (DMX and UDP lights could use different ports for example).
+PX.ports.getPort(1).type = "testBroadcast";
 PX.ports.getPort(1).broadcast = true;
 ```
+
 ---
 
 ## Terminology ##
