@@ -1,11 +1,9 @@
 
 PixelMixer is a visual engine that generates, blends, and maps pixel shaders into 3D space.
 
-Easily broadcast color (or pure data) values of OpenGL 3D points and mapped textures at fast framerates. Tools are included that optimize color and animations for display on LED and lighting fixtures.
+Capture color values at fast framerates for communication to physical lighting equipment using protocols such as UDP, REST, DMX, & Video. Tools are included that optimize color and animations for display on LED and lighting fixtures. New communication protocols can be defined as '[broadcast techs](https://github.com/audiopixel/pixelmixer/tree/master/examples/import/techs)'. 
 
-A simple internal plug-in system allows you to add new '[broadcast techs](https://github.com/audiopixel/pixelmixer/tree/master/examples/import/techs)' which can be used for communication to physical lighting equipment using protocols such as UDP, REST, DMX, & Video. 
-
-The API runs in any browser using HTML5 (WebGL) and [Three.js](http://threejs.org). It is [easy](https://github.com/audiopixel/pixelmixer#steps-to-using-api) to add to any web application.
+Runs using HTML5 (WebGL) and [Three.js](http://threejs.org). It is [easy](https://github.com/audiopixel/pixelmixer#steps-to-using-api) to add to any web application.
 The generated shaders can also be used in any OpenGL ES 2.0 environment (C / Java / IPhone / Android).
 
 ---
@@ -39,7 +37,7 @@ Load in additional shaders, such as ones found at [glslsandbox](http://glslsandb
 * Mix multiple shaders together using various blend modes
 * Map shaders to any number of areas using 3D transformations
 * Capture color / data values at high framerates
-* Import any OpenGL ES 2.0 pixel shaders
+* Import OpenGL ES 2.0 pixel shaders
 * Easily manipulate animations with incoming audio or data feeds
 * Multiple position / index maps can be used to generate mapped content
 * Define networking data per port, broadcast using various protocols

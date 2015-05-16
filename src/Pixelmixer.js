@@ -47,7 +47,7 @@ PX.BLEND.PinLight = 17;
 PX.BLEND.Replace = 18;
 PX.BLEND.Ignore = 19;
 
-PX.BLENDS = [ 'Add', 'Substract', 'Darkest', 'Lightest', 'Difference', 'Exclusion', 'Multiply', 'Screen','Overlay', 
+PX.BLENDS = [ 'Add', 'Subtract', 'Darkest', 'Lightest', 'Difference', 'Exclusion', 'Multiply', 'Screen','Overlay', 
 			'HardLight', 'SoftLight', 'Dodge', 'Burn', 'LinearBurn', 'LinearLight', 'VividLight', 'PinLight'];
 
 
