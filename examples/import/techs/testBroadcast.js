@@ -18,6 +18,12 @@ PX.techs.testBroadcast = {
 
 	},
 
+	update: function () {
+
+		// Called after all ports have called broadcastPort()
+
+	},
+
 	// RGB values get passed per port
 	broadcastPort: function (port, rgb) {
 

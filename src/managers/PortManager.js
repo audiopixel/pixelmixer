@@ -68,6 +68,13 @@ PX.PortManager.prototype = {
 					}
 				}
 			}
+
+			for (var attrname in PX.techs) {
+				if(PX.techs[attrname].update){
+					
+					PX.techs[attrname].update();
+				}
+			}
 		}
 	},
 

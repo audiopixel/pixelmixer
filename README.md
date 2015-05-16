@@ -8,15 +8,15 @@ The generated shaders can also be used in any OpenGL ES 2.0 environment (C / Jav
 
 ---
 
-[![VimeoLink](https://github.com/audiopixel/pixelmixer/blob/master/docs/images/pixelmixer-vimeo.png)](https://vimeo.com/125231156)
-
 Online demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo) | *[source](https://github.com/audiopixel/pixelmixer/blob/master/examples/webdemo.html)*
 
-Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/) | *[source](https://github.com/audiopixel/pixelmixer-sandbox)*
+Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/) | *[source](https://github.com/audiopixel/pixelmixer-sandbox)*
 
 Mapping demo: [audiopixel.com/webdemo/basic-mapping.html](http://audiopixel.com/webdemo/basic-mapping.html) | *[source](https://github.com/audiopixel/pixelmixer/blob/master/examples/basic_mapping_example.html)*
 
 Load in additional shaders, such as ones found at [glslsandbox](http://glslsandbox.com/) and [shadertoy](https://www.shadertoy.com).
+
+[![VimeoLink](https://github.com/audiopixel/pixelmixer/blob/master/docs/images/pixelmixer-vimeo.png)](https://vimeo.com/125231156)
 
 ---
 
@@ -26,7 +26,6 @@ Load in additional shaders, such as ones found at [glslsandbox](http://glslsandb
 
 [Terminology](https://github.com/audiopixel/pixelmixer#terminology) |
 [Roadmap](https://github.com/audiopixel/pixelmixer#roadmap) |
-[Participate](https://github.com/audiopixel/pixelmixer#participate) |
 [About AudioPixel](https://github.com/audiopixel/pixelmixer#about-ap)
 
 ---
@@ -189,17 +188,7 @@ List of features currently in the works / we welcome help with:
 
 ---
 
-## Participate ##
-
-We encourage you to experiment with these techniques, fork the code, or just try the examples out. We also welcome new contributors wishing to help us tackle development.
-
-We are also seeking beta testers, especially if you have lighting fixtures or other hardware to play with.
-
-[Contact](http://audiopixel.com/contact)
-
----
-
-## About AP ##
+## About Us ##
 
 ![AudioPixel Logo](https://github.com/audiopixel/pixelmixer/blob/master/docs/images/audiopixel-web-grid.png)
 
@@ -209,10 +198,11 @@ AudioPixel develops custom lighting technology and sound-reactive visual program
 For 5+ years we've crafted original lighting projects, helped artists build large-scale art installations, toured with musicians, developed custom software currently in use at nightclubs, and designed lighting for dozens of multi-day festivals. We also enjoy Burning Man, where we've lit up artcars and sound camps each and every year since 2008. Currently we are working on the third revision of our in-house lighting software.
 
 In our quest for optimizing AudioPixel's live programming techniques, PixelMixer was born.
-
-The original aim was to build a lightweight platform that could power any interactive art light installation we would dream up. Now we are releasing it to the world in the hopes that it might benefit interactive light for all.
+Now we are releasing it to the world in the hopes that it might benefit interactive light for all.
 
 Open Source MIT License
+
+[Contact](http://audiopixel.com/contact)
 
 [http://audiopixel.com](http://audiopixel.com)
 
