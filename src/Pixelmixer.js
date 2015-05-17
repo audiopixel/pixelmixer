@@ -7,7 +7,7 @@ var PX = { version: '0.1.1' };	// Global PixelMixer object
 
 
 PX.readPixels = false;			// Turn this on if you need to receive color values of all the pixels
-PX.broadcast = false;			// Update any defined techs to broadcast with the lastest pixels
+PX.broadcast = false;			// Update broadcast techs with the lastest pixels
 
 PX.speed = 0.02;				// How much we increase 'global time' per 'animation frame'
 PX.useTransforms = false;		// Pod transforms (swap axis, translate, scale)
@@ -18,6 +18,7 @@ PX.pointGeometry = {};			// The geometry of the point cloud that displays the no
 PX.pointMaterial = {};			// Shader of the point cloud that displays the node colors
 PX.pointSprite; 				// String - relative file path to image to represent the point sprite
 PX.pointSize = 25;				// The size of each point cloud sprite
+PX.pointTransparent = false;	// If point cloud sprites use transparency
 
 PX.mouseX = 0;					// Mouse X & Y sent as mouse uniform object when these are updated
 PX.mouseY = 0;
@@ -93,6 +94,7 @@ PX.init = function(scene, renderer, params){
 	PX.readPixels = params.readPixels || PX.readPixels;
 	PX.pointSize = params.pointSize || PX.pointSize;
 	PX.pointSprite = params.pointSprite || PX.pointSprite;
+	PX.pointTransparent = params.pointTransparent || PX.pointTransparent;
 	PX.useTransforms = params.useTransforms || PX.useTransforms;
 	PX.usePodPosUniforms = params.usePodPosUniforms || PX.usePodPosUniforms;
 

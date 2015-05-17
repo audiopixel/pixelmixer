@@ -503,7 +503,8 @@ PX.AppManager.prototype = {
 			attributes:     this.merge(attributes, PX.shaders.PointCloudShader.attributes),
 			vertexShader:   PX.shaders.PointCloudShader.vertexShader,
 			fragmentShader: PX.shaders.PointCloudShader.fragmentShader,
-			depthTest:      true
+			depthTest:      true,
+			transparent:    PX.pointTransparent
 		});
 
 		var name = "PixelMixer Nodes";
