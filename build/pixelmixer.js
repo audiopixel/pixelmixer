@@ -1,5 +1,5 @@
 
-var PX = { version: '0.1.0' };	// Global PixelMixer object
+var PX = { version: '0.1.1' };	// Global PixelMixer object
 
 
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -87,6 +87,7 @@ PX.MAP_ALT2 = 2;
 PX.shaderCount = -1;
 PX.init = function(scene, renderer, params){
 
+	params = params || {};
 	PX.speed = params.speed || PX.speed;
 	PX.broadcast = params.broadcast || PX.broadcast;
 	PX.readPixels = params.readPixels || PX.readPixels;
