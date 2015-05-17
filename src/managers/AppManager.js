@@ -503,8 +503,7 @@ PX.AppManager.prototype = {
 			attributes:     this.merge(attributes, PX.shaders.PointCloudShader.attributes),
 			vertexShader:   PX.shaders.PointCloudShader.vertexShader,
 			fragmentShader: PX.shaders.PointCloudShader.fragmentShader,
-			depthTest:      false,
-			transparent:    true
+			depthTest:      true
 		});
 
 		var name = "PixelMixer Nodes";
@@ -515,7 +514,6 @@ PX.AppManager.prototype = {
 		}
 
 		PX.pointCloud = new THREE.PointCloud( PX.pointGeometry, PX.pointMaterial );
-		PX.pointCloud.sortParticles = true;
 		PX.pointCloud.name = name;
 
 		if(PX.pointPosition){

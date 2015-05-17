@@ -914,8 +914,7 @@ PX.AppManager.prototype = {
 			attributes:     this.merge(attributes, PX.shaders.PointCloudShader.attributes),
 			vertexShader:   PX.shaders.PointCloudShader.vertexShader,
 			fragmentShader: PX.shaders.PointCloudShader.fragmentShader,
-			depthTest:      false,
-			transparent:    true
+			depthTest:      true
 		});
 
 		var name = "PixelMixer Nodes";
@@ -926,7 +925,6 @@ PX.AppManager.prototype = {
 		}
 
 		PX.pointCloud = new THREE.PointCloud( PX.pointGeometry, PX.pointMaterial );
-		PX.pointCloud.sortParticles = true;
 		PX.pointCloud.name = name;
 
 		if(PX.pointPosition){
@@ -2361,13 +2359,11 @@ PX.PortManager.prototype = {
 				}
 			}
 
-
 			for (var attrname in PX.techs) {
-
 				if(PX.techs[attrname].update){
+					
 					PX.techs[attrname].update();
 				}
-
 			}
 		}
 	},
@@ -2446,269 +2442,6 @@ PX.PortManager.prototype = {
 		delete this.ports;
 		this.ports = []; // TODO optimize: most likely better to not use 'delete'
 	}
-
-};
-
-/**
- *
- * Main Shader that all other shaders get injected into
- *
- */
-
-
-PX.MainShader = {
-
-	fragmentShader: [
-		
-		"#INCLUDESHADERUTILS",
-
-		"precision mediump float;",
-		"float px_index;",
-		"vec4 px_xyz;",
-		"vec4 px_xyz2;",
-		"vec3 px_lastRgb;",
-		"vec3 px_rgb = vec3(0.);",
-		"vec3 px_hsv;",
-		"vec3 px_rgb2;",
-		"vec4 px_rgbV4;",
-		"vec3 px_c = vec3(0.);",
-		"vec3 px_p = vec3(0.);",
-		"vec2 resolution;",
-		"vec2 surfacePosition = vec2(0.);",
-		"float random;",
-
-		"float px_port;",
-		"float px_id;",
-		"float px_type;",
-
-
-		"varying vec2 v_vUv;",
-		"uniform float time;",
-		"uniform float _random;",
-		"uniform float u_mapSize;",
-		"uniform vec2 mouse;",
-		"uniform sampler2D dataTexture;",
-		"uniform sampler2D u_coordsMap;",
-		"uniform sampler2D u_prevCMap;",
-		"uniform sampler2D u_portsMap;",
-
-
-		"#INCLUDESHADERFUNCTIONS",
-
-		"void main() {",
-
-			"random = rand(vec2(gl_FragCoord[0] * (gl_FragCoord[2] + 1.), gl_FragCoord[1] * _random) * (time * 0.0001));",
-
-			// Black is default
-			
-			//********************************************
-			
-			// px_xyz: coordinates that get overwritten with each pod
-			// px_xyz2: original reference coordinates that never get overwritten
-			"px_xyz2 = px_xyz = texture2D( u_coordsMap, v_vUv);",
-			"if(px_xyz[3] == 0.0){ discard; }",
-
-			"px_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);",
-			"px_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));",
-
-			"px_p = vec3(texture2D( u_portsMap, v_vUv));",
-			"px_port = px_p.r;",
-			"px_id = px_p.g;",
-			"px_type = px_p.b;",
-			"px_p = vec3(0.);",
-
-			//********************************************
-
-			"#INCLUDESHADERS",
-
-			"gl_FragColor = vec4(px_c, 1.0);",
-
-		"}"
-
-	].join("\n")
-
-};
-
-/**
- *
- * Simple node shader for displaying on ap nodes
- *
- * Overide this class to represent nodes in different ways
- *
- */
-
-
-PX.shaders.PointCloudShader = {
-
-	vertexShader: [
-
-		"uniform float u_res;",
-		"attribute float a_pointSizes;",
-		"attribute float a_geoX;",
-		"attribute float a_geoY;",
-		"attribute float a_texId;",
-		"varying float v_geoX;",
-		"varying float v_geoY;",
-		"varying float v_texId;",
-
-		"void main() {",
-			"v_geoX = a_geoX;",
-			"v_geoY = a_geoY;",
-			"v_texId = a_texId;",
-
-			"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
-			"gl_PointSize = (a_pointSizes * ( 4000. /  length( mvPosition.xyz )  )) / u_res;",
-			"gl_Position = projectionMatrix * mvPosition;",
-		"}"
-
-	].join("\n"),
-
-	fragmentShader: [
-
-		"uniform int u_useTexture;",
-		"uniform sampler2D u_colorMap;",
-		"uniform sampler2D u_texArray[ 3 ];",
-
-		"varying float v_geoX;",
-		"varying float v_geoY;",
-		"varying float v_texId;",
-
-		"void main() {",
-
-			"if(v_texId > 7.) {",
-				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[2], gl_PointCoord);", // default
-			"}else if(v_texId > 5.) {",
-				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[1], gl_PointCoord);",
-			"}else if(v_texId > 3.) {",
-				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[0], gl_PointCoord);",
-			"}else{",
-				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * vec4(1.);",
-			"}",
-		"}"
-
-	].join("\n")
-
-};
-
-/**
- * Shader Utils:
- *
- * ** Helper Methods for each imported shader:
- *
- * vec3 rgb2hsv(vec3 c); 						// Convert RGB to HSV
- * vec3 hsv2rgb(vec3 c); 						// Convert HSV to RGB
- * vec3 blend(vec3 c1, vec3 c2, float type);	// Blend Modes (1-17)
- * float rand(vec2 co);							// Random Generator	(vec2)
- *
- */
-
-
-PX.shaders.ShaderUtils = [
-
-	"vec3 rgb2hsv(vec3 c){",
-	    "vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);",
-	   " vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));",
-	    "vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));",
-
-	    "float d = q.x - min(q.w, q.y);",
-	    "float e = 1.0e-10;",
-	    "return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);",
-	"}",
-
-	"vec3 hsv2rgb(vec3 c) {",
-	"	vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);",
-	"	vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);",
-	"	return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);",
-	"}",
-
-
-	"vec3 blend(vec3 c1, vec3 c2, float type)",
-	"{",
-		"if(type == 1.){ return c1 + c2; }else					",// Add",
-		"if(type == 2.){ return c1 - c2; }else					",// Subtract",
-		"if(type == 3.){ return min(c1, c2); }else				",// Darkest",
-		"if(type == 4.){ return max(c1, c2); }else				",// Lighest",
-		"if(type == 5.){ return abs(c2 - c1); }else			",// DIFFERENCE",
-		"if(type == 6.){ return c1 + c2 - 2.0 * c1 * c2; }else	",// EXCLUSION",
-		"if(type == 7.){ return c1 * c2; }else					",// Multiply",
-		"if(type == 8.){ return (c1 + c2) - (c1 * c2); }else	",// Screen",
-		//"													// Overlay",
-		"if(type == 9.){ return vec3((c2.r <= 0.5) ? (2.0 * c1.r * c2.r) : (1.0 - 2.0 * (1.0 - c2.r) * (1.0 - c1.r)),(c2.g <= 0.5) ? (2.0 * c1.g * c2.g) : (1.0 - 2.0 * (1.0 - c2.g) * (1.0 - c1.g)),(c2.b <= 0.5) ? (2.0 * c1.b * c2.b) : (1.0 - 2.0 * (1.0 - c2.b) * (1.0 - c1.b))); }else",
-		//"													// HARD LIGHT",
-		"if(type == 10.){ return vec3((c1.r <= 0.5) ? (2.0 * c1.r * c2.r) : (1.0 - 2.0 * (1.0 - c1.r) * (1.0 - c2.r)),(c1.g <= 0.5) ? (2.0 * c1.g * c2.g) : (1.0 - 2.0 * (1.0 - c1.g) * (1.0 - c2.g)),(c1.b <= 0.5) ? (2.0 * c1.b * c2.b) : (1.0 - 2.0 * (1.0 - c1.b) * (1.0 - c2.b))); }else",
-		//"												// SOFT LIGHT",
-		"if(type == 11.){ return vec3((c1.r <= 0.5) ? (c2.r - (1.0 - 2.0 * c1.r) * c2.r * (1.0 - c2.r)) : (((c1.r > 0.5) && (c2.r <= 0.25)) ? (c2.r + (2.0 * c1.r - 1.0) * (4.0 * c2.r * (4.0 * c2.r + 1.0) * (c2.r - 1.0) + 7.0 * c2.r)) : (c2.r + (2.0 * c1.r - 1.0) * (sqrt(c2.r) - c2.r))),(c1.g <= 0.5) ? (c2.g - (1.0 - 2.0 * c1.g) * c2.g * (1.0 - c2.g)) : (((c1.g > 0.5) && (c2.g <= 0.25)) ? (c2.g + (2.0 * c1.g - 1.0) * (4.0 * c2.g * (4.0 * c2.g + 1.0) * (c2.g - 1.0) + 7.0 * c2.g)) : (c2.g + (2.0 * c1.g - 1.0) * (sqrt(c2.g) - c2.g))),(c1.b <= 0.5) ? (c2.b - (1.0 - 2.0 * c1.b) * c2.b * (1.0 - c2.b)) : (((c1.b > 0.5) && (c2.b <= 0.25)) ? (c2.b + (2.0 * c1.b - 1.0) * (4.0 * c2.b * (4.0 * c2.b + 1.0) * (c2.b - 1.0) + 7.0 * c2.b)) : (c2.b + (2.0 * c1.b - 1.0) * (sqrt(c2.b) - c2.b)))); }else",
-		//"												// DODGE",
-		"if(type == 12.){ return vec3((c1.r == 1.0) ? 1.0 : min(1.0, c2.r / (1.0 - c1.r)),(c1.g == 1.0) ? 1.0 : min(1.0, c2.g / (1.0 - c1.g)),(c1.b == 1.0) ? 1.0 : min(1.0, c2.b / (1.0 - c1.b))); }else",
-		//"													// Burn",
-		"if(type == 13.){ return vec3((c1.r == 0.0) ? 0.0 : (1.0 - ((1.0 - c2.r) / c1.r)),(c1.g == 0.0) ? 0.0 : (1.0 - ((1.0 - c2.g) / c1.g)), (c1.b == 0.0) ? 0.0 : (1.0 - ((1.0 - c2.b) / c1.b))); }else",
-		"if(type == 14.){ return (c1 + c2) - 1.0; }else",//			// LINEAR BURN",
-		"if(type == 15.){ return 2.0 * c1 + c2 - 1.0; }else",//		// LINEAR LIGHT	",	
-		//"													// VIVID LIGHT",
-		"if(type == 16.){ return vec3((c1.r <= 0.5) ? (1.0 - (1.0 - c2.r) / (2.0 * c1.r)) : (c2.r / (2.0 * (1.0 - c1.r))),(c1.g <= 0.5) ? (1.0 - (1.0 - c2.g) / (2.0 * c1.g)) : (c2.g / (2.0 * (1.0 - c1.g))),(c1.b <= 0.5) ? (1.0 - (1.0 - c2.b) / (2.0 * c1.b)) : (c2.b / (2.0 * (1.0 - c1.b)))); }else",
-		//"												// PIN LIGHT",
-		"if(type == 17.){ return vec3((c1.r > 0.5) ? max(c2.r, 2.0 * (c1.r - 0.5)) : min(c2.r, 2.0 * c1.r), (c1.r > 0.5) ? max(c2.g, 2.0 * (c1.g - 0.5)) : min(c2.g, 2.0 * c1.g),(c1.b > 0.5) ? max(c2.b, 2.0 * (c1.b - 0.5)) : min(c2.b, 2.0 * c1.b)); }else",
-		"if(type == 18.){return c1; }else						",// Replace",
-		"if(type == 19.){return c2; }else",						// Off / Ignore
-		"{ return c1 + c2; }								",  // Add (default)",
-	"}",
-/*
-	"vec3 nv(vec4 c)",
-	"{",
-	  "  return max(min(vec3(c.r, c.g, c.b), vec3(1.0)), vec3(0.0));",
-	"}",
-*/
-	
-	"float rand(vec2 co)",
-	"{",
-	  "  highp float a = 12.9898;",
-	  "  highp float b = 78.233;",
-	  "  highp float c = 43758.5453;",
-	  "  highp float dt= dot(co.xy ,vec2(a,b));",
-	  "  highp float sn= mod(dt,3.14);",
-	  "  return fract(sin(sn) * c);",
-	"}"
-
-
-].join("\n");
-/**
- *
- * Simple shader for displaying a texture
- *
- * Currently only used for testing source textures to display planes
- *
- */
- 
-
-PX.shaders.SimpleTextureShader = {
-
-	uniforms: {
-
-		"u_texture":   { type: "t", value: null }
-
-	},
-
-	vertexShader: [
-
-		"varying vec2 v_vUv;",
-		"void main() {",
-			"v_vUv = uv;",
-			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-
-		"}"
-
-	].join("\n"),
-
-	fragmentShader: [
-
-		"varying vec2 v_vUv;",
-		"uniform sampler2D u_texture;",
-
-		"void main() {",
-		"	gl_FragColor = texture2D( u_texture, v_vUv );",
-		"}",
-
-	].join("\n")
 
 };
 
@@ -2880,5 +2613,276 @@ PX.Port = function (params) {
 	this.nodesType = 	params.nodesType || 0;
 	this.hardwarePort = params.hardwarePort || 1;
 	this.id =			params.id || -1;
+
+};
+/**
+ *
+ * Main Shader that all other shaders get injected into
+ *
+ */
+
+
+PX.MainShader = {
+
+	fragmentShader: [
+		
+		"#INCLUDESHADERUTILS",
+
+		"precision mediump float;",
+		"float px_index;",
+		"vec4 px_xyz;",
+		"vec4 px_xyz2;",
+		"vec3 px_lastRgb;",
+		"vec3 px_rgb = vec3(0.);",
+		"vec3 px_hsv;",
+		"vec3 px_rgb2;",
+		"vec4 px_rgbV4;",
+		"vec3 px_c = vec3(0.);",
+		"vec3 px_p = vec3(0.);",
+		"vec2 resolution;",
+		"vec2 surfacePosition = vec2(0.);",
+		"float random;",
+
+		"float px_port;",
+		"float px_id;",
+		"float px_type;",
+
+
+		"varying vec2 v_vUv;",
+		"uniform float time;",
+		"uniform float _random;",
+		"uniform float u_mapSize;",
+		"uniform vec2 mouse;",
+		"uniform sampler2D dataTexture;",
+		"uniform sampler2D u_coordsMap;",
+		"uniform sampler2D u_prevCMap;",
+		"uniform sampler2D u_portsMap;",
+
+
+		"#INCLUDESHADERFUNCTIONS",
+
+		"void main() {",
+
+			"random = rand(vec2(gl_FragCoord[0] * (gl_FragCoord[2] + 1.), gl_FragCoord[1] * _random) * (time * 0.0001));",
+
+			// Black is default
+			
+			//********************************************
+			
+			// px_xyz: coordinates that get overwritten with each pod
+			// px_xyz2: original reference coordinates that never get overwritten
+			"px_xyz2 = px_xyz = texture2D( u_coordsMap, v_vUv);",
+			"if(px_xyz[3] == 0.0){ discard; }",
+
+			"px_index = ((1.0 - v_vUv.y) * u_mapSize * u_mapSize + v_vUv.x * u_mapSize);",
+			"px_lastRgb = vec3(texture2D( u_prevCMap, v_vUv));",
+
+			"px_p = vec3(texture2D( u_portsMap, v_vUv));",
+			"px_port = px_p.r;",
+			"px_id = px_p.g;",
+			"px_type = px_p.b;",
+			"px_p = vec3(0.);",
+
+			//********************************************
+
+			"#INCLUDESHADERS",
+
+			"gl_FragColor = vec4(px_c, 1.0);",
+
+		"}"
+
+	].join("\n")
+
+};
+
+/**
+ *
+ * Simple node shader for displaying on ap nodes
+ *
+ * Overide this class to represent nodes in different ways
+ *
+ */
+
+
+PX.shaders.PointCloudShader = {
+
+	vertexShader: [
+
+		"uniform float u_res;",
+		"attribute float a_pointSizes;",
+		"attribute float a_geoX;",
+		"attribute float a_geoY;",
+		"attribute float a_texId;",
+		"varying float v_geoX;",
+		"varying float v_geoY;",
+		"varying float v_texId;",
+
+		"void main() {",
+			"v_geoX = a_geoX;",
+			"v_geoY = a_geoY;",
+			"v_texId = a_texId;",
+
+			"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
+			"gl_PointSize = (a_pointSizes * ( 5000. /  length( mvPosition.xyz )  )) / u_res;",
+			"gl_Position = projectionMatrix * mvPosition;",
+		"}"
+
+	].join("\n"),
+
+	fragmentShader: [
+
+		"uniform int u_useTexture;",
+		"uniform sampler2D u_colorMap;",
+		"uniform sampler2D u_texArray[ 3 ];",
+
+		"varying float v_geoX;",
+		"varying float v_geoY;",
+		"varying float v_texId;",
+
+		//"vec4 distBall = vec4(1.0);",
+
+		"void main() {", 
+
+			// TODO, expose ability to use this ball sprite
+			//"distBall = 1.- (vec4(sqrt(  pow(.5 - gl_PointCoord.x, 2.) + pow(.5 - gl_PointCoord.y, 2.)  )) * 2.);",
+
+			"if(v_texId > 7.) {",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[2], gl_PointCoord);",
+			"}else if(v_texId > 5.) {",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[1], gl_PointCoord);",
+			"}else if(v_texId > 3.) {",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * texture2D( u_texArray[0], gl_PointCoord);",
+			"}else{",
+				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * vec4(1.);",
+			"}",
+
+			"if (gl_FragColor.a < 0.05) {",
+	            "discard;",
+	        "}",
+		"}"
+
+	].join("\n")
+
+};
+
+/**
+ * Shader Utils:
+ *
+ * ** Helper Methods for each imported shader:
+ *
+ * vec3 rgb2hsv(vec3 c); 						// Convert RGB to HSV
+ * vec3 hsv2rgb(vec3 c); 						// Convert HSV to RGB
+ * vec3 blend(vec3 c1, vec3 c2, float type);	// Blend Modes (1-17)
+ * float rand(vec2 co);							// Random Generator	(vec2)
+ *
+ */
+
+
+PX.shaders.ShaderUtils = [
+
+	"vec3 rgb2hsv(vec3 c){",
+	    "vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);",
+	   " vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));",
+	    "vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));",
+
+	    "float d = q.x - min(q.w, q.y);",
+	    "float e = 1.0e-10;",
+	    "return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);",
+	"}",
+
+	"vec3 hsv2rgb(vec3 c) {",
+	"	vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);",
+	"	vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);",
+	"	return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);",
+	"}",
+
+
+	"vec3 blend(vec3 c1, vec3 c2, float type)",
+	"{",
+		"if(type == 1.){ return c1 + c2; }else					",// Add",
+		"if(type == 2.){ return c1 - c2; }else					",// Subtract",
+		"if(type == 3.){ return min(c1, c2); }else				",// Darkest",
+		"if(type == 4.){ return max(c1, c2); }else				",// Lighest",
+		"if(type == 5.){ return abs(c2 - c1); }else			",// DIFFERENCE",
+		"if(type == 6.){ return c1 + c2 - 2.0 * c1 * c2; }else	",// EXCLUSION",
+		"if(type == 7.){ return c1 * c2; }else					",// Multiply",
+		"if(type == 8.){ return (c1 + c2) - (c1 * c2); }else	",// Screen",
+		//"													// Overlay",
+		"if(type == 9.){ return vec3((c2.r <= 0.5) ? (2.0 * c1.r * c2.r) : (1.0 - 2.0 * (1.0 - c2.r) * (1.0 - c1.r)),(c2.g <= 0.5) ? (2.0 * c1.g * c2.g) : (1.0 - 2.0 * (1.0 - c2.g) * (1.0 - c1.g)),(c2.b <= 0.5) ? (2.0 * c1.b * c2.b) : (1.0 - 2.0 * (1.0 - c2.b) * (1.0 - c1.b))); }else",
+		//"													// HARD LIGHT",
+		"if(type == 10.){ return vec3((c1.r <= 0.5) ? (2.0 * c1.r * c2.r) : (1.0 - 2.0 * (1.0 - c1.r) * (1.0 - c2.r)),(c1.g <= 0.5) ? (2.0 * c1.g * c2.g) : (1.0 - 2.0 * (1.0 - c1.g) * (1.0 - c2.g)),(c1.b <= 0.5) ? (2.0 * c1.b * c2.b) : (1.0 - 2.0 * (1.0 - c1.b) * (1.0 - c2.b))); }else",
+		//"												// SOFT LIGHT",
+		"if(type == 11.){ return vec3((c1.r <= 0.5) ? (c2.r - (1.0 - 2.0 * c1.r) * c2.r * (1.0 - c2.r)) : (((c1.r > 0.5) && (c2.r <= 0.25)) ? (c2.r + (2.0 * c1.r - 1.0) * (4.0 * c2.r * (4.0 * c2.r + 1.0) * (c2.r - 1.0) + 7.0 * c2.r)) : (c2.r + (2.0 * c1.r - 1.0) * (sqrt(c2.r) - c2.r))),(c1.g <= 0.5) ? (c2.g - (1.0 - 2.0 * c1.g) * c2.g * (1.0 - c2.g)) : (((c1.g > 0.5) && (c2.g <= 0.25)) ? (c2.g + (2.0 * c1.g - 1.0) * (4.0 * c2.g * (4.0 * c2.g + 1.0) * (c2.g - 1.0) + 7.0 * c2.g)) : (c2.g + (2.0 * c1.g - 1.0) * (sqrt(c2.g) - c2.g))),(c1.b <= 0.5) ? (c2.b - (1.0 - 2.0 * c1.b) * c2.b * (1.0 - c2.b)) : (((c1.b > 0.5) && (c2.b <= 0.25)) ? (c2.b + (2.0 * c1.b - 1.0) * (4.0 * c2.b * (4.0 * c2.b + 1.0) * (c2.b - 1.0) + 7.0 * c2.b)) : (c2.b + (2.0 * c1.b - 1.0) * (sqrt(c2.b) - c2.b)))); }else",
+		//"												// DODGE",
+		"if(type == 12.){ return vec3((c1.r == 1.0) ? 1.0 : min(1.0, c2.r / (1.0 - c1.r)),(c1.g == 1.0) ? 1.0 : min(1.0, c2.g / (1.0 - c1.g)),(c1.b == 1.0) ? 1.0 : min(1.0, c2.b / (1.0 - c1.b))); }else",
+		//"													// Burn",
+		"if(type == 13.){ return vec3((c1.r == 0.0) ? 0.0 : (1.0 - ((1.0 - c2.r) / c1.r)),(c1.g == 0.0) ? 0.0 : (1.0 - ((1.0 - c2.g) / c1.g)), (c1.b == 0.0) ? 0.0 : (1.0 - ((1.0 - c2.b) / c1.b))); }else",
+		"if(type == 14.){ return (c1 + c2) - 1.0; }else",//			// LINEAR BURN",
+		"if(type == 15.){ return 2.0 * c1 + c2 - 1.0; }else",//		// LINEAR LIGHT	",	
+		//"													// VIVID LIGHT",
+		"if(type == 16.){ return vec3((c1.r <= 0.5) ? (1.0 - (1.0 - c2.r) / (2.0 * c1.r)) : (c2.r / (2.0 * (1.0 - c1.r))),(c1.g <= 0.5) ? (1.0 - (1.0 - c2.g) / (2.0 * c1.g)) : (c2.g / (2.0 * (1.0 - c1.g))),(c1.b <= 0.5) ? (1.0 - (1.0 - c2.b) / (2.0 * c1.b)) : (c2.b / (2.0 * (1.0 - c1.b)))); }else",
+		//"												// PIN LIGHT",
+		"if(type == 17.){ return vec3((c1.r > 0.5) ? max(c2.r, 2.0 * (c1.r - 0.5)) : min(c2.r, 2.0 * c1.r), (c1.r > 0.5) ? max(c2.g, 2.0 * (c1.g - 0.5)) : min(c2.g, 2.0 * c1.g),(c1.b > 0.5) ? max(c2.b, 2.0 * (c1.b - 0.5)) : min(c2.b, 2.0 * c1.b)); }else",
+		"if(type == 18.){return c1; }else						",// Replace",
+		"if(type == 19.){return c2; }else",						// Off / Ignore
+		"{ return c1 + c2; }								",  // Add (default)",
+	"}",
+/*
+	"vec3 nv(vec4 c)",
+	"{",
+	  "  return max(min(vec3(c.r, c.g, c.b), vec3(1.0)), vec3(0.0));",
+	"}",
+*/
+	
+	"float rand(vec2 co)",
+	"{",
+	  "  highp float a = 12.9898;",
+	  "  highp float b = 78.233;",
+	  "  highp float c = 43758.5453;",
+	  "  highp float dt= dot(co.xy ,vec2(a,b));",
+	  "  highp float sn= mod(dt,3.14);",
+	  "  return fract(sin(sn) * c);",
+	"}"
+
+
+].join("\n");
+/**
+ *
+ * Simple shader for displaying a texture
+ *
+ * Currently only used for testing source textures to display planes
+ *
+ */
+ 
+
+PX.shaders.SimpleTextureShader = {
+
+	uniforms: {
+
+		"u_texture":   { type: "t", value: null }
+
+	},
+
+	vertexShader: [
+
+		"varying vec2 v_vUv;",
+		"void main() {",
+			"v_vUv = uv;",
+			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+
+		"}"
+
+	].join("\n"),
+
+	fragmentShader: [
+
+		"varying vec2 v_vUv;",
+		"uniform sampler2D u_texture;",
+
+		"void main() {",
+		"	gl_FragColor = texture2D( u_texture, v_vUv );",
+		"}",
+
+	].join("\n")
 
 };
