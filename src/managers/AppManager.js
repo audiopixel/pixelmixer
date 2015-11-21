@@ -517,10 +517,10 @@ PX.AppManager.prototype = {
 		};
 
 		// Defaults to main texture, add 2 custom sprite textures also if they are defined
-		var textures = [THREE.ImageUtils.loadTexture( PX.pointSprite )];
+		var textures = [THREE.TextureLoader( PX.pointSprite )];
 		for (var i = 0; i < 2; i++) {
 			if(PX.hardware.getCustomPointSprite(i+1)){
-				textures[i+1] = THREE.ImageUtils.loadTexture( PX.hardware.getCustomPointSprite(i+1) );
+				textures[i+1] = THREE.TextureLoader( PX.hardware.getCustomPointSprite(i+1) );
 			}
 		}
 		uniforms.u_texArray = { type: "tv", value: textures};
