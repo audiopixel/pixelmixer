@@ -453,7 +453,7 @@ PX.AppManager = function (scene, renderer) {
 	this.gl;
 
 	this.plane = new THREE.PlaneBufferGeometry( PX.simSize, PX.simSize );
-	PX.pointGeometry = new THREE.Geometry();
+	PX.pointGeometry = new THREE.BufferGeometry();
 
 };
 
@@ -471,7 +471,7 @@ PX.AppManager.prototype = {
 		this.sceneRTT = new THREE.Scene();
 
 		
-		PX.pointGeometry = new THREE.Geometry();
+		PX.pointGeometry = new THREE.BufferGeometry();
 
 		PX.updateNodePoints();
 		//this.updateMainSourceShader();
@@ -711,7 +711,7 @@ PX.AppManager.prototype = {
 		this.pointTypes = [];
 		this.geoX = [];
 		this.geoY = [];
-		PX.pointGeometry = new THREE.Geometry();
+		PX.pointGeometry = new THREE.BufferGeometry();
 
 
 		// Generate portsMap data texture for all the nodes x,y,z
@@ -882,13 +882,28 @@ PX.AppManager.prototype = {
 
 	createNodePointCloud: function(){
 
-		
+		/*
 		var attributes = { // For each node we pass along it's indenodx value and x, y in relation to the colorMaps
 			a_pointSizes:  { type: 'f', value: this.pointSizes },
 			a_texId:  		{ type: 'f', value: this.pointTypes },
 			a_geoX:        { type: 'f', value: this.geoX },
 			a_geoY:        { type: 'f', value: this.geoY }
 		};
+		*/
+
+		//PX.pointGeometry.addAttribute( 'a_pointSizes', new THREE.BufferAttribute( new Float32Array( 4 * nVertices ), 4 ) );
+
+		console.log(PX.pointGeometry);
+		PX.pointGeometry.addAttribute( 'a_pointSizes', new THREE.BufferAttribute( this.pointSizes, 1 ) );
+		PX.pointGeometry.addAttribute( 'a_texId', new THREE.BufferAttribute( this.pointTypes, 1 ) );
+		PX.pointGeometry.addAttribute( 'a_geoX', new THREE.BufferAttribute( this.geoX, 1 ) );
+		PX.pointGeometry.addAttribute( 'a_geoY', new THREE.BufferAttribute( this.geoY, 1 ) );
+
+		//attributes:     this.merge(attributes, PX.shaders.PointCloudShader.attributes),
+
+
+
+
 
 		// Use image for sprite if defined, otherwise default to drawing a square
 		var useTexture = 0;
@@ -914,7 +929,6 @@ PX.AppManager.prototype = {
 		PX.pointMaterial = new THREE.ShaderMaterial( {
 
 			uniforms:       this.merge(uniforms, PX.shaders.PointCloudShader.uniforms),
-			attributes:     this.merge(attributes, PX.shaders.PointCloudShader.attributes),
 			vertexShader:   PX.shaders.PointCloudShader.vertexShader,
 			fragmentShader: PX.shaders.PointCloudShader.fragmentShader,
 			depthTest:      true,
@@ -927,6 +941,7 @@ PX.AppManager.prototype = {
 			// If the pointCloud has already been added, remove it so we can add it fresh
 			this.sceneMain.remove( PX.pointCloud );
 		}
+
 
 		PX.pointCloud = new THREE.PointCloud( PX.pointGeometry, PX.pointMaterial );
 		PX.pointCloud.name = name;
