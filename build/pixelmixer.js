@@ -716,6 +716,7 @@ PX.AppManager.prototype = {
 
 		// Generate portsMap data texture for all the nodes x,y,z
 		var b = new Float32Array( Math.pow(PX.simSize, 2) * 4 );
+		PX.pointVertices = [];
 
 		// Update 'PX.pointGeometry' with all the known nodes on state
 		// Create attributes for each one to pass to the shader
@@ -732,7 +733,7 @@ PX.AppManager.prototype = {
 					vertex.x = port.nodes[i].x || 0;
 					vertex.y = port.nodes[i].y || 0;
 					vertex.z = port.nodes[i].z || 0;
-					PX.pointGeometry.vertices.push( vertex );
+					PX.pointVertices.push( vertex );
 					port.nodes[i].indexId = t;
 
 					// for each point push along x, y values to reference correct pixel in u_colorMaps
@@ -767,6 +768,15 @@ PX.AppManager.prototype = {
 			}
 		}
 
+		var bufferVertices = new Float32Array( PX.pointVertices.length * 3 );
+		for (var i = 0; i < PX.pointVertices.length; i++) {
+			bufferVertices[ i*3 + 0 ] = PX.pointVertices[i].x;
+			bufferVertices[ i*3 + 1 ] = PX.pointVertices[i].y;
+			bufferVertices[ i*3 + 2 ] = PX.pointVertices[i].z;
+		}
+		PX.pointGeometry.addAttribute( 'position', new THREE.BufferAttribute( bufferVertices, 3 ) );
+
+
 		// Create data texture from Portsmap Data
 		this.portsMap = new THREE.DataTexture( b, PX.simSize, PX.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.portsMap.minFilter = THREE.NearestFilter;
@@ -789,15 +799,19 @@ PX.AppManager.prototype = {
 		var minz = s;
 		var maxz = -s;
 
+
+
+
+
 		for ( var k = 0, kl = a.length; k < kl; k += 4 ) {
 			var x = 0;
 			var y = 0;
 			var z = 0;
 
-			if(PX.pointGeometry.vertices[t]){
-				x = PX.pointGeometry.vertices[t].x ;// / this.base;
-				y = PX.pointGeometry.vertices[t].y ;// / this.base;
-				z = PX.pointGeometry.vertices[t].z ;// / this.base;
+			if(PX.pointVertices[t]){
+				x = PX.pointVertices[t].x ;// / this.base;
+				y = PX.pointVertices[t].y ;// / this.base;
+				z = PX.pointVertices[t].z ;// / this.base;
 
 				minx = Math.min(minx, x);
 				maxx = Math.max(maxx, x);
@@ -905,6 +919,7 @@ PX.AppManager.prototype = {
 
 
 
+
 		// Use image for sprite if defined, otherwise default to drawing a square
 		var useTexture = 0;
 		if(PX.pointSprite){
@@ -954,10 +969,10 @@ PX.AppManager.prototype = {
 
 		this.sceneMain.add( PX.pointCloud );
 
-		if(PX.pointGeometry.vertices.length > 0){
+		if(PX.pointVertices.length > 0){
 
 			if(!PX.ready){
-				console.log("PixelMixer v" + PX.version + ", SimSize: " + PX.simSize + "x" +  PX.simSize + ", Nodes: " + PX.pointGeometry.vertices.length);
+				console.log("PixelMixer v" + PX.version + ", SimSize: " + PX.simSize + "x" +  PX.simSize + ", Nodes: " + PX.pointVertices.length);
 			}
 			PX.ready = true;
 
