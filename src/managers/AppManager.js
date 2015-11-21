@@ -492,10 +492,11 @@ PX.AppManager.prototype = {
 
 		//PX.pointGeometry.addAttribute( 'a_pointSizes', new THREE.BufferAttribute( new Float32Array( 4 * nVertices ), 4 ) );
 
-		PX.pointGeometry.addAttribute( 'a_pointSizes', new THREE.BufferAttribute( this.pointSizes, 1 ) );
-		PX.pointGeometry.addAttribute( 'a_texId', new THREE.BufferAttribute( this.pointTypes, 1 ) );
-		PX.pointGeometry.addAttribute( 'a_geoX', new THREE.BufferAttribute( this.geoX, 1 ) );
-		PX.pointGeometry.addAttribute( 'a_geoY', new THREE.BufferAttribute( this.geoY, 1 ) );
+		
+		PX.pointGeometry.addAttribute( 'a_pointSizes', new THREE.BufferAttribute( new Float32Array(this.pointSizes), 1 ) );
+		PX.pointGeometry.addAttribute( 'a_texId', new THREE.BufferAttribute( new Float32Array(this.pointTypes), 1 ) );
+		PX.pointGeometry.addAttribute( 'a_geoX', new THREE.BufferAttribute( new Float32Array(this.geoX), 1 ) );
+		PX.pointGeometry.addAttribute( 'a_geoY', new THREE.BufferAttribute( new Float32Array(this.geoY), 1 ) );
 
 		//attributes:     this.merge(attributes, PX.shaders.PointCloudShader.attributes),
 
