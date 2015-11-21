@@ -414,176 +414,6 @@ PX.getVariableTypeFromShorthand = function(shorthand){
 };
 /*
 *
-* Channels are a mixable collection of Pods.
-* Pods may also contain a set of Clips (shaders).
-*
-* @param name		String, Optional name.
-* @param type		Int, PX.CHANNEL_TYPE_ADD or PX.CHANNEL_TYPE_FX.
-* @param mix		Int, overall mix control for entire Channel.
-* @param blend 		Int, 1-17 Blend modes specified in constants.
-* @param pods 		Pods[], Array of Pod objects. Pods may also contain Clips.
-*
-*/
-
-PX.Channel = function (params) {
-
-	params = params || {};
-	this.name = params.name;
-	this.type = params.type 		|| PX.CHANNEL_TYPE_ADD;
-	this.mix = params.mix 			|| 0;
-	this.blend = params.blend 		|| PX.BLEND.Add;
-	this.pods = params.pods 		|| [];
-
-};
-/*
-*
-* Clips are a internal harness used for each shader.
-*
-* @param id 		String, name of the shader "SinSpiral".
-* @param mix 		Float, 0-1.
-* @param blend 		Int, 1-17 Blend modes specified in constants.
-* @param posMap 	Int, Position xyz map, default is normal.
-* @param speed 		Float, 1 is normal, 0 is no motion.
-* @param p1-p9 		Float, assignable uniforms per shader.
-*
-*/
-
-PX.Clip = function (params) {
-
-	params = params || {};
-	this.id = params.id;
-	this.mix = params.mix 			|| 1;
-	this.blend = params.blend 		|| PX.BLEND.Add;
-	this.posMap = params.posMap 	|| PX.MAP_NORMAL;
-	this.speed = params.speed 		|| 1;
-
-	this.p1 = params.p1 || 0;
-	this.p2 = params.p2 || 0;
-	this.p3 = params.p3 || 0;
-	this.p4 = params.p4 || 0;
-	this.p5 = params.p5 || 0;
-	this.p6 = params.p6 || 0;
-	this.p7 = params.p7 || 0;
-	this.p8 = params.p8 || 0;
-	this.p9 = params.p9 || 0;
-};
-
-PX.Clip.prototype = {
-
-	setParams: function (p1, p2, p3, p4, p5, p6, p7, p8, p9) {
-		this.p1 = p1;
-		this.p2 = p2;
-		this.p3 = p3;
-		this.p4 = p4;
-		this.p5 = p5;
-		this.p6 = p6;
-		this.p7 = p7;
-		this.p8 = p8;
-		this.p9 = p9;
-	}
-
-};
-
-/*
-*
-* Pods contain position and blend data for a group of Clips.
-* They allow you to blend multiple Clips, and then blend the result into other Clips.
-* They can be associated with multiple position areas.
-*
-* @param positionIds 	Int[], a list of all position ids to draw this Pod's content into.
-* @param mix 			Float, 0-1.
-* @param blend 			Int, 1-17 Blend modes specified in constants.
-* @param clips 			Clip[], a list of Clips that render the content from shaders.
-*
-*/
-
-
-PX.Pod = function (params) {
-
-	params = 			params || {};
-	this.positionIds = 	params.positionIds || [1];
-	this.mix = 			params.mix || 1;
-	this.blend = 		params.blend || PX.BLEND.Add;
-	this.clips = 		params.clips || [];
-
-	// TODO - this data should be packed into portsMap, useful for creating specific groups of nodes outside of xyz or port data
-	// this.hardwareGroupMode = hardwareGroupMode || PX.HARDWAREGROUP_OFF;			// Off, Exclude, or Solo Mode
-	// this.hardwareGroupIds = hardwareGroupIds || [];
-};
-/*
-*
-* Pod Positions define coordinates for Pods to associate with.
-* Multiple Pods may associate to any amount of Pod Positions.
-*
-* We use a lightweight and manual version of matrix transforms for performance reasons since we are calling this every fragment. 
-*
-* @param x 			Number, the x coordinate of the pod.
-* @param y 			Number, the y coordinate of the pod.
-* @param z 			Number, the z coordinate of the pod.
-* @param width 		Number, the width of the pod.
-* @param height 	Number, the height of the pod.
-* @param depth	 	Number, the depth of the pod.
-* @param xt	 		Number, translate (offset) x coordinate of the content inside bounds of the pod.
-* @param yt	 		Number, translate (offset) y coordinate of the content inside bounds of the pod.
-* @param zt	 		Number, translate (offset) z coordinate of the content inside bounds of the pod.
-* @param xs	 		Number, scale x coordinate of the content inside bounds of the pod.
-* @param ys	 		Number, scale y coordinate of the content inside bounds of the pod.
-* @param zs	 		Number, scale z coordinate of the content inside bounds of the pod.
-* @param swapaxis	Number, 0: normal, 1: swap x-y, 2: swap x-z, 3: swap y-z.
-*
-*/
-
-PX.PodPosition = function (params) { 
-
-	params = params || {};
-	this.x = params.x || 0;
-	this.y = params.y || 0;
-	this.z = params.z || 0;
-	this.w = Math.max(.1, params.w) || 1;
-	this.h = Math.max(.1, params.h) || 1;
-	this.d = Math.max(.1, params.d) || 1;
-
-	this.xt = params.xt || 0.5;
-	this.yt = params.yt || 0.5;
-	this.zt = params.zt || 0.5;
-	this.xs = params.xs || 0.5;
-	this.ys = params.ys || 0.5;
-	this.zs = params.zs || 0.5;
-	this.swapaxis = params.swapaxis || 0;
-
-};
-/*
-*
-* Ports are way to organize sets of Nodes.
-* Ports may also define network and addressing data.
-* All Nodes must be associated with a Port.
-*
-* Note: For projects not broadcasting Nodes can all be in the first Port.
-*
-* @param name			String, Port name (optional)
-* @param type			ID
-* @param broadcast		Boolean, If true (and PX.broadcast too) broadcast out using type protocol
-* @param address		String, Base network address (i.e. 10.0.0.1)
-* @param hardwarePort	Number, Port of network address
-* @param nodes			Object, Contains x, y, z, position coordinate properties
-*
-*/
-
-PX.Port = function (params) {
-
-	params = 			params || {};
-	this.name = 		params.name || "";
-	this.type = 		params.type || "test";
-	this.broadcast = 	params.broadcast || false;
-	this.address = 		params.address || "";
-	this.nodes = 		params.nodes || [];
-	this.nodesType = 	params.nodesType || 0;
-	this.hardwarePort = params.hardwarePort || 1;
-	this.id =			params.id || -1;
-
-};
-/*
-*
 * Handles WebGL state and rendering responsibilities.
 *
 */
@@ -623,7 +453,7 @@ PX.AppManager = function (scene, renderer) {
 	this.gl;
 
 	this.plane = new THREE.PlaneBufferGeometry( PX.simSize, PX.simSize );
-	PX.pointGeometry = new THREE.BufferGeometry();
+	PX.pointGeometry = new THREE.Geometry();
 
 };
 
@@ -641,7 +471,7 @@ PX.AppManager.prototype = {
 		this.sceneRTT = new THREE.Scene();
 
 		
-		PX.pointGeometry = new THREE.BufferGeometry();
+		PX.pointGeometry = new THREE.Geometry();
 
 		PX.updateNodePoints();
 		//this.updateMainSourceShader();
@@ -881,12 +711,11 @@ PX.AppManager.prototype = {
 		this.pointTypes = [];
 		this.geoX = [];
 		this.geoY = [];
-		PX.pointGeometry = new THREE.BufferGeometry();
+		PX.pointGeometry = new THREE.Geometry();
 
 
 		// Generate portsMap data texture for all the nodes x,y,z
 		var b = new Float32Array( Math.pow(PX.simSize, 2) * 4 );
-		PX.pointVertices = [];
 
 		// Update 'PX.pointGeometry' with all the known nodes on state
 		// Create attributes for each one to pass to the shader
@@ -903,7 +732,7 @@ PX.AppManager.prototype = {
 					vertex.x = port.nodes[i].x || 0;
 					vertex.y = port.nodes[i].y || 0;
 					vertex.z = port.nodes[i].z || 0;
-					PX.pointVertices.push( vertex );
+					PX.pointGeometry.vertices.push( vertex );
 					port.nodes[i].indexId = t;
 
 					// for each point push along x, y values to reference correct pixel in u_colorMaps
@@ -938,17 +767,6 @@ PX.AppManager.prototype = {
 			}
 		}
 
-		// After we have collected all the positions of the nodes in PX.pointVertices
-		// Transfer them to the new BufferGeometry object for GPU consumption
-		var bufferVertices = new Float32Array( PX.pointVertices.length * 3 );
-		for (var i = 0; i < PX.pointVertices.length; i++) {
-			bufferVertices[ i*3 + 0 ] = PX.pointVertices[i].x;
-			bufferVertices[ i*3 + 1 ] = PX.pointVertices[i].y;
-			bufferVertices[ i*3 + 2 ] = PX.pointVertices[i].z;
-		}
-		PX.pointGeometry.addAttribute( 'position', new THREE.BufferAttribute( bufferVertices, 3 ) );
-
-
 		// Create data texture from Portsmap Data
 		this.portsMap = new THREE.DataTexture( b, PX.simSize, PX.simSize, THREE.RGBAFormat, THREE.FloatType );
 		this.portsMap.minFilter = THREE.NearestFilter;
@@ -971,16 +789,15 @@ PX.AppManager.prototype = {
 		var minz = s;
 		var maxz = -s;
 
-
 		for ( var k = 0, kl = a.length; k < kl; k += 4 ) {
 			var x = 0;
 			var y = 0;
 			var z = 0;
 
-			if(PX.pointVertices[t]){
-				x = PX.pointVertices[t].x ;// / this.base;
-				y = PX.pointVertices[t].y ;// / this.base;
-				z = PX.pointVertices[t].z ;// / this.base;
+			if(PX.pointGeometry.vertices[t]){
+				x = PX.pointGeometry.vertices[t].x ;// / this.base;
+				y = PX.pointGeometry.vertices[t].y ;// / this.base;
+				z = PX.pointGeometry.vertices[t].z ;// / this.base;
 
 				minx = Math.min(minx, x);
 				maxx = Math.max(maxx, x);
@@ -1065,29 +882,13 @@ PX.AppManager.prototype = {
 
 	createNodePointCloud: function(){
 
-		/*
+		
 		var attributes = { // For each node we pass along it's indenodx value and x, y in relation to the colorMaps
 			a_pointSizes:  { type: 'f', value: this.pointSizes },
 			a_texId:  		{ type: 'f', value: this.pointTypes },
 			a_geoX:        { type: 'f', value: this.geoX },
 			a_geoY:        { type: 'f', value: this.geoY }
 		};
-		*/
-
-		//PX.pointGeometry.addAttribute( 'a_pointSizes', new THREE.BufferAttribute( new Float32Array( 4 * nVertices ), 4 ) );
-
-		console.log(PX.pointGeometry);
-		PX.pointGeometry.addAttribute( 'a_pointSizes', new THREE.BufferAttribute( this.pointSizes, 1 ) );
-		PX.pointGeometry.addAttribute( 'a_texId', new THREE.BufferAttribute( this.pointTypes, 1 ) );
-		PX.pointGeometry.addAttribute( 'a_geoX', new THREE.BufferAttribute( this.geoX, 1 ) );
-		PX.pointGeometry.addAttribute( 'a_geoY', new THREE.BufferAttribute( this.geoY, 1 ) );
-
-		//attributes:     this.merge(attributes, PX.shaders.PointCloudShader.attributes),
-
-
-
-
-
 
 		// Use image for sprite if defined, otherwise default to drawing a square
 		var useTexture = 0;
@@ -1113,6 +914,7 @@ PX.AppManager.prototype = {
 		PX.pointMaterial = new THREE.ShaderMaterial( {
 
 			uniforms:       this.merge(uniforms, PX.shaders.PointCloudShader.uniforms),
+			attributes:     this.merge(attributes, PX.shaders.PointCloudShader.attributes),
 			vertexShader:   PX.shaders.PointCloudShader.vertexShader,
 			fragmentShader: PX.shaders.PointCloudShader.fragmentShader,
 			depthTest:      true,
@@ -1126,8 +928,7 @@ PX.AppManager.prototype = {
 			this.sceneMain.remove( PX.pointCloud );
 		}
 
-
-		PX.pointCloud = new THREE.Points( PX.pointGeometry, PX.pointMaterial );
+		PX.pointCloud = new THREE.PointCloud( PX.pointGeometry, PX.pointMaterial );
 		PX.pointCloud.name = name;
 
 		if(PX.pointPosition){
@@ -1138,10 +939,10 @@ PX.AppManager.prototype = {
 
 		this.sceneMain.add( PX.pointCloud );
 
-		if(PX.pointVertices.length > 0){
+		if(PX.pointGeometry.vertices.length > 0){
 
 			if(!PX.ready){
-				console.log("PixelMixer v" + PX.version + ", SimSize: " + PX.simSize + "x" +  PX.simSize + ", Nodes: " + PX.pointVertices.length);
+				console.log("PixelMixer v" + PX.version + ", SimSize: " + PX.simSize + "x" +  PX.simSize + ", Nodes: " + PX.pointGeometry.vertices.length);
 			}
 			PX.ready = true;
 
@@ -2648,6 +2449,176 @@ PX.PortManager.prototype = {
 
 };
 
+/*
+*
+* Channels are a mixable collection of Pods.
+* Pods may also contain a set of Clips (shaders).
+*
+* @param name		String, Optional name.
+* @param type		Int, PX.CHANNEL_TYPE_ADD or PX.CHANNEL_TYPE_FX.
+* @param mix		Int, overall mix control for entire Channel.
+* @param blend 		Int, 1-17 Blend modes specified in constants.
+* @param pods 		Pods[], Array of Pod objects. Pods may also contain Clips.
+*
+*/
+
+PX.Channel = function (params) {
+
+	params = params || {};
+	this.name = params.name;
+	this.type = params.type 		|| PX.CHANNEL_TYPE_ADD;
+	this.mix = params.mix 			|| 0;
+	this.blend = params.blend 		|| PX.BLEND.Add;
+	this.pods = params.pods 		|| [];
+
+};
+/*
+*
+* Clips are a internal harness used for each shader.
+*
+* @param id 		String, name of the shader "SinSpiral".
+* @param mix 		Float, 0-1.
+* @param blend 		Int, 1-17 Blend modes specified in constants.
+* @param posMap 	Int, Position xyz map, default is normal.
+* @param speed 		Float, 1 is normal, 0 is no motion.
+* @param p1-p9 		Float, assignable uniforms per shader.
+*
+*/
+
+PX.Clip = function (params) {
+
+	params = params || {};
+	this.id = params.id;
+	this.mix = params.mix 			|| 1;
+	this.blend = params.blend 		|| PX.BLEND.Add;
+	this.posMap = params.posMap 	|| PX.MAP_NORMAL;
+	this.speed = params.speed 		|| 1;
+
+	this.p1 = params.p1 || 0;
+	this.p2 = params.p2 || 0;
+	this.p3 = params.p3 || 0;
+	this.p4 = params.p4 || 0;
+	this.p5 = params.p5 || 0;
+	this.p6 = params.p6 || 0;
+	this.p7 = params.p7 || 0;
+	this.p8 = params.p8 || 0;
+	this.p9 = params.p9 || 0;
+};
+
+PX.Clip.prototype = {
+
+	setParams: function (p1, p2, p3, p4, p5, p6, p7, p8, p9) {
+		this.p1 = p1;
+		this.p2 = p2;
+		this.p3 = p3;
+		this.p4 = p4;
+		this.p5 = p5;
+		this.p6 = p6;
+		this.p7 = p7;
+		this.p8 = p8;
+		this.p9 = p9;
+	}
+
+};
+
+/*
+*
+* Pods contain position and blend data for a group of Clips.
+* They allow you to blend multiple Clips, and then blend the result into other Clips.
+* They can be associated with multiple position areas.
+*
+* @param positionIds 	Int[], a list of all position ids to draw this Pod's content into.
+* @param mix 			Float, 0-1.
+* @param blend 			Int, 1-17 Blend modes specified in constants.
+* @param clips 			Clip[], a list of Clips that render the content from shaders.
+*
+*/
+
+
+PX.Pod = function (params) {
+
+	params = 			params || {};
+	this.positionIds = 	params.positionIds || [1];
+	this.mix = 			params.mix || 1;
+	this.blend = 		params.blend || PX.BLEND.Add;
+	this.clips = 		params.clips || [];
+
+	// TODO - this data should be packed into portsMap, useful for creating specific groups of nodes outside of xyz or port data
+	// this.hardwareGroupMode = hardwareGroupMode || PX.HARDWAREGROUP_OFF;			// Off, Exclude, or Solo Mode
+	// this.hardwareGroupIds = hardwareGroupIds || [];
+};
+/*
+*
+* Pod Positions define coordinates for Pods to associate with.
+* Multiple Pods may associate to any amount of Pod Positions.
+*
+* We use a lightweight and manual version of matrix transforms for performance reasons since we are calling this every fragment. 
+*
+* @param x 			Number, the x coordinate of the pod.
+* @param y 			Number, the y coordinate of the pod.
+* @param z 			Number, the z coordinate of the pod.
+* @param width 		Number, the width of the pod.
+* @param height 	Number, the height of the pod.
+* @param depth	 	Number, the depth of the pod.
+* @param xt	 		Number, translate (offset) x coordinate of the content inside bounds of the pod.
+* @param yt	 		Number, translate (offset) y coordinate of the content inside bounds of the pod.
+* @param zt	 		Number, translate (offset) z coordinate of the content inside bounds of the pod.
+* @param xs	 		Number, scale x coordinate of the content inside bounds of the pod.
+* @param ys	 		Number, scale y coordinate of the content inside bounds of the pod.
+* @param zs	 		Number, scale z coordinate of the content inside bounds of the pod.
+* @param swapaxis	Number, 0: normal, 1: swap x-y, 2: swap x-z, 3: swap y-z.
+*
+*/
+
+PX.PodPosition = function (params) { 
+
+	params = params || {};
+	this.x = params.x || 0;
+	this.y = params.y || 0;
+	this.z = params.z || 0;
+	this.w = Math.max(.1, params.w) || 1;
+	this.h = Math.max(.1, params.h) || 1;
+	this.d = Math.max(.1, params.d) || 1;
+
+	this.xt = params.xt || 0.5;
+	this.yt = params.yt || 0.5;
+	this.zt = params.zt || 0.5;
+	this.xs = params.xs || 0.5;
+	this.ys = params.ys || 0.5;
+	this.zs = params.zs || 0.5;
+	this.swapaxis = params.swapaxis || 0;
+
+};
+/*
+*
+* Ports are way to organize sets of Nodes.
+* Ports may also define network and addressing data.
+* All Nodes must be associated with a Port.
+*
+* Note: For projects not broadcasting Nodes can all be in the first Port.
+*
+* @param name			String, Port name (optional)
+* @param type			ID
+* @param broadcast		Boolean, If true (and PX.broadcast too) broadcast out using type protocol
+* @param address		String, Base network address (i.e. 10.0.0.1)
+* @param hardwarePort	Number, Port of network address
+* @param nodes			Object, Contains x, y, z, position coordinate properties
+*
+*/
+
+PX.Port = function (params) {
+
+	params = 			params || {};
+	this.name = 		params.name || "";
+	this.type = 		params.type || "test";
+	this.broadcast = 	params.broadcast || false;
+	this.address = 		params.address || "";
+	this.nodes = 		params.nodes || [];
+	this.nodesType = 	params.nodesType || 0;
+	this.hardwarePort = params.hardwarePort || 1;
+	this.id =			params.id || -1;
+
+};
 /**
  *
  * Main Shader that all other shaders get injected into
