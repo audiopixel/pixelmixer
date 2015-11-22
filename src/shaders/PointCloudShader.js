@@ -59,6 +59,8 @@ PX.shaders.PointCloudShader = {
 				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * vec4(1.);",
 			"}",
 
+
+
 			"if (gl_FragColor.a < 0.05) {",
 	            "discard;",
 	        "}",

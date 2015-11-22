@@ -7,7 +7,7 @@
 PX.HardwareManager = function () {
 
 	this.pointSizes = [PX.pointSize, 50, 15];
-	this.pointSprites = [PX.pointSprite];
+	this.pointSprites = [];
 
 };
 
@@ -314,22 +314,27 @@ PX.HardwareManager.prototype = {
 			PX.ports.setPort(portStart + 2, port);
 	},
 
-	setCustomPointSprite: function (type, path) {
-		this.pointSprites[type] = path;
+	loadCustomPointSprite: function (id, size, path, onComplete) {
+		if(id === 0){ PX.pointSize = size; }
+
+		var loader = new THREE.TextureLoader();
+		loader.load( path, function ( texture ) {
+
+			PX.hardware.pointSprites[id] = texture;
+			PX.hardware.pointSizes[id] = size;
+
+			onComplete(texture);
+		} );
 	},
 
-	getCustomPointSprite: function (type) {
-		if(type === 0){ return PX.pointSprite; }
-		return this.pointSprites[type];
+	getCustomPointSprite: function (id) {
+		return this.pointSprites[id];
 	},
 
-	setCustomPointSize: function (type, size) {
-		this.pointSizes[type] = size;
-	},
-
-	getCustomPointSize: function (type) {
-		if(type === 0){ return PX.pointSize; }
-		return this.pointSizes[type];
+	// id = 0 is default nodes, use PX.pointSize;
+	getCustomPointSize: function (id) {
+		if(id === 0){ return PX.pointSize; }
+		return this.pointSizes[id];
 	}
 
 };

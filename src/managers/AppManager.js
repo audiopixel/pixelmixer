@@ -332,11 +332,10 @@ PX.AppManager.prototype = {
 					this.pointSizes.push(PX.hardware.getCustomPointSize(port.nodesType));
 
 					var type = port.nodesType;
-					if(!PX.pointSprite && type === 0){
-						type = -1; // if we don't have a sprite defined the default is no sprite
-					}
 					if(PX.hardware.getCustomPointSprite(type)){
 						type = (type + 2)*2;
+						this.pointTypes.push(type);
+					}else{
 						this.pointTypes.push(type);
 					}
 
@@ -517,14 +516,17 @@ PX.AppManager.prototype = {
 			u_useTexture: { type: "i", value: useTexture }
 		};
 
-		// Defaults to main texture, add 2 custom sprite textures also if they are defined
-		var textures = [THREE.TextureLoader( PX.pointSprite )];
-		for (var i = 0; i < 2; i++) {
-			if(PX.hardware.getCustomPointSprite(i+1)){
-				textures[i+1] = THREE.TextureLoader( PX.hardware.getCustomPointSprite(i+1) );
+		// Add 0-3 sprite textures as uniforms if they are defined
+		var textures = [];
+		for (var i = 0; i < 3; i++) {
+			var sprite = PX.hardware.getCustomPointSprite(i);
+			if(sprite){
+				textures[i] = sprite;
 			}
 		}
-		uniforms.u_texArray = { type: "tv", value: textures};
+		if(textures.length > 0){
+			uniforms.u_texArray = { type: "tv", value: textures};
+		}
 
 		PX.pointMaterial = new THREE.ShaderMaterial( {
 

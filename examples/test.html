@@ -34,7 +34,7 @@
 
 
 		<!-- Import Shaders Here -->
-		<script src="import/shaders/SolidColor.js"></script>
+		<script src="import/shaders/SimpleSwirl.js"></script>
 
 
 		<script>
@@ -77,7 +77,7 @@
 
 					// ** Initialize PixelMixer
 
-					PX.init(scene, renderer, { pointSprite: "images/nodeflare250.png" });
+					PX.init(scene, renderer);
 					PX.setSize(glWidth, glHeight);
 
 
@@ -92,18 +92,29 @@
 					params.z = -0;
 					params.width = 52;		// How many pixels for the entire grid
 					params.height = 20;
-					params.pitch = 33;		// How far each pixel is spaced
+					params.pitch = 36;		// How far each pixel is spaced
 
 					PX.hardware.addSimpleNodeGrid(params);
-					PX.updateNodePoints();
 
+
+
+					//PX.ports.getPort(1).nodesType = 1;
+
+					// Load in a sprite, when it's ready call updateNodePoints();
+					PX.hardware.loadCustomPointSprite(0, 23, "images/nodeflare250.png", function(texture){
+						PX.updateNodePoints();
+					});
+
+
+					//PX.pointTransparent = true;
+					//PX.pointDepthTest = false;
 
 					// ----------------
 
 
 					// ** Add a shader to Channel 1
 
-					PX.simpleSetup({channel: 1, ids: ["SolidColor"]});
+					PX.simpleSetup({channel: 1, ids: ["SimpleSwirl"]});
 
 
 					// ----------------
