@@ -92,7 +92,7 @@
 
 					// **Initialize PixelMixer
 
-					PX.init(scene, renderer, { maxNodeCount: 10000, pointSize: 10, pointSprite: "images/nodeflare1.png" });
+					PX.init(scene, renderer, { maxNodeCount: 10000, pointSize: 7 });
 					PX.setSize(glWidth, glHeight);
 					PX.setPointPosition(-400, -400, 0);
 
@@ -101,8 +101,18 @@
 					
 					PX.hardware.importNodes(PX.imported, 1, 350, 100, 500);
 					PX.channels.setPodPos(2, new PX.PodPosition({x: -190, y: 140, z: -100, w: 1070, h: 575, d: 1000}));
-					PX.updateNodePoints();
 
+
+
+					// ----------------
+
+
+					// ** Load in custom sprite for all nodes (default: id = 0)
+
+					PX.hardware.loadCustomPointSprite(0, PX.pointSize, "images/nodeflare1.png", function(texture){
+						PX.updateNodePoints();
+					});
+					
 
 					// ----------------
 

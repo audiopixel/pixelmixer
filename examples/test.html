@@ -100,7 +100,8 @@
 
 					//PX.ports.getPort(1).nodesType = 1;
 
-					// Load in a sprite, when it's ready call updateNodePoints();
+					// Load in a sprite, when it's ready call updateNodePoints()
+					// loadCustomPointSprite(id, size, path, onComplete)
 					PX.hardware.loadCustomPointSprite(0, 23, "images/nodeflare1.png", function(texture){
 						PX.updateNodePoints();
 					});

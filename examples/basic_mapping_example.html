@@ -82,9 +82,14 @@
 
 					// ** Initialize PixelMixer
 
-					PX.init(scene, renderer, { pointSprite: "images/nodeflare1.png", useTransforms: true });
+					PX.init(scene, renderer, { useTransforms: true });
 					PX.setSize(glWidth, glHeight);
 					PX.setPointPosition(-400, -400, 0);
+
+					// Default nodes all use Sprite
+					PX.hardware.loadCustomPointSprite(0, PX.pointSize, "images/nodeflare1.png", function(texture){
+						PX.updateNodePoints();
+					});
 
 
 					// ----------------
@@ -125,8 +130,6 @@
 					var p_pos3 = new PX.PodPosition({x: -(2 * 750) - 35, y: 30, z: 0, w: 3740, h: 745, d: 10});
 					PX.channels.setPodPos(port, p_pos3);
 					port++;
-
-					PX.updateNodePoints();
 
 
 					// ----------------

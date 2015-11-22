@@ -102,7 +102,7 @@
 
 					// ** Initialize PixelMixer
 
-					PX.init(scene, renderer, { pointSprite: "images/nodeflare1.png" });
+					PX.init(scene, renderer);
 					PX.setSize(glWidth, glHeight);
 
 
@@ -120,7 +120,16 @@
 					params.pitch = 33;		// How far each pixel is spaced
 
 					PX.hardware.addSimpleNodeGrid(params);
-					PX.updateNodePoints();
+
+
+					// ----------------
+
+
+					// ** Load in custom sprite for all nodes (default: id = 0)
+
+					PX.hardware.loadCustomPointSprite(0, PX.pointSize, "images/nodeflare1.png", function(texture){
+						PX.updateNodePoints();
+					});
 
 
 					// ----------------

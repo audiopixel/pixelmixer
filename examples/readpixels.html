@@ -65,7 +65,7 @@
 
 					// ** Initialize PixelMixer
 
-					PX.init(scene, renderer, { broadcast: true, readPixels: true, pointSprite: "images/nodeflare1.png" });
+					PX.init(scene, renderer, { broadcast: true, readPixels: true });
 					PX.setSize(glWidth, glHeight);
 
 
@@ -89,8 +89,16 @@
 					PX.ports.getPort(1).type = "testBroadcast";
 					PX.ports.getPort(1).broadcast = true;
 
-					PX.updateNodePoints();
 
+					// ----------------
+
+
+					// ** Load in custom sprite for all nodes (default: id = 0)
+
+					PX.hardware.loadCustomPointSprite(0, PX.pointSize, "images/nodeflare1.png", function(texture){
+						PX.updateNodePoints();
+					});
+					
 
 					// ----------------
 

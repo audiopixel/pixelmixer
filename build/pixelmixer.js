@@ -1,5 +1,5 @@
 
-var PX = { version: '0.1.1' };	// Global PixelMixer object
+var PX = { version: '0.1.2' };	// Global PixelMixer object
 
 
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -16,9 +16,9 @@ PX.usePodPosUniforms = false;	// Allow u_pos_id uniforms to update a pod positio
 PX.pointCloud = {};				// Main point cloud that displays node colors
 PX.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
 PX.pointMaterial = {};			// Shader of the point cloud that displays the node colors
-PX.pointSprite; 				// String - relative file path to image to represent the point sprite
-PX.pointSize = 25;				// The size of each point cloud sprite
+PX.pointSize = 15;				// The size of each point cloud sprite
 PX.pointTransparent = false;	// If point cloud sprites use transparency
+PX.pointDepthTest = true;		// If point cloud sprites use depthTest
 
 PX.mouseX = 0;					// Mouse X & Y sent as mouse uniform object when these are updated
 PX.mouseY = 0;
@@ -93,7 +93,6 @@ PX.init = function(scene, renderer, params){
 	PX.broadcast = params.broadcast || PX.broadcast;
 	PX.readPixels = params.readPixels || PX.readPixels;
 	PX.pointSize = params.pointSize || PX.pointSize;
-	PX.pointSprite = params.pointSprite || PX.pointSprite;
 	PX.pointTransparent = params.pointTransparent || PX.pointTransparent;
 	PX.useTransforms = params.useTransforms || PX.useTransforms;
 	PX.usePodPosUniforms = params.usePodPosUniforms || PX.usePodPosUniforms;
@@ -204,7 +203,7 @@ PX.setSize = function(width, height) {
 		// Reset point size relative to screen resolution
 		PX.setPointSize(PX.pointSize);
 
-		if(PX.pointMaterial){
+		if(PX.pointMaterial.uniforms){
 			PX.pointMaterial.uniforms.u_res.value = PX.app.glWidth / PX.app.glHeight;
 		}
 	}
@@ -453,7 +452,7 @@ PX.AppManager = function (scene, renderer) {
 	this.gl;
 
 	this.plane = new THREE.PlaneBufferGeometry( PX.simSize, PX.simSize );
-	PX.pointGeometry = new THREE.Geometry();
+	PX.pointGeometry = new THREE.BufferGeometry();
 
 };
 
@@ -471,9 +470,9 @@ PX.AppManager.prototype = {
 		this.sceneRTT = new THREE.Scene();
 
 		
-		PX.pointGeometry = new THREE.Geometry();
+		PX.pointGeometry = new THREE.BufferGeometry();
 
-		PX.updateNodePoints();
+		//PX.updateNodePoints();
 		//this.updateMainSourceShader();
 
 		if(PX.readPixels){
@@ -711,11 +710,12 @@ PX.AppManager.prototype = {
 		this.pointTypes = [];
 		this.geoX = [];
 		this.geoY = [];
-		PX.pointGeometry = new THREE.Geometry();
+		PX.pointGeometry = new THREE.BufferGeometry();
 
 
 		// Generate portsMap data texture for all the nodes x,y,z
 		var b = new Float32Array( Math.pow(PX.simSize, 2) * 4 );
+		PX.pointVertices = [];
 
 		// Update 'PX.pointGeometry' with all the known nodes on state
 		// Create attributes for each one to pass to the shader
@@ -732,7 +732,7 @@ PX.AppManager.prototype = {
 					vertex.x = port.nodes[i].x || 0;
 					vertex.y = port.nodes[i].y || 0;
 					vertex.z = port.nodes[i].z || 0;
-					PX.pointGeometry.vertices.push( vertex );
+					PX.pointVertices.push( vertex );
 					port.nodes[i].indexId = t;
 
 					// for each point push along x, y values to reference correct pixel in u_colorMaps
@@ -745,11 +745,10 @@ PX.AppManager.prototype = {
 					this.pointSizes.push(PX.hardware.getCustomPointSize(port.nodesType));
 
 					var type = port.nodesType;
-					if(!PX.pointSprite && type === 0){
-						type = -1; // if we don't have a sprite defined the default is no sprite
-					}
 					if(PX.hardware.getCustomPointSprite(type)){
 						type = (type + 2)*2;
+						this.pointTypes.push(type);
+					}else{
 						this.pointTypes.push(type);
 					}
 
@@ -766,6 +765,17 @@ PX.AppManager.prototype = {
 				}
 			}
 		}
+
+		// After we have collected all the positions of the nodes in PX.pointVertices
+		// Transfer them to the new BufferGeometry object for GPU consumption
+		var bufferVertices = new Float32Array( PX.pointVertices.length * 3 );
+		for (var i = 0; i < PX.pointVertices.length; i++) {
+			bufferVertices[ i*3 + 0 ] = PX.pointVertices[i].x;
+			bufferVertices[ i*3 + 1 ] = PX.pointVertices[i].y;
+			bufferVertices[ i*3 + 2 ] = PX.pointVertices[i].z;
+		}
+		PX.pointGeometry.addAttribute( 'position', new THREE.BufferAttribute( bufferVertices, 3 ) );
+
 
 		// Create data texture from Portsmap Data
 		this.portsMap = new THREE.DataTexture( b, PX.simSize, PX.simSize, THREE.RGBAFormat, THREE.FloatType );
@@ -789,15 +799,16 @@ PX.AppManager.prototype = {
 		var minz = s;
 		var maxz = -s;
 
+
 		for ( var k = 0, kl = a.length; k < kl; k += 4 ) {
 			var x = 0;
 			var y = 0;
 			var z = 0;
 
-			if(PX.pointGeometry.vertices[t]){
-				x = PX.pointGeometry.vertices[t].x ;// / this.base;
-				y = PX.pointGeometry.vertices[t].y ;// / this.base;
-				z = PX.pointGeometry.vertices[t].z ;// / this.base;
+			if(PX.pointVertices[t]){
+				x = PX.pointVertices[t].x ;// / this.base;
+				y = PX.pointVertices[t].y ;// / this.base;
+				z = PX.pointVertices[t].z ;// / this.base;
 
 				minx = Math.min(minx, x);
 				maxx = Math.max(maxx, x);
@@ -882,42 +893,51 @@ PX.AppManager.prototype = {
 
 	createNodePointCloud: function(){
 
-		
+		/*
 		var attributes = { // For each node we pass along it's indenodx value and x, y in relation to the colorMaps
 			a_pointSizes:  { type: 'f', value: this.pointSizes },
 			a_texId:  		{ type: 'f', value: this.pointTypes },
 			a_geoX:        { type: 'f', value: this.geoX },
 			a_geoY:        { type: 'f', value: this.geoY }
 		};
+		*/
 
-		// Use image for sprite if defined, otherwise default to drawing a square
-		var useTexture = 0;
-		if(PX.pointSprite){
-			useTexture = 1;
-		}
+		//PX.pointGeometry.addAttribute( 'a_pointSizes', new THREE.BufferAttribute( new Float32Array( 4 * nVertices ), 4 ) );
+
+		
+		PX.pointGeometry.addAttribute( 'a_pointSizes', new THREE.BufferAttribute( new Float32Array(this.pointSizes), 1 ) );
+		PX.pointGeometry.addAttribute( 'a_texId', new THREE.BufferAttribute( new Float32Array(this.pointTypes), 1 ) );
+		PX.pointGeometry.addAttribute( 'a_geoX', new THREE.BufferAttribute( new Float32Array(this.geoX), 1 ) );
+		PX.pointGeometry.addAttribute( 'a_geoY', new THREE.BufferAttribute( new Float32Array(this.geoY), 1 ) );
+
+		//attributes:     this.merge(attributes, PX.shaders.PointCloudShader.attributes),
+
+
+
 
 		var uniforms = {
 			u_res:   { type: "f", value: PX.app.glWidth / PX.app.glHeight },
-			u_colorMap:   { type: "t", value: this.rtTextureA },
-			u_useTexture: { type: "i", value: useTexture }
+			u_colorMap:   { type: "t", value: this.rtTextureA }
 		};
 
-		// Defaults to main texture, add 2 custom sprite textures also if they are defined
-		var textures = [THREE.ImageUtils.loadTexture( PX.pointSprite )];
-		for (var i = 0; i < 2; i++) {
-			if(PX.hardware.getCustomPointSprite(i+1)){
-				textures[i+1] = THREE.ImageUtils.loadTexture( PX.hardware.getCustomPointSprite(i+1) );
+		// Add 0-3 sprite textures as uniforms if they are defined
+		var textures = [];
+		for (var i = 0; i < 3; i++) {
+			var sprite = PX.hardware.getCustomPointSprite(i);
+			if(sprite){
+				textures[i] = sprite;
 			}
 		}
-		uniforms.u_texArray = { type: "tv", value: textures};
+		if(textures.length > 0){
+			uniforms.u_texArray = { type: "tv", value: textures};
+		}
 
 		PX.pointMaterial = new THREE.ShaderMaterial( {
 
 			uniforms:       this.merge(uniforms, PX.shaders.PointCloudShader.uniforms),
-			attributes:     this.merge(attributes, PX.shaders.PointCloudShader.attributes),
 			vertexShader:   PX.shaders.PointCloudShader.vertexShader,
 			fragmentShader: PX.shaders.PointCloudShader.fragmentShader,
-			depthTest:      true,
+			depthTest:      PX.pointDepthTest,
 			transparent:    PX.pointTransparent
 		});
 
@@ -928,7 +948,8 @@ PX.AppManager.prototype = {
 			this.sceneMain.remove( PX.pointCloud );
 		}
 
-		PX.pointCloud = new THREE.PointCloud( PX.pointGeometry, PX.pointMaterial );
+
+		PX.pointCloud = new THREE.Points( PX.pointGeometry, PX.pointMaterial );
 		PX.pointCloud.name = name;
 
 		if(PX.pointPosition){
@@ -939,10 +960,10 @@ PX.AppManager.prototype = {
 
 		this.sceneMain.add( PX.pointCloud );
 
-		if(PX.pointGeometry.vertices.length > 0){
+		if(PX.pointVertices.length > 0){
 
 			if(!PX.ready){
-				console.log("PixelMixer v" + PX.version + ", SimSize: " + PX.simSize + "x" +  PX.simSize + ", Nodes: " + PX.pointGeometry.vertices.length);
+				console.log("PixelMixer v" + PX.version + ", SimSize: " + PX.simSize + "x" +  PX.simSize + ", Nodes: " + PX.pointVertices.length);
 			}
 			PX.ready = true;
 
@@ -1965,7 +1986,7 @@ PX.ChannelManager.prototype = {
 PX.HardwareManager = function () {
 
 	this.pointSizes = [PX.pointSize, 50, 15];
-	this.pointSprites = [PX.pointSprite];
+	this.pointSprites = [];
 
 };
 
@@ -2272,22 +2293,27 @@ PX.HardwareManager.prototype = {
 			PX.ports.setPort(portStart + 2, port);
 	},
 
-	setCustomPointSprite: function (type, path) {
-		this.pointSprites[type] = path;
+	loadCustomPointSprite: function (id, size, path, onComplete) {
+		if(id === 0){ PX.pointSize = size; }
+
+		var loader = new THREE.TextureLoader();
+		loader.load( path, function ( texture ) {
+
+			PX.hardware.pointSprites[id] = texture;
+			PX.hardware.pointSizes[id] = size;
+
+			onComplete(texture);
+		} );
 	},
 
-	getCustomPointSprite: function (type) {
-		if(type === 0){ return PX.pointSprite; }
-		return this.pointSprites[type];
+	getCustomPointSprite: function (id) {
+		return this.pointSprites[id];
 	},
 
-	setCustomPointSize: function (type, size) {
-		this.pointSizes[type] = size;
-	},
-
-	getCustomPointSize: function (type) {
-		if(type === 0){ return PX.pointSize; }
-		return this.pointSizes[type];
+	// id = 0 is default nodes, use PX.pointSize;
+	getCustomPointSize: function (id) {
+		if(id === 0){ return PX.pointSize; }
+		return this.pointSizes[id];
 	}
 
 };
@@ -2735,7 +2761,6 @@ PX.shaders.PointCloudShader = {
 
 	fragmentShader: [
 
-		"uniform int u_useTexture;",
 		"uniform sampler2D u_colorMap;",
 		"uniform sampler2D u_texArray[ 3 ];",
 
@@ -2759,6 +2784,8 @@ PX.shaders.PointCloudShader = {
 			"}else{",
 				"gl_FragColor = texture2D( u_colorMap, vec2( v_geoX, v_geoY )) * vec4(1.);",
 			"}",
+
+
 
 			"if (gl_FragColor.a < 0.05) {",
 	            "discard;",

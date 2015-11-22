@@ -34,7 +34,6 @@ PX.shaders.PointCloudShader = {
 
 	fragmentShader: [
 
-		"uniform int u_useTexture;",
 		"uniform sampler2D u_colorMap;",
 		"uniform sampler2D u_texArray[ 3 ];",
 

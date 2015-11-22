@@ -1,5 +1,5 @@
 
-var PX = { version: '0.1.1' };	// Global PixelMixer object
+var PX = { version: '0.1.2' };	// Global PixelMixer object
 
 
 // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -16,8 +16,7 @@ PX.usePodPosUniforms = false;	// Allow u_pos_id uniforms to update a pod positio
 PX.pointCloud = {};				// Main point cloud that displays node colors
 PX.pointGeometry = {};			// The geometry of the point cloud that displays the node colors
 PX.pointMaterial = {};			// Shader of the point cloud that displays the node colors
-PX.pointSprite; 				// String - relative file path to image to represent the point sprite
-PX.pointSize = 25;				// The size of each point cloud sprite
+PX.pointSize = 15;				// The size of each point cloud sprite
 PX.pointTransparent = false;	// If point cloud sprites use transparency
 PX.pointDepthTest = true;		// If point cloud sprites use depthTest
 
@@ -94,7 +93,6 @@ PX.init = function(scene, renderer, params){
 	PX.broadcast = params.broadcast || PX.broadcast;
 	PX.readPixels = params.readPixels || PX.readPixels;
 	PX.pointSize = params.pointSize || PX.pointSize;
-	PX.pointSprite = params.pointSprite || PX.pointSprite;
 	PX.pointTransparent = params.pointTransparent || PX.pointTransparent;
 	PX.useTransforms = params.useTransforms || PX.useTransforms;
 	PX.usePodPosUniforms = params.usePodPosUniforms || PX.usePodPosUniforms;

@@ -502,18 +502,9 @@ PX.AppManager.prototype = {
 
 
 
-
-
-		// Use image for sprite if defined, otherwise default to drawing a square
-		var useTexture = 0;
-		if(PX.pointSprite){
-			useTexture = 1;
-		}
-
 		var uniforms = {
 			u_res:   { type: "f", value: PX.app.glWidth / PX.app.glHeight },
-			u_colorMap:   { type: "t", value: this.rtTextureA },
-			u_useTexture: { type: "i", value: useTexture }
+			u_colorMap:   { type: "t", value: this.rtTextureA }
 		};
 
 		// Add 0-3 sprite textures as uniforms if they are defined

@@ -61,7 +61,7 @@
 
 					// ** Initialize API
 
-					PX.init(scene, renderer, { pointSize: 20, pointSprite: "images/nodeflare1.png" });
+					PX.init(scene, renderer, { pointSize: 20 });
 					PX.setSize(glWidth, glHeight);
 					PX.setPointPosition(-400, -400, 0);
 
@@ -80,6 +80,7 @@
 					params.height = 5;
 					params.pitch = 33;		// How far each pixel is spaced
 					PX.hardware.addSimpleNodeGrid(params);
+					PX.ports.getPort(1).nodesType = 0; // default is 0 unless set otherwise
 
 
 					// Port 2
@@ -91,10 +92,6 @@
 					params2.height = 5;
 					params2.pitch = 33;		// How far each pixel is spaced
 					PX.hardware.addSimpleNodeGrid(params2);
-
-					// Define a custom sprite in type 1, and then associate that with port 2
-					PX.hardware.setCustomPointSize(1, 25);
-					PX.hardware.setCustomPointSprite(1, "images/ball.png");
 					PX.ports.getPort(2).nodesType = 1;
 
 
@@ -107,14 +104,18 @@
 					params3.height = 5;
 					params3.pitch = 33;		// How far each pixel is spaced
 					PX.hardware.addSimpleNodeGrid(params3);
-
-					// Define a custom sprite in type 2, and then associate that with port 3
-					PX.hardware.setCustomPointSize(2, 24);
-					PX.hardware.setCustomPointSprite(2, "images/fun1.png");
 					PX.ports.getPort(3).nodesType = 2;
 
 
-					PX.updateNodePoints();
+
+					// Load the Sprite textures one after another and then updateNodePoints()
+					PX.hardware.loadCustomPointSprite(0, 14, "images/nodeflare1.png", function(){
+						PX.hardware.loadCustomPointSprite(1, 25, "images/ball.png", function(){
+							PX.hardware.loadCustomPointSprite(2, 16, "images/fun1.png", function(){
+								PX.updateNodePoints();
+							});
+						});
+					});
 
 
 					// ----------------
