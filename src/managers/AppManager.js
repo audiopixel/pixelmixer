@@ -59,7 +59,7 @@ PX.AppManager.prototype = {
 		
 		PX.pointGeometry = new THREE.BufferGeometry();
 
-		PX.updateNodePoints();
+		//PX.updateNodePoints();
 		//this.updateMainSourceShader();
 
 		if(PX.readPixels){

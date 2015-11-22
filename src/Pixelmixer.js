@@ -205,7 +205,7 @@ PX.setSize = function(width, height) {
 		// Reset point size relative to screen resolution
 		PX.setPointSize(PX.pointSize);
 
-		if(PX.pointMaterial){
+		if(PX.pointMaterial.uniforms){
 			PX.pointMaterial.uniforms.u_res.value = PX.app.glWidth / PX.app.glHeight;
 		}
 	}
