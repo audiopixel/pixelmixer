@@ -19,6 +19,7 @@ PX.pointMaterial = {};			// Shader of the point cloud that displays the node col
 PX.pointSprite; 				// String - relative file path to image to represent the point sprite
 PX.pointSize = 25;				// The size of each point cloud sprite
 PX.pointTransparent = false;	// If point cloud sprites use transparency
+PX.pointDepthTest = true;		// If point cloud sprites use depthTest
 
 PX.mouseX = 0;					// Mouse X & Y sent as mouse uniform object when these are updated
 PX.mouseY = 0;

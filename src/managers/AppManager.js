@@ -531,7 +531,7 @@ PX.AppManager.prototype = {
 			uniforms:       this.merge(uniforms, PX.shaders.PointCloudShader.uniforms),
 			vertexShader:   PX.shaders.PointCloudShader.vertexShader,
 			fragmentShader: PX.shaders.PointCloudShader.fragmentShader,
-			depthTest:      true,
+			depthTest:      PX.pointDepthTest,
 			transparent:    PX.pointTransparent
 		});
 
