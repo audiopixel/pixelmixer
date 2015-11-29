@@ -1,10 +1,9 @@
 
-PixelMixer is a visual engine that generates, blends, and maps pixel shaders into 3D space.
+PixelMixer is a visual api that mixes, blends, and maps any number of pixel shaders into 3D space.
+
+Using WebGL and [Three.js](http://threejs.org) it is [easy](https://github.com/audiopixel/pixelmixer#steps-to-using-api) to add to any web application or Three.js project. The generated shaders can also be used in any OpenGL ES 2.0 environment (C / Java / IPhone / Android).
 
 Capture color values at fast framerates for communication to physical lighting equipment using protocols such as UDP, REST, DMX, & Video. Tools are included that optimize color and animations for display on LED and lighting fixtures. New communication protocols can be defined as '[broadcast techs](https://github.com/audiopixel/pixelmixer/tree/master/examples/import/techs)'. 
-
-Runs using HTML5 (WebGL) and [Three.js](http://threejs.org). It is [easy](https://github.com/audiopixel/pixelmixer#steps-to-using-api) to add to any web application.
-The generated shaders can also be used in any OpenGL ES 2.0 environment (C / Java / IPhone / Android).
 
 ---
 
