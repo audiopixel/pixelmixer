@@ -480,26 +480,11 @@ PX.AppManager.prototype = {
 
 	createNodePointCloud: function(){
 
-		/*
-		var attributes = { // For each node we pass along it's indenodx value and x, y in relation to the colorMaps
-			a_pointSizes:  { type: 'f', value: this.pointSizes },
-			a_texId:  		{ type: 'f', value: this.pointTypes },
-			a_geoX:        { type: 'f', value: this.geoX },
-			a_geoY:        { type: 'f', value: this.geoY }
-		};
-		*/
-
-		//PX.pointGeometry.addAttribute( 'a_pointSizes', new THREE.BufferAttribute( new Float32Array( 4 * nVertices ), 4 ) );
-
-		
+		// For each node we pass along it's size, texture id, and xy in relation to the colorMaps
 		PX.pointGeometry.addAttribute( 'a_pointSizes', new THREE.BufferAttribute( new Float32Array(this.pointSizes), 1 ) );
 		PX.pointGeometry.addAttribute( 'a_texId', new THREE.BufferAttribute( new Float32Array(this.pointTypes), 1 ) );
 		PX.pointGeometry.addAttribute( 'a_geoX', new THREE.BufferAttribute( new Float32Array(this.geoX), 1 ) );
 		PX.pointGeometry.addAttribute( 'a_geoY', new THREE.BufferAttribute( new Float32Array(this.geoY), 1 ) );
-
-		//attributes:     this.merge(attributes, PX.shaders.PointCloudShader.attributes),
-
-
 
 
 		var uniforms = {
