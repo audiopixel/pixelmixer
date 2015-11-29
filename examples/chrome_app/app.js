@@ -34,7 +34,7 @@ window.addEventListener("load", function() {
 
 	// ** Initialize PixelMixer
 
-	PX.init(scene, renderer, {  speed: .012, broadcast: true, readPixels: true, pointSize: 30, pointSprite: "images/nodeflare1.png" });
+	PX.init(scene, renderer, {  speed: .012, broadcast: true, readPixels: true, pointSize: 30, pointSprite: "images/disc.png" });
 	PX.setSize(glWidth, glHeight);
 
 
