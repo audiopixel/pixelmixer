@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Basic Example</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link href="css/main.css" rel="stylesheet" />
+		
+
+		<!-- Import standard three.js stuff -->
+		<script src="libs/Detector.js"></script>
+		<script src="libs/three.min.js"></script>
+		<script src="libs/TrackballControls.js"></script>
+
+
+		<!-- Import library -->
+		<script src="../build/pixelmixer.js"></script>
+
+
+		<!-- Import Shaders Here -->
+		<script src="import/shaders/SimpleSwirl.js"></script>
+
+
+		<script>
+
+			if ( !Detector.webgl ) { Detector.addGetWebGLMessage(); } else {
+
+				var glWidth = window.innerWidth;
+				var glHeight = window.innerHeight;
+
+				var scene;
+				var renderer;
+				var camera;
+				var controls;
+				var container;
+
+				function onLoad(){
+
+
+					// ----------------
+
+
+					// ** Standard Three.js setup
+
+					scene = new THREE.Scene();
+
+					renderer = new THREE.WebGLRenderer(); 
+					renderer.setSize( glWidth, glHeight );
+					renderer.autoClear = false;
+
+					container = document.getElementById( 'container' );
+					container.appendChild( renderer.domElement ); 
+
+					camera = new THREE.PerspectiveCamera( 30, glWidth / glHeight, 1, 100000 );
+					camera.position.z = 2000;
+					controls = new THREE.TrackballControls( camera, renderer.domElement);
+
+
+					// ----------------
+
+
+					// ** Initialize PixelMixer
+
+					PX.init(scene, renderer);
+					PX.setSize(glWidth, glHeight);
+
+
+					// ----------------
+
+
+					// ** Add a simple grid of Nodes 
+
+					var node_x = -950;
+					var node_y = -340;
+					var node_z =  0;
+					var node_width =  30;
+					var node_height =  26;
+
+					var node_xstack = 0;
+					var node_ystack = 0;
+					var node_pitch_x = 57;
+					var node_pitch_y = 26;
+
+					var node_gap_x = 42;
+
+					var nodes = [];
+					for ( e = 0; e < node_width; e ++ ) { 
+
+						if(e % 6 === 0){
+							node_xstack += node_gap_x;
+						} 
+
+						for ( i = 0; i < node_height; i ++ ) {
+
+							var node = {};
+							node_ystack += node_pitch_y;
+
+							node.x = node_x + node_xstack;
+							node.y = node_y + node_ystack;
+							node.z = node_z;
+							nodes.push(node);
+						}
+						
+						node_xstack += node_pitch_x;
+						node_ystack = 0;
+					}
+
+					// Set the new group of nodes to Port 1
+					var port = new PX.Port({name: "Port " + port, nodes: nodes});
+					PX.ports.setPort(1, port);
+
+
+					// ----------------
+
+
+					// ** Load in custom sprite for all nodes (default: id = 0)
+
+					PX.hardware.loadCustomPointSprite(0, PX.pointSize, "images/disc.png", function(texture){
+						PX.updateNodePoints();
+					});
+					
+
+					// ----------------
+
+
+					// ** Add a shader to Channel 1, Pod 1, Clip 1
+
+					PX.simpleSetup({channel: 1, ids: ["SimpleSwirl"]});
+
+					// Set scale using param 1 of this clip (param 1 default on most clips is scale)
+					PX.set("p1", .1, 1, 1, 1);
+
+
+					// ----------------
+
+
+					// ** Start the main loop
+
+					animate();
+
+
+				}
+
+				function animate() {
+
+					// Main update loop
+					if(PX.ready){
+
+						// Update the API
+						PX.update();
+
+						// Update Three.js
+						controls.update();
+						renderer.render( scene, camera );
+					}
+
+					// Keep repeating the animation loop
+					requestAnimationFrame( animate );
+				}
+
+
+				function onWindowResize() {
+
+					// Resize logic
+					glWidth = window.innerWidth;
+					glHeight = window.innerHeight;
+
+					PX.setSize(glWidth, glHeight);
+
+					camera.aspect = glWidth / glHeight;
+					camera.updateProjectionMatrix();
+					controls.handleResize();
+
+				}
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+		</script>
+
+	</head>
+
+	<body ontouchstart="" onload="onLoad()">
+
+		<div id="container"></div>
+
+	</body>
+
+</html>
