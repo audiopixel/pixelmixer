@@ -9,10 +9,6 @@ Capture color values at fast framerates for communication to physical lighting e
 
 Online demo: [audiopixel.com/webdemo](http://audiopixel.com/webdemo) | *[source](https://github.com/audiopixel/pixelmixer/blob/master/examples/webdemo.html)*
 
-Online shader editor: [audiopixel.com/shader-editor](http://audiopixel.com/shader-editor/) | *[source](https://github.com/audiopixel/pixelmixer-sandbox)*
-
-Mapping demo: [audiopixel.com/webdemo/basic-mapping.html](http://audiopixel.com/webdemo/basic-mapping.html) | *[source](https://github.com/audiopixel/pixelmixer/blob/master/examples/basic_mapping_example.html)*
-
 Load in additional shaders, such as ones found at [glslsandbox](http://glslsandbox.com/) and [shadertoy](https://www.shadertoy.com).
 
 [![VimeoLink](https://github.com/audiopixel/pixelmixer/blob/master/docs/images/pixelmixer-vimeo.png)](https://vimeo.com/125231156)
